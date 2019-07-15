@@ -1,0 +1,117 @@
+Email To And Cc.txt
+
+BSBB
+	Open
+	- To :	ccc.indonesia@wincor-nixdorf.com;
+			ccc@service-division.com;
+			
+	- Cc :	helpdesk@sinergy.co.id;
+			endraw@sinergy.co.id;
+			bsb_ts_atm@banksumselbabel.com;
+			wisnu.darman@sinergy.co.id;
+			juliusdeddy.darmawan@wincor-nixdorf.com;
+			dimas.widyawan@services-division.com;
+			doni.syufri.ext@wincor-nixdorf.com;
+			juni.ibrahim@services-division.com;
+			eko.qualita@gmail.com;
+			umar.holik@banksumselbabel.com;
+			rudi.partono@banksumselbabel.com;
+			evi.kamal@banksumselbabel.com;
+			jimy.mandoza@banksumselbabel.com;
+			chairullah@banksumselbabel.com;
+			bambang.nugroho@banksumselbabel.com;
+			jauhari@banksumselbabel.com;
+			sandy.perwira@banksumselbabel.com;
+			rahmat.deli@banksumselbabel.com; 
+			heru.muharam@banksumselbabel.com;
+			rahmad.deli@banksumselbabel.com;
+			wisnu.aji@banksumselbabel.com; 
+			saptono@banksumselbabel.com; 
+			kui.ciong@banksumselbabel.com; 
+			jauhari.johan@banksumselbabel.com; 
+			purwaningsih@banksumselbabel.com;
+
+	Close
+	- To :	bsb_ts_atm@banksumselbabel.com;
+
+	- Cc :	helpdesk@sinergy.co.id;
+			endraw@sinergy.co.id;
+			wisnu.darman@sinergy.co.id;
+			bsb_ts_atm@banksumselbabel.com;
+			juliusdeddy.darmawan@wincor-nixdorf.com;
+			dimas.widyawan@services-division.com;
+			doni.syufri.ext@wincor-nixdorf.com;
+			juni.ibrahim@services-division.com;
+			eko.qualita@gmail.com;
+			umar.holik@banksumselbabel.com;
+			rudi.partono@banksumselbabel.com;
+			evi.kamal@banksumselbabel.com;
+			jimy.mandoza@banksumselbabel.com;
+			chairullah@banksumselbabel.com;
+			bambang.nugroho@banksumselbabel.com;
+			jauhari@banksumselbabel.com;
+			sandy.perwira@banksumselbabel.com;
+			rahmat.deli@banksumselbabel.com; 
+			heru.muharam@banksumselbabel.com;
+			rahmad.deli@banksumselbabel.com;
+			wisnu.aji@banksumselbabel.com; 
+			saptono@banksumselbabel.com; 
+			kui.ciong@banksumselbabel.com; 
+			jauhari.johan@banksumselbabel.com; 
+			purwaningsih@banksumselbabel.com;
+
+BRKR
+	Open
+	- To :	indonesia.gccc@wincor-nixdorf.com;
+			ccc.indonesia@wincor-nixdorf.com;
+
+	- Cc :	indonesia.gccc@wincor-nixdorf.com;
+			ccc.indonesia@wincor-nixdorf.com;
+			endraw@sinergy.co.id;
+			wisnu.darman@sinergy.co.id;
+			juliusdeddy.darmawan@dieboldnixdorf.com;
+
+	Close
+	- To :	helpdesk@sinergy.co.id;
+			
+	- Cc :	endraw@sinergy.co.id;
+			wisnu.darman@sinergy.co.id;
+
+BJBR
+	Open
+	- To :	ccc@service-division.com;
+			indonesia.gccc@wincor-nixdorf.com;
+	
+	- Cc :	firman@sinergy.co.id; 
+			groupofmonitoringatm@bankbjb.co.ic; 
+			helpdesk@sinergy.co.id; 
+			waryanto.waryanto@dieboldnixdorf.com; 
+			fajar@sinergy.co.id; 
+			samsu@sinergy.co.id;
+			endraw@sinergy.co.id;
+			wisnu.darman@sinergy.co.id;
+
+	Close
+	- To :	groupofmonitoringatm@bankbjb.co.id
+
+	- Cc :	helpdesk@sinergy.co.id;
+			waryanto.waryanto@dieboldnixdorf.com;
+			firman@sinergy.co.id;
+
+SMPO
+	Open
+	- To :
+	- Cc :
+
+	Close
+	- To :
+	- Cc :
+
+TTNI
+	Open
+	- To :
+	- Cc :
+
+	Close
+	- To :
+	- Cc :

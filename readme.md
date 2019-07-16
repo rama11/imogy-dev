@@ -1,5 +1,4 @@
-Imogy Development
+Momogy Development
 
-By : Ridho Jhulang
-By : Vio Putri  
+By : Ridho Jhulang aqsha
 

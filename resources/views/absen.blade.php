@@ -358,5 +358,5 @@
 	}
 </script>
 <!-- <script src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false&libraries=geometry"></script> -->
-<script async defer src="https://maps.googleapis.com/maps/api/js?v=3&libraries=geometry&key=AIzaSyBNVCp8lA_LCRxr1rCYhvFIUNSmDsbcGno"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?v=3&libraries=geometry&key={{env('GOOGLE_API_KEY')}}"></script>
 @endsection

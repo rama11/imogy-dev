@@ -1,3 +1,3 @@
 Imogy Development
 
-By : Ridho Jhulang
+By : Ridho Jhulang blabla

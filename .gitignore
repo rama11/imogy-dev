@@ -13,8 +13,21 @@ storage/*.key
 .env.*.php
 .env.php
 .env
+.env.backup
 Homestead.yaml
 Homestead.json
 
 # Rocketeer PHP task runner and deployment package. https://github.com/rocketeers/rocketeer
 .rocketeer/
+
+# Ignore SSL Cert
+ca_bundle.crt
+certificate.crt
+private.key
+
+# Ignore AdminLTE Folder
+public/AdminLTE/
+
+# Ignore Other
+sftp-config.json.backup
+

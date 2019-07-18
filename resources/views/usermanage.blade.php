@@ -222,7 +222,7 @@
 									<option value="2">Helpdesk</option>
 									<option value="1">Admin</option>
 								</select>                                 
-							</div>s
+							</div>
 						</div>
 						<div class="form-group{{ $errors->has('location') ? ' has-error' : '' }}">
 							<label for="location" class="col-md-3 control-label">Team</label>
@@ -279,7 +279,7 @@
 						<div class="form-group">
 							<label for="foto" class="col-md-3 control-label">Photo</label>
 							<div class="col-md-8">
-								<input type="file" id="inputgambar" name="gambar" >
+								<input type="file" id="inputgambar" name="gambar" required image >
 								<p class="help-block">Only .jpg .jpeg and .png are allowed</p>
 							</div>
 						</div>

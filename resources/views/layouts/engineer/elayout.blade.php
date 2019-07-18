@@ -94,7 +94,7 @@
 				</a>
 				<div class="pull-left info">
 					<p>{{Auth::user()->name}}</p>
-					<a href="{{ url('profile')}}">Engineer</a>
+					<a href="{{ url('profile')}}">Engineer Inter</a>
 				</div>
 			</div>
 			<ul class="sidebar-menu" data-widget="tree">

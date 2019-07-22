@@ -249,3 +249,13 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('getCreateParameter','TicketingController@getCreateParameter');
 	Route::get('getClientTest','TestController@getSettingClient');
 // Route::get('/home', 'HomeController@index')->name('home');
+
+
+
+
+
+
+// Project Route
+	Route::get('project','ProjectController@index');
+	Route::get('project/manage','ProjectController@manage');
+	Route::get('project/setting','ProjectController@setting');

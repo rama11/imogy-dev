@@ -33,9 +33,9 @@
 										<div class="alert alert-info" role="alert"  id="logined">You are absent today (Absent)</div>
 									@elseif($keterangan == 5)
 										<div class="alert alert-info" role="alert"  id="logined">You are not working today (Libur)</div>
-									@endif
+								@endif
 
-									@if($sudah_pulang == 'sudah')
+								@if($sudah_pulang == 'sudah')
 										<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalPulang" id="pulang">SUDAH PULANG</button>
 									@else
 										<button type="button" class="btn btn-primary " data-toggle="modal" data-target="#modalPulang" id="pulang">PULANG</button>
@@ -232,7 +232,8 @@
 
 					console.log(pos.lat + " , " + pos.lng);
 					
-				}, function() {
+				}, 
+				function() {
 					if("{{Auth::user()->id}}" != "4"){
 						$.ajax({
 							type:"GET",

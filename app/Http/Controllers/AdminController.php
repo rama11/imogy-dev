@@ -376,10 +376,10 @@ class AdminController extends Controller
 	public function addUser(Request $request){
 		date_default_timezone_set('Asia/Jakarta');
 
-		$file = $request->gambar;
-		$file = $request->file('gambar');
-		$fileName = $file->getClientOriginalName();
-		$request->file('gambar')->move("img/", $fileName);
+		$fileName = $request->gambar;
+		$fileName = $request->file('gambar')->getClientOriginalName();
+		$request->file('gambar')->move('img/', $fileName);
+
 
 		if($request->born == NULL){
 			$request->born = "Born";
@@ -392,6 +392,9 @@ class AdminController extends Controller
 		}
 		if($request->address == NULL){
 			$request->address = "Address Now";
+
+		}if($request->gambar == NULL){
+			echo $request = 'required';
 		}
 
 		$date = date('Y-m-d h:i:s', time());
@@ -558,7 +561,7 @@ class AdminController extends Controller
 
 	public function createPresenceLocation(Request $request){
 		$id_absen = DB::table('waktu_absen')
-			->orderBy('id','DESC')
+			->orderBy('id','DESC')	
 			->value('id');
 
 		DB::table('absen_location')

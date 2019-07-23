@@ -2,20 +2,21 @@
 @section('content')
 <style type="text/css">
 	.pac-container {
-    background-color: #FFF;
+    background-color: #fff;
     z-index: 1070;
     position: fixed;
     display: inline-block;
     float: left;
 }
 .modal{
-    z-index: 1060;   
-}
+    z-index: 1060;  
+
 .modal-backdrop{
     z-index: 1050;        
 }​
 
 </style>
+
 <div class="content-wrapper">
 		<section class="content-header">
 			<h1>
@@ -76,7 +77,9 @@
 		<!-- /.content -->
 </div>
 
+
 <!-- Modal Edit Location -->
+
 <div class="modal fade in" id="modal-default"  tabindex="-1" role="dialog">
 	<div class="modal-dialog">
 		<form method="GET" action="{{url('setLocation')}}">
@@ -132,54 +135,47 @@
 
 <!-- Modal Add Location -->
 <button data-toggle="modal" data-target="#modal-default2" style="display: none;" id="showAdd"></button>
-<div class="modal fade in" id="modal-default2" tabindex="-1" role="dialog">
-	<div class="modal-dialog modal-lg">
+<div class="modal fade out" id="modal-default2" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-md">
 		<form method="GET" action="{{url('addLocation')}}">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">×</span></button>
+						<span aria-hidden="true">×</span>
+					</button>
 					<h4 class="modal-title">Add Location</h4>
 				</div>
 				<div class="modal-body">
 					<div class="row">
 						<dir class="col-md-12">
-							<div class="form-group">
 								<label>Search Location</label>
 								<input class="form-control" placeholder="Location" type="text" id="search">
-							</div>
 						</dir>
-					</div>
-					<div class="row">
+						<div class="row">
 						<div class="col-md-12">
-							<div class="form-group">
-								<div id="map" style="height: 350px;width: 800px;margin:auto;display: block;background-color: #000;"></div>
-							</div>
+								<div id="map" style="width:300px; height:150px;margin:auto;display: block;background-color: #000;"></div>
 						</div>
+					</div>
 					</div>
 					<div class="row">
 						<dir class="col-md-12">
-							<div class="form-group">
 								<label>Name </label>
 								<input class="form-control" placeholder="Yout Must Give Name This Location" type="text" name="pleace" required>
-							</div>
 						</dir>
 					</div>
 					<div class="row">
 						<dir class="col-md-6">
-							<div class="form-group">
 								<label>Latitude</label>
 								<input class="form-control" placeholder="" type="text" id="lat" name="lat">
-							</div>
 						</dir>
 						<dir class="col-md-6">
-							<div class="form-group">
 								<label>Longitude</label>
 								<input class="form-control" placeholder="" type="text" id="lng" name="lng">
-							</div>
 						</dir>
 					</div>
-				</div>
+				</div> 
+					
+		
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
 					<button type="submit" class="btn btn-primary" >Add Location</button>
@@ -297,5 +293,4 @@
 	$(".alert-success").delay(3000).fadeOut("slow");
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAX4arGqDKY0F0VDrxeR4c5fyAloMqEMis&libraries=places&callback=initMap" async defer></script>
-
 @endsection

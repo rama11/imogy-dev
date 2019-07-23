@@ -1,0 +1,178 @@
+[1mdiff --git a/app/Http/Controllers/AdminController.php b/app/Http/Controllers/AdminController.php[m
+[1mindex 94f800c..5512428 100755[m
+[1m--- a/app/Http/Controllers/AdminController.php[m
+[1m+++ b/app/Http/Controllers/AdminController.php[m
+[36m@@ -414,7 +414,7 @@[m [mclass AdminController extends Controller[m
+ 				'education' => $request->education,[m
+ 				'phone' => $request->phone,[m
+ 				'address' => $request->address,[m
+[31m-				'hadir' => "08:00:00",[m
+[32m+[m				[32m'hadir' => "00:00:00",[m
+ 				'foto' => 'img/' . $fileName,[m
+ 				'present_timing' => '1'[m
+ 				]);[m
+[36m@@ -547,10 +547,11 @@[m [mclass AdminController extends Controller[m
+ 					$keterangan = 5;[m
+ 				}[m
+ 			}[m
+[32m+[m[41m			[m
+ [m
+ 			$layout = 'layouts.admin.layout';[m
+ [m
+[31m-			return view('absen',compact('point','condition','sudah','layout','keterangan','sudah_pulang'));[m
+[32m+[m			[32mreturn view('absen',compact('sudah', 'keterangan', 'sudah_pulang', 'point'));[m
+ 		// }[m
+ 		[m
+ 	}[m
+[36m@@ -707,7 +708,7 @@[m [mclass AdminController extends Controller[m
+ 					->insert([[m
+ 						'id' => NULL,[m
+ 						'id_user' => $id,[m
+[31m-						'hadir' => "00:00:00",[m
+[32m+[m						[32m'hadir' => "00:08:00",[m
+ 						'jam' => date('H:i:s',time()),[m
+ 						'tanggal' => date('Y/m/d'),[m
+ 						'location' => $location,[m
+[1mdiff --git a/composer.lock b/composer.lock[m
+[1mindex 8815788..39beda6 100644[m
+[1m--- a/composer.lock[m
+[1m+++ b/composer.lock[m
+[36m@@ -1,30 +1,29 @@[m
+ {[m
+     "_readme": [[m
+         "This file locks the dependencies of your project to a known state",[m
+[31m-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",[m
+[32m+[m[32m        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",[m
+         "This file is @generated automatically"[m
+     ],[m
+[31m-    "hash": "9b1bb0c91d11684cbac9960903678063",[m
+     "content-hash": "57e7a10a61b7153934fa6c679d3b0cbb",[m
+     "packages": [[m
+         {[m
+             "name": "barryvdh/laravel-dompdf",[m
+[31m-            "version": "v0.8.1",[m
+[32m+[m[32m            "version": "v0.8.4",[m
+             "source": {[m
+                 "type": "git",[m
+                 "url": "https://github.com/barryvdh/laravel-dompdf.git",[m
+[31m-                "reference": "3b2235e589616331d68482d61b7763789a2600fe"[m
+[32m+[m[32m                "reference": "3fd817065e1c820b1ddace8b2bf65ca45088df4f"[m
+             },[m
+             "dist": {[m
+                 "type": "zip",[m
+[31m-                "url": "https://api.github.com/repos/barryvdh/laravel-dompdf/zipball/3b2235e589616331d68482d61b7763789a2600fe",[m
+[31m-                "reference": "3b2235e589616331d68482d61b7763789a2600fe",[m
+[32m+[m[32m                "url": "https://api.github.com/repos/barryvdh/laravel-dompdf/zipball/3fd817065e1c820b1ddace8b2bf65ca45088df4f",[m
+[32m+[m[32m                "reference": "3fd817065e1c820b1ddace8b2bf65ca45088df4f",[m
+                 "shasum": ""[m
+             },[m
+             "require": {[m
+                 "dompdf/dompdf": "^0.8",[m
+[31m-                "illuminate/support": "5.1.x|5.2.x|5.3.x|5.4.x|5.5.x",[m
+[31m-                "php": ">=5.5.9"[m
+[32m+[m[32m                "illuminate/support": "5.5.x|5.6.x|5.7.x|5.8.x",[m
+[32m+[m[32m                "php": ">=7"[m
+             },[m
+             "type": "library",[m
+             "extra": {[m
+[36m@@ -61,7 +60,7 @@[m
+                 "laravel",[m
+                 "pdf"[m
+             ],[m
+[31m-            "time": "2017-07-29 19:01:17"[m
+[32m+[m[32m            "time": "2019-02-26T18:07:43+00:00"[m
+         },[m
+         {[m
+             "name": "dnoegel/php-xdg-base-dir",[m
+[36m@@ -94,24 +93,24 @@[m
+                 "MIT"[m
+             ],[m
+             "description": "implementation of xdg base directory specification for php",[m
+[31m-            "time": "2014-10-24 07:27:01"[m
+[32m+[m[32m            "time": "2014-10-24T07:27:01+00:00"[m
+         },[m
+         {[m
+             "name": "doctrine/inflector",[m
+[31m-            "version": "v1.2.0",[m
+[32m+[m[32m            "version": "v1.3.0",[m
+             "source": {[m
+                 "type": "git",[m
+                 "url": "https://github.com/doctrine/inflector.git",[m
+[31m-                "reference": "e11d84c6e018beedd929cff5220969a3c6d1d462"[m
+[32m+[m[32m                "reference": "5527a48b7313d15261292c149e55e26eae771b0a"[m
+             },[m
+             "dist": {[m
+                 "type": "zip",[m
+[31m-                "url": "https://api.github.com/repos/doctrine/inflector/zipball/e11d84c6e018beedd929cff5220969a3c6d1d462",[m
+[31m-                "reference": "e11d84c6e018beedd929cff5220969a3c6d1d462",[m
+[32m+[m[32m                "url": "https://api.github.com/repos/doctrine/inflector/zipball/5527a48b7313d15261292c149e55e26eae771b0a",[m
+[32m+[m[32m                "reference": "5527a48b7313d15261292c149e55e26eae771b0a",[m
+                 "shasum": ""[m
+             },[m
+             "require": {[m
+[31m-                "php": "^7.0"[m
+[32m+[m[32m                "php": "^7.1"[m
+             },[m
+             "require-dev": {[m
+                 "phpunit/phpunit": "^6.2"[m
+[36m@@ -119,7 +118,7 @@[m
+             "type": "library",[m
+             "extra": {[m
+                 "branch-alias": {[m
+[31m-                    "dev-master": "1.2.x-dev"[m
+[32m+[m[32m                    "dev-master": "1.3.x-dev"[m
+                 }[m
+             },[m
+             "autoload": {[m
+[36m@@ -161,25 +160,28 @@[m
+                 "singularize",[m
+                 "string"[m
+             ],[m
+[31m-            "time": "2017-07-22 12:18:28"[m
+[32m+[m[32m            "time": "2018-01-09T20:05:19+00:00"[m
+         },[m
+         {[m
+             "name": "doctrine/lexer",[m
+[31m-            "version": "v1.0.1",[m
+[32m+[m[32m            "version": "1.0.2",[m
+             "source": {[m
+                 "type": "git",[m
+                 "url": "https://github.com/doctrine/lexer.git",[m
+[31m-                "reference": "83893c552fd2045dd78aef794c31e694c37c0b8c"[m
+[32m+[m[32m                "reference": "1febd6c3ef84253d7c815bed85fc622ad207a9f8"[m
+             },[m
+             "dist": {[m
+                 "type": "zip",[m
+[31m-                "url": "https://api.github.com/repos/doctrine/lexer/zipball/83893c552fd2045dd78aef794c31e694c37c0b8c",[m
+[31m-                "reference": "83893c552fd2045dd78aef794c31e694c37c0b8c",[m
+[32m+[m[32m                "url": "https://api.github.com/repos/doctrine/lexer/zipball/1febd6c3ef84253d7c815bed85fc622ad207a9f8",[m
+[32m+[m[32m                "reference": "1febd6c3ef84253d7c815bed85fc622ad207a9f8",[m
+                 "shasum": ""[m
+             },[m
+             "require": {[m
+                 "php": ">=5.3.2"[m
+             },[m
+[32m+[m[32m            "require-dev": {[m
+[32m+[m[32m                "phpunit/phpunit": "^4.5"[m
+[32m+[m[32m            },[m
+             "type": "library",[m
+             "extra": {[m
+                 "branch-alias": {[m
+[36m@@ -187,8 +189,8 @@[m
+                 }[m
+             },[m
+             "autoload": {[m
+[31m-                "psr-0": {[m
+[31m-                    "Doctrine\\Common\\Lexer\\": "lib/"[m
+[32m+[m[32m                "psr-4": {[m
+[32m+[m[32m                    "Doctrine\\Common\\Lexer\\": "lib/Doctrine/Common/Lexer"[m
+                 }[m
+             },[m
+             "notification-url": "https://packagist.org/downloads/",[m
+[36m@@ -209,40 +211,47 @@[m
+                     "email": "schmittjoh@gmail.com"[m
+                 }[m
+             ],[m
+[31m-            "description": "Base library for a lexer that can be used in Top-Down, Recursive Descent Parsers.",[m
+[31m-            "homepage": "http://www.doctrine-project.org",[m
+[32m+[m[32m            "description": "PHP Doctrine Lexer parser library that can be used in Top-Down, Recursive Descent Parsers.",[m

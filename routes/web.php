@@ -258,4 +258,8 @@ Route::post('/editProfile', 'AdminController@editProfile');
 // Project Route
 	Route::get('project','ProjectController@index');
 	Route::get('project/manage','ProjectController@manage');
+	Route::get('project/manage/getCustomer','ProjectController@getCustomer');
+	Route::get('project/manage/getMember','ProjectController@getMember');
+	Route::post('project/manage/setProjectList','ProjectController@setProjectList');
+
 	Route::get('project/setting','ProjectController@setting');

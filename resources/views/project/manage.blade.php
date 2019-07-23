@@ -120,11 +120,11 @@
 								</div>
 								<div class="form-group">
 									<label>Project Name</label>
-									<input type="text" class="form-control" id="inputProjectName" required="">
+									<input type="text" class="form-control" id="inputProjectName" required>
 								</div>
 								<div class="form-group">
 									<label>Project ID (PID)</label>
-									<input type="text" class="form-control" id="inputProjectName" required="">
+									<input type="text" class="form-control" id="inputProjectPID" required>
 								</div>
 							</form>
 						</div>
@@ -149,7 +149,7 @@
 										<div class="input-group-addon">
 											<i class="fa fa-calendar"></i>
 										</div>
-										<input type="text" class="form-control pull-right" id="inputProjectStart">
+										<input type="text" class="form-control pull-right" id="inputProjectStart" required>
 									</div>
 									<p style="font-size: x-small;">Start date depends on contract/spk or base on BAST date.</p>
 								</div>
@@ -163,7 +163,7 @@
 									<div class="col-sm-6">
 										<div class="form-group">
 											<label>Duration Per Periode</label>
-											<select class="form-control" id="inputProjectDuration">
+											<select class="form-control" id="inputProjectDuration" required>
 												<option value="1">1 Month</option>
 												<option value="2">2 Month</option>
 												<option value="3">3 Month</option>
@@ -193,7 +193,7 @@
 								<!-- <input type="hidden" class="form-control"> -->
 								<div class="form-group">
 									<label>Project Coordinator</label>
-									<select class="form-control select2" id="inputProjectCoordinator" style="width: 100%" multiple="multiple" required></select>
+									<select class="form-control select2" id="inputProjectCoordinator" style="width: 100%" required></select>
 									<!-- <input type="text" class="form-control" id="inputProjectCoordinator" required=""> -->
 								</div>
 								<div class="form-group">
@@ -227,13 +227,13 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>Customer</label>
-											<input type="text" class="form-control" value="BNI" readonly>
+											<input type="text" class="form-control" id="inputProjectCustomerCorrection" readonly>
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>PID</label>
-											<input type="text" class="form-control" value="482/BNI/PO 444/SIP/XI/2017" readonly>
+											<input type="text" class="form-control" id="inputProjectPIDCorrection" readonly>
 										</div>
 									</div>
 								</div>
@@ -241,7 +241,7 @@
 									<div class="col-md-12">
 										<div class="form-group">
 											<label>Project Name</label>
-											<input type="text" class="form-control" value="Security WEB, WAF, DBF, Bandwith Management utk Internet dan Extranet DC Slipi" readonly>
+											<input type="text" class="form-control" id="inputProjectNameCorrection" readonly>
 										</div>
 									</div>
 								</div>
@@ -252,7 +252,7 @@
 											<div class="col-md-12">
 												<div class="form-group">
 													<label>Start of Periods</label>
-													<input type="text" class="form-control" value="1 July 2019" readonly>
+													<input type="text" class="form-control" id="inputProjectStartCorrection" readonly>
 												</div>
 											</div>
 										</div>
@@ -260,7 +260,7 @@
 											<div class="col-md-12">
 												<div class="form-group">
 													<label>Duration of Periods</label>
-													<input type="text" class="form-control" value="3 Months" readonly>
+													<input type="text" class="form-control" id="inputProjectDurationCorrection" readonly>
 												</div>
 											</div>
 										</div>
@@ -268,7 +268,7 @@
 											<div class="col-md-12">
 												<div class="form-group">
 													<label>Number of Periods</label>
-													<input type="text" class="form-control" value="4 Periods" readonly>
+													<input type="text" class="form-control" id="inputProjectPeriodCorrection" readonly>
 												</div>
 											</div>
 										</div>
@@ -281,7 +281,7 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>Project Coordinator</label>
-											<input type="text" class="form-control select2" id="inputProjectCoordinatorCorrention" readonly>
+											<input type="text" class="form-control select2" id="inputProjectCoordinatorCorrention" readonly></select>
 										</div>
 									</div>
 									<div class="col-md-6">
@@ -328,6 +328,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
 <script>
 	var append = "";
+	var member = [];
+	var memberNickname = [];
 
 	$(document).ready(function(){
 
@@ -335,56 +337,45 @@
 		$("#inputProjectPeriod").val("");
 		$("#inputProjectDuration").val("");
 
-		$("#inputProjectCustomer").select2({
-			placeholder: "Select a customer",
-			data:[
-				{id:1,text:"BNI"},
-				{id:2,text:"Bank DKI"},
-				{id:3,text:"BPJS"},
-				{id:4,text:"SOMPO"},
-				{id:5,text:"OCBC Sekuritas"},
-				{id:6,text:"BCA Sekuritas"},
-			]
+		$.ajax({
+			type:"GET",
+			url:'{{url("project/manage/getCustomer")}}',
+			success: function(result){
+				var listCustomer = result;
+				listCustomer.unshift({id:0,text:"Add New Customer"});
+				$("#inputProjectCustomer").select2({
+					placeholder: "Select a customer",
+					data: result
+				});
+			}
 		});
 
-		var projectCoordinator = [
-			{id:1,text:"Wisnu"},
-			{id:2,text:"Anggel"},
-			{id:3,text:"Atha"},
-			{id:4,text:"Denny"},
-		];
-
-		var teamMember = [
-			{id:1,text:"Johan"},
-			{id:2,text:"Dicky"},
-			{id:3,text:"Zubed"},
-			{id:4,text:"Yohanis"},
-			{id:5,text:"Rangga"},
-			{id:6,text:"Bayu"},
-			{id:7,text:"Brian"},
-			{id:8,text:"Ojan"},
-			{id:9,text:"Vian"},
-			{id:10,text:"Samsu"},
-		];
-
-		$("#inputProjectCoordinator").select2({
-			data:projectCoordinator,
+		$.ajax({
+			type:"GET",
+			url:'{{url("project/manage/getMember")}}',
+			success: function(result){
+				$("#inputProjectCoordinator").select2();
+				$("#inputProjectLead, #inputProjectMember, #inputProjectMemberCorrention").select2();
+				var listMember = result;
+				listMember.forEach(function(member){
+					newOption = new Option(member.text, member.id, false, false);
+					if(member.position == "Coordinator"){
+						$('#inputProjectCoordinator').append(newOption).trigger('change');
+					} else if (member.position == "Member"){
+						$("#inputProjectLead, #inputProjectMember, #inputProjectMemberCorrention").append(newOption).trigger('change');
+					}
+				});
+			}
 		});
 
-		$("#inputProjectCoordinatorCorrention").select2({
-			data:teamMember,
-		});
-
-		$("#inputProjectLead").select2({
-			data:teamMember,
-		});
-
-		$("#inputProjectMember").select2({
-			data:teamMember,
-		});
-
-		$("#inputProjectMemberCorrention").select2({
-			data:teamMember,
+		$("#inputProjectCustomer").on('select2:close',function(){
+			if($("#inputProjectCustomer").select2('data')[0].text == "Add New Customer"){
+				var newCustomer = prompt("Enter new customer :");
+				if(newCustomer !== null){
+					var newOption = new Option(newCustomer, 0, false, false);
+					$('#inputProjectCustomer').append(newOption).trigger('change');
+				}
+			}
 		});
 
 		//Date picker
@@ -420,29 +411,56 @@
 	});
 
 	function correctionAddProject(){
-		// Correction Periode
+		
+		// Correction Customer
+		$("#inputProjectCustomerCorrection").val($("#inputProjectCustomer").select2('data')[0].text);
+		$("#inputProjectPIDCorrection").val($("#inputProjectPID").val());
+		$("#inputProjectNameCorrection").val($("#inputProjectName").val());
+
+		// Correction Periode Input
+		$("#inputProjectStartCorrection").val(moment($("#inputProjectStart").val(),"MM/DD/YYYY").format('DD MMMM YYYY'));
+		$("#inputProjectDurationCorrection").val($("#inputProjectPeriod").val() + " Month");
+		$("#inputProjectPeriodCorrection").val($("#inputProjectDuration").val() + " Periode");
+
+		// Correction Periode View
 		$("#inputProjectPeriodResult2").html("");
 		$("#inputProjectPeriodResult2").append(append);
 
 		// Correction Project Member
-		var coordinators = $("#inputProjectCoordinator").select2('data');
+		var coordinator = $("#inputProjectCoordinator").select2('data');
 		var leader = $("#inputProjectLead").select2('data');
 		var members = $("#inputProjectMember").select2('data');
 		
-		var member = [];
-		var coordinator = [];
 		
-		coordinators.forEach(function(eachCoordinator){
-			coordinator.push(eachCoordinator.id);
-		});
-		$("#inputProjectCoordinatorCorrention").select2().val(coordinator).trigger("change");
 
+		$("#inputProjectCoordinatorCorrention").val(coordinator[0].text);
 		$("#inputProjectLeadCorrention").val(leader[0].text);
 
 		members.forEach(function(eachMember){
 			member.push(eachMember.id);
+			memberNickname.push(eachMember.text);
 		});
 		$("#inputProjectMemberCorrention").select2().val(member).trigger("change");
 	};
+
+	function sendInputProject(){
+		$.ajax({
+			type:"POST",
+			url:"{{url('project/manage/setProjectList')}}",
+			data:{
+				"_token": "{{ csrf_token() }}",
+				"Customer":$("#inputProjectCustomer").select2('data')[0].id,
+				"CustomerName":$("#inputProjectCustomer").select2('data')[0].text,
+				"PID":$("#inputProjectPIDCorrection").val(),
+				"Name":$("#inputProjectNameCorrection").val(),
+				"Duration":$("#inputProjectDuration").val(),
+				"Period":$("#inputProjectPeriod").val(),
+				"StartPeriod":moment($("#inputProjectStartCorrection").val(),"DD MMMM YYYY").format("YYYY-MM-DD"),
+				"Coordinator":$("#inputProjectCoordinator").select2('data')[0].id,
+				"Lead":$("#inputProjectLead").select2('data')[0].id,
+				"Member":memberNickname
+			}
+		});
+	}
 </script>
 @endsection

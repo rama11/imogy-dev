@@ -414,7 +414,7 @@ class AdminController extends Controller
 				'education' => $request->education,
 				'phone' => $request->phone,
 				'address' => $request->address,
-				'hadir' => "08:00:00",
+				'hadir' => "00:00:00",
 				'foto' => 'img/' . $fileName,
 				'present_timing' => '1'
 				]);
@@ -547,10 +547,11 @@ class AdminController extends Controller
 					$keterangan = 5;
 				}
 			}
+			
 
 			$layout = 'layouts.admin.layout';
 
-			return view('absen',compact('point','condition','sudah','layout','keterangan','sudah_pulang'));
+			return view('absen',compact('sudah', 'keterangan', 'sudah_pulang', 'point'));
 		// }
 		
 	}
@@ -707,7 +708,7 @@ class AdminController extends Controller
 					->insert([
 						'id' => NULL,
 						'id_user' => $id,
-						'hadir' => "00:00:00",
+						'hadir' => "00:08:00",
 						'jam' => date('H:i:s',time()),
 						'tanggal' => date('Y/m/d'),
 						'location' => $location,

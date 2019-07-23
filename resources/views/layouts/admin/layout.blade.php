@@ -222,16 +222,16 @@
 		<section class="sidebar">
 			<!-- Sidebar user panel -->
 			<div class="user-panel">
-				<div class="pull-left image">
+				<a href="{{ url('profile')}}" class="pull-left image">
 					@if(Auth::user()->foto == "0")
 						<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
 					@else
 						<img src="{{url(Auth::user()->foto)}}" class="img-circle" alt="User Image">
 					@endif
-				</div>
+				</a>
 				<div class="pull-left info">
 					<p>{{Auth::user()->name}}</p>
-					<a href="#"><i class="fa fa-circle text-success"></i> Admin Inter</a>
+					<a href="{{ url('profile')}}"><i class="fa fa-circle text-success"></i>Admin</a>
 				</div>
 			</div>
 			<!-- search form -->

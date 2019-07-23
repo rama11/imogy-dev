@@ -58,7 +58,14 @@
 								@endif
 								<p>
 									{{Auth::user()->name}} 
-									<small>{{Auth::user()->jabatan}}</small>
+									
+									@if(Auth::user()->jabatan == 1)
+										<small><i class="fa fa-circle text-success"></i> Admin</small>
+									@elseif(Auth::user()->jabatan == 2)
+										<small><i class="fa fa-circle text-success"></i> Helpdesk</small>
+									@elseif(Auth::user()->jabatan == 3)
+										<small><i class="fa fa-circle text-success"></i> Engineer</small>
+									@endif
 								</p>
 							</li>
 							<li class="user-footer">
@@ -94,7 +101,15 @@
 				</a>
 				<div class="pull-left info">
 					<p>{{Auth::user()->name}}</p>
-					<a href="{{ url('profile')}}"></a>{{Auth::user()->jabatan}}
+
+						@if(Auth::user()->jabatan == 1)
+							<small><i class="fa fa-circle text-success"></i> Admin</small>
+						@elseif(Auth::user()->jabatan == 2)
+							<small><i class="fa fa-circle text-success"></i> Helpdesk</small>
+						@elseif(Auth::user()->jabatan == 3)
+							<small><i class="fa fa-circle text-success"></i> Engineer</small>
+						@endif
+					
 				</div>
 			</div>
 			<ul class="sidebar-menu" data-widget="tree">

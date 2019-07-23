@@ -402,7 +402,7 @@ class AdminController extends Controller
 		DB::table('users')
 			->insert([
 				'name' => $request->name,
-				'nickname' => "nickname",
+				'nickname' => "$request->nickname",
 				'email' => $request->email,
 				'password' => Hash::make($request->password),
 				'created_at' => $date,
@@ -458,16 +458,25 @@ class AdminController extends Controller
 				->where('tanggal','=',date('Y/m/d'))
 				->where('id_user','=',$id)
 				->get()
-				->first();		
+				->first();
+			$start = DB::table('shifting')
+				->where('id_user','=',Auth::user()->id)
+				->where('start','LIKE',date('Y-m-d') . '%')
+				->first();			
 
 			// echo $pulang . "<br>";
 			// echo $pulang_malam . "<br>";
 			// echo $hari_malam . "<br>";
 			// echo date('Y/m/d') . "<br>";
-
+			// if($start == ''){
+				
+			// }else{
+				
+			// }
 			// echo "<br><pre>";
 			// print_r($belum);	
 			// echo "</pre>";
+			
 
 			if($belum == NULL){
 				if($pulang_malam == "22:00:00"){
@@ -529,43 +538,44 @@ class AdminController extends Controller
 					$sudah_pulang = "belum";
 				} else {
 					$sudah_pulang = "sudah";
+					// $tidakShifting = "true";
+
 				}
 
 			}
-			
 
 			if(Auth::user()->shifting == 1 ){
 				$getSchedule = DB::table('shifting')
 					->where('id_user','=',Auth::user()->id)
 					->where('start','LIKE',date('Y-m-d') . '%')
 					->first();
+
 				// echo "<pre>";
 				// print_r($getSchedule);
 				// echo "</pre>";
 
+				if($getSchedule == NULL){
 
-				$liburCondition = substr($getSchedule->start, 11,5);
-
-				if($liburCondition == "Libur"){
+					// $tidakShifting = true;
 					$sudah = "sudah";
-					$keterangan = 5;
-				} 
-				// else {
-				// 	$sudah = "belum";
-				// 	// $keterangan = 5;
-				// }
-				// echo $sudah;
-				// // echo $keterangan;
-				// echo $liburCondition;
+					$keterangan = 6;
 
+				} else {
+				
+					$liburCondition = substr($getSchedule->start, 11,5);
+
+					if($liburCondition == "Libur"){
+						$sudah = "sudah";
+						$keterangan = 5;
+	
+
+					}
+				}
 			}
-			
-
+				
 			$layout = 'layouts.admin.layout';
-
-			return view('absen',compact('sudah', 'keterangan', 'sudah_pulang', 'point'));
-		// }
-		
+			return view('absen',compact('sudah', 'keterangan', 'layout', 'sudah_pulang', 'point'));
+				
 	}
 
 	public function createPresenceLocation(Request $request){

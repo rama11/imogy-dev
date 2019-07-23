@@ -187,6 +187,12 @@
 							</div>
 						</div>
 						<div class="form-group">
+							<label for="nickname" class="col-md-3 control-label">Nickname</label>
+							<div class="col-md-8">
+								<input id="nickname" type="text" class="form-control" name="nickname" required autofocus>
+							</div>
+						</div>
+						<div class="form-group">
 							<label for="email" class="col-md-3 control-label">E-Mail Address</label>
 							<div class="col-md-8">
 								<input id="email" type="email" class="form-control" name="email" required>

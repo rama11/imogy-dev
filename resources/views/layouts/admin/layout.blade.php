@@ -158,8 +158,15 @@
 								@endif
 
 								<p>
-									{{Auth::user()->name}}
-									<small><i class="fa fa-circle text-success"></i> Admin</small>
+									{{Auth::user()->name}} 
+
+									@if(Auth::user()->jabatan = 1)
+										<small><i class="fa fa-circle text-success"></i> Admin</small>
+									@elseif(Auth::user()->jabatan = 2)
+										<small><i class="fa fa-circle text-success"></i> Engineer</small>
+									@elseif(Auth::user()->jabatan = 3)
+										<small><i class="fa fa-circle text-success"></i> Helpdesk</small>
+									@endif
 								</p>
 							</li>
 							<!-- Menu Body -->
@@ -231,7 +238,15 @@
 				</a>
 				<div class="pull-left info">
 					<p>{{Auth::user()->name}}</p>
-					<a href="{{ url('profile')}}"><i class="fa fa-circle text-success"></i>Admin</a>
+
+						@if(Auth::user()->jabatan = 1)
+							<small><i class="fa fa-circle text-success"></i> Admin</small>
+						@elseif(Auth::user()->jabatan = 2)
+							<small><i class="fa fa-circle text-success"></i> Engineer</small>
+						@elseif(Auth::user()->jabatan = 3)
+							<small><i class="fa fa-circle text-success"></i> Helpdesk</small>
+						@endif
+					
 				</div>
 			</div>
 			<!-- search form -->

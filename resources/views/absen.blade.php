@@ -33,12 +33,23 @@
 										<div class="alert alert-info" role="alert"  id="logined">You are absent today (Absent)</div>
 									@elseif($keterangan == 5)
 										<div class="alert alert-info" role="alert"  id="logined">You are not working today (Libur)</div>
+									@elseif($keterangan == 6)
+										<div class="alert alert-info" role="alert"  id="logined">You are not shifting today (No Shifting)</div>									
 								@endif
 
 								@if($sudah_pulang == 'sudah')
 										<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalPulang" id="pulang">SUDAH PULANG</button>
 									@else
+
+									 	@if($keterangan == 6)
+
+										 <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#modalPulang" style="display:none">PULANG</button>
+										
+										@else
+
 										<button type="button" class="btn btn-primary " data-toggle="modal" data-target="#modalPulang" id="pulang">PULANG</button>
+
+										@endif
 									@endif
 								@else 
 									<button type="button" class="btn btn-primary " data-toggle="modal" data-target="#myModal" id="absen">ABSEN</button>

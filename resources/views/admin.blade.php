@@ -102,7 +102,7 @@
 									<th>Name</th>
 									<th>Email</th>
 									<th>Condition</th>
-									<th>Role</th>
+									<th>Position</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -119,7 +119,15 @@
 										<span class="label label-danger">Offwork</span>
 										@endif
 									</td>
-									<td>{{($user->jabatan)}}</td>
+									<td>
+										@if($user->jabatan == 1)	
+										<span class="label label-success">Admin</span>
+										@elseif($user->jabatan == 2)
+										<span class="label label-success">Engineer</span>										
+										@elseif($user->jabatan == 3)
+										<span class="label label-success">Helpdesk</span>																					
+										@endif
+									</td>	
 								</tr>
 								<?php $no++;?>
 								@endforeach

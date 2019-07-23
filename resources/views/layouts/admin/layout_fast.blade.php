@@ -230,7 +230,7 @@
 				</div>
 				<div class="pull-left info">
 					<p>{{Auth::user()->name}}</p>
-					<a href="#"><i class="fa fa-circle text-success"></i> Admin Inter</a>
+					<a href="#"><i class="fa fa-circle text-success"></i> {{Auth::user()->jabatan}}</a>
 				</div>
 			</div>
 			<!-- search form -->

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IMOGY </title>
+	<title>IMOGY - DEV</title>
 	<link href="img/imoicon.png" rel="icon" type="image/x-icon">
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -293,6 +293,32 @@
 						<i class="fa fa-location-arrow"></i>
 						<span>Set Absent Location</span>
 					</a>
+				</li>
+				<!-- <li class="" id="project">
+					<a href="{{ url('project')}}">
+						<i class="fa fa-location-arrow"></i>
+						<span>Project Manage</span>
+					</a>
+				</li> -->
+				<li class="active treeview" id="project">
+					<a href="#">
+						<i class="fa fa-dashboard"></i> 
+						<span>Project Manage</span>
+						<span class="pull-right-container">
+							<i class="fa fa-angle-left pull-right"></i>
+						</span>
+					</a>
+					<ul class="treeview-menu">
+						<li class="active">
+							<a href="{{ url('project')}}"><i class="fa fa-circle-o"></i>Overview</a>
+						</li>
+						<li>
+							<a href="{{ url('project/manage')}}"><i class="fa fa-circle-o"></i>Manage</a>
+						</li>
+						<li>
+							<a href="{{ url('project/setting')}}"><i class="fa fa-circle-o"></i>Setting</a>
+						</li>
+					</ul>
 				</li>
 				<!-- <li class="" id="sycal">
 					<a href="{{ url('asycal')}}">

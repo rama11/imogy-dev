@@ -71,16 +71,16 @@
 			<aside class="main-sidebar">
 				<section class="sidebar">
 					<div class="user-panel">
-						<div class="pull-left image">
+						<a href="{{ url('profile')}}" class="pull-left image">
 							@if(Auth::user()->foto == "0")
 								<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
 							@else
 								<img src="{{url(Auth::user()->foto)}}" class="img-circle" alt="User Image">
 							@endif
-						</div>
+						</a>
 						<div class="pull-left info">
 							<p>{{Auth::user()->name}}</p>
-							<a href="#">{{Auth::user()->jabatan}}</a>
+							<a href="{{ url('profile')}}"><i class="fa fa-circle text-success"></i>Admin</a>
 						</div>
 					</div>
 					
@@ -123,7 +123,7 @@
 								<span>Set Absent Location</span>
 							</a>
 						</li>
-						<li class="active treeview" id="project">
+						<!-- <li class="active treeview" id="project">
 							<a href="#">
 								<i class="fa fa-dashboard"></i> 
 								<span>Project Manage</span>
@@ -142,7 +142,7 @@
 									<a href="{{ url('project/setting')}}"><i class="fa fa-circle-o"></i>Setting</a>
 								</li>
 							</ul>
-						</li>
+						</li> -->
 						<!-- <li class="" id="sycal">
 							<a href="{{ url('asycal')}}">
 								<i class="fa fa-calendar"></i>
@@ -166,7 +166,6 @@
 			</aside>
 			@yield('content')
 		</div>
-
 		<script src="{{url('plugins/jQuery/jquery-3.1.1.min.js')}}"></script>
 		<script src="{{url('plugins/jQueryUI/jquery-ui.min.js')}}"></script>
 		<script src="{{url('bootstrap/js/bootstrap.min.js')}}"></script>

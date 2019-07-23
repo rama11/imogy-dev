@@ -1,5 +1,113 @@
 @extends((Auth::user()->role == "1") ? 'layouts.admin.layoutLight' : 'layouts.engineer.elayout')
 @section('content')
+<style>
+#analog-clock {
+	position: relative;
+ 	 width: 290px;
+  	height: 290px;
+	margin: auto;
+}
+
+#clock-dial {
+  width: 100%;
+  height: 100%;
+  background: #333;
+  border: 15px solid gray;
+  border-radius: 50%;
+}
+
+#clock-dial-circle {
+	position: absolute;
+  width: 3%;
+  height: 3%;  
+  border-radius: 50%;
+  background: white;
+  top: 48.5%;
+  left: 48.5%;
+}
+
+.clock-dial-stick {
+  position: absolute;
+  top: 5%;
+  left: 49.8%;
+  width: 0.7%;
+  height: 7%;
+  opacity 0.5;
+  background: lightgray;
+  -webkit-transform-origin: 50% 650%;
+}
+#clock-dial-12 {
+  -webkit-transform: rotate(0deg);
+}
+#clock-dial-1 {
+  -webkit-transform: rotate(30deg);
+}
+#clock-dial-2 {
+  -webkit-transform: rotate(60deg);
+}
+#clock-dial-3 {
+  -webkit-transform: rotate(90deg);
+}
+#clock-dial-4 {
+  -webkit-transform: rotate(120deg);
+}
+#clock-dial-5 {
+  -webkit-transform: rotate(150deg);
+}
+#clock-dial-6 {
+  -webkit-transform: rotate(180deg);
+}
+#clock-dial-7 {
+  -webkit-transform: rotate(210deg);
+}
+#clock-dial-8 {
+  -webkit-transform: rotate(240deg);
+}
+#clock-dial-9 {
+  -webkit-transform: rotate(270deg);
+}
+#clock-dial-10 {
+  -webkit-transform: rotate(300deg);
+}
+#clock-dial-11 {
+  -webkit-transform: rotate(330deg);
+}
+
+#hour-hand {
+	position: absolute;
+	width: 1.5%;
+  height: 25%;
+  background: white;
+  top: 24%;
+  left: 49.25%;
+  -webkit-transform-origin: 50% 110%;
+}
+
+#min-hand {
+  position: absolute;
+  width: 1.5%;
+  height: 35%;
+  background: white;
+  top: 12%;
+  left: 49.25%;
+  -webkit-transform-origin: 50% 110%;
+}
+
+#sec-hand {
+  position: absolute;
+  width: 1%;
+  height: 35%;
+  background: red;
+  top: 12%;
+  left: 49.5%;
+  -webkit-transform-origin: 50% 110%;
+}
+
+/* apply a natural box layout model to all elements */
+*, *:before, *:after {
+  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+</style>
 <div class="content-wrapper">
 	<section class="content-header" >
 		<img src="img/labelaogy.png" width="120" height="40">
@@ -13,10 +121,39 @@
 	</section>
 	<section class="content">
 		<div class="box">
-			<div class="box-body" style="margin-top: 50px;">
+			<div class="box-body" style="margin-top: 40px;">
 				<div class="row">
 					<div class="col-xs-12 text-center">
-						<canvas id="canvas" width="300" height="300" style="background-color:rgba(0,0,0,0)"></canvas>
+						<!-- <canvas id="canvas" width="300" height="300" style="background-color:rgba(0,0,0,0)"></canvas> -->
+						<div id="analog-clock">
+  							<div id="clock-dial">
+  							<div id="clock-dial-circle"></div>	
+  							<div id="clock-dial-12" class="clock-dial-stick"></div>
+  							<div id="clock-dial-1" class="clock-dial-stick"></div>
+  							<div id="clock-dial-2" class="clock-dial-stick"></div>    
+  							<div id="clock-dial-3" class="clock-dial-stick"></div>
+  							<div id="clock-dial-4" class="clock-dial-stick"></div>
+  							<div id="clock-dial-5" class="clock-dial-stick"></div>    
+  							<div id="clock-dial-6" class="clock-dial-stick"></div>
+  							<div id="clock-dial-7" class="clock-dial-stick"></div>
+  							<div id="clock-dial-8" class="clock-dial-stick"></div>    
+  							<div id="clock-dial-9" class="clock-dial-stick"></div>
+  							<div id="clock-dial-10" class="clock-dial-stick"></div>
+  							<div id="clock-dial-11" class="clock-dial-stick"></div>    
+  						</div>
+  
+  						<div id="clock-hands">
+  							<div id="hour-hand"></div>
+    						<div id="min-hand"></div>
+    						<div id="sec-hand"></div>
+  						</div>
+					</div>
+
+					<audio id="tic-toc" preload="auto">
+  						<source src="http://preview.audioblocks.com/sfx/mp3preview/FF_2FX20158.mp3" type="audio/mpeg">
+  						<embed src="http://preview.audioblocks.com/sfx/mp3preview/FF_2FX20158.mp3">  
+  							Your browser does not support the audio tag.
+						</audio>
 						<br>
 						<h3>{{date("l, d M Y H:i:s")}}</h3>
 						<br>
@@ -144,8 +281,8 @@
 		</div>
 	</section>
 </div>
-@endsection 
 
+@endsection 
 @section('script')
 <script>
 	$(document).ready(function(){
@@ -292,83 +429,102 @@
 		}
 	});
 
-	var canvas = document.getElementById("canvas");
-	var ctx = canvas.getContext("2d");
-	var radius = canvas.height / 2;
-	ctx.translate(radius, radius);
-	radius = radius * 0.90
-	setInterval(drawClock, 1000);
+	// var canvas = document.getElementById("canvas");
+	// var ctx = canvas.getContext("2d");
+	// var radius = canvas.height / 2;
+	// ctx.translate(radius, radius);
+	// radius = radius * 0.90
+	// setInterval(drawClock, 1000);
 
-	function drawClock() {
-		drawFace(ctx, radius);
-		drawNumbers(ctx, radius);
-		drawTime(ctx, radius);
-	}
+	// function drawClock() {
+	// 	drawFace(ctx, radius);
+	// 	drawNumbers(ctx, radius);
+	// 	drawTime(ctx, radius);
+	// }
 
-	function drawFace(ctx, radius) {
-		var grad;
-		ctx.beginPath();
-		ctx.arc(0, 0, radius, 0, 2*Math.PI);
-		ctx.fillStyle = 'white';
-		ctx.fill();
-		grad = ctx.createRadialGradient(0,0,radius*0.95, 0,0,radius*1.05);
-		grad.addColorStop(0, 'rgb(43, 78, 98)');
-		grad.addColorStop(0.5, 'rgb(43, 78, 98)');
-		grad.addColorStop(1, 'rgb(43, 78, 98)');
-		ctx.strokeStyle = grad;
-		ctx.lineWidth = radius*0.1;
-		ctx.stroke();
-		ctx.beginPath();
-		ctx.arc(0, 0, radius*0.1, 0, 2*Math.PI);
-		ctx.fillStyle = 'rgb(43, 78, 98)';
-		ctx.fill();
-	}
+	// function drawFace(ctx, radius) {
+	// 	var grad;
+	// 	ctx.beginPath();
+	// 	ctx.arc(0, 0, radius, 0, 2*Math.PI);
+	// 	ctx.fillStyle = 'white';
+	// 	ctx.fill();
+	// 	grad = ctx.createRadialGradient(0,0,radius*0.95, 0,0,radius*1.05);
+	// 	grad.addColorStop(0, 'rgb(43, 78, 98)');
+	// 	grad.addColorStop(0.5, 'rgb(43, 78, 98)');
+	// 	grad.addColorStop(1, 'rgb(43, 78, 98)');
+	// 	ctx.strokeStyle = grad;
+	// 	ctx.lineWidth = radius*0.1;
+	// 	ctx.stroke();
+	// 	ctx.beginPath();
+	// 	ctx.arc(0, 0, radius*0.1, 0, 2*Math.PI);
+	// 	ctx.fillStyle = 'rgb(43, 78, 98)';
+	// 	ctx.fill();
+	// }
 
-	function drawNumbers(ctx, radius) {
-		var ang;
-		var num;
-		ctx.font = radius*0.15 + "px arial";
-		ctx.textBaseline="middle";
-		ctx.textAlign="center";
-		for(num = 1; num < 13; num++){
-			ang = num * Math.PI / 6;
-			ctx.rotate(ang);
-			ctx.translate(0, -radius*0.85);
-			ctx.rotate(-ang);
-			ctx.fillText(num.toString(), 0, 0);
-			ctx.rotate(ang);
-			ctx.translate(0, radius*0.85);
-			ctx.rotate(-ang);
-		}
-	}
+	// function drawNumbers(ctx, radius) {
+	// 	var ang;
+	// 	var num;
+	// 	ctx.font = radius*0.15 + "px arial";
+	// 	ctx.textBaseline="middle";
+	// 	ctx.textAlign="center";
+	// 	for(num = 1; num < 13; num++){
+	// 		ang = num * Math.PI / 6;
+	// 		ctx.rotate(ang);
+	// 		ctx.translate(0, -radius*0.85);
+	// 		ctx.rotate(-ang);
+	// 		ctx.fillText(num.toString(), 0, 0);
+	// 		ctx.rotate(ang);
+	// 		ctx.translate(0, radius*0.85);
+	// 		ctx.rotate(-ang);
+	// 	}
+	// }
 
-	function drawTime(ctx, radius){
-		var now = new Date();
-		var hour = now.getHours();
-		var minute = now.getMinutes();
-		var second = now.getSeconds();
-		hour=hour%12;
-		hour=(hour*Math.PI/6)+
-		(minute*Math.PI/(6*60))+
-		(second*Math.PI/(360*60));
-		drawHand(ctx, hour, radius*0.5, radius*0.07);
-		minute=(minute*Math.PI/30)+(second*Math.PI/(30*60));
-		drawHand(ctx, minute, radius*0.8, radius*0.07);
-		second=(second*Math.PI/30);
-		drawHand(ctx, second, radius*0.9, radius*0.02);
-	}
+	// function drawTime(ctx, radius){
+	// 	var now = new Date();
+	// 	var hour = now.getHours();
+	// 	var minute = now.getMinutes();
+	// 	var second = now.getSeconds();
+	// 	hour=hour%12;
+	// 	hour=(hour*Math.PI/6)+
+	// 	(minute*Math.PI/(6*60))+
+	// 	(second*Math.PI/(360*60));
+	// 	drawHand(ctx, hour, radius*0.5, radius*0.07);
+	// 	minute=(minute*Math.PI/30)+(second*Math.PI/(30*60));
+	// 	drawHand(ctx, minute, radius*0.8, radius*0.07);
+	// 	second=(second*Math.PI/30);
+	// 	drawHand(ctx, second, radius*0.9, radius*0.02);
+	// }
 
-	function drawHand(ctx, pos, length, width) {
-		ctx.beginPath();
-		ctx.lineWidth = width;
-		ctx.lineCap = "round";
-		ctx.moveTo(0,0);
-		ctx.rotate(pos);
-		ctx.lineTo(0, -length);
-		ctx.stroke();
-		ctx.rotate(-pos);
-	}
+	// function drawHand(ctx, pos, length, width) {
+	// 	ctx.beginPath();
+	// 	ctx.lineWidth = width;
+	// 	ctx.lineCap = "round";
+	// 	ctx.moveTo(0,0);
+	// 	ctx.rotate(pos);
+	// 	ctx.lineTo(0, -length);
+	// 	ctx.stroke();
+	// 	ctx.rotate(-pos);
+	// }
+	function updateTime () {
+  	now = new Date ();
+
+  	document.getElementById("hour-hand").style.webkitTransform = "rotate(" + (now.getHours() * 30 + now.getMinutes() / 2) + "deg)";
+  
+ 	document.getElementById("min-hand").style.webkitTransform = "rotate(" + (now.getMinutes() * 6 + now.getSeconds() / 10) + "deg)";
+  
+  	document.getElementById("sec-hand").style.webkitTransform = "rotate(" + now.getSeconds() * 6 + "deg)";
+  
+  	document.getElementById('tic-toc').volume = 0.2;
+  	document.getElementById('tic-toc').play();
+
+  	setTimeout(function () {
+      updateTime();
+  	}, 1000);
+}
+updateTime();
+	
 </script>
 <!-- <script src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false&libraries=geometry"></script> -->
 <script async defer src="https://maps.googleapis.com/maps/api/js?v=3&libraries=geometry&key={{env('GOOGLE_API_KEY')}}"></script>
+
 @endsection

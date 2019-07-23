@@ -23,7 +23,16 @@
 						<h3 class="profile-username text-center">
 							<p>{{Auth::user()->name}}</p>
 						</h3> 
-						<p class="text-muted text-center">{{Auth::user()->jabatan}}</p>
+						<p class="text-muted text-center">
+						
+							@if(Auth::user()->jabatan == 1)
+								<small> Admin</small>
+							@elseif(Auth::user()->jabatan == 2)
+								<small> Helpdesk</small>
+							@elseif(Auth::user()->jabatan == 3)
+								<small> Engineer</small>
+							@endif
+						</p>
 						<ul class="list-group list-group-unbordered">
 							<li class="list-group-item">
 								<b>Gender</b> <a class="pull-right">{{Auth::user()->gender}}</a>
@@ -94,8 +103,17 @@
 													<td>{{Auth::user()->born}}</td>
 												</tr>
 												<tr>
-													<td><b>Title</b></td>
-													<td>{{Auth::user()->jabatan}}</td>
+													<td><b>Position</b></td>
+													<td>
+														@if(Auth::user()->jabatan == 1)
+															<small> Admin</small>
+														@elseif(Auth::user()->jabatan == 2)
+															<small> Helpdesk</small>
+														@elseif(Auth::user()->jabatan == 3)
+															<small> Engineer</small>
+														@endif
+													
+													</td>
 												</tr>
 												<tr>
 													<td><b>Phone</b></td>

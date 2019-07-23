@@ -1,5 +1,4 @@
 @extends((Auth::user()->jabatan == "5") ? 'layouts.kemendagri.layout' : ((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : 'layouts.engineer.elayout'))
-
 @section('head')
 	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/timepicker/bootstrap-timepicker.min.css')}}">
 	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/daterangepicker/daterangepicker.css')}}">

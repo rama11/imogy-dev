@@ -121,11 +121,11 @@
 									</td>
 									<td>
 										@if($user->jabatan == 1)	
-										<span class="label label-success">Admin</span>
+										<span class="label label-success">Admin</span>									
 										@elseif($user->jabatan == 2)
-										<span class="label label-success">Engineer</span>										
+										<span class="label label-success">Helpdesk</span>
 										@elseif($user->jabatan == 3)
-										<span class="label label-success">Helpdesk</span>																					
+										<span class="label label-success">Engineer</span>																						
 										@endif
 									</td>	
 								</tr>

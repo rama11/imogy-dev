@@ -3,21 +3,21 @@
 <style>
 #analog-clock {
 	position: relative;
- 	 width: 290px;
-  	height: 290px;
+ 	 width: 300px;
+  	height: 300px;
 	margin: auto;
 }
 
 #clock-dial {
   width: 100%;
   height: 100%;
-  background: #333;
-  border: 15px solid gray;
+  background: #1d3030;
+  /* border: 9px solid gray; */
   border-radius: 50%;
 }
 
 #clock-dial-circle {
-	position: absolute;
+  position: absolute;
   width: 3%;
   height: 3%;  
   border-radius: 50%;
@@ -34,7 +34,7 @@
   height: 7%;
   opacity 0.5;
   background: lightgray;
-  -webkit-transform-origin: 50% 650%;
+  -webkit-transform-origin: 50% 640%;
 }
 #clock-dial-12 {
   -webkit-transform: rotate(0deg);

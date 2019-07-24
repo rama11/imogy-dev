@@ -37,13 +37,14 @@
 							@foreach($privileges as $privilege)
 							<li>
 								<a href="#{{$privilege->id}}" data-toggle="tab" aria-expanded="true">{{$privilege->privilege_name}}</a>
+								
 							</li>
 							@endforeach
 						</ul>
 						<div class="tab-content">
 							@foreach($privileges as $privilege)
 							<div class="tab-pane" id="{{$privilege->id}}">
-								<div class="post">
+								<div class="post">	
 									@foreach($users as $user)
 										@if($user->jabatan == $privilege->id)
 											<div class="user-block">

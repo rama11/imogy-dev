@@ -1,4 +1,5 @@
 @extends((Auth::user()->jabatan == "5") ? 'layouts.kemendagri.layout' : ((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : 'layouts.engineer.elayout'))
+
 @section('head')
 	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/timepicker/bootstrap-timepicker.min.css')}}">
 	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/daterangepicker/daterangepicker.css')}}">
@@ -48,7 +49,7 @@
 							<a href="#tab_2" data-toggle="tab" onclick="getCreateParameter()">Create</a>
 						</li>
 						<li>
-							<a href="#tab_3" data-toggle="tab" id="performance" onclick="x`()">Performance</a>
+							<a href="#tab_3" data-toggle="tab" id="performance" onclick="getPerformance()">Performance</a>
 						</li>
 						<li>
 							<a href="#tab_6" data-toggle="tab">Setting</a>

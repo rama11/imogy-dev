@@ -146,12 +146,12 @@
 						<?php $no = 1;?>
 						@foreach($detail[6] as $detail2)
 							<tr>
-								<td>{{$detail2->id}}.</td>
+								<td style="text-align: center;">{{$detail2->id}}.</td>
 								<!-- <td>{{$no}}.</td> -->
 								<td style="text-align: center;">{{$detail2->hadir}}</td>
 								<td style="text-align: center;">{{$detail2->jam}}</td>
-								<td rowspan="2">{{$detail2->hari}}, {{$detail2->tanggal}}</td>
-								<td  rowspan="2">{{$detail2->location}}</td>
+								<td rowspan="2" style="text-align: center;">{{$detail2->hari}}, {{$detail2->tanggal}}</td>
+								<td  rowspan="2" style="text-align: center;">{{$detail2->location}}</td>
 								@if($detail2->late == "On-Time")
 									<td  rowspan="2" style="text-align: center;color:white;" class="ontime2"> <span>{{$detail2->late}}</span></td>
 								@elseif($detail2->late == "Injury-Time")

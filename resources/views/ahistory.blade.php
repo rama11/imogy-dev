@@ -1,5 +1,24 @@
 @extends((Auth::user()->role == "1") ? 'layouts.admin.layout' : 'layouts.engineer.elayout')
 	@section('content')
+<style>
+/* table {
+		    border-collapse: collapse;
+		    width: 100%;
+		} */
+
+		/* th, td {
+		    text-align: left;
+		    padding: 8px;
+		}
+
+		tr:nth-child(even){background-color: #f2f2f2} */
+
+		th {
+		    background-color: #2b4e62;
+		    color: white;
+		}
+}
+</style>	
 		<div class="content-wrapper">
 			<section class="content-header" >
 				<a href="{{url('absen')}}">
@@ -91,39 +110,50 @@
 					</div>
 					<div class="box-body col-md-8">
 						<table class="table table-bordered" id="table">
-							<tbody>
 								<tr>
-									<th>My Schedule</th>
-									<th>My Present Time</th>
-									<th>Date</th>
-									<th>Where</th>
-									<th style="width: 40px">Status</th>
+									<th style="text-align: center;">My Schedule</th>
+									<th style="text-align: center;">My Present Time</th>
+									<th style="text-align: center;">Date</th>
+									<th style="text-align: center;">Where</th>
+									<th style="width: 40px" style="text-align: center;">Status</th>
 								</tr>
+							<tbody>
+								
 								@foreach($datas as $key =>$data)
 									<tr>
 										<td>{{$kehadiran[$key]->hadir}}</td>
 										<td>{{$data->jam}}</td>
-										<td>{{date("d/m/Y", strtotime($data->tanggal))}}</td>
-										<td>{{$data->location}}</td>
+										<td rowspan="2" style="vertical-align: middle;text-align: center;">{{date("d/m/Y", strtotime($data->tanggal))}}</td>
+										<td rowspan="2" style="vertical-align: middle;text-align: center;">{{$data->location}}</td>
 										@if($data->late == "On-Time")
-											<td style="vertical-align: middle;">
+											<td rowspan="2" style="vertical-align: middle;text-align: center;">
 												<span class="label label-success" >{{$data->late}}</span>
 											</td>
 										@elseif($data->late == "Injury-Time")
-											<td style="vertical-align: ;">
+											<td rowspan="2" style="vertical-align: middle;text-align: center;">
 												<span class="label label-warning" >{{$data->late}}</span>
 											</td>
 										@elseif($data->late == "Late")
-											<td style="vertical-align: ;">
+											<td rowspan="2" style="vertical-align: middle;text-align: center;">
 												<span class="label label-danger" >{{$data->late}}</span>
 											</td>
 										@else
-											<td style="vertical-align: ;">
+											<td rowspan="2" style="vertical-align: middle;text-align: center;">
 												<span class="label label-info" >{{$data->late}}</span>
 											</td>
 										@endif
 									</tr>
+									<tr>	
+										@if($data->harus_pulang)
+											<td style="text-align: right;">{{$data->harus_pulang}}</td>
+											<td style="text-align: right;">{{$data->pulang}}</td>
+										@else
+											<td style="text-align: right;">-</td>
+											<td style="text-align: right;">-</td>
+										@endif
+									</tr>		
 								@endforeach
+								
 							</tbody>
 						</table>
 					</div>

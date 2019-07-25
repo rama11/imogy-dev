@@ -2926,7 +2926,6 @@
 		$("#noteDiv").show();
 		$("#serialDiv").show();
 		$("#reportDiv").show();
-		
 		$("#createTicket").show();
 		getBankAtm();
 	});

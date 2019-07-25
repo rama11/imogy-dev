@@ -377,6 +377,17 @@ class AdminController extends Controller
 		// $req->location;
 	}
 
+	// public function project(Request $req){
+	// 	$project = DB::table('project')
+	// 		->where('id','=',$req->id)
+	// 		->where('project','=',$req->project)
+	// 		->where('shifting','=',$req->shifting)
+	// 		->where('id_location','=',$req->request)
+	// 		->get()
+	// 		->firs();
+	// }
+	
+
 	public function addUser(Request $request){
 		date_default_timezone_set('Asia/Jakarta');
 
@@ -425,6 +436,32 @@ class AdminController extends Controller
 
 		return redirect('usermanage')->with('status', "Add User for " . $request->name . " success.");
 	}
+
+	public function addUserShifting(Request $request){
+		$date = date('Y-m-d h:i:s', time());
+		if(DB::table('detail_users')->where('id_user',$request->id_user,)->where('on_project',$request->on_project)->get() == NULL){
+			DB::table('detail_users')
+			->insert([
+				'id_user' => $request->id_user,
+				'on_project' => "$request->on_project",
+				]);
+			return redirect('schedule')->with('status', "Add User for " . $request->on_project . " success.");
+
+		} else {
+			DB::table('detail_users')
+			->where('id_user',$request->id_user)
+			->delete();
+
+			DB::table('detail_users')
+			->insert([
+				'id_user' => $request->id_user,
+				'on_project' => "$request->on_project",
+				]);
+			return redirect('schedule')->with('status', "Add User for " . $request->on_project . " success.");
+		}
+		
+	}
+	
 
 	public function absen(){
 		// if(Auth::user()->shifting == 1){

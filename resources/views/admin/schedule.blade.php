@@ -86,10 +86,12 @@ td.fc-day.fc-today {
 		<h1>
 			Shifting Schedule
 		</h1>
+		<a href="#" class="pull-right btn-box-tool text-green pull-left" data-toggle="modal" data-target="#modal-addusershifting"><i class="fa fa-plus"></i> Add User Shifting</a>			
 		<ol class="breadcrumb">
 			<li><a href="{{url('admin')}}"><i class="fa fa-dashboard"></i> Home</a></li>
 			<li class="active">Shifting Schedule</li>
 		</ol>
+		<br>
 	</section>
 
 	<section class="content">
@@ -112,6 +114,11 @@ td.fc-day.fc-today {
 								</li>
 							@endforeach
 						</ul>
+					</div>
+
+					<div>
+
+
 					</div>
 
 					<div class="box-body" id="listName" style="display: none;">
@@ -168,13 +175,52 @@ td.fc-day.fc-today {
 					
 					<!-- /.box-body -->
 				</div>
-
-			</section>
-
-			
+			</section>			
 		</div>
 	</section>
-</section>
+</div>
+<div class="modal fade in" id="modal-addusershifting"  tabindex="-1" role="dialog">
+		<div class="modal-dialog">
+			<form class="form-horizontal" method="POST" action="{{url('addUserShifting')}}" enctype="multipart/form-data">
+			 {!! csrf_field() !!}
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+						<h4 class="modal-title">Add User Shifting</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="id_user" class="col-md-3 control-label">Nama Users</label>
+							<select class="form-control" name="id_user" id="id_user">
+								@foreach($users as $user)
+									<option value="{{$user->id}}">{{$user->name}}</option>
+								@endforeach
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="on_project" class="col-md-3 control-label">Project Name</label>
+								<select class="form-control" name="on_project" id="id_user">
+								@foreach($projects as $project)
+									<option value="{{$project->id}}">{{$project->project}}</option>
+								@endforeach
+								</select>
+						</div>	
+						<!-- <div class="form-group">
+							<label for="on_project" class="col-md-3 control-label">Project Name</label>
+							<div class="col-md-8">
+								<input id="on_project" type="text" class="form-control" name="on_project" required autofocus>
+							</div>
+						</div> -->
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-primary">Add user</button>
+					</div>
+				</div>
+			</form>
+		</div>
+</div>
 @endsection
 @section('script')
 <script type="text/javascript">

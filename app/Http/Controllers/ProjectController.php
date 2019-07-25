@@ -60,7 +60,40 @@ class ProjectController extends Controller
 				]
 			);
 
+		foreach ($req->Member as $member) {
+			DB::table('project__team_member')
+				->insert(
+					[
+						'project_list_id' => DB::table('project__list')->where('project_pid',$req->PID)->value('id'),
+						'user_id' => DB::table('users')->where('nickname',$member)->value('id')
+					]
+				);
+			// echo $member . "<br>";
+		}
+
 		return null;
+	}
+
+	public function getAllProjectList(){
+		return json_encode(array('data' => DB::table('project__list')
+			->select(
+					"project__list.id",
+					"project__list.project_name",
+					"project__list.project_pid",
+					DB::raw("project__customer.name as project_customer"),
+					"project__list.project_start",
+					"project__list.project_periode",
+					"project__list.project_periode_duration",
+					// "project__list.project_coordinator",
+					"project__list.project_leader",
+					DB::raw("leader.nickname as project_leader"),
+					DB::raw("coordinator.nickname as project_coordinator")
+				)
+			->join('project__customer','project__list.project_customer','=','project__customer.id')
+			->join('project__member as leader','project__list.project_leader','=','leader.id','left outer')
+			->join('project__member as coordinator','project__list.project_coordinator','=','coordinator.id','left outer')
+			->get()
+		));
 	}
 
 	public function setting(){

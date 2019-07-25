@@ -1,7 +1,10 @@
 @extends('layouts.admin.layoutLight')
 @section('head')
 <link rel="stylesheet" href="{{url('plugins/datepicker/datepicker3.css')}}">
+<link rel="stylesheet" href="{{url('plugins/datatables/dataTables.bootstrap.css')}}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"> -->
+
 <style type="text/css">
 	select[readonly].select2-hidden-accessible + .select2-container {
 		pointer-events: none;
@@ -17,6 +20,13 @@
 	select[readonly].select2-hidden-accessible + .select2-container .select2-selection__clear {
 		display: none;
 	}
+	td.details-control {
+		background: url('https://datatables.net/examples/resources/details_open.png') no-repeat center center;
+		cursor: pointer;
+	}
+	tr.shown td.details-control {
+		background: url('https://datatables.net/examples/resources/details_close.png') no-repeat center center;
+	}
 </style>
 @endsection
 @section('content')
@@ -27,7 +37,14 @@
 			<small>add, remove and edit project</small>
 		</h1>
 		<ol class="breadcrumb">
-			<button type="button" class="btn btn-flat btn-success btn-xs" data-toggle="modal" data-target="#modal-default">Add Project</button>
+			<button type="button" class="btn btn-flat btn-success btn-xs" data-toggle="modal" data-target="#modalInputProject"
+				onclick='
+					document.getElementById("inputProjectForm1").style.display = "inline";
+					document.getElementById("inputProjectForm2").style.display = "none";
+					document.getElementById("inputProjectForm3").style.display = "none";
+					document.getElementById("inputProjectForm4").style.display = "none";
+					clearInputProject();
+				'>Add Project</button>
 		</ol>
 	</section>
 	<section class="content">
@@ -49,59 +66,23 @@
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive no-padding">
-						<table class="table table-hover">
-							<tbody><tr>
-								<th>Customer</th>
-								<th>Name</th>
-								<!-- <th>PID</th> -->
-								<th>Start</th>
-								<th>End</th>
-								<th>Team Member</th>
-								<th>Periode</th>
-							</tr>
-							<tr>
-								<td>Bank DKI</td>
-								<td>Pengadaan Firewall Pada Layer Internet PT. Bank DKI</td>
-								<!-- <td>005/BANK DKI/650/SIP/I/2018</td> -->
-								<td>7-Jun-18</td>
-								<td>6-Jun-19</td>
-								<td>Johan</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>BNI</td>
-								<td>Security WEB, WAF, DBF, Bandwith Management utk Internet dan Extranet DC Slipi</td>
-								<!-- <td>482/BNI/PO 444/SIP/XI/2017</td> -->
-								<td>17-Jul-18</td>
-								<td>16-Jul-21</td>
-								<td>Siwi</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>BJB</td>
-								<td>Pengadaan Appliance Web Application Firewall Imperva</td>
-								<!-- <td>404/BANK JABAR/14/SIP/IX/2017</td> -->
-								<td>22-Mar-18</td>
-								<td>21-Mar-19</td>
-								<td>Rangga</td>
-								<td>4</td>
-							</tr>
-							<tr>
-								<td>BJB</td>
-								<td>Pekerjaan Pengadaan Next Generation Firewall Palo Alto Segmentasi E-Channel</td>
-								<!-- <td>486/BANK JABAR/15/SIP/XII/2017</td> -->
-								<td>27-Sep-18</td>
-								<td>26-Sep-19</td>
-								<td>Samsu</td>
-								<td>4</td>
-							</tr>
-						</tbody></table>
+						<table id="tableProjectManage" class="table table-hover">
+							<thead>
+								<tr>
+									<th></th>
+									<th>Customer</th>
+									<th>Name Project</th>
+									<th>Start</th>
+									<th>Coordinator</th>
+								</tr>
+							</thead>
+						</table>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<div class="modal fade" id="modal-default">
+		<div class="modal fade" id="modalInputProject">
 			<div class="modal-dialog" id="modal-default-size">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -215,7 +196,7 @@
 								document.getElementById("inputProjectForm4").style.display = "inline";
 								document.getElementById("inputProjectForm3").style.display = "none";
 								document.getElementById("modal-default-size").classList.add("modal-lg");
-								correctionAddProject();'>Next</button>
+								correctionInputProject();'>Next</button>
 						</div>
 					</div>
 
@@ -308,12 +289,22 @@
 								document.getElementById("inputProjectForm4").style.display = "none";
 								document.getElementById("modal-default-size").classList.remove("modal-lg");'>Back</button>
 							<button type="button" class="btn btn-success" id="next" onclick='
-								sendInputProject();'>Finish</button>
+								sendInputProject();
+								document.getElementById("modal-default-size").classList.remove("modal-lg")'>Finish</button>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+
+		<div id="successAddProject" class="alert alert-success alert-dismissible" style="margin-top: 150px;margin-right: 10px; position:fixed; top:0; right:0; width:300px;display: none;">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+			<h4>
+				<i class="icon fa fa-check"></i> Success!
+			</h4>
+			Change time for {{session('status')}} success.
+		</div>
+
 	</section>
 </div>
 
@@ -326,6 +317,8 @@
 <script src="{{url('plugins/datepicker/bootstrap-datepicker.js')}}"></script>
 <!-- Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
+<!-- Datatables -->
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 <script>
 	var append = "";
 	var member = [];
@@ -337,37 +330,11 @@
 		$("#inputProjectPeriod").val("");
 		$("#inputProjectDuration").val("");
 
-		$.ajax({
-			type:"GET",
-			url:'{{url("project/manage/getCustomer")}}',
-			success: function(result){
-				var listCustomer = result;
-				listCustomer.unshift({id:0,text:"Add New Customer"});
-				$("#inputProjectCustomer").select2({
-					placeholder: "Select a customer",
-					data: result
-				});
-			}
-		});
+		getAllProjectList();
 
-		$.ajax({
-			type:"GET",
-			url:'{{url("project/manage/getMember")}}',
-			success: function(result){
-				$("#inputProjectCoordinator").select2();
-				$("#inputProjectLead, #inputProjectMember, #inputProjectMemberCorrention").select2();
-				var listMember = result;
-				listMember.forEach(function(member){
-					newOption = new Option(member.text, member.id, false, false);
-					if(member.position == "Coordinator"){
-						$('#inputProjectCoordinator').append(newOption).trigger('change');
-					} else if (member.position == "Member"){
-						$("#inputProjectLead, #inputProjectMember, #inputProjectMemberCorrention").append(newOption).trigger('change');
-					}
-				});
-			}
-		});
+		initFormInputProject();
 
+		// Add new customer for Input Project
 		$("#inputProjectCustomer").on('select2:close',function(){
 			if($("#inputProjectCustomer").select2('data')[0].text == "Add New Customer"){
 				var newCustomer = prompt("Enter new customer :");
@@ -378,11 +345,12 @@
 			}
 		});
 
-		//Date picker
+		//Date picker for Input Project
 		$('#inputProjectStart').datepicker({
 			autoclose: true
 		});
 
+		// Listener at project timeline for Input Project
 		$("#inputProjectStart, #inputProjectPeriod, #inputProjectDuration").bind("change",function(){
 			if($("#inputProjectStart").val() != "" && $("#inputProjectPeriod").val() != "" && $("#inputProjectDuration").val() != null){
 				var start = $("#inputProjectStart").val();
@@ -410,7 +378,43 @@
 		});
 	});
 
-	function correctionAddProject(){
+	function initFormInputProject(){
+		// Get Customer for Input Project
+		$.ajax({
+			type:"GET",
+			url:'{{url("project/manage/getCustomer")}}',
+			success: function(result){
+				var listCustomer = result;
+				listCustomer.unshift({id:0,text:"Add New Customer"});
+
+				$("#inputProjectCustomer").select2({
+					placeholder: "Select a customer",
+					data: result
+				});
+			}
+		});
+
+		// Get Member for Input Project
+		$.ajax({
+			type:"GET",
+			url:'{{url("project/manage/getMember")}}',
+			success: function(result){
+				$("#inputProjectCoordinator").select2();
+				$("#inputProjectLead, #inputProjectMember, #inputProjectMemberCorrention").select2();
+				var listMember = result;
+				listMember.forEach(function(member){
+					newOption = new Option(member.text, member.id, false, false);
+					if(member.position == "Coordinator"){
+						$('#inputProjectCoordinator').append(newOption).trigger('change');
+					} else if (member.position == "Member"){
+						$("#inputProjectLead, #inputProjectMember, #inputProjectMemberCorrention").append(newOption).trigger('change');
+					}
+				});
+			}
+		});
+	}
+
+	function correctionInputProject(){
 		
 		// Correction Customer
 		$("#inputProjectCustomerCorrection").val($("#inputProjectCustomer").select2('data')[0].text);
@@ -459,8 +463,110 @@
 				"Coordinator":$("#inputProjectCoordinator").select2('data')[0].id,
 				"Lead":$("#inputProjectLead").select2('data')[0].id,
 				"Member":memberNickname
-			}
+			},
+			success : function(result){
+				clearInputProject();
+				// initFormInputProject();
+				$("#modalInputProject").modal('hide');
+				getAllProjectList()
+				$("#successAddProject").show().delay(2000).fadeOut();
+			},
 		});
 	}
+
+	function clearInputProject(){
+		$("#inputProjectCustomer").select2().val(null).trigger('change');
+		$("#inputProjectCustomerCorrection").val("");
+		$("#inputProjectPID").val("");
+		$("#inputProjectPIDCorrection").val("");
+		$("#inputProjectName").val("")
+		$("#inputProjectNameCorrection").val("");
+
+		$("#inputProjectStart").val("");
+		$("#inputProjectStartCorrection").val("");
+		$("#inputProjectDuration").val("");
+		$("#inputProjectDurationCorrection").val("");
+		$("#inputProjectPeriod").val("");
+		$("#inputProjectPeriodCorrection").val("");
+
+		$("#inputProjectCoordinator").select2().val(null).trigger('change');
+		$("#inputProjectCoordinatorCorrention").val("");
+		$("#inputProjectLead").select2().val(null).trigger('change');
+		$("#inputProjectLeadCorrention").val("");
+		$("#inputProjectMember").select2().val(null).trigger('change');
+		$("#inputProjectMemberCorrention").select2().val(null).trigger('change');
+
+		$("#inputProjectPeriodResult").html("");
+		$("#inputProjectPeriodResult2").html("");
+	}
+
+	function getAllProjectList(){
+		$("#tableProjectManage").DataTable({
+			"ajax":"{{url('project/manage/getAllProjectList')}}",
+			"columns": [
+				 {
+					"className": 'details-control',
+					"orderable": false,
+					"data": null,
+					"defaultContent": ''
+				},
+				{ "data": "project_customer" },
+				{ "data": "project_name" },
+				{ "data": "project_start" },
+				{ "data": "project_coordinator" },
+				// { "data": "start_date" },
+				// { "data": "salary" }
+			],
+			searching: false,
+			paging: false,
+			info:false,
+			scrollX: false,
+			order: [[1, 'asc']]
+		})
+	}
+
+
+	function showProjectDetail( id ){
+		console.log(id);
+	}
+	// DataTables child controll
+	function format( data ) {
+		return '<div class="row">' +
+			'<div class="col-md-1">' +
+				'<button class="btn btn-primary" onclick="showProjectDetail(' + data.id + ')">Detail</button>' +
+			'</div>' +
+			'<div class="col-md-3">' +
+				'<label>Time to Due Date</label>' +
+				'<p>20 day left</p>' +
+			'</div>' +
+			'<div class="col-md-6">' +
+				'<label>Lastest Update</label>' +
+				'<p>[22 Juli 2019] Rama : report sudah di submit, tinggal menunggu ttd</p>' +
+			'</div>' +
+			'<div class="col-md-2">' +
+				'<label>Next Event</label>' +
+				'<p> PM ' + data.project_periode_duration + 'th period</p>' +
+			'</div>' +
+		'</div>';
+	}
+
+	$('#tableProjectManage').on('click','td.details-control', function () {
+		// console.log(tr);
+		var tr = $(this).closest('tr');
+		var row = $("#tableProjectManage").DataTable().row( tr );
+
+		if ( row.child.isShown() ) {
+			// This row is already open - close it
+			row.child.hide();
+			tr.removeClass('shown');
+		}
+		else {
+			// Open this row
+			row.child( format(row.data()) ).show();
+			tr.addClass('shown');
+		}
+	});
+
+	
 </script>
 @endsection

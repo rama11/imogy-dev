@@ -22,30 +22,18 @@
 						<br>
 						<div class="row">
 							<div class="col-md-4  col-md-offset-4 text-center">
-								@if ($sudah == 'sudah')
-									@if($keterangan == 1)
-										<div class="alert alert-success" role="alert"  id="logined">Absen Complete (On-Time)</div>
-									@elseif($keterangan == 2)
-										<div class="alert alert-warning" role="alert"  id="logined">Absen Complete (Injury)</div>
-									@elseif($keterangan == 3)
-										<div class="alert alert-error" role="alert"  id="logined">Absen Complete (Late)</div>
-									@elseif($keterangan == 4)
-										<div class="alert alert-info" role="alert"  id="logined">You are absent today (Absent)</div>
-									@elseif($keterangan == 5)
+								
 										<div class="alert alert-info" role="alert"  id="logined">You are not working today (Libur)</div>
-								@endif
+                    @endif
 
-								@if($sudah_pulang == 'sudah')
-										<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalPulang" id="pulang">SUDAH PULANG</button>
-									@else
-										<button type="button" class="btn btn-primary " data-toggle="modal" data-target="#modalPulang" id="pulang">PULANG</button>
-									@endif
-								@else 
+                    @if($sudah_pulang == 'sudah')
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalPulang" id="pulang">SUDAH PULANG</button>
+                      @else
+                        <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#modalPulang" id="pulang">PULANG</button>
+                      @endif
+                    @else 
 									<button type="button" class="btn btn-primary " data-toggle="modal" data-target="#myModal" id="absen">ABSEN</button>
-								@endif
-								<button style="display: none;" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal2" id="berhasil">Berhasil</button>
-								<button style="display: none;" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal3" id="gagal">Gagal</button>
-							</div>
+								</div>
 						</div>
 
 						<div class="modal fade" id="myModal" role="dialog">
@@ -157,7 +145,20 @@
 			condition = 'pulang';
 			initMap();
 		});
-		
+
+		// console.log("asdfasdf");
+
+		// $("#pulang").hide();
+		// $("#pulang").delay(1000).show();
+		// $("#pulang").html("PULANG..").delay(1000);
+		// $("#pulang").html("PULANG...").delay(1000);
+		// $("#pulang").html("PULANG....").delay(1000);
+		// $("#pulang").html("PULANG.....").delay(1000).attr("disabled", false);
+		// for (var i = 0; i < 5; i++) {
+		// 	// time.sleep(1000);
+		// 	console.log(i);
+		// }
+
 		var map, infoWindow, pos;
 		function initMap() {
 

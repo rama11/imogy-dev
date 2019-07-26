@@ -52,6 +52,10 @@ class AdminController extends Controller
 			->where('condition','=','on')
 			->count();
 
+		$offwork_users = DB::table('users')
+			->where('condition','=','off')
+			->count();	
+
 		$offwork_users = $users->count() - $onwork_users;
 
 		$data = array(
@@ -112,7 +116,7 @@ class AdminController extends Controller
 		// echo "</pre>";
 
 		
-		return view('admin',compact('data','users','persen','count','absen'));
+		return view('admin',compact('data','users','persen','count','absen',));
 	}
 
 	public function test_page(){
@@ -392,9 +396,6 @@ class AdminController extends Controller
 		}
 		if($request->address == NULL){
 			$request->address = "Address Now";
-
-		}if($request->gambar == NULL){
-			echo $request = 'required';
 		}
 
 		$date = date('Y-m-d h:i:s', time());
@@ -472,7 +473,6 @@ class AdminController extends Controller
 				if($pulang_malam == "22:00:00"){
 					if(date('Y/m/d') != $hari_malam){
 						$sudah = "belum";
-						// echo "asdfadsfa<br>";
 					} else {
 						$kemaren = DB::table('waktu_absen')
 							->where('id_user','=',$id)
@@ -505,6 +505,7 @@ class AdminController extends Controller
 				} else {
 					$sudah = "belum";
 					$sudah_pulang = "belum";
+					$keterangan=0;
 				}
 			} else {
 				$sudah = "sudah";
@@ -532,7 +533,6 @@ class AdminController extends Controller
 
 			}
 			
-			// echo "<br>" . $sudah_pulang;
 
 			if(Auth::user()->shifting == 1 ){
 				$getSchedule = DB::table('shifting')
@@ -543,12 +543,21 @@ class AdminController extends Controller
 				// print_r($getSchedule);
 				// echo "</pre>";
 
+
 				$liburCondition = substr($getSchedule->start, 11,5);
 
 				if($liburCondition == "Libur"){
 					$sudah = "sudah";
 					$keterangan = 5;
-				}
+				} 
+				// else {
+				// 	$sudah = "belum";
+				// 	// $keterangan = 5;
+				// }
+				// echo $sudah;
+				// // echo $keterangan;
+				// echo $liburCondition;
+
 			}
 			
 
@@ -1401,6 +1410,7 @@ class AdminController extends Controller
 			->where('tanggal','like','%-' . date('m') .'-%')
 			->where('id_user','=',$id)
 			->count();
+			
 
 		$count = [
 			$late,
@@ -1425,9 +1435,9 @@ class AdminController extends Controller
 		// echo "</pre>";
 
 		$adsen = 0;
-
+		$tittle = 'My Attendence';
 		$pdf = PDF::loadView('pdf', compact('datas','kehadiran','count','name','absen'));
-		return $pdf->stream("asd.pdf");
+		return $pdf->stream($tittle .".pdf");
 	}
 
 	public function changeMonth(Request $req){
@@ -1801,13 +1811,13 @@ class AdminController extends Controller
 			
 
 			$tittle = 'Attandance Report ' . $req->startDate . ' to ' . $req->endDate;
-			// $pdf = PDF::loadView('pdf2',compact('var','summary','data','details','tittle'));
-			// return $pdf->stream("Report " . $data['start'] . " to " . $data['end'] . " .pdf");
-			// return $details;
+			$pdf = PDF::loadView('pdf2',compact('var','summary','data','details','tittle'));
+			return $pdf->stream("Report " . $data['start'] . " to " . $data['end'] . " .pdf");
+			return $details;
 
 
-			// return view('pdf2',compact('var','summary','data','details','tittle'));
-			return view('pdf4',compact('var','summary','data','details'));
+			return view('pdf2',compact('var','summary','data','details','tittle'));
+			// return view('pdf4',compact('var','summary','data','details'));
 		} else {
 			$var['start'] = $req->start;
 			$var['end'] = $req->end;

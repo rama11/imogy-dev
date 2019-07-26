@@ -24,8 +24,14 @@
 							<div class="col-md-4  col-md-offset-4 text-center">
 								
 										<div class="alert alert-info" role="alert"  id="logined">You are not working today (Libur)</div>
+                    @endif
 
-									
+                    @if($sudah_pulang == 'sudah')
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalPulang" id="pulang">SUDAH PULANG</button>
+                      @else
+                        <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#modalPulang" id="pulang">PULANG</button>
+                      @endif
+                    @else 
 									<button type="button" class="btn btn-primary " data-toggle="modal" data-target="#myModal" id="absen">ABSEN</button>
 								</div>
 						</div>
@@ -227,7 +233,8 @@
 
 					console.log(pos.lat + " , " + pos.lng);
 					
-				}, function() {
+				}, 
+				function() {
 					if("{{Auth::user()->id}}" != "4"){
 						$.ajax({
 							type:"GET",

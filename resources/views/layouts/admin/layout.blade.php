@@ -158,8 +158,8 @@
 								@endif
 
 								<p>
-									{{Auth::user()->name}} 
-									<small>{{Auth::user()->jabatan}}</small>
+									{{Auth::user()->name}}
+									<small><i class="fa fa-circle text-success"></i> Admin</small>
 								</p>
 							</li>
 							<!-- Menu Body -->

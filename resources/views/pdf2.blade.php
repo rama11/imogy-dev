@@ -115,7 +115,7 @@
 			<?php $no++;?>
 			@endforeach
 			<tr>
-				<th colspan="3" style="text-align: right;">
+				<th colspan="3" style="text-align: center;">
 					Summary
 				</th>
 				<td style="text-align: center; color:white;" class="ontime">{{$summary['0']}}</td>
@@ -134,12 +134,12 @@
 				<table>
 					<thead>
 						<tr>
-							<th style="width: 6px;">#</th>
-							<th style="width: 60px; text-align: center;">Schedule</th>
-							<th style="width: 90px; text-align: center;">Prasent Time</th>
-							<th>Date</th>
-							<th>Where</th>
-							<th style="width: 100px; text-align: center;">Status</th>
+							<th style="text-align: center;">#</th>
+							<th style="text-align: center;">Schedule</th>
+							<th style="text-align: center;">Prasent Time</th>
+							<th style="text-align: center;">Date</th>
+							<th style="text-align: center;">Where</th>
+							<th style="text-align: center;">Status</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -180,15 +180,29 @@
 				</table>
 				<table>
 					<tbody>
+					<thead>
+			<tr>
+				<th colspan="3" style="text-align: center;">
+					#
+				</th>
+				
+
+				<th style="width: 50px; text-align: center;" >Ontime</th>
+				<th style="width: 50px; text-align: center;" >Tolerance</th>
+				<th style="width: 50px; text-align: center;" >Late</th>
+				<th style="width: 50px; text-align: center;" >Absent</th>
+				<th style="width: 50px; text-align: center;" >Attend</th>
+			</tr>
+		</thead>
 						<tr>
-							<td style="text-align: right;">
+							<th colspan="3" style="text-align: center;">
 								Summary
-							</td>
-							<td style="text-align: center; color:white; width: 50px;" class="ontime">{{$detail[0][2]}}</td>
-							<td style="text-align: center; color:white; width: 50px;" class="tolerance">{{$detail[0][1]}}</td>
-							<td style="text-align: center; color:white; width: 50px;" class="late">{{$detail[0][0]}}</td>
-							<td style="text-align: center; color:white; width: 50px;" class="absent">{{$detail[0][3]}}</td>
-							<td style="text-align: center; color:white; width: 50px;" class="all">{{$detail[0][4]}}</td>
+							</th>
+							<td style="text-align: center; color:white; width: 60px;" class="ontime">{{$detail[0][2]}}</td>
+							<td style="text-align: center; color:white; width: 60px;" class="tolerance">{{$detail[0][1]}}</td>
+							<td style="text-align: center; color:white; width: 60px;" class="late">{{$detail[0][0]}}</td>
+							<td style="text-align: center; color:white; width: 60px;" class="absent">{{$detail[0][3]}}</td>
+							<td style="text-align: center; color:white; width: 60px;" class="all">{{$detail[0][4]}}</td>
 						</tr>
 					</tbody>
 				</table>

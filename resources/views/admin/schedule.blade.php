@@ -191,28 +191,26 @@ td.fc-day.fc-today {
 						<h4 class="modal-title">Add User Shifting</h4>
 					</div>
 					<div class="modal-body">
+						<div class="col-md-6">
 						<div class="form-group">
-							<label for="id_user" class="col-md-3 control-label">Nama Users</label>
-							<select class="form-control" name="id_user" id="id_user">
-								@foreach($users as $user)
-									<option value="{{$user->id}}">{{$user->name}}</option>
+							<label>Nama Users</label>
+							<select class="form-control" name="id_user">
+								@foreach($nameUsers as $nameUser)
+									<option value="{{$nameUser->id}}">{{$nameUser->name}}</option>
 								@endforeach
 							</select>
 						</div>
+						</div>
+						<div class="col-md-6">
 						<div class="form-group">
-							<label for="on_project" class="col-md-3 control-label">Project Name</label>
-								<select class="form-control" name="on_project" id="id_user">
+							<label>Project Name</label>
+								<select class="form-control" name="on_project" >
 								@foreach($projects as $project)
 									<option value="{{$project->id}}">{{$project->project}}</option>
 								@endforeach
 								</select>
+						</div>
 						</div>	
-						<!-- <div class="form-group">
-							<label for="on_project" class="col-md-3 control-label">Project Name</label>
-							<div class="col-md-8">
-								<input id="on_project" type="text" class="form-control" name="on_project" required autofocus>
-							</div>
-						</div> -->
 					</div>
 					<div class="modal-footer">
 						<button type="submit" class="btn btn-primary">Add user</button>

@@ -445,7 +445,7 @@ class AdminController extends Controller
 				'id_user' => $request->id_user,
 				'on_project' => "$request->on_project",
 				]);
-			return redirect('schedule')->with('status', "Add User for " . $request->on_project . " success.");
+			return redirect('schedule')->with('status', "Add User for " . $request->id_user . " success.");
 
 		} else {
 			DB::table('detail_users')
@@ -457,7 +457,9 @@ class AdminController extends Controller
 				'id_user' => $request->id_user,
 				'on_project' => "$request->on_project",
 				]);
-			return redirect('schedule')->with('status', "Add User for " . $request->on_project . " success.");
+
+			return redirect('schedule')->with('status', "Add User for " . $request->id_user . " success.");
+
 		}
 		
 	}
@@ -1496,6 +1498,10 @@ class AdminController extends Controller
 	}
 
 	public function schedule ($month = "") {
+
+		$nameUsers = DB::table('users')
+			->get();
+
 		$users = DB::table('detail_users')
 			->join('users','users.id','=','detail_users.id_user')
 			->join('project','project.id','=','detail_users.on_project')
@@ -1535,7 +1541,7 @@ class AdminController extends Controller
 			->toArray();
 
 		if($month == ""){
-			return view('admin.schedule',compact('users','projects'));
+			return view('admin.schedule',compact('users','projects','nameUsers'));
 		} else {
 			return $users;
 		}

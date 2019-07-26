@@ -264,6 +264,8 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::post('project/manage/setProjectList','ProjectController@setProjectList');
 	// Get Project
 	Route::get('project/manage/getAllProjectList','ProjectController@getAllProjectList');
+	Route::get('project/manage/getDetailProjectList','ProjectController@getDetailProjectList');
+	Route::post('project/manage/setUpdateEventProject','ProjectController@setUpdateEventProject');
 
 	
 	Route::get('project/setting','ProjectController@setting');

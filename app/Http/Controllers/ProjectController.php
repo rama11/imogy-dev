@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
 use DB;
 
 class ProjectController extends Controller
@@ -42,7 +43,6 @@ class ProjectController extends Controller
 						'name' => $req->CustomerName
 					]
 				);
-
 			$req->Customer = DB::table('project__customer')->where('name',$req->CustomerName)->value('id');
 		}
 
@@ -68,7 +68,6 @@ class ProjectController extends Controller
 						'user_id' => DB::table('users')->where('nickname',$member)->value('id')
 					]
 				);
-			// echo $member . "<br>";
 		}
 
 		return null;
@@ -94,6 +93,53 @@ class ProjectController extends Controller
 			->join('project__member as coordinator','project__list.project_coordinator','=','coordinator.id','left outer')
 			->get()
 		));
+	}
+
+	public function getDetailProjectList(Request $req){
+		
+		DB::table('project__event')
+ 			->where('project_list_id',$req->id)
+ 			->value('id');
+
+		// return DB::table('project__event')
+ 	// 		->where('project_list_id',$req->id)
+ 	// 		// ->join('project__event_history','project__event_history.project_event_id','=','project__event.id')
+ 	// 		->orderBy('due_date',"ASC")
+ 	// 		->get();
+
+ 		return array("event" => 
+			DB::table('project__event')
+				->where('project_list_id',$req->id)
+	 			->orderBy('due_date',"ASC")
+	 			->get()
+	 		,"eventHistory" => 
+	 		DB::table('project__event_history')
+	 			->select(
+	 				'project__event_history.id',
+					'project__event_history.project_event_id',
+					'project__event_history.time',
+					'project__event_history.note',
+					'project__event_history.type',
+					'project__event_history.updater'
+	 			)
+				->join(DB::raw('(SELECT id FROM project__event WHERE project_list_id = ' . $req->id . ') AS project_event'),'project_event.id','project__event_history.project_event_id')
+				->orderBy('project__event_history.time','ASC')
+	 			->get()
+ 		);
+	}
+
+	public function setUpdateEventProject(Request $req){
+		DB::table('project__event_history')
+			->insert(
+				[
+					'project_event_id' => $req->id,
+					'time' => $req->time,
+					'note' => $req->note,
+					'type' => $req->type,
+					'updater' => Auth::user()->nickname,
+				]
+			);
+		return null;
 	}
 
 	public function setting(){

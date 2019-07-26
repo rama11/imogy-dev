@@ -109,7 +109,7 @@
 					<div class="box-header with-border">
 						<h3 class="box-title" id="titleResult">Table Information</h3>
 						<div class="box-tools pull-right">
-							<a href='#' target="_blank" type='button' class='btn btn-info' id="downloadPDF">
+							<a href='' target="_blank" type='button' class='btn btn-info' id="downloadPDF">
 								<i class='fa fa-download'></i> Download All
 							</a>
 							<!-- <button type="button" class="btn btn-box-tool btn-info" style="color: white;" id="downloadPDF">
@@ -164,7 +164,7 @@
 				$('#daterange-btn span').html(start.format('D MMMM YYYY') + ' - ' + end.format('D MMMM YYYY'));
 				console.log(start.format('D MMMM YYYY') + " di sql " + start.format('YYYY-MM-DD'));
 				console.log(end.format('D MMMM YYYY') + " di sql " + end.format('YYYY-MM-DD'));
-				var query = "SELECT * FROM `waktu_absen` WHERE `tanggal` >= '" + start.format('YYYY-MM-DD') + "'' AND `tanggal` <= '" + end.format('YYYY-MM-DD') + "'";
+				var query = "SELECT * FROM `waktu_absen` WHERE `tanggal` >= '" + start.format('YYYY-MM-DD') + "' AND `tanggal` <= '" + end.format('YYYY-MM-DD') + "'";
 
 				// Dikirim ke controller
 				var startDay = start.format('YYYY-MM-DD');
@@ -191,7 +191,7 @@
 					},
 					success: function(result){
 						// console.log(result);
-						$("#downloadPDF").attr("href", 'getReport?end=' + result['end'] + '&endDate=' + result['endDate'] + '&start=' + result['start'] + '&startDate=' + result['startDate'] + '&pdf=' + result['pdf']);
+						$("#downloadPDF").attr("href",'getReport?end=' + result['end'] + '&endDate=' + result['endDate'] + '&start=' + result['start'] + '&startDate=' + result['startDate'] + '&pdf=' + result['pdf']);
 
 						$("#result").fadeIn();
 						$("#titleResult").text("Table Information for " + startDate + " to " + endDate);

@@ -49,7 +49,7 @@
 											<div class="user-block">
 											<img class="img-circle img-bordered-sm" src="{{url($user->foto)}}" alt="user image">
 												<span class="username">
-													<a href="/user/">{{$user->name}}</a>
+													<a href="#">{{$user->name}}</a>
 													<a href="#" class="pull-right btn-box-tool text-grey" data-toggle="modal" data-target="#modal-default" onclick="getLocation('{{$user->id}}')"><i class="fa fa-edit"></i>  Change Location</a>
 												</span>
 												<span class="description"><small class="label label-success">{{$user->location}}</small> location for this user now.</span>

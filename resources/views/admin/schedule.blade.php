@@ -249,7 +249,7 @@ td.fc-day.fc-today {
 			$("#name2").text("for " + name);
 			// $("#calendar").fullCalendar('removeEventSource', '/getSchedule');
 			$("#calendar").fullCalendar('removeEventSources');
-			$("#calendar").fullCalendar('addEventSource', '/getScheduleSelected/' + idUser);
+			$("#calendar").fullCalendar('addEventSource', '/getScheduleSelected?idUser=' + idUser + '&idProject=' + globalProject);
 			globalIdUser = idUser;
 			$("." + idProject).show();
 			$("#buttonBack2").attr("onclick","backListDetail(" + idProject + ")")
@@ -394,6 +394,7 @@ td.fc-day.fc-today {
 								start: startShift2,
 								end: endShift2,
 								shift: originalEventObject.Shift,
+								id_project:globalProject,
 							},
 							success: function(result){
 								console.log(result);

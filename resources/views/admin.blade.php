@@ -477,5 +477,4 @@ $(function () {
 		pieChart.Doughnut(PieData, pieOptions);
 </script>
 <!-- jQuery 3.1.1 -->
-
 @endsection

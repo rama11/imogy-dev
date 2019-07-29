@@ -150,19 +150,16 @@
 										</div>
 									</div>
 								</section>
-								<!-- /.box-header -->
 								<section class="col-md-6">
 									<div class="row">
 										<div class="col-md-12">
 											<div class="info-box">
 												<div class="box-body">
-												
 													<canvas id="pieChart" style="height:250px"></canvas>
 												</div>
 											</div>
 										</div>
 									</div>
-									<!-- ./chart-responsive -->
 									<b>Severity</b>
 									<div class="row">
 										<div class="col-md-6 col-sm-6">
@@ -1320,16 +1317,7 @@
 							  "#3498db",
 							  "#8e44ad",
 							  "#34495e",
-									"#1abc9c",
-									"#C71585",
-									"#8FBC8F",
-									"#CD5C5C",
-									"#CD853F",
-									"#F4A460",
-									"#9ACD32",
-									"#5F9EA0",
-									"#B0C4DE",
-									"#8B0000",
+							  "#1abc9c",
 							  "#7f8c8d"
 							],
 							hoverBackgroundColor: [
@@ -1339,10 +1327,8 @@
 							  "#4aa3df",
 							  "#9b50ba",
 							  "#3d566e",
-									"#1dd2af",
-									"#F08080",
-									"#8c9899",
-									"#C71585"
+							  "#1dd2af",
+							  "#8c9899"
 							]
 						}]
 					},

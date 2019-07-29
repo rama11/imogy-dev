@@ -116,7 +116,7 @@ class AdminController extends Controller
 		// echo "</pre>";
 
 		
-		return view('admin',compact('data','users','persen','count','absen'));
+		return view('admin',compact('data','users','persen','count','absen',));
 	}
 
 	public function test_page(){
@@ -1531,10 +1531,9 @@ class AdminController extends Controller
 		return json_encode($data);
 	}
 
-	function getScheduleSelected (Request $req){
+	function getScheduleSelected ($id){
 		$data = DB::table('shifting')
-			->where('id_user','=',$req->idUser)
-			->where('id_project','=',$req->idProject)
+			->where('id_user','=',$id)
 			->get()
 			->toArray();
 		return json_encode($data);
@@ -1559,8 +1558,7 @@ class AdminController extends Controller
 					'end' => $req->end,
 					'className' => $req->shift,
 					'hadir' => "00:00:00",
-					'tanggal' => date('Y-m-d h:i:s'),
-					'id_project' => $req->id_project,
+					'tanggal' => date('Y-m-d h:i:s')
 				]
 			);
 

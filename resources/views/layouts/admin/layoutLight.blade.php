@@ -89,16 +89,7 @@
 				</a>
 				<div class="pull-left info">
 					<p>{{Auth::user()->name}}</p>
-					
-						@if(Auth::user()->jabatan = 1)
-							<small><i class="fa fa-circle text-success"></i> Admin</small>
-						@elseif(Auth::user()->jabatan = 3)
-							<small><i class="fa fa-circle text-success"></i> Helpdesk</small>
-						@elseif(Auth::user()->jabatan = 2)
-							<small><i class="fa fa-circle text-success"></i> Engineer</small>
-						@endif
-					
-					</a>
+					<a href="{{ url('profile')}}"><i class="fa fa-circle text-success"></i>{{Auth::user()->jabatan}}</a>
 				</div>
 			</div>
 			

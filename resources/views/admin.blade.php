@@ -121,11 +121,11 @@
 									</td>
 									<td>
 										@if($user->jabatan == 1)	
-										<span class="label label-success">Admin</span>
+										<span class="label label-success">Admin</span>									
 										@elseif($user->jabatan == 2)
-										<span class="label label-success">Engineer</span>										
+										<span class="label label-success">Helpdesk</span>
 										@elseif($user->jabatan == 3)
-										<span class="label label-success">Helpdesk</span>																					
+										<span class="label label-success">Engineer</span>																						
 										@endif
 									</td>	
 								</tr>
@@ -477,4 +477,6 @@ $(function () {
 		pieChart.Doughnut(PieData, pieOptions);
 </script>
 <!-- jQuery 3.1.1 -->
+
+>>>>>>> 28e5df06cd3f219b4fbde816fcba016f8890ae9f
 @endsection

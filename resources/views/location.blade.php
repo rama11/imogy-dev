@@ -23,6 +23,7 @@
 				Set Absent Location
 				<small>For employe who has onsite at the time</small>
 			</h1>
+		<a href="#" class="pull-right btn-box-tool text-green pull-left" data-toggle="modal" data-target="#modal-addNewLocation"><i class="fa fa-plus"></i> Add New Location</a>			
 			<ol class="breadcrumb">
 				<li><a href="{{url('admin')}}"><i class="fa fa-dashboard"></i> Home</a></li>
 				<li class="active">Set Location Absent</li>
@@ -37,13 +38,14 @@
 							@foreach($privileges as $privilege)
 							<li>
 								<a href="#{{$privilege->id}}" data-toggle="tab" aria-expanded="true">{{$privilege->privilege_name}}</a>
+								
 							</li>
 							@endforeach
 						</ul>
 						<div class="tab-content">
 							@foreach($privileges as $privilege)
 							<div class="tab-pane" id="{{$privilege->id}}">
-								<div class="post">
+								<div class="post">	
 									@foreach($users as $user)
 										@if($user->jabatan == $privilege->id)
 											<div class="user-block">
@@ -123,7 +125,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-default" data-dismiss="modal" id="add">Add Location</button>
+					<!-- <button type="button" class="btn btn-default" data-dismiss="modal" id="add">Add Location</button> -->
 					<button type="submit" class="btn btn-primary" >Save changes</button>
 				</div>
 			</div>
@@ -135,47 +137,54 @@
 
 <!-- Modal Add Location -->
 <button data-toggle="modal" data-target="#modal-default2" style="display: none;" id="showAdd"></button>
-<div class="modal fade out" id="modal-default2" tabindex="-1" role="dialog">
-	<div class="modal-dialog modal-md">
+<div class="modal fade in" id="modal-addNewLocation" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-lg">
 		<form method="GET" action="{{url('addLocation')}}">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">×</span>
-					</button>
+						<span aria-hidden="true">×</span></button>
 					<h4 class="modal-title">Add Location</h4>
 				</div>
 				<div class="modal-body">
 					<div class="row">
 						<dir class="col-md-12">
+							<div class="form-group">
 								<label>Search Location</label>
 								<input class="form-control" placeholder="Location" type="text" id="search">
+							</div>
 						</dir>
-						<div class="row">
-						<div class="col-md-12">
-								<div id="map" style="width:300px; height:150px;margin:auto;display: block;background-color: #000;"></div>
-						</div>
 					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<div id="map" style="height: 350px;width: 800px;margin:auto;display: block;background-color: #000;"></div>
+							</div>
+						</div>
 					</div>
 					<div class="row">
 						<dir class="col-md-12">
+							<div class="form-group">
 								<label>Name </label>
 								<input class="form-control" placeholder="Yout Must Give Name This Location" type="text" name="pleace" required>
+							</div>
 						</dir>
 					</div>
 					<div class="row">
 						<dir class="col-md-6">
+							<div class="form-group">
 								<label>Latitude</label>
 								<input class="form-control" placeholder="" type="text" id="lat" name="lat">
+							</div>
 						</dir>
 						<dir class="col-md-6">
+							<div class="form-group">
 								<label>Longitude</label>
 								<input class="form-control" placeholder="" type="text" id="lng" name="lng">
+							</div>
 						</dir>
 					</div>
-				</div> 
-					
-		
+				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
 					<button type="submit" class="btn btn-primary" >Add Location</button>

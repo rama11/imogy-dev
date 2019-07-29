@@ -377,6 +377,17 @@ class AdminController extends Controller
 		// $req->location;
 	}
 
+	// public function project(Request $req){
+	// 	$project = DB::table('project')
+	// 		->where('id','=',$req->id)
+	// 		->where('project','=',$req->project)
+	// 		->where('shifting','=',$req->shifting)
+	// 		->where('id_location','=',$req->request)
+	// 		->get()
+	// 		->firs();
+	// }
+	
+
 	public function addUser(Request $request){
 		date_default_timezone_set('Asia/Jakarta');
 
@@ -425,6 +436,34 @@ class AdminController extends Controller
 
 		return redirect('usermanage')->with('status', "Add User for " . $request->name . " success.");
 	}
+
+	public function addUserShifting(Request $request){
+		$date = date('Y-m-d h:i:s', time());
+		if(DB::table('detail_users')->where('id_user',$request->id_user,)->where('on_project',$request->on_project)->get() == NULL){
+			DB::table('detail_users')
+			->insert([
+				'id_user' => $request->id_user,
+				'on_project' => "$request->on_project",
+				]);
+			return redirect('schedule')->with('status', "Add User for " . $request->id_user . " success.");
+
+		} else {
+			DB::table('detail_users')
+			->where('id_user',$request->id_user)
+			->delete();
+
+			DB::table('detail_users')
+			->insert([
+				'id_user' => $request->id_user,
+				'on_project' => "$request->on_project",
+				]);
+
+			return redirect('schedule')->with('status', "Add User for " . $request->id_user . " success.");
+
+		}
+		
+	}
+	
 
 	public function absen(){
 		// if(Auth::user()->shifting == 1){
@@ -611,23 +650,22 @@ class AdminController extends Controller
 			->where('tanggal','=',date('Y/m/d'))
 			->count();
 
+		$con = "on";
+		$condition = DB::table('users')
+			->where('id','=',$id)
+			->update(['condition' => $con]);	
+
 		// if ($done == 0 || Auth::user()->id == "4") {
 		if ($done == 0) {
 
 			echo "Online - Offline<br>";
 			echo "--Mula " . Auth::user()->condition;
 
-			if(Auth::user()->condition == "off"){
-				$con = "on";
-				$condition = DB::table('users')
-					->where('id','=',$id)
-					->update(['condition' => $con]);
-			} else {
-				$con = "off";
-				$condition = DB::table('users')
-					->where('id','=',$id)
-					->update(['condition' => $con]);
-			}
+			// if(Auth::user()->condition == "off"){
+				
+			// } else {
+				
+			// }
 
 			echo "<br>--Akhirnya " . $con;
 			$location = Auth::user()->location;
@@ -760,6 +798,11 @@ class AdminController extends Controller
 				->where('tanggal','=',$hari_malam)
 				// ->value('pulang')
 				->toSql();
+				
+			$con = "off";
+			$condition = DB::table('users')
+				->where('id','=',$id)
+				->update(['condition' => $con]);	
 
 			echo "<br> sql pulang2 : ";
 			echo($sql);
@@ -1455,6 +1498,10 @@ class AdminController extends Controller
 	}
 
 	public function schedule ($month = "") {
+
+		$nameUsers = DB::table('users')
+			->get();
+
 		$users = DB::table('detail_users')
 			->join('users','users.id','=','detail_users.id_user')
 			->join('project','project.id','=','detail_users.on_project')
@@ -1494,7 +1541,7 @@ class AdminController extends Controller
 			->toArray();
 
 		if($month == ""){
-			return view('admin.schedule',compact('users','projects'));
+			return view('admin.schedule',compact('users','projects','nameUsers'));
 		} else {
 			return $users;
 		}

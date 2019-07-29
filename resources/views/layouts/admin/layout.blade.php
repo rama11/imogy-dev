@@ -477,4 +477,5 @@ $(document).ready(function(){
 </script>
 @yield('script')
 </body>
+>>>>>>> 28e5df06cd3f219b4fbde816fcba016f8890ae9f
 </html>

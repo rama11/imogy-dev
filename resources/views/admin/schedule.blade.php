@@ -1,4 +1,4 @@
-@extends((Auth::user()->role == "1") ? 'layouts.admin.layout' : 'layouts.engineer.elayout')
+@extends((Auth::user()->role == "1") ? 'layouts.admin.layout ' : 'layouts.engineer.elayout')
 @section('content')
 <style>
 .loader {
@@ -96,7 +96,6 @@ td.fc-day.fc-today {
 
 	<section class="content">
 		<div class="row">
-
 			<!-- Panel Kiri -->
 			<section class="col-lg-3 col-xs-3" id="panel_simple">
 				
@@ -115,12 +114,6 @@ td.fc-day.fc-today {
 							@endforeach
 						</ul>
 					</div>
-
-					<div>
-
-
-					</div>
-
 					<div class="box-body" id="listName" style="display: none;">
 						<p id="name"></p>
 						<ul class="nav nav-stacked" id="ulUser">
@@ -153,6 +146,13 @@ td.fc-day.fc-today {
 						</div>
 					</div>
 				</div>
+				<!-- @if(session('message'))
+				<div class="alert alert-success alert-dismissible" style="margin-top: 330px;margin-right: 0px; position:fixed; top:0; left:260px; width:200px;">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+					<h4><i class="icon fa fa-check"></i> Success!</h4>
+						{{session('message')}}
+				</div>
+				@endif -->
 
 				<div class="box box-danger box-solid" id="deletePlace" style="display: none;">
 					<div class="box-header">
@@ -177,6 +177,7 @@ td.fc-day.fc-today {
 				</div>
 			</section>			
 		</div>
+		
 	</section>
 </div>
 <div class="modal fade in" id="modal-addusershifting"  tabindex="-1" role="dialog">
@@ -248,6 +249,7 @@ td.fc-day.fc-today {
 				startShift: start,
 				endShift: end,
 				Shift: shift,
+
 			};
 
 			// store the Event Object in the DOM element so we can get to it later
@@ -293,7 +295,7 @@ td.fc-day.fc-today {
 			$("#name2").text("for " + name);
 			// $("#calendar").fullCalendar('removeEventSource', '/getSchedule');
 			$("#calendar").fullCalendar('removeEventSources');
-			$("#calendar").fullCalendar('addEventSource', '/getScheduleSelected/' + idUser);
+			$("#calendar").fullCalendar('addEventSource', '/getScheduleSelected?idUser=' + idUser + '&idProject=' + globalProject);
 			globalIdUser = idUser;
 			$("." + idProject).show();
 			$("#buttonBack2").attr("onclick","backListDetail(" + idProject + ")")
@@ -438,6 +440,7 @@ td.fc-day.fc-today {
 								start: startShift2,
 								end: endShift2,
 								shift: originalEventObject.Shift,
+								id_project: globalProject
 							},
 							success: function(result){
 								console.log(result);
@@ -536,7 +539,7 @@ td.fc-day.fc-today {
 
 	function refresh_calendar(){
 		$("#calendar").fullCalendar('removeEventSources');
-		$("#calendar").fullCalendar('addEventSource', '/getScheduleSelected/' + globalIdUser);
+		$("#calendar").fullCalendar('addEventSource', '/getScheduleSelected?idUser=' + globalIdUser +'&idProject=' + globalProject);
 	}
 </script>
 @endsection

@@ -49,7 +49,7 @@
 							<a href="#tab_2" data-toggle="tab" onclick="getCreateParameter()">Create</a>
 						</li>
 						<li>
-							<a href="#tab_3" data-toggle="tab" id="performance" onclick="getPerformance()">Performance</a>
+							<a href="#tab_3" data-toggle="tab" id="performance" onclick="x`()">Performance</a>
 						</li>
 						<li>
 							<a href="#tab_6" data-toggle="tab">Setting</a>

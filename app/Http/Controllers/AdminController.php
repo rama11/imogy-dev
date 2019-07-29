@@ -116,7 +116,7 @@ class AdminController extends Controller
 		// echo "</pre>";
 
 		
-		return view('admin',compact('data','users','persen','count','absen',));
+		return view('admin',compact('data','users','persen','count','absen'));
 	}
 
 	public function test_page(){
@@ -439,12 +439,12 @@ class AdminController extends Controller
 
 	public function addUserShifting(Request $request){
 		$date = date('Y-m-d h:i:s', time());
-		if(DB::table('detail_users')->where('id_user',$request->id_user,)->where('on_project',$request->on_project)->get() == NULL){
+		if(DB::table('detail_users')->where('id_user',$request->id_user)->where('on_project',$request->on_project)->get() == NULL){
 			DB::table('detail_users')
-			->insert([
-				'id_user' => $request->id_user,
-				'on_project' => "$request->on_project",
-				]);
+				->insert([
+					'id_user' => $request->id_user,
+					'on_project' => "$request->on_project",
+					]);
 			return redirect('schedule')->with('status', "Add User for " . $request->id_user . " success.");
 
 		} else {

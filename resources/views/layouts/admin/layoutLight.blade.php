@@ -209,7 +209,7 @@ $(document).ready(function(){
 			$("#atisygy").removeClass("active");
 			$("#absen").addClass("active");
 			$("#sycal").removeClass("active");
-			console.log("absen");
+			// console.log("absen");
 			break;
 		case "atisygy":
 			$("#dashboard").removeClass("active");
@@ -218,7 +218,7 @@ $(document).ready(function(){
 			$("#absen").removeClass("active");
 			$("#atisygy").addClass("active");
 			$("#sycal").removeClass("active");
-			console.log("atisygy");
+			// console.log("atisygy");
 			break;
 		case "asycal":
 			$("#dashboard").removeClass("active");
@@ -227,12 +227,12 @@ $(document).ready(function(){
 			$("#absen").removeClass("active");
 			$("#atisygy").removeClass("active");
 			$("#sycal").addClass("active");
-			console.log("sycal");
+			// console.log("sycal");
 			break;
 		default:
 			$("#dashboard").addClass("active");
 	};
-	console.log(path[path.length - 1]);
+	// console.log(path[path.length - 1]);
 });
 </script>
 @yield('script')

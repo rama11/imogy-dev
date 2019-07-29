@@ -258,7 +258,7 @@ $(document).ready(function(){
 			$("#tisygy").removeClass("active");
 			$("#absen").addClass("active");
 			$("#sycal").removeClass("active");
-			console.log("absen");
+			// console.log("absen");
 			break;
 		case "tisygy":
 			$("#dashboard").removeClass("active");
@@ -267,7 +267,7 @@ $(document).ready(function(){
 			$("#absen").removeClass("active");
 			$("#tisygy").addClass("active");
 			$("#sycal").removeClass("active");
-			console.log("tisygy");
+			// console.log("tisygy");
 			break;
 		case "sycal":
 			$("#dashboard").removeClass("active");
@@ -276,12 +276,12 @@ $(document).ready(function(){
 			$("#absen").removeClass("active");
 			$("#tisygy").removeClass("active");
 			$("#sycal").addClass("active");
-			console.log("sycal");
+			// console.log("sycal");
 			break;
 		default:
 			$("#dashboard").addClass("active");
 	};
-	console.log(path[path.length - 1]);
+	// console.log(path[path.length - 1]);
 });
 </script>
 

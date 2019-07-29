@@ -313,7 +313,7 @@
 					console.log("Radius : " + radius);
 						
 					var calculate = calcDistance(p1, p2);
-					if(calculate	< radius) {
+					if(calculate < radius) {
 						$("#berhasil").click();
 						$("#myModal").hide();
 						$("#absen").hide();
@@ -341,7 +341,6 @@
 										location.reload();
 									},
 								});
-								// location.reload();
 							},
 						});
 						$("#absen").hide();
@@ -360,48 +359,12 @@
 							}
 						})
 					}
-
 					function calcDistance(p1, p2) {
 						return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 1000).toFixed(2);
 					}
-
 					console.log(pos.lat + " , " + pos.lng);
-					
 				}, 
 				function() {
-					if("{{Auth::user()->id}}" != "4"){
-						$.ajax({
-							type:"GET",
-							data:{
-								message: "Gagal Absen - Geolocation is not support"
-							},
-							url: "logging/ERROR",
-							success: function(){
-								alert("Geolocation is not support");
-							}
-						})
-					} else {
-						$("#berhasil").click();
-						$("#myModal").hide();
-						$("#absen").hide();
-						$("#logined").show(); //
-						$("#close").click(function () {
-							$(".modal-backdrop").hide();
-						});
-
-						$.ajax({
-							type: "POST",
-							data: {
-								"_token": "{{ csrf_token() }}",
-							},
-							url: "raw/{{Auth::user()->id}}",
-							success: function(){
-								location.reload();
-							},
-						});
-						$("#absen").hide();
-					}
-
 					console.log("Geolocation error");
 				});
 			} else {

@@ -1,83 +1,83 @@
 @extends((Auth::user()->role == "1") ? 'layouts.admin.layout' : 'layouts.engineer.elayout')
 @section('content')
 <style>
-.loader {
-	border: 16px solid #f3f3f3;
-	border-radius: 50%;
-	border-top: 16px solid #3498db;
-	width: 120px;
-	height: 120px;
-	-webkit-animation: spin 2s linear infinite;
-	animation: spin 2s linear infinite;
-	margin: auto;
-	position: absolute;
-	top:0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-}
+	.loader {
+		border: 16px solid #f3f3f3;
+		border-radius: 50%;
+		border-top: 16px solid #3498db;
+		width: 120px;
+		height: 120px;
+		-webkit-animation: spin 2s linear infinite;
+		animation: spin 2s linear infinite;
+		margin: auto;
+		position: absolute;
+		top:0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+	}
 
-.pagi, .Pagi {
-	background-color: #dd4b39 !important; /* background color */
-	border-color: #dd4b39 !important;     /* border color */
-	color: #fff !important;;              /* text color */
-}
+	.pagi, .Pagi {
+		background-color: #dd4b39 !important; /* background color */
+		border-color: #dd4b39 !important;     /* border color */
+		color: #fff !important;;              /* text color */
+	}
 
-.Helpdesk {
-	background-color: #ca195a !important; /* background color */
-	border-color: #ca195a !important;     /* border color */
-	color: #fff !important;;              /* text color */
-}
+	.Helpdesk {
+		background-color: #ca195a !important; /* background color */
+		border-color: #ca195a !important;     /* border color */
+		color: #fff !important;;              /* text color */
+	}
 
-.sore, .Sore {
-	background-color: #f39c12 !important; /* background color */
-	border-color: #f39c12 !important;     /* border color */
-	color: #fff !important;;              /* text color */
-}
+	.sore, .Sore {
+		background-color: #f39c12 !important; /* background color */
+		border-color: #f39c12 !important;     /* border color */
+		color: #fff !important;;              /* text color */
+	}
 
-.malam, .Malam {
-	background-color: #0073b7 !important; /* background color */
-	border-color: #0073b7 !important;     /* border color */
-	color: #fff !important;;              /* text color */
-}
+	.malam, .Malam {
+		background-color: #0073b7 !important; /* background color */
+		border-color: #0073b7 !important;     /* border color */
+		color: #fff !important;;              /* text color */
+	}
 
-.libur, .Libur {
-	background-color: #00a65a !important; /* background color */
-	border-color: #00a65a !important;     /* border color */
-	color: #fff !important;;              /* text color */
-}
+	.libur, .Libur {
+		background-color: #00a65a !important; /* background color */
+		border-color: #00a65a !important;     /* border color */
+		color: #fff !important;;              /* text color */
+	}
 
-@-webkit-keyframes spin {
-	0% { -webkit-transform: rotate(0deg); }
-	100% { -webkit-transform: rotate(360deg); }
-}
+	@-webkit-keyframes spin {
+		0% { -webkit-transform: rotate(0deg); }
+		100% { -webkit-transform: rotate(360deg); }
+	}
 
-@keyframes spin {
-	0% { transform: rotate(0deg); }
-	100% { transform: rotate(360deg); }
-}
+	@keyframes spin {
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
+	}
 
-.cover {
-	position: fixed;
-	top: 0;
-	left: 0;
-	background: rgba(0,0,0,0.6);
-	z-index: 5000;
-	width: 100%;
-	height: 100%;
-	display: none;
-}
+	.cover {
+		position: fixed;
+		top: 0;
+		left: 0;
+		background: rgba(0,0,0,0.6);
+		z-index: 5000;
+		width: 100%;
+		height: 100%;
+		display: none;
+	}
 
-.fc-time{
-   display : none;
-}
+	.fc-time{
+	   display : none;
+	}
 
-td.fc-day.fc-past {
-	background-color: #EEEEEE;
-}
-td.fc-day.fc-today {
-	background-color: #ffeaa7;
-}
+	td.fc-day.fc-past {
+		background-color: #EEEEEE;
+	}
+	td.fc-day.fc-today {
+		background-color: #ffeaa7;
+	}
 </style>
 
 <div class="content-wrapper">
@@ -123,13 +123,9 @@ td.fc-day.fc-today {
 
 					<div class="box-body" id="listName" style="display: none;">
 						<p id="name"></p>
-						<ul class="nav nav-stacked" id="ulUser">
-							
-						</ul>
+						<ul class="nav nav-stacked" id="ulUser"></ul>
 						<br>
-						<button class="btn btn-default" id="buttonBack">
-							Back
-						</button>
+						<button class="btn btn-default" id="buttonBack">Back</button>
 					</div>
 
 					<div class="box-body" id="external" style="display: none;">
@@ -178,46 +174,50 @@ td.fc-day.fc-today {
 			</section>			
 		</div>
 	</section>
-</div>
-<div class="modal fade in" id="modal-addusershifting"  tabindex="-1" role="dialog">
+
+	<div class="modal fade in" id="modal-addusershifting"  tabindex="-1" role="dialog">
 		<div class="modal-dialog">
-			<form class="form-horizontal" method="POST" action="{{url('addUserShifting')}}" enctype="multipart/form-data">
-			 {!! csrf_field() !!}
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">×</span>
-						</button>
-						<h4 class="modal-title">Add User Shifting</h4>
-					</div>
-					<div class="modal-body">
-						<div class="col-md-6">
-						<div class="form-group">
-							<label>Nama Users</label>
-							<select class="form-control" name="id_user">
-								@foreach($nameUsers as $nameUser)
-									<option value="{{$nameUser->id}}">{{$nameUser->name}}</option>
-								@endforeach
-							</select>
-						</div>
-						</div>
-						<div class="col-md-6">
-						<div class="form-group">
-							<label>Project Name</label>
-								<select class="form-control" name="on_project" >
-								@foreach($projects as $project)
-									<option value="{{$project->id}}">{{$project->project}}</option>
-								@endforeach
-								</select>
-						</div>
-						</div>	
-					</div>
-					<div class="modal-footer">
-						<button type="submit" class="btn btn-primary">Add user</button>
-					</div>
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title">Add User Shifting</h4>
 				</div>
-			</form>
+				<form method="POST" action="{{url('addUserShifting')}}" enctype="multipart/form-data">
+					{!! csrf_field() !!}
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label>Nama Users</label>
+										<select class="form-control" name="id_user">
+											@foreach($nameUsers as $nameUser)
+												<option value="{{$nameUser->id}}">{{$nameUser->name}}</option>
+											@endforeach
+										</select>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label>Project Name</label>
+											<select class="form-control" name="on_project" >
+											@foreach($projects as $project)
+												<option value="{{$project->id}}">{{$project->project}}</option>
+											@endforeach
+											</select>
+									</div>
+								</div>	
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary">Add user</button>
+						</div>
+				</form>
+			</div>
 		</div>
+	</div>
+
 </div>
 @endsection
 @section('script')
@@ -238,11 +238,11 @@ td.fc-day.fc-today {
 			var end1 = strip + 2;
 			var start = str.substr(start1,5);
 			var end = str.substr(end1,5);
-			// console.log(start);
-			// console.log(end);
+			// // console.log(start);
+			// // console.log(end);
 			if(shift == "")
 				shift = "Libur";
-			console.log(shift);
+			// // console.log(shift);
 			var eventObject = {
 				title: $.trim($(this).text()), // use the element's text as the event title
 				startShift: start,
@@ -268,7 +268,7 @@ td.fc-day.fc-today {
 
 	function showProject(name,idProject){
 		$("#listProject").fadeOut(function (){
-			console.log(idProject);
+			// console.log(idProject);
 			$("#listName").fadeIn();
 			$("#name").text("for " + name);
 			$("#calendar").fullCalendar('removeEventSources');
@@ -281,17 +281,16 @@ td.fc-day.fc-today {
 
 	function showDetail(name,idUser,idProject){
 		$("#listName").fadeOut(function (){
-			console.log(idUser);
+			// console.log(idUser);
 			
 			var external2 = ".project-" + idProject;
-			console.log(external2);
+			// console.log(external2);
 			$("#external").fadeIn(function(){
 				$(external2).show();
 			});
 			
 
 			$("#name2").text("for " + name);
-			// $("#calendar").fullCalendar('removeEventSource', '/getSchedule');
 			$("#calendar").fullCalendar('removeEventSources');
 			$("#calendar").fullCalendar('addEventSource', '/getScheduleSelected?idUser=' + idUser + '&idProject=' + globalProject);
 			globalIdUser = idUser;
@@ -332,7 +331,7 @@ td.fc-day.fc-today {
 	}
 
 	$(".fc-next-button").click(function(){
-		console.log("asdfadf");
+		// console.log("asdfadf");
 	});
 
 	var shift_user = [], shift_time = [], shift_date = [];
@@ -355,38 +354,38 @@ td.fc-day.fc-today {
 			var originalEventObject = $(this).data('eventObject');
 			var name3 = $("#name2").text();
 			// name3.length;
-			console.log(name3);
+			// console.log(name3);
 			if(name3.indexOf(" ",name3.indexOf(" ") + 1) > 0){
 				name3 = name3.substr(name3.indexOf(" ") + 1,name3.length - name3.indexOf(" "));
 				name3 = name3.substr(name3.indexOf(" ")	,name3.length - name3.indexOf(" "));
 			} else {
 				name3 = " " + name3.substr(name3.indexOf(" ") + 1,name3.length - name3.indexOf(" "));
 			}
-			console.log(name3);
+			// console.log(name3);
 			// we need to copy it, so that multiple events don't have a reference to the same object
 			var copiedEventObject = $.extend({}, originalEventObject);
 
 			// assign it the date that was reported
 			copiedEventObject.start = date;
-			// console.log(date._d);
+			// // console.log(date._d);
 			var waktu = date._d;
 			waktu = new Date(waktu);
 
 			var day = moment(waktu).toISOString(true);
-			// console.log(waktu.getUTCSeconds());
-			// console.log(waktu.getUTCMinutes());
-			// console.log(waktu.getUTCHours());
-			// console.log(waktu.getUTCDate());
-			// console.log(waktu.getUTCMonth());
-			// console.log(waktu.getUTCFullYear());
+			// // console.log(waktu.getUTCSeconds());
+			// // console.log(waktu.getUTCMinutes());
+			// // console.log(waktu.getUTCHours());
+			// // console.log(waktu.getUTCDate());
+			// // console.log(waktu.getUTCMonth());
+			// // console.log(waktu.getUTCFullYear());
 			
 			// var kapan = waktu.getUTCFullYear() + "-" + waktu.getUTCMonth()+ "-" + waktu.getUTCDate()+ "T" + waktu.getUTCHours()+ ":" + waktu.getUTCMinutes()+ ":" + waktu.getUTCSeconds() + ".000";
-			// console.log("Start : " + originalEventObject.startShift);
-			// console.log("End : " + originalEventObject.endShift);
-			// console.log("Original : " + day);
+			// // console.log("Start : " + originalEventObject.startShift);
+			// // console.log("End : " + originalEventObject.endShift);
+			// // console.log("Original : " + day);
 
-			// console.log("Mix : " + );
-			// console.log(originalEventObject);
+			// // console.log("Mix : " + );
+			// // console.log(originalEventObject);
 
 			var startShift2 = moment(waktu).format('YYYY-MM-DD') + "T" + originalEventObject.startShift + ":00.000Z";
 			var endShift2 = moment(waktu).format('YYYY-MM-DD') + "T" + originalEventObject.endShift + ":00.000Z";
@@ -398,36 +397,36 @@ td.fc-day.fc-today {
 				dataType:"json",
 				url:"/getScheduleAll",
 				success: function(result2){
-					// console.log(result[0].start);
+					// // console.log(result[0].start);
 					for (var i = 0; i < result2.length; i++) {
 						if (startShift2 == result2[i].start) {
-								// console.log("ada yang sama");
+								// // console.log("ada yang sama");
 							var str = result2[i].title;
 							var str2 = result2[i].start;
 							var shift = str.substr(0,str.indexOf(" "));
-							// console.log(result2[i].title);
-							// console.log(str2);
+							// // console.log(result2[i].title);
+							// // console.log(str2);
 							
-							// console.log(shift);
-							console.log(originalEventObject.Shift);
-							console.log(str.substr(str.indexOf(" ") + 3, str.length));
+							// // console.log(shift);
+							// console.log(originalEventObject.Shift);
+							// console.log(str.substr(str.indexOf(" ") + 3, str.length));
 							if(shift == originalEventObject.Shift){
-								console.log("Bener '" + shift + "' '" + originalEventObject.Shift + "'");
-								console.log("Bener2 '" + name3.substr(1,name3.length - 1) + "' '" + str.substr(str.indexOf(" ") + 3, str.length) + "'");
+								// console.log("Bener '" + shift + "' '" + originalEventObject.Shift + "'");
+								// console.log("Bener2 '" + name3.substr(1,name3.length - 1) + "' '" + str.substr(str.indexOf(" ") + 3, str.length) + "'");
 								if(name3.substr(1,name3.length - 1) == str.substr(str.indexOf(" ") + 3, str.length)){
 									ketemu = 1;
 								}
 							} 
 						}
 					};
-						console.log(ketemu);
+						// console.log(ketemu);
 
 					if(ketemu == 1){
 						alert("tanggal sama");
-						console.log("ketemu");
+						// console.log("ketemu");
 					} else {
 						var idEvent = 0;
-						console.log("bener");
+						// console.log("bener");
 
 						$.ajax({
 							type: "GET",
@@ -441,20 +440,20 @@ td.fc-day.fc-today {
 								id_project:globalProject,
 							},
 							success: function(result){
-								console.log(result);
+								// console.log(result);
 								idEvent = result;
-								console.log(idEvent + "asdfasd");
+								// console.log(idEvent + "asdfasd");
 								copiedEventObject.id = idEvent;
-								console.log(copiedEventObject.id);
+								// console.log(copiedEventObject.id);
 								refresh_calendar();
 							},
 						});
 
-						console.log(idEvent);
 						// console.log(idEvent);
-						// console.log(idEvent);
-						// console.log(idEvent);
-						// console.log(idEvent);
+						// // console.log(idEvent);
+						// // console.log(idEvent);
+						// // console.log(idEvent);
+						// // console.log(idEvent);
 
 
 						// render the event on the calendar
@@ -488,7 +487,7 @@ td.fc-day.fc-today {
 			if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 &&
 				jsEvent.pageY >= y1 && jsEvent.pageY <= y2) {
 				if (confirm("Are you sure to delete this events?")) {
-					console.log(event.id);
+					// console.log(event.id);
 					$.ajax({
 						type: "GET",
 						url: "/deleteSchedule/" + event.id,
@@ -502,7 +501,7 @@ td.fc-day.fc-today {
 
 		viewRender: function (view, element) {
 			$("#indicatorMounth").text("Shifting Users on " + moment(view.intervalStart).format("MMMM"));
-			console.log( moment(view.intervalStart).format("YYYY-MM"));
+			// console.log( moment(view.intervalStart).format("YYYY-MM"));
 			$.ajax({
 				type: "GET",
 				url: "changeMonth",
@@ -514,7 +513,7 @@ td.fc-day.fc-today {
 					var append = "";
 					for (var i = 0; i < result.length; i++) {
 					// for (var i = 0; i < 1; i++) {
-						// console.log(result[i].name);
+						// // console.log(result[i].name);
 						var showDetail = "showDetail('" + result[i].name + "','" + result[i].id + "','" + result[i].on_project + "')";
 						append = append + '	<li class="' + result[i].on_project + '" style="display:none;padding-bottom:10px">';
 						append = append + '		<a onclick="' + showDetail + '">' + result[i].name;
@@ -528,7 +527,7 @@ td.fc-day.fc-today {
 					};
 					$("#ulUser").append(append);
 					$("." + globalProject).show();
-					console.log("change");
+					// console.log("change");
 				},
 			});
 		}

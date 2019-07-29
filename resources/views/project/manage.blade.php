@@ -564,7 +564,7 @@
 
 
 	function showProjectDetail( id ){
-		console.log(id);
+		// console.log(id);
 		// $("#inputIdUpdateEventProject").val(id);
 		createTimelineProject(id);
 		$("#modalShowProject").modal('show');

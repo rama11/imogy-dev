@@ -37,7 +37,7 @@
 	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/datatables/dataTables.bootstrap.css')}}">
 	
 	<!-- Pace style -->
-	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/pace/pace.min.css')}}" >
+	<!-- <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/pace/pace.min.css')}}" > -->
 	 <!-- CHART -->
   
 	<!-- Ionicons -->
@@ -384,7 +384,7 @@
 <!-- ChartJS 1.0.1 -->
 <script src="{{ asset('AdminLTE/plugins/chartjs/Chart.min.js')}}"></script>
 <!-- PACE -->	
-<script src="{{ asset('AdminLTE/plugins/pace/pace.min.js')}}"></script>
+<!-- <script src="{{ asset('AdminLTE/plugins/pace/pace.min.js')}}"></script> -->
 <!-- FastClick -->
 <script src="{{ asset('AdminLTE/plugins/fastclick/fastclick.js')}}"></script>
 <!-- AdminLTE App -->
@@ -477,5 +477,4 @@ $(document).ready(function(){
 </script>
 @yield('script')
 </body>
->>>>>>> 28e5df06cd3f219b4fbde816fcba016f8890ae9f
 </html>

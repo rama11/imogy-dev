@@ -1,4 +1,4 @@
-@extends('layouts.admin.layoutLight')
+@extends('layouts.admin.layoutLight2')
 @section('head')
 <link rel="stylesheet" href="{{url('plugins/datepicker/datepicker3.css')}}">
 <link rel="stylesheet" href="{{url('plugins/datatables/dataTables.bootstrap.css')}}">

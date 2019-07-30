@@ -37,7 +37,7 @@
 	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/datatables/dataTables.bootstrap.css')}}">
 	
 	<!-- Pace style -->
-	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/pace/pace.min.css')}}" >
+	<!-- <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/pace/pace.min.css')}}" > -->
 	 <!-- CHART -->
   
 	<!-- Ionicons -->
@@ -203,13 +203,12 @@
 									<a href="{{ url('debugMode')}}" class="btn btn-danger btn-flat">Debug</a>
 								</div> -->
 								<div class="pull-right">
-									<a class="btn btn-default btn-flat" href="{{ route('logout') }}"
-											onclick="event.preventDefault();
-													 document.getElementById('logout-form').submit();">
-											Logout
+									<a class="btn btn-default btn-flat"  href="{{ route('logout') }}"
+												onclick="event.preventDefault();
+                                                document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
 
 										</a>
-
 										<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
 											{{ csrf_field() }}
 										</form>
@@ -384,7 +383,7 @@
 <!-- ChartJS 1.0.1 -->
 <script src="{{ asset('AdminLTE/plugins/chartjs/Chart.min.js')}}"></script>
 <!-- PACE -->	
-<script src="{{ asset('AdminLTE/plugins/pace/pace.min.js')}}"></script>
+<!-- <script src="{{ asset('AdminLTE/plugins/pace/pace.min.js')}}"></script> -->
 <!-- FastClick -->
 <script src="{{ asset('AdminLTE/plugins/fastclick/fastclick.js')}}"></script>
 <!-- AdminLTE App -->

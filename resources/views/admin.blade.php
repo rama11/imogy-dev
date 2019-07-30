@@ -23,7 +23,6 @@
 					<div class="icon">
 						<i class="fa  fa-check"></i>
 					</div>
-					<a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
 				</div>
 			</div>
 			<!-- ./col -->
@@ -38,7 +37,6 @@
 					<div class="icon">
 						<i class="fa  fa-remove"></i>
 					</div>
-					<a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
 				</div>
 			</div>
 			<!-- ./col -->
@@ -53,7 +51,6 @@
 					<div class="icon">
 						<i class="fa fa-paper-plane"></i>
 					</div>
-					<a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
 				</div>
 			</div>
 			<!-- ./col -->
@@ -68,7 +65,6 @@
 					<div class="icon">
 						<i class="fa fa-user"></i>
 					</div>
-					<a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
 				</div>
 			</div>
 			<!-- ./col -->
@@ -82,16 +78,6 @@
 				<div class="box">
 					<div class="box-header">
 						<h3 class="box-title">List Users</h3>
-
-						<div class="box-tools">
-							<div class="input-group input-group-sm" style="width: 150px;">
-								<input name="table_search" class="form-control pull-right" placeholder="Search" type="text">
-
-								<div class="input-group-btn">
-									<button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-								</div>
-							</div>
-						</div>
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive no-padding">
@@ -135,18 +121,6 @@
 						</table>
 					</div>
 					<!-- /.box-body -->
-				</div>
-				<!-- /.box -->
-				<div class="box box-default">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="info-box">
-							<div class="box-body">
-								<canvas id="pieChart" style="height:250px"></canvas>
-							</div>
-						</div>
-					</div>
-				</div>
 				</div>
 				<!-- Galery -->
 				<div class="box box-success">
@@ -285,44 +259,7 @@
 
 					<!-- /.box -->
 				</div>
-
 				
-
-				<!-- Calendar -->
-				<div class="box box-solid bg-green-gradient">
-					<div class="box-header ui-sortable-handle" style="cursor: move;">
-						<i class="fa fa-calendar"></i>
-
-						<h3 class="box-title">Calendar</h3>
-						<!-- tools box -->
-						<div class="pull-right box-tools">
-							<!-- button with a dropdown -->
-							<div class="btn-group">
-								<button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
-									<i class="fa fa-bars"></i>
-								</button>
-								<ul class="dropdown-menu pull-right" role="menu">
-									<li><a href="#">Add new event</a></li>
-									<li><a href="#">Clear events</a></li>
-									<li class="divider"></li>
-									<li><a href="#">View calendar</a></li>
-								</ul>
-							</div>
-							<button type="button" class="btn btn-success btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
-							</button>
-							<button type="button" class="btn btn-success btn-sm" data-widget="remove"><i class="fa fa-times"></i>
-							</button>
-						</div>
-						<!-- /. tools -->
-					</div>
-					<!-- /.box-header -->
-					<div class="box-body no-padding">
-						<!--The calendar -->
-						<div id="calendar" style="width: 100%"><div class="datepicker datepicker-inline"><div class="datepicker-days" style="display: block;"><table class="table table-condensed"><thead><tr><th class="prev" style="visibility: visible;">«</th><th colspan="5" class="datepicker-switch">August 2017</th><th class="next" style="visibility: visible;">»</th></tr><tr><th class="dow">Su</th><th class="dow">Mo</th><th class="dow">Tu</th><th class="dow">We</th><th class="dow">Th</th><th class="dow">Fr</th><th class="dow">Sa</th></tr></thead><tbody><tr><td class="old day">30</td><td class="old day">31</td><td class="day">1</td><td class="day">2</td><td class="day">3</td><td class="day">4</td><td class="day">5</td></tr><tr><td class="day">6</td><td class="day">7</td><td class="day">8</td><td class="day">9</td><td class="day">10</td><td class="day">11</td><td class="day">12</td></tr><tr><td class="day">13</td><td class="day">14</td><td class="day">15</td><td class="day">16</td><td class="day">17</td><td class="day">18</td><td class="day">19</td></tr><tr><td class="day">20</td><td class="day">21</td><td class="day">22</td><td class="day">23</td><td class="day">24</td><td class="day">25</td><td class="day">26</td></tr><tr><td class="day">27</td><td class="day">28</td><td class="day">29</td><td class="day">30</td><td class="day">31</td><td class="new day">1</td><td class="new day">2</td></tr><tr><td class="new day">3</td><td class="new day">4</td><td class="new day">5</td><td class="new day">6</td><td class="new day">7</td><td class="new day">8</td><td class="new day">9</td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr><tr><th colspan="7" class="clear" style="display: none;">Clear</th></tr></tfoot></table></div><div class="datepicker-months" style="display: none;"><table class="table table-condensed"><thead><tr><th class="prev" style="visibility: visible;">«</th><th colspan="5" class="datepicker-switch">2017</th><th class="next" style="visibility: visible;">»</th></tr></thead><tbody><tr><td colspan="7"><span class="month">Jan</span><span class="month">Feb</span><span class="month">Mar</span><span class="month">Apr</span><span class="month">May</span><span class="month">Jun</span><span class="month">Jul</span><span class="month">Aug</span><span class="month">Sep</span><span class="month">Oct</span><span class="month">Nov</span><span class="month">Dec</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr><tr><th colspan="7" class="clear" style="display: none;">Clear</th></tr></tfoot></table></div><div class="datepicker-years" style="display: none;"><table class="table table-condensed"><thead><tr><th class="prev" style="visibility: visible;">«</th><th colspan="5" class="datepicker-switch">2010-2019</th><th class="next" style="visibility: visible;">»</th></tr></thead><tbody><tr><td colspan="7"><span class="year old">2009</span><span class="year">2010</span><span class="year">2011</span><span class="year">2012</span><span class="year">2013</span><span class="year">2014</span><span class="year">2015</span><span class="year">2016</span><span class="year">2017</span><span class="year">2018</span><span class="year">2019</span><span class="year new">2020</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr><tr><th colspan="7" class="clear" style="display: none;">Clear</th></tr></tfoot></table></div></div></div>
-					</div>
-					<!-- /.box-body -->
-				</div>
-					<!-- /.col -->
 			</section>
 			<!-- right col -->
 
@@ -335,147 +272,6 @@
 @endsection
 
 @section('script')
-<script>
-$(function () {
 
-	var areaChartData = {
-		labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-		datasets: [
-			{
-				label: "Open Ticket",
-				fillColor: "rgba(210, 214, 222, 1)",
-				strokeColor: "rgba(210, 214, 222, 1)",
-				pointColor: "rgba(210, 214, 222, 1)",
-				pointStrokeColor: "#c1c7d1",
-				pointHighlightFill: "#fff",
-				pointHighlightStroke: "rgba(220,220,220,1)",
-				data: [65, 59, 80, 81, 56, 55, 40]
-			},
-			{
-				label: "Close Ticket",
-				fillColor: "rgba(52, 152, 219,1.0)",
-				strokeColor: "rgba(60,141,188,0.8)",
-				pointColor: "#3b8bba",
-				pointStrokeColor: "rgba(60,141,188,1)",
-				pointHighlightFill: "#fff",
-				pointHighlightStroke: "rgba(60,141,188,1)",
-				data: [28, 48, 40, 19, 86, 27, 90]
-			}
-		]
-	};
-
-    var barChartCanvas = $("#barChart").get(0).getContext("2d");
-    var barChart = new Chart(barChartCanvas);
-    var barChartData = areaChartData;
-    barChartData.datasets[1].fillColor = "rgba(52, 152, 219,1.0)";
-    barChartData.datasets[1].strokeColor = "rgba(52, 152, 219,1.0)";
-    barChartData.datasets[1].pointColor = "rgba(52, 152, 219,1.0)";
-    var barChartOptions = {
-      //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-      scaleBeginAtZero: true,
-      //Boolean - Whether grid lines are shown across the chart
-      scaleShowGridLines: true,
-      //String - Colour of the grid lines
-      scaleGridLineColor: "rgba(0,0,0,.05)",
-      //Number - Width of the grid lines
-      scaleGridLineWidth: 1,
-      //Boolean - Whether to show horizontal lines (except X axis)
-      scaleShowHorizontalLines: true,
-      //Boolean - Whether to show vertical lines (except Y axis)
-      scaleShowVerticalLines: true,
-      //Boolean - If there is a stroke on each bar
-      barShowStroke: true,
-      //Number - Pixel width of the bar stroke
-      barStrokeWidth: 2,
-      //Number - Spacing between each of the X value sets
-      barValueSpacing: 5,
-      //Number - Spacing between data sets within X values
-      barDatasetSpacing: 1,
-      //String - A legend template
-      legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
-      //Boolean - whether to make the chart responsive
-      responsive: true,
-      maintainAspectRatio: true
-    };
-
-    barChartOptions.datasetFill = false;
-    barChart.Bar(barChartData, barChartOptions);
-  });
-
-
-	//-------------
-		//- PIE CHART -
-		//-------------
-		// Get context with jQuery - using jQuery's .get() method.
-
-		var pieChartCanvas = $("#pieChart").get(0).getContext("2d");
-		var pieChart = new Chart(pieChartCanvas);
-		var PieData = [
-			{
-				value: 700,
-				color: "#f56954",
-				highlight: "#f56954",
-				label: "Server"
-			},
-			{
-				value: 500,
-				color: "#00a65a",
-				highlight: "#00a65a",
-				label: "Network"
-			},
-			{
-				value: 400,
-				color: "#f39c12",
-				highlight: "#f39c12",
-				label: "Firewall"
-			},
-			{
-				value: 600,
-				color: "#00c0ef",
-				highlight: "#00c0ef",
-				label: "Wireless"
-			},
-			{
-				value: 300,
-				color: "#3c8dbc",
-				highlight: "#3c8dbc",
-				label: "House Device"
-			},
-			{
-				value: 100,
-				color: "#d2d6de",
-				highlight: "#d2d6de",
-				label: "DLL"
-			}
-		];
-		var pieOptions = {
-			//Boolean - Whether we should show a stroke on each segment
-			segmentShowStroke: true,
-			//String - The colour of each segment stroke
-			segmentStrokeColor: "#fff",
-			//Number - The width of each segment stroke
-			segmentStrokeWidth: 2,
-			//Number - The percentage of the chart that we cut out of the middle
-			percentageInnerCutout: 50, // This is 0 for Pie charts
-			//Number - Amount of animation steps
-			animationSteps: 100,
-			//String - Animation easing effect
-			animationEasing: "easeOutBounce",
-			//Boolean - Whether we animate the rotation of the Doughnut
-			animateRotate: true,
-			//Boolean - Whether we animate scaling the Doughnut from the centre
-			animateScale: false,
-			//Boolean - whether to make the chart responsive to window resizing
-			responsive: true,
-			// Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-			maintainAspectRatio: true,
-			//String - A legend template
-			legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
-		};
-		//Create pie or douhnut chart
-		// You can switch between pie and douhnut using the method below.
-		pieChart.Doughnut(PieData, pieOptions);
-</script>
 <!-- jQuery 3.1.1 -->
-
 @endsection

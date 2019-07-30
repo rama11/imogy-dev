@@ -913,8 +913,11 @@ class AdminController extends Controller
 			->where('tanggal','like',$tanggal)
 			->orderBy('tanggal','ASC')
 			->orderBy('jam','ASC')
+			->limit(4)
 			->get()
 			->toarray();
+
+			
 
 		$kehadiran = DB::table('users')
 			->where('id_user','=',$id)
@@ -995,6 +998,8 @@ class AdminController extends Controller
 			$absen = 100 - ($late + $injury + $ontime),
 			$attendance = 100 - $absen
 		];
+
+
 
 
 		// $absen = 0;	
@@ -1257,7 +1262,7 @@ class AdminController extends Controller
 		// echo $injury . "<br>";
 		// echo $ontime . "<br>";
 		// echo $all . "<br>";
-
+		
 		// echo "<pre>";
 		// print_r($var);
 		// print_r($absenToday);
@@ -1269,7 +1274,6 @@ class AdminController extends Controller
 		// echo "</pre>";
 		return view('admin.teamhistory',compact('datas','datas2','var','status','late','injury','ontime','count','absen','attendance','absenToday','ids','problem'));
 	}
-
 	public function auserhistory ($id,$start = 0,$end = 0){
 	
 		if($start == 0 && $end == 0){
@@ -2843,3 +2847,4 @@ class AdminController extends Controller
 	// }
 
 }
+

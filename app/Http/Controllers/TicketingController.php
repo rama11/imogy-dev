@@ -353,22 +353,22 @@ class TicketingController extends Controller
 		$mail = new PHPMailer\PHPMailer(true);
 		
 		// Yandex Configuration
-		$mail_host = "smtp.yandex.ru";
-		$mail_port = 587;
-		$mail_user = "imogy@sinergy.co.id";
-		$mail_pass = "bpdorgcsuturrmij";
-		$mail_auth = "tls";
-		$mail_from = "imogy@sinergy.co.id";
-		$mail_name = "Helpdesk Sinergy";
+		// $mail_host = env("YANDEX_MAIL_HOST");
+		// $mail_port = env("YANDEX_MAIL_PORT");
+		// $mail_user = env("YANDEX_MAIL_USERNAME");
+		// $mail_pass = env("YANDEX_MAIL_PASSWORD");
+		// $mail_auth = env("YANDEX_MAIL_ENCRYPTION");
+		// $mail_from = env("YANDEX_MAIL_FROM");
+		// $mail_name = env("YANDEX_MAIL_NAME");
 
 		// Gmail Configuration
-		// $mail_host = "smtp.gmail.com";
-		// $mail_port = 587;
-		// $mail_user = "hellosinergy@gmail.com";
-		// $mail_pass = "Sip2017!";
-		// $mail_auth = "tls";
-		// $mail_from = "hellosinergy@gmail.com";
-		// $mail_name = "Hello Sinergy";
+		$mail_host = env("GMAIL_MAIL_HOST");
+		$mail_port = env("GMAIL_MAIL_PORT");
+		$mail_user = env("GMAIL_MAIL_USERNAME");
+		$mail_pass = env("GMAIL_MAIL_PASSWORD");
+		$mail_auth = env("GMAIL_MAIL_ENCRYPTION");
+		$mail_from = env("GMAIL_MAIL_FROM");
+		$mail_name = env("GMAIL_MAIL_NAME");
 
 		try {
 			$mail->isSMTP();
@@ -869,22 +869,22 @@ class TicketingController extends Controller
 		$mail = new PHPMailer\PHPMailer(true);
 		
 		// Yandex Configuration
-		$mail_host = "smtp.yandex.ru";
-		$mail_port = 587;
-		$mail_user = "imogy@sinergy.co.id";
-		$mail_pass = "bpdorgcsuturrmij";
-		$mail_auth = "tls";
-		$mail_from = "imogy@sinergy.co.id";
-		$mail_name = "Helpdesk Sinergy";
+		$mail_host = env("YANDEX_MAIL_HOST");
+		$mail_port = env("YANDEX_MAIL_PORT");
+		$mail_user = env("YANDEX_MAIL_USERNAME");
+		$mail_pass = env("YANDEX_MAIL_PASSWORD");
+		$mail_auth = env("YANDEX_MAIL_ENCRYPTION");
+		$mail_from = env("YANDEX_MAIL_FROM");
+		$mail_name = env("YANDEX_MAIL_NAME");
 
 		// Gmail Configuration
-		// $mail_host = "smtp.gmail.com";
-		// $mail_port = 587;
-		// $mail_user = "hellosinergy@gmail.com";
-		// $mail_pass = "Sip2017!";
-		// $mail_auth = "tls";
-		// $mail_from = "hellosinergy@gmail.com";
-		// $mail_name = "Hello Sinergy";
+		// $mail_host = env("GMAIL_MAIL_HOST");
+		// $mail_port = env("GMAIL_MAIL_PORT");
+		// $mail_user = env("GMAIL_MAIL_USERNAME");
+		// $mail_pass = env("GMAIL_MAIL_PASSWORD");
+		// $mail_auth = env("GMAIL_MAIL_ENCRYPTION");
+		// $mail_from = env("GMAIL_MAIL_FROM");
+		// $mail_name = env("GMAIL_MAIL_NAME");
 
 		try {
 			$mail->isSMTP();
@@ -990,22 +990,22 @@ class TicketingController extends Controller
 		$mail = new PHPMailer\PHPMailer(true);
 		
 		// Yandex Configuration
-		$mail_host = "smtp.yandex.ru";
-		$mail_port = 587;
-		$mail_user = "imogy@sinergy.co.id";
-		$mail_pass = "bpdorgcsuturrmij";
-		$mail_auth = "tls";
-		$mail_from = "imogy@sinergy.co.id";
-		$mail_name = "Helpdesk Sinergy";
+		$mail_host = env("YANDEX_MAIL_HOST");
+		$mail_port = env("YANDEX_MAIL_PORT");
+		$mail_user = env("YANDEX_MAIL_USERNAME");
+		$mail_pass = env("YANDEX_MAIL_PASSWORD");
+		$mail_auth = env("YANDEX_MAIL_ENCRYPTION");
+		$mail_from = env("YANDEX_MAIL_FROM");
+		$mail_name = env("YANDEX_MAIL_NAME");
 
 		// Gmail Configuration
-		// $mail_host = "smtp.gmail.com";
-		// $mail_port = 587;
-		// $mail_user = "hellosinergy@gmail.com";
-		// $mail_pass = "Sip2017!";
-		// $mail_auth = "tls";
-		// $mail_from = "hellosinergy@gmail.com";
-		// $mail_name = "Hello Sinergy";
+		// $mail_host = env("GMAIL_MAIL_HOST");
+		// $mail_port = env("GMAIL_MAIL_PORT");
+		// $mail_user = env("GMAIL_MAIL_USERNAME");
+		// $mail_pass = env("GMAIL_MAIL_PASSWORD");
+		// $mail_auth = env("GMAIL_MAIL_ENCRYPTION");
+		// $mail_from = env("GMAIL_MAIL_FROM");
+		// $mail_name = env("GMAIL_MAIL_NAME");
 
 		try {
 			$mail->isSMTP();
@@ -1089,16 +1089,36 @@ class TicketingController extends Controller
 	public function cancelTicket(Request $request){
 		$mail = new PHPMailer\PHPMailer(true);
 
+		// Yandex Configuration
+		$mail_host = env("YANDEX_MAIL_HOST");
+		$mail_port = env("YANDEX_MAIL_PORT");
+		$mail_user = env("YANDEX_MAIL_USERNAME");
+		$mail_pass = env("YANDEX_MAIL_PASSWORD");
+		$mail_auth = env("YANDEX_MAIL_ENCRYPTION");
+		$mail_from = env("YANDEX_MAIL_FROM");
+		$mail_name = env("YANDEX_MAIL_NAME");
+
+		// Gmail Configuration
+		// $mail_host = env("GMAIL_MAIL_HOST");
+		// $mail_port = env("GMAIL_MAIL_PORT");
+		// $mail_user = env("GMAIL_MAIL_USERNAME");
+		// $mail_pass = env("GMAIL_MAIL_PASSWORD");
+		// $mail_auth = env("GMAIL_MAIL_ENCRYPTION");
+		// $mail_from = env("GMAIL_MAIL_FROM");
+		// $mail_name = env("GMAIL_MAIL_NAME");
+
 		try {
 			$mail->isSMTP();
 			$mail->CharSet = "utf-8";
 			$mail->SMTPAuth = true;
-			$mail->SMTPSecure = "tls";
-			$mail->Host = "smtp.yandex.ru";
-			$mail->Port = 587;
-			$mail->Username = "imogy@sinergy.co.id";
-			$mail->Password = "bpdorgcsuturrmij";
-			$mail->SetFrom('imogy@sinergy.co.id', 'Helpdesk Sinergy');
+
+			$mail->Host = $mail_host;
+			$mail->Port = $mail_port;
+			$mail->Username = $mail_user;
+			$mail->Password = $mail_pass;
+			$mail->SMTPSecure = $mail_auth;
+			$mail->SetFrom($mail_from, $mail_name);
+			
 			$mail->Subject = $request->subject;
 			$mail->MsgHTML($request->body);
 

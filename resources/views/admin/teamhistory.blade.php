@@ -256,7 +256,7 @@
 				<!-- Box For Information -->
 				<div class="box box-default">
 					<div class="box-header with-border">
-						<h3 class="box-title">Table Information</h3>
+						<h3 class="box-title">Team Attendence</h3>
 					</div>
 					<div class="box-body no-padding">
 						<table class="table table-striped">

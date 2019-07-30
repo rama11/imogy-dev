@@ -38,6 +38,27 @@ return [
 
             'SERVER_ADDR',
             'SERVER_PORT',
+
+            "GMAIL_MAIL_DRIVER",
+            "GMAIL_MAIL_HOST",
+            "GMAIL_MAIL_PORT",
+            "GMAIL_MAIL_USERNAME",
+            "GMAIL_MAIL_PASSWORD",
+            "GMAIL_MAIL_ENCRYPTION",
+            "GMAIL_MAIL_FROM",
+            "GMAIL_MAIL_NAME",
+            "YANDEX_MAIL_DRIVER",
+            "YANDEX_MAIL_HOST",
+            "YANDEX_MAIL_PORT",
+            "YANDEX_MAIL_USERNAME",
+            "YANDEX_MAIL_PASSWORD",
+            "YANDEX_MAIL_ENCRYPTION",
+            "YANDEX_MAIL_FROM",
+            "YANDEX_MAIL_NAME",
+
+
+            "GOOGLE_API_KEY",
+
         ],
         '_SERVER' => [
             'APP_KEY',
@@ -58,6 +79,25 @@ return [
             'MAIL_HOST',
             'MAIL_PORT',
             'MAIL_USERNAME',
+
+            "GMAIL_MAIL_DRIVER",
+            "GMAIL_MAIL_HOST",
+            "GMAIL_MAIL_PORT",
+            "GMAIL_MAIL_USERNAME",
+            "GMAIL_MAIL_PASSWORD",
+            "GMAIL_MAIL_ENCRYPTION",
+            "GMAIL_MAIL_FROM",
+            "GMAIL_MAIL_NAME",
+            "YANDEX_MAIL_DRIVER",
+            "YANDEX_MAIL_HOST",
+            "YANDEX_MAIL_PORT",
+            "YANDEX_MAIL_USERNAME",
+            "YANDEX_MAIL_PASSWORD",
+            "YANDEX_MAIL_ENCRYPTION",
+            "YANDEX_MAIL_FROM",
+            "YANDEX_MAIL_NAME",
+
+            "GOOGLE_API_KEY",
         ],
         '_POST' => [
             'password',

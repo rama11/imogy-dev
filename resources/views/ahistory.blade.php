@@ -213,13 +213,17 @@ html{
               			</ul>
 						  <br> -->
 						  <br>
+						  <p class="text-left">
+							For more other history information. Click <a href="{{url('ahistory2')}}" style="cursor:pointer">here</b>
+						  </p>
 						  <a href="{{url('downloadPDF',Auth::user()->id)}}">
-							<button type="button" class="btn btn-primary pull-right" style="margin-right: 5px; margin-top: 0px;">
+							<button type="button" class="btn btn-primary pull-right">
 								<i class="fa fa-download"></i> Download Report
 							</button>
-						</a>
+						  </a>
 					</div>
 					<div class="box-footer clearfix">
+
 					</div>
 				</div>
 			</section>
@@ -227,3 +231,4 @@ html{
 
 	@endsection
 	@section('script')
+	

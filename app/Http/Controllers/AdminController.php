@@ -903,6 +903,104 @@ class AdminController extends Controller
 		return view('announcement');
 	}
 
+	public function historydet(){
+		$id = Auth::user()->id;
+		
+		$tanggal = date('Y') . "-" . date('m') . "%";
+		
+		$datadet = DB::table('waktu_absen')
+			->where('id_user','=',$id)
+			->where('tanggal','like',$tanggal)
+			->orderBy('tanggal','ASC')
+			->orderBy('jam','ASC')
+			->get()
+			->toarray();
+			
+	
+			$kehadiran = DB::table('users')
+				->where('id_user','=',$id)
+				->join('waktu_absen','waktu_absen.id_user','=','users.id')
+				->orderBy('tanggal','ASC')
+				->orderBy('jam','ASC')
+				->get()
+				->toarray();
+			
+			if(count($datadet) > 10){
+				$datadet = array_slice(array_reverse($datadet), 0, 9);
+				$kehadiran = array_slice(array_reverse($kehadiran), 0, 9);
+			} else {
+				$datadet = array_reverse($datadet);
+				$kehadiran = array_slice(array_reverse($kehadiran), 0, count($datadet));
+			}
+	
+			$datas2 = DB::table('waktu_absen')
+				->where('id_user','=',$id)
+				->join('location','waktu_absen.location','=','location.id')
+				->orderBy('tanggal','ASC')
+				->orderBy('jam','ASC')
+				->get()
+				->toarray();
+			$datas2 = array_reverse($datas2);
+	
+			$location = DB::table('location')
+				->get()
+				->toArray();
+			foreach ($datadet as $data) {
+				// echo $user->location . "<br>";
+				for ($i=0; $i < sizeof($location); $i++) { 
+					if($data->location == $location[$i]->id){
+						$data->location = $location[$i]->name;
+					}
+				}
+			}
+	
+			$late = DB::table('waktu_absen')
+				->where('tanggal','like',$tanggal)
+				->where('id_user','=',auth::user()->id)
+				->where('late','=','Late')
+				->count();
+			$injury = DB::table('waktu_absen')
+				->where('tanggal','like',$tanggal)
+				->where('id_user','=',auth::user()->id)
+				->where('late','=','Injury-Time')
+				->count();
+			$ontime = DB::table('waktu_absen')
+				->where('tanggal','like',$tanggal)
+				->where('id_user','=',auth::user()->id)
+				->where('late','=','On-Time')
+				->count();
+			$all = DB::table('waktu_absen')
+				->where('tanggal','like',$tanggal)
+				->where('id_user','=',auth::user()->id)
+				->count();			
+	
+			$count = [
+				$late,
+				$injury,
+				$ontime,
+				$late + $injury + $ontime,
+				$absen = $all - ($late + $injury + $ontime)
+			];
+	
+			if($late == 0 && $injury == 0 && $ontime == 0 && $all == 0){
+				$late == 1 ;
+				$injury == 1 ;
+				$ontime == 1 ;
+				$all = 1;
+			}
+	
+			$persen = [
+				$late = round($late / $all * 100,0),
+				$injury = round($injury / $all * 100,0),
+				$ontime = round($ontime / $all * 100,0),
+				$absen = 100 - ($late + $injury + $ontime),
+				$attendance = 100 - $absen
+			];
+		
+			return view('ahistory2',compact('datadet','datas2','kehadiran','persen','count','absen'));
+
+	}
+
 	public function history(){
 		// echo "asdfas";
 		$id = Auth::user()->id;
@@ -913,11 +1011,9 @@ class AdminController extends Controller
 			->where('tanggal','like',$tanggal)
 			->orderBy('tanggal','ASC')
 			->orderBy('jam','ASC')
-			->limit(4)
+			->limit(3)
 			->get()
 			->toarray();
-
-			
 
 		$kehadiran = DB::table('users')
 			->where('id_user','=',$id)

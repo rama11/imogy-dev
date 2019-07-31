@@ -81,7 +81,7 @@ class ProjectController extends Controller
 					'project_list_id' => DB::table('project__list')->where('project_pid',$req->PID)->value('id'),
 					'name' => "Preventive Periode " . 1,
 					'note' => date('j F Y', strtotime("+" . ($req->Duration*0) . " months", strtotime($req->StartPeriod))) . " - " . date('j F Y', strtotime("+" . ($req->Duration*1) . " months -1 days", strtotime($req->StartPeriod))),
-					'due_date' => date('Y-m-d', strtotime("+" . ($req->Duration*0) . " months", strtotime($req->StartPeriod))),
+					'due_date' => date('Y-m-d', strtotime("+" . ($req->Duration*1) . " months", strtotime($req->StartPeriod))),
 					'status' => "Active"
 				]
 			);
@@ -92,8 +92,8 @@ class ProjectController extends Controller
 					[
 						'project_list_id' => DB::table('project__list')->where('project_pid',$req->PID)->value('id'),
 						'name' => "Preventive Periode " . ($i+1),
-						'note' => date('j F Y', strtotime("+" . ($req->Duration*$i) . " months", strtotime($req->StartPeriod))) . " - " . date('j F Y', strtotime("+" . ($req->Duration*$i+1) . " months -1 days", strtotime($req->StartPeriod))),
-						'due_date' => date('Y-m-d', strtotime("+" . ($req->Duration*$i) . " months", strtotime($req->StartPeriod))),
+						'note' => date('j F Y', strtotime("+" . ($req->Duration*$i) . " months", strtotime($req->StartPeriod))) . " - " . date('j F Y', strtotime("+" . ($req->Duration*($i+1)) . " months -1 days", strtotime($req->StartPeriod))),
+						'due_date' => date('Y-m-d', strtotime("+" . ($req->Duration*($i+1)) . " months", strtotime($req->StartPeriod))),
 						'status' => "On Going"
 					]
 				);
@@ -110,7 +110,8 @@ class ProjectController extends Controller
 					"project__list.project_name",
 					"project__list.project_pid",
 					DB::raw("project__customer.name as project_customer"),
-					"project__list.project_start",
+					DB::raw("IFNULL ( DATEDIFF(project_event.due_date,'" . date('Y-m-d') . "'),0 )as project_start"),
+					DB::raw("IFNULL ( DATEDIFF(project_event.due_date,'" . date('Y-m-d') . "'),0 )as project_start2"),
 					"project__list.project_periode",
 					"project__list.project_periode_duration",
 					// "project__list.project_coordinator",
@@ -118,6 +119,13 @@ class ProjectController extends Controller
 					DB::raw("leader.nickname as project_leader"),
 					DB::raw("coordinator.nickname as project_coordinator")
 				)
+			// ->where('project__event.status','Active')
+			->join(
+				DB::raw('(select * from project__event where project__event.status = "Active") AS project_event'),
+				'project_event.project_list_id',
+				'=',
+				'project__list.id','left')
+			->orderBy('project_start','ASC')
 			->join('project__customer','project__list.project_customer','=','project__customer.id')
 			->join('project__member as leader','project__list.project_leader','=','leader.id','left outer')
 			->join('project__member as coordinator','project__list.project_coordinator','=','coordinator.id','left outer')
@@ -158,24 +166,34 @@ class ProjectController extends Controller
 			->where('status','Active')
  			->first();
 
- 		$history = DB::table('project__event_history')
+ 		if(!empty($event)){
+	 		$history = DB::table('project__event_history')
 	 			->where('project_event_id','=',$event->id)
 	 			->orderBy('id','DESC')
 	 			->first();
 
-	 	if(isset($history->note)){
-			return array(
-				'next_due_date' => date_diff(date_create($event->due_date),date_create(date('Y-m-d')))->days,
-				'lastest_update' => $history->note,
-				'event_now' => $event->name,
-			);
-	 	} else {
+		 	if(isset($history->note)){
+				return array(
+					'next_due_date' => date_diff(date_create($event->due_date),date_create(date('Y-m-d')))->days,
+					'lastest_update' => $history->note,
+					'event_now' => $event->name,
+				);
+		 	} else {
+		 		return array(
+					'next_due_date' => date_diff(date_create($event->due_date),date_create(date('Y-m-d')))->days,
+					'lastest_update' => "N/A",
+					'event_now' => $event->name,
+				);
+		 	}
+ 		} else {
 	 		return array(
-				'next_due_date' => date_diff(date_create($event->due_date),date_create(date('Y-m-d')))->days,
+				'next_due_date' => "N/A",
 				'lastest_update' => "N/A",
-				'event_now' => $event->name,
+				'event_now' => "Project Close",
 			);
-	 	}
+ 		}
+
+
 	}
 
 	public function setUpdateEventProject(Request $req){

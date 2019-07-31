@@ -79,7 +79,8 @@
 									<th></th>
 									<th>Customer</th>
 									<th>Name Project</th>
-									<th>Start</th>
+									<th>Time to Due Date</th>
+									<th>Time to Due Date</th>
 									<th>Coordinator</th>
 								</tr>
 							</thead>
@@ -357,12 +358,17 @@
 @section('script')
 <!-- moment.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<!-- HumanizeDuration.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-duration/3.20.1/humanize-duration.js"></script>
 <!-- bootstrap datepicker -->
 <script src="{{url('plugins/datepicker/bootstrap-datepicker.js')}}"></script>
 <!-- Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
 <!-- Datatables -->
 <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+<script src="{{url('js/hue-to-rgb.js')}}"></script>
+
 <script>
 	var append = "";
 	var member = [];
@@ -552,7 +558,16 @@
 
 	function getAllProjectList(){
 		$("#tableProjectManage").DataTable({
-			"ajax":"{{url('project/manage/getAllProjectList')}}",
+			"ajax":{
+				"type":"GET",
+				"url":"{{url('project/manage/getAllProjectList')}}",
+				"dataSrc": function (json){
+					json.data.forEach(function(data,index){
+						data.project_start = humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, });
+					});
+					return json.data;
+				}
+			},
 			"columns": [
 				 {
 					"className": 'details-control',
@@ -562,10 +577,9 @@
 				},
 				{ "data": "project_customer" },
 				{ "data": "project_name" },
-				{ "data": "project_start" },
+				{ "data": "project_start" , "orderData":[ 4 ] , "targets": [ 1 ]},
+				{ "data": "project_start2" , "targets": [ 4 ] , "visible": false , "searchable": false},
 				{ "data": "project_coordinator" },
-				// { "data": "start_date" },
-				// { "data": "salary" }
 			],
 			searching: true,
 			paging: false,
@@ -604,10 +618,14 @@
 				append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
 				append = append + '	<div class="timeline-item">';
 				append = append + '		<span class="time" title="' + moment().format("HH:mm:ss") + '"><i class="fa fa-clock-o"></i> ' + moment().format("DD MMMM YYYY") + '</span>';
-				append = append + '		<h3 class="timeline-header"><a href="#">[{{Auth::user()->nickname}}]</a> ' + $("#inputUpdateEventProject" + id_event).val() + '</h3>';
+				append = append + '		<h3 class="timeline-header"><a href="#">[{{Auth::user()->nickname}}]</a></h3>';
+				append = append + '		<div class="timeline-body">'
+				append = append + '				<p>' + $("#inputUpdateEventProject" + id_event).val() + '</p>'
+				append = append + '		</div>'
 				append = append + '	</div>';
 				append = append + '</li>';
 				$(append).insertBefore('.updateCollom' + id_event);
+				$("#tableProjectManage").DataTable().ajax.reload();
 			}
 		});
 	}
@@ -636,7 +654,7 @@
 						classTimeline = "afterTime";
 						if(after == false){
 							after = true;
-							append = append + '<li class="time-label" onclick="$(&quot;.afterTime&quot;).slideToggle()" >';
+							append = append + '<li class="time-label" onclick="($(&quot;.' + classTimeline + 'Togle&quot;).length === $(&quot;.' + classTimeline + 'Togle:visible&quot;).length || $(&quot;.' + classTimeline + 'Togle:visible&quot;).length === 0) ? $(&quot;.' + classTimeline + '&quot;).slideToggle() : $(&quot;.' + classTimeline + '&quot;).slideUp()" >';
 							append = append + '	<span class="' + bg_color + '">';
 							append = append + '		Show Previous Event';
 							append = append + '	</span>';
@@ -647,7 +665,7 @@
 							active = true;
 							classTimeline = "activeTime";
 							bg_color = "bg-green";
-							append = append + '<li class="time-label " style="' + style + '" onclick="$(&quot;.activeTime&quot;).slideToggle()">';
+							append = append + '<li class="time-label " style="' + style + '" onclick="($(&quot;.' + classTimeline + 'Togle&quot;).length === $(&quot;.' + classTimeline + 'Togle:visible&quot;).length || $(&quot;.' + classTimeline + 'Togle:visible&quot;).length === 0) ? $(&quot;.' + classTimeline + '&quot;).slideToggle() : $(&quot;.' + classTimeline + '&quot;).slideUp()" >';
 							append = append + '	<span class="' + bg_color + '">';
 							append = append + '		Active Event';
 							append = append + '	</span>';
@@ -657,7 +675,7 @@
 							classTimeline = "beforeTime";
 							if(before == false){
 								before = true;
-								append = append + '<li class="time-label" onclick="$(&quot;.beforeTime&quot;).slideToggle()" >';
+								append = append + '<li class="time-label" onclick="($(&quot;.' + classTimeline + 'Togle&quot;).length === $(&quot;.' + classTimeline + 'Togle:visible&quot;).length || $(&quot;.' + classTimeline + 'Togle:visible&quot;).length === 0) ? $(&quot;.' + classTimeline + '&quot;).slideToggle() : $(&quot;.' + classTimeline + '&quot;).slideUp()" >';
 								append = append + '	<span class="' + bg_color + '">';
 								append = append + '		Show Next Event';
 								append = append + '	</span>';
@@ -665,12 +683,13 @@
 							}
 						}
 					}
-					append = append + '<li class="time-label ' + classTimeline + '" style="' + style + '">';
+					append = append + '<li class="time-label ' + classTimeline + ' ' + classTimeline + 'Togle " style="' + style + '" onclick="$(&quot;.' + classTimeline + dataEvent.id + '&quot;).slideToggle()">';
 					append = append + '	<span class="' + bg_color + '">';
-					append = append + '		' + moment(dataEvent.due_date,"YYYY-MM-DD").format("DD MMMM YYYY");
+					// append = append + '		' + moment(dataEvent.due_date,"YYYY-MM-DD").format("DD MMMM YYYY");
+					append = append + '		' + dataEvent.name;
 					append = append + '	</span>';
 					append = append + '</li>';
-					append = append + '<li class="' + classTimeline + '" style="' + style + '">';
+					append = append + '<li class="' + classTimeline + ' ' + classTimeline + 'Togle ' + classTimeline + dataEvent.id + '" style="' + style + '" >';
 					append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
 					append = append + '	<div class="timeline-item">';
 					append = append + '		<h3 class="timeline-header"><a href="#">[System]</a> ' + dataEvent.name + '</h3>';
@@ -681,36 +700,40 @@
 					append = append + '</li>';
 					result.eventHistory.forEach(function(dataHistory,index){
 						if(dataHistory.project_event_id == dataEvent.id){
-							append = append + '<li class="' + classTimeline + '" style="' + style + '">';
+							append = append + '<li class="' + classTimeline + ' ' + classTimeline + 'Togle ' + classTimeline + dataEvent.id + '" style="' + style + '">';
 							append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
 							append = append + '	<div class="timeline-item">';
 							append = append + '		<span class="time" title="' + moment(dataHistory.time,"YYYY-MM-DD HH:mm:ss").format("HH:mm:ss") + '"><i class="fa fa-clock-o"></i> ' + moment(dataHistory.time,"YYYY-MM-DD HH:mm:ss").format("DD MMMM YYYY") + '</span>';
-							append = append + '		<h3 class="timeline-header no-border"><a href="#">[' + dataHistory.updater + ']</a> ' + dataHistory.note + '</h3>';
+							append = append + '		<h3 class="timeline-header no-border"><a href="#">[' + dataHistory.updater + ']</a></h3>';
+							append = append + '		<div class="timeline-body">'
+							append = append + '				<p>' + dataHistory.note + '</p>'
+							append = append + '		</div>'
 							append = append + '	</div>';
 							append = append + '</li>';
 						}
 					});
 					if(classTimeline !== "beforeTime"){
-						append = append + '<li class="' + classTimeline + ' updateCollom' + dataEvent.id + '" style="' + style + '">';
-						append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
+						append = append + '<li class="' + classTimeline + ' ' + classTimeline + 'Togle ' + classTimeline + dataEvent.id + ' updateCollom' + dataEvent.id + '" style="' + style + '">';
+						// append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
 						append = append + '	<div class="timeline-item">';
-						append = append + '	 <div class="input-group">';
-						append = append + '	 	<div class="input-group-btn">';
-						append = append + '	 		<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" id="updateBtn' + dataEvent.id + '">Update';
-						append = append + '	 			<span class="fa fa-caret-down"></span>';
-						append = append + '	 		</button>';
-						append = append + '	 		<ul class="dropdown-menu">';
-						append = append + '	 			<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Update <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Update</a></li>';
-						append = append + '	 			<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Pending <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Pending</a></li>';
-						append = append + '	 			<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Finish <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Finish</a></li>';
-						append = append + '	 		</ul>';
-						append = append + '	 	</div>';
-						append = append + '	 	<input type="text" class="form-control" id="inputUpdateEventProject' + dataEvent.id + '">';
-						append = append + '	 	<input type="hidden" id="inputIdUpdateEventProject' + dataEvent.id + '" value=' + dataEvent.id + '>';
-						append = append + '	 	<div class="input-group-btn">';
-						append = append + '	 		<button type="button" class="btn btn-primary" onclick="updateEventProject(&quot;' + bg_color + '&quot;,&quot;' + classTimeline + '&quot;,&quot;' + dataEvent.id + '&quot;)">Go</button>';
-						append = append + '	 	</div>';
-						append = append + '	 </div>';
+						append = append + '		<div class="timeline-body">'
+						append = append + '			<div class="input-group">';
+						append = append + '				<div class="input-group-btn">';
+						append = append + '					<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" id="updateBtn' + dataEvent.id + '">Update';
+						append = append + '						<span class="fa fa-caret-down"></span>';
+						append = append + '					</button>';
+						append = append + '					<ul class="dropdown-menu">';
+						append = append + '						<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Update <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Update</a></li>';
+						append = append + '						<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Finish <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Finish</a></li>';
+						append = append + '					</ul>';
+						append = append + '				</div>';
+						append = append + '				<input type="text" class="form-control" id="inputUpdateEventProject' + dataEvent.id + '">';
+						append = append + '				<input type="hidden" id="inputIdUpdateEventProject' + dataEvent.id + '" value=' + dataEvent.id + '>';
+						append = append + '				<div class="input-group-btn">';
+						append = append + '					<button type="button" class="btn btn-primary" onclick="updateEventProject(&quot;' + bg_color + '&quot;,&quot;' + classTimeline + '&quot;,&quot;' + dataEvent.id + '&quot;)">Go</button>';
+						append = append + '				</div>';
+						append = append + '			</div>';
+						append = append + '		</div>';
 						append = append + '	</div>';
 						append = append + '</li>';
 					}
@@ -731,7 +754,7 @@
 			'</div>' +
 			'<div class="col-md-3">' +
 				'<label>Time to Due Date</label>' +
-				'<p>' + moment.duration(result.next_due_date, "days").humanize(true) + '</p>' +
+				'<p>' + humanizeDuration(moment.duration(result.next_due_date,'days').asMilliseconds(),{ units: ['y','mo','d'],round: true }) + '</p>' +
 			'</div>' +
 			'<div class="col-md-6">' +
 				'<label>Lastest Update</label>' +

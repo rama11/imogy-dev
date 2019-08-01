@@ -276,20 +276,20 @@
 						<span>AOGY</span>
 					</a>
 				</li>
-				<li class="" id="atisygy">
-					<a href="{{ url('/tisygy')}}">
+				<li class="" id="tisygy">
+					<a href="{{ url('tisygy')}}">
 						<i class="fa fa-paper-plane"></i>
 						<span>TISYGY</span>
 					</a>
 				</li>
-				@if(Auth::user()->id == 4 || Auth::user()->id == 6)
+				<!-- @if(Auth::user()->id == 4 || Auth::user()->id == 6)
 				<li class="" id="controll">
 					<a href="{{ url('/controll')}}">
 						<i class="fa fa-check-square-o"></i>
 						<span>Control</span>
 					</a>
 				</li>
-				@endif
+				@endif -->
 				<li class="" id="usermanage">
 					<a href="{{ url('usermanage')}}">
 						<i class="fa fa-users"></i>
@@ -419,55 +419,68 @@ $(document).ready(function(){
 	switch(path[path.length - 1]) {
 		case "admin":
 			$("#dashboard").addClass("active");
-			$("#usermanage").removeClass("active");
-			$("#location").removeClass("active");
 			$("#absen").removeClass("active");
-			$("#atisygy").removeClass("active");
-			$("#sycal").removeClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			console.log("admin");
+
 						break;
-		case "usermanage":
+
+			case "absen":
 			$("#dashboard").removeClass("active");
-			$("#usermanage").addClass("active");
-			$("#location").removeClass("active");
-			$("#absen").removeClass("active");
-			$("#atisygy").removeClass("active");
-			$("#sycal").removeClass("active");
-			break;
-		case "location":
-			$("#dashboard").removeClass("active");
-			$("#usermanage").removeClass("active");
-			$("#location").addClass("active");
-			$("#absen").removeClass("active");
-			$("#atisygy").removeClass("active");
-			$("#sycal").removeClass("active");
-			break;
-		case "absen":
-			$("#dashboard").removeClass("active");
-			$("#usermanage").removeClass("active");
-			$("#location").removeClass("active");
-			$("#atisygy").removeClass("active");
 			$("#absen").addClass("active");
-			$("#sycal").removeClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
 			console.log("absen");
-			break;
-		case "atisygy":
+			
+						break;
+
+			case "tisygy":
 			$("#dashboard").removeClass("active");
-			$("#usermanage").removeClass("active");
-			$("#location").removeClass("active");
 			$("#absen").removeClass("active");
-			$("#atisygy").addClass("active");
-			$("#sycal").removeClass("active");
-			console.log("atisygy");
-			break;
-		case "asycal":
+			$("#tisygy").addClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			console.log("tisygy");
+			
+						break;
+			
+			case "usermanage":
 			$("#dashboard").removeClass("active");
-			$("#usermanage").removeClass("active");
-			$("#location").removeClass("active");
 			$("#absen").removeClass("active");
-			$("#atisygy").removeClass("active");
-			$("#sycal").addClass("active");
-			console.log("sycal");
-			break;
+			$("#tisygy").removeClass("active");
+			$("#usermanage").addClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			console.log("usermanage");
+						break;
+		
+		case "schedule":
+			$("#dashboard").removeClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").addClass("active");
+			$("#location").removeClass("active");
+			console.log("schedule");
+			
+						break;
+
+			case "location":
+			$("#dashboard").removeClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").addClass("active");
+			console.log("location");
+
+						break;
 		default:
 			$("#dashboard").addClass("active");
 	};

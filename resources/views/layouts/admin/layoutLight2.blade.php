@@ -49,7 +49,6 @@
 										@endif
 										<p>
 											{{Auth::user()->name}} 
-
 											@if(Auth::user()->jabatan = 1)
 											<small>Admin</small>
 											@elseif(Auth::user()->jabatan = 2)
@@ -92,7 +91,6 @@
 						</a>
 						<div class="pull-left info">
 							<p>{{Auth::user()->name}}</p>
-							
 								@if(Auth::user()->jabatan = 1)
 									<small><i class="fa fa-circle text-success"></i> Admin</small>
 								@elseif(Auth::user()->jabatan = 3)
@@ -100,12 +98,8 @@
 								@elseif(Auth::user()->jabatan = 2)
 									<small><i class="fa fa-circle text-success"></i> Engineer</small>
 								@endif
-							
-							</a>
 						</div>
 					</div>
-					
-					
 					<ul class="sidebar-menu" data-widget="tree">
 						<li class="header" onclick="url()">
 							Main Menu
@@ -145,24 +139,6 @@
 								<span>Set Absent Location</span>
 							</a>
 						</li>
-						<!-- <li class="" id="sycal">
-							<a href="{{ url('asycal')}}">
-								<i class="fa fa-calendar"></i>
-								<span>SYCAL</span>
-							</a>
-						</li>
-						<li class="" id="announcement">
-							<a href="{{ url('announcement')}}">
-								<i class="fa fa-bookmark-o"></i>
-								<span>Announcement</span>
-							</a>
-						</li>
-						<li class="" id="announcement">
-							<a href="{{ url('test_page')}}">
-								<i class="fa fa-test-o"></i>
-								<span>Test Page</span>
-							</a>
-						</li> -->
 					</ul>
 				</section>
 			</aside>

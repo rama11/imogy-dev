@@ -1,0 +1,22 @@
+Klasifikasi Project
+
+Project akan di clasifikasikan berdasarkan durasi sampai dengan due date
+
+Critical > 40 hari
+Major <= 40 dan > 30
+Minor <= 30 dan > 20
+Warning <= 20 dan > 10
+Normal < 10
+
+Ex : 
+Customer	: PT. Bank Pembangunan Daerah Jawa Barat Dan Banten Tbk
+Project		: Pekerjaan Pengadaan Next Generation Firewall Palo Alto Segmentasi E-Channel
+PID			: 486/BANK JABAR/15/SIP/XII/2017
+Start date	: 27 Sep 2018
+Periode		: 4x
+per Periode	: 3 Bulan
+
+Sekarang ada di periode 3
+Due date 27 Juni 2019
+Durasi sampai due date = H+36
+Kondisi = Major

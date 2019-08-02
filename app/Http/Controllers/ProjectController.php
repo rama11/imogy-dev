@@ -103,6 +103,10 @@ class ProjectController extends Controller
 		return null;
 	}
 
+	public function sendProjectListOpen(Request $req){
+		return view('project.mailOpenProject');
+	}
+
 	public function getAllProjectList(){
 		return json_encode(array('data' => DB::table('project__list')
 			->select(
@@ -162,8 +166,10 @@ class ProjectController extends Controller
 
 	public function getShortDetailProjectList(Request $req){
 		$event = DB::table('project__event')
-			->where('project_list_id',$req->id_project)
-			->where('status','Active')
+ 			->select('project__event.due_date','project__event.id','project__event.name','project__list.project_pid')
+ 			->join('project__list','project__list.id','=','project__event.project_list_id')
+			->where('project__event.project_list_id',$req->id_project)
+			->where('project__event.status','Active')
  			->first();
 
  		if(!empty($event)){
@@ -172,22 +178,24 @@ class ProjectController extends Controller
 	 			->orderBy('id','DESC')
 	 			->first();
 
+
+
 		 	if(isset($history->note)){
 				return array(
-					'next_due_date' => date_diff(date_create($event->due_date),date_create(date('Y-m-d')))->days,
+					'project_id' => $event->project_pid,
 					'lastest_update' => $history->note,
 					'event_now' => $event->name,
 				);
 		 	} else {
 		 		return array(
-					'next_due_date' => date_diff(date_create($event->due_date),date_create(date('Y-m-d')))->days,
+					'project_id' => $event->project_pid,
 					'lastest_update' => "N/A",
 					'event_now' => $event->name,
 				);
 		 	}
  		} else {
 	 		return array(
-				'next_due_date' => "N/A",
+				'project_id' => "N/A",
 				'lastest_update' => "N/A",
 				'event_now' => "Project Close",
 			);
@@ -225,5 +233,11 @@ class ProjectController extends Controller
 
 		return view('project.setting');
 
+	}
+
+	public function getSettingProject(Request $req){
+		return DB::table('project__list')
+			->where('id',$req->id)
+			->get();
 	}
 }

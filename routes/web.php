@@ -251,11 +251,6 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('getClientTest','TestController@getSettingClient');
 // Route::get('/home', 'HomeController@index')->name('home');
 
-
-
-
-
-
 // Project Route
 	Route::get('project','ProjectController@index');
 	Route::get('project/manage','ProjectController@manage');
@@ -263,6 +258,7 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('project/manage/getCustomer','ProjectController@getCustomer');
 	Route::get('project/manage/getMember','ProjectController@getMember');
 	Route::post('project/manage/setProjectList','ProjectController@setProjectList');
+	Route::get('project/manage/sendProjectListOpen','ProjectController@sendProjectListOpen');
 	// Get Project
 	Route::get('project/manage/getAllProjectList','ProjectController@getAllProjectList');
 	Route::get('project/manage/getDetailProjectList','ProjectController@getDetailProjectList');
@@ -271,3 +267,4 @@ Route::post('/editProfile', 'AdminController@editProfile');
 
 	
 	Route::get('project/setting','ProjectController@setting');
+	Route::get('project/setting/getSettingProject','ProjectController@getSettingProject');

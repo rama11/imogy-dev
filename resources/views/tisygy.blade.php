@@ -1,7 +1,8 @@
 @extends('layouts.admin.layoutLight2')
 
 @section('head')
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
+	<link rel="stylesheet" href="{{url('plugins/select2/select2.min.css')}}">
+	<link rel="stylesheet" href="{{url('dist/css/AdminLTE.min.css')}}">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
 
@@ -1524,6 +1525,7 @@
 
 	$("#inputATM").select2({
 		minimumInputLength: 2,
+		selectOnClose: true
 		tags: [],
 		ajax: {
 			url: 'getAtm',

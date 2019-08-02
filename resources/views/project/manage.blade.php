@@ -41,7 +41,7 @@
 	<section class="content-header">
 		<h1>
 			Manage
-			<small>add, remove and edit project</small>
+			<small>finish and update all activiy of project</small>
 		</h1>
 		<ol class="breadcrumb">
 			<button type="button" class="btn btn-flat btn-success btn-xs" data-toggle="modal" data-target="#modalInputProject"
@@ -349,7 +349,6 @@
 			</h4>
 			Change time for {{session('status')}} success.
 		</div>
-
 	</section>
 </div>
 
@@ -562,8 +561,19 @@
 				"type":"GET",
 				"url":"{{url('project/manage/getAllProjectList')}}",
 				"dataSrc": function (json){
+					var i = 120 / (json.data.length - 1);
+					var x = 0;
+					var v = 95;
+					var s = 90;
 					json.data.forEach(function(data,index){
-						data.project_start = humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, });
+						var color = hsvToRgb(i * x,s,v)[0] + "," + hsvToRgb(i * x,s,v)[1] + "," + hsvToRgb(i * x,s,v)[2];
+						fontColor = "#333;";
+						if(data.project_start < 0){
+							data.project_start = "<span class='label' style='background-color:rgb(" + color + ");color:" + fontColor + "'> " + humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, }) + " ago </span>";
+						} else {
+							data.project_start = "<span class='label' style='background-color:rgb(" + color + ");color:" + fontColor + "'> in " + humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, }) + "</span>";
+						}
+						x++;
 					});
 					return json.data;
 				}
@@ -581,6 +591,7 @@
 				{ "data": "project_start2" , "targets": [ 4 ] , "visible": false , "searchable": false},
 				{ "data": "project_coordinator" },
 			],
+			"order": [[ 4, "asc" ]],
 			searching: true,
 			paging: false,
 			info:false,
@@ -588,7 +599,6 @@
 			order: [[1, 'asc']]
 		})
 
-		$('#myTable').DataTable();
 	}
 
 
@@ -750,19 +760,19 @@
 	function format( data , result ) {
 		return '<div class="row">' +
 			'<div class="col-md-1">' +
-				'<button class="btn btn-primary" onclick="showProjectDetail(' + data.id + ')">Detail</button>' +
+				'<button class="btn btn-primary" onclick="showProjectDetail(' + data.id + ')">Update</button>' +
 			'</div>' +
-			'<div class="col-md-3">' +
-				'<label>Time to Due Date</label>' +
-				'<p>' + humanizeDuration(moment.duration(result.next_due_date,'days').asMilliseconds(),{ units: ['y','mo','d'],round: true }) + '</p>' +
+			'<div class="col-md-2">' +
+				'<label>Occouring Event</label>' +
+				'<p> ' + result.event_now + '</p>' +
 			'</div>' +
 			'<div class="col-md-6">' +
 				'<label>Lastest Update</label>' +
 				'<p>' + result.lastest_update + '</p>' +
 			'</div>' +
-			'<div class="col-md-2">' +
-				'<label>Occouring Event</label>' +
-				'<p> ' + result.event_now + '</p>' +
+			'<div class="col-md-3">' +
+				'<label>Project ID</label>' +
+				'<p>' + result.project_id + '</p>' +
 			'</div>' +
 		'</div>';
 	}

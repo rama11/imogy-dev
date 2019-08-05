@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Mail\MailOpenProject;
+use Mail;
 use Auth;
 use DB;
 
@@ -104,7 +106,20 @@ class ProjectController extends Controller
 	}
 
 	public function sendProjectListOpen(Request $req){
-		return view('project.mailOpenProject');
+		$to = [
+			'agastya@sinergy.co.id',
+			'prof.agastyo@gmail.com'
+		];
+		$cc = [
+			'imogy@sinergy.co.id',
+			'hellosinergy@gmail.com'
+		];
+		
+		Mail::to($to)
+			->cc($cc)
+			->send(new MailOpenProject());
+		
+		// return view('project.mailOpenProject');
 	}
 
 	public function getAllProjectList(){

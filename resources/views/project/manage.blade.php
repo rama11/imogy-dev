@@ -51,6 +51,7 @@
 					document.getElementById("inputProjectForm3").style.display = "none";
 					document.getElementById("inputProjectForm4").style.display = "none";
 					clearInputProject();
+					initFormInputProject();
 				'>Add Project</button>
 		</ol>
 	</section>
@@ -381,23 +382,12 @@
 
 		getAllProjectList();
 
-		initFormInputProject();
+		// initFormInputProject();
 
 		$('#searchBar').keyup(function(){
 			$("#tableProjectManage").DataTable().search($(this).val()).draw();
 			console.log($(this).val());
 		})
-
-		// Add new customer for Input Project
-		$("#inputProjectCustomer").on('select2:close',function(){
-			if($("#inputProjectCustomer").select2('data')[0].text == "Add New Customer"){
-				var newCustomer = prompt("Enter new customer :");
-				if(newCustomer !== null){
-					var newOption = new Option(newCustomer, 0, false, false);
-					$('#inputProjectCustomer').append(newOption).trigger('change');
-				}
-			}
-		});
 
 		//Date picker for Input Project
 		$('#inputProjectStart').datepicker({
@@ -464,6 +454,19 @@
 						$("#inputProjectLead, #inputProjectMember, #inputProjectMemberCorrention").append(newOption).trigger('change');
 					}
 				});
+			}
+		});
+
+		// Add new customer for Input Project
+		$("#inputProjectCustomer").on('select2:close',function(){
+			if($("#inputProjectCustomer").select2('data')[0].text == "Add New Customer"){
+				var newCustomer = prompt("Enter new customer :");
+				if(newCustomer !== null){
+					var newOption = new Option(newCustomer, 0, false, false);
+					newOption.selected = true;
+					$('#inputProjectCustomer').append(newOption);
+					$('#inputProjectCustomer').trigger('change');
+				}
 			}
 		});
 	}

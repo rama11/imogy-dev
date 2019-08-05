@@ -41,7 +41,7 @@ class ProjectController extends Controller
 	}
 
 	public function setProjectList(Request $req){
-		if($req->Customer == 0){
+		if(DB::table('project__customer')->where('name',$req->CustomerName)->get()->isEmpty()){
 			DB::table('project__customer')
 				->insert(
 					[

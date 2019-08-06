@@ -193,6 +193,7 @@
 								<button style="display: none;" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal3" id="gagal">Gagal</button>
 							</div>
 						</div>
+						<br>
 
 						<div class="modal fade" id="myModal" role="dialog">
 							<div class="modal-dialog">

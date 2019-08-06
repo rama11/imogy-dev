@@ -1011,7 +1011,7 @@ class AdminController extends Controller
 			->where('tanggal','like',$tanggal)
 			->orderBy('tanggal','ASC')
 			->orderBy('jam','ASC')
-			->limit(3)
+			->limit(4)
 			->get()
 			->toarray();
 

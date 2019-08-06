@@ -254,8 +254,6 @@ Route::post('/editProfile', 'AdminController@editProfile');
 
 
 
-
-
 // Project Route
 	Route::get('project','ProjectController@index');
 	Route::get('project/manage','ProjectController@manage');

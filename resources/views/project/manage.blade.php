@@ -423,37 +423,28 @@
 	});
 
 	function initFormInputProject(){
-		// Get Customer for Input Project
-		$.ajax({
-			type:"GET",
-			url:'{{url("project/manage/getCustomer")}}',
-			success: function(result){
-				var listCustomer = result;
-				listCustomer.unshift({id:0,text:"Add New Customer"});
 
-				$("#inputProjectCustomer").select2({
-					placeholder: "Select a customer",
-					data: result
-				});
+		$('#inputProjectCoordinator').select2({
+			ajax: {
+				url: '{{url("project/manage/getMember")}}',
+				dataType: 'json',
+				processResults: function (data) {
+					return {
+						results: data.coordinator
+					};
+				}
 			}
 		});
 
-		// Get Member for Input Project
-		$.ajax({
-			type:"GET",
-			url:'{{url("project/manage/getMember")}}',
-			success: function(result){
-				$("#inputProjectCoordinator").select2();
-				$("#inputProjectLead, #inputProjectMember, #inputProjectMemberCorrention").select2();
-				var listMember = result;
-				listMember.forEach(function(member){
-					newOption = new Option(member.text, member.id, false, false);
-					if(member.position == "Coordinator"){
-						$('#inputProjectCoordinator').append(newOption).trigger('change');
-					} else if (member.position == "Member"){
-						$("#inputProjectLead, #inputProjectMember, #inputProjectMemberCorrention").append(newOption).trigger('change');
-					}
-				});
+		$('#inputProjectLead, #inputProjectMember, #inputProjectMemberCorrention').select2({
+			ajax: {
+				url: '{{url("project/manage/getMember")}}',
+				dataType: 'json',
+				processResults: function (data) {
+					return {
+						results: data.all
+					};
+				}
 			}
 		});
 

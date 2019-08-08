@@ -1,17 +1,10 @@
-@extends((Auth::user()->role == "1") ? 'layouts.admin.layout' : 'layouts.engineer.elayout')
+@extends((Auth::user()->jabatan == "5") ? 'layouts.kemendagri.layout' : ((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : 'layouts.engineer.elayout'))
 
 @section('head')
-	<link rel="stylesheet" href="{{url('plugins/select2/select2.min.css')}}">
-	<link rel="stylesheet" href="{{url('dist/css/AdminLTE.min.css')}}">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
-
-	<link rel="stylesheet" href="{{ url('plugins/timepicker/bootstrap-timepicker.min.css')}}">
-	<link rel="stylesheet" href="{{ url('plugins/daterangepicker/daterangepicker.css')}}">
-	<link rel="stylesheet" href="{{ url('plugins/morris/morris.css')}}">
-
-	<link rel="stylesheet" href="{{ url('plugins/datepicker/datepicker3.css')}}">
-
+	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/timepicker/bootstrap-timepicker.min.css')}}">
+	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/daterangepicker/daterangepicker.css')}}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
+	
 	<style type="text/css">
 		.table2 > tbody > tr > th, .table2 > tbody > tr > td {
 			border-color: #141414;border: 1px solid;padding: 3px;}
@@ -53,7 +46,7 @@
 					<ul class="nav nav-tabs" id="myTab">
 						<li class="active"><a href="#tab_1" data-toggle="tab" onclick="getDashboard()">Dashboard</a></li>
 						<li>
-							<a href="#tab_2" data-toggle="tab" id="create" onclick="getCreateParameter()">Create</a>
+							<a href="#tab_2" data-toggle="tab" id="createparam" onclick="getCreateParameter()">Create</a>
 						</li>
 						<li>
 							<a href="#tab_3" data-toggle="tab" id="performance" onclick="getPerformance()">Performance</a>
@@ -295,10 +288,7 @@
 											</div>
 										</div>
 										<div class="form-group" id="problemDiv" style="display: none;">
-											<label for="inputEmail"
-											
-											 class="col-sm-2 control-label">Problem</label>
-
+											<label for="inputEmail" class="col-sm-2 control-label">Problem</label>
 											<div class="col-sm-10">
 												<input type="text" class="form-control" id="inputProblem" placeholder="" required></div>
 										</div>
@@ -950,38 +940,34 @@
 								Add ATM
 							</button>
 							<br>
-							<br>
-							<div class="table-responsive">
-								<table class="table table-striped" style="display: none;" id="emailSetting">
+						
+							<div class="row">
+								<table class="table table-striped col-md-12" style="display: none;" id="emailSetting">
 									<tr>
-										
-										<th colspan="6" style="vertical-align: middle;text-align: center;">Open</th>
-										<th colspan="6" style="vertical-align: middle;text-align: center;">Close</th>
+										<th style="width: 200px;vertical-align: middle;text-align: center;" rowspan="2" >Client</th>
+										<th rowspan="2" style="vertical-align: middle;text-align: center;">Acronym</th>
+										<th colspan="3" style="vertical-align: middle;text-align: center;">Open</th>
+										<th colspan="3" style="vertical-align: middle;text-align: center;">Close</th>
+										<th rowspan="2" style="vertical-align: middle;text-align: center;">#</th>
 									</tr>
 									<tr>
-										<th style="vertical-align: middle;text-align: center;">Client</th>
-										<th style="vertical-align: middle;text-align: center;">Acronym</th>
 										<th style="vertical-align: middle;text-align: center;">Dear</th>
 										<th style="vertical-align: middle;text-align: center;">To</th>
 										<th style="vertical-align: middle;text-align: center;">Cc</th>
 										<th style="vertical-align: middle;text-align: center;">Dear</th>
 										<th style="vertical-align: middle;text-align: center;">To</th>
 										<th style="vertical-align: middle;text-align: center;">Cc</th>
-										<th style="vertical-align: middle;text-align: center;">#</th>
-
-
 									</tr>
 									@foreach($clients as $client)
 									<tr>
 										<td style="width: 200px;vertical-align: middle;text-align: center;" >{{$client->client_name}}</td>
 										<td style="vertical-align: middle;text-align: center;">{{$client->client_acronym}}</td>
 										<td style="vertical-align: middle;text-align: center;">{{$client->open_dear}}</td>
-										<td style="vertical-align: middle;text-align: left;">{!! $client->open_to !!}</td>
-										<td style="vertical-align: middle;text-align: left;">{!! $client->open_cc !!}</td>
+										<td>{!! $client->open_to !!}</td>
+										<td>{!! $client->open_cc !!}</td>
 										<td style="vertical-align: middle;text-align: center;">{{ $client->close_dear }}</td>
-										<td style="vertical-align: middle;text-align: left;">{!! $client->close_to !!}</td>
-										<td style="vertical-align: middle;text-align: left;">{!! $client->close_cc !!}</td>
-
+										<td>{!! $client->close_to !!}</td>
+										<td>{!! $client->close_cc !!}</td>
 
 										<td style="vertical-align: middle;text-align: center;"><button type="button" class="btn btn-block btn-default" onclick="editClient({{$client->id}})">Edit</button></td>
 									</tr>
@@ -1196,31 +1182,25 @@
 </footer>
 @endsection 
 @section('script')
-<!-- CDN Cloudflare -->
+<!-- Slimscroll -->
+<script src="plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- bootstrap time picker -->
+<script src="plugins/timepicker/bootstrap-timepicker.min.js"></script>
+<!-- bootstrap datepicker -->
+<script src="plugins/datepicker/bootstrap-datepicker.js"></script>
+<!-- Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
+<!-- DataTables -->
+<script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="../../plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.5/Chart.bundle.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/locale/id.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-
-<!-- Local -->
-<script src="{{url('plugins/slimScroll/jquery.slimscroll.min.js')}}"></script>
-<script src="{{url('plugins/timepicker/bootstrap-timepicker.min.js')}}"></script>
-<script src="{{url('plugins/datepicker/bootstrap-datepicker.js')}}"></script>
-<script src="{{url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-<script src="{{url('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
-<script src="{{url('plugins/input-mask/jquery.inputmask.js')}}"></script>
-<script src="{{url('plugins/input-mask/jquery.inputmask.date.extensions.js')}}"></script>
-<script src="{{url('plugins/input-mask/jquery.inputmask.extensions.js')}}"></script>
-
-<!-- <script src="{{ asset('AdminLTE/plugins/chartjs/Chart.min.js')}}"></script> -->
-<script src="{{url('plugins/morris/morris.min.js')}}"></script>
-
-
+<script src="../../plugins/input-mask/jquery.inputmask.js"></script>
+<script src="../../plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+<script src="../../plugins/input-mask/jquery.inputmask.extensions.js"></script>
 <script>
 
 	$("#manageID").change(function(){
+		// console.log(this.value);
 		$("#manageIDTicket").val(this.value);
 	});
 
@@ -1237,6 +1217,8 @@
 		$("#manageIDTicket").val();
 		$("#manageIDTicket").val(id + "/" + client + "/" + date);
 	});
+
+
 
 	Chart.pluginService.register({
 		beforeDraw: function(chart) {
@@ -1432,7 +1414,79 @@
 			},
 		});
 	}
-	$("#atmTable").DataTable({
+
+	// var ctx = document.getElementById("pieChart").getContext("2d");
+	// var myChart = new Chart(ctx, config);
+
+	// var pieChartCanvas = $("#pieChart").get(0).getContext("2d");
+	// var pieChart = new Chart(pieChartCanvas);
+	// var PieData = [
+	//  {
+	//      value: 700,
+	//      color: "#f56954",
+	//      highlight: "#f56954",
+	//      label: "Chrome"
+	//  },
+	//  {
+	//      value: 500,
+	//      color: "#00a65a",
+	//      highlight: "#00a65a",
+	//      label: "IE"
+	//  },
+	//  {
+	//      value: 400,
+	//      color: "#f39c12",
+	//      highlight: "#f39c12",
+	//      label: "FireFox"
+	//  },
+	//  {
+	//      value: 600,
+	//      color: "#00c0ef",
+	//      highlight: "#00c0ef",
+	//      label: "Safari"
+	//  },
+	//  {
+	//      value: 300,
+	//      color: "#3c8dbc",
+	//      highlight: "#3c8dbc",
+	//      label: "Opera"
+	//  },
+	//  {
+	//      value: 100,
+	//      color: "#d2d6de",
+	//      highlight: "#d2d6de",
+	//      label: "Navigator"
+	//  }
+	// ];
+	// var pieOptions = {
+	//  //Boolean - Whether we should show a stroke on each segment
+	//  segmentShowStroke: true,
+	//  //String - The colour of each segment stroke
+	//  segmentStrokeColor: "#fff",
+	//  //Number - The width of each segment stroke
+	//  segmentStrokeWidth: 2,
+	//  //Number - The percentage of the chart that we cut out of the middle
+	//  percentageInnerCutout: 50, // This is 0 for Pie charts
+	//  //Number - Amount of animation steps
+	//  animationSteps: 100,
+	//  //String - Animation easing effect
+	//  animationEasing: "easeOutBounce",
+	//  //Boolean - Whether we animate the rotation of the Doughnut
+	//  animateRotate: true,
+	//  //Boolean - Whether we animate scaling the Doughnut from the centre
+	//  animateScale: false,
+	//  //Boolean - whether to make the chart responsive to window resizing
+	//  responsive: true,
+	//  // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+	//  maintainAspectRatio: true,
+	//  //String - A legend template
+	//  legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+	// };
+	// //Create pie or douhnut chart
+	// // You can switch between pie and douhnut using the method below.
+	// pieChart.Doughnut(PieData, pieOptions);
+
+	$('#atmTable').DataTable({
 		"paging": true,
 		"lengthChange": false,
 		"searching": true,
@@ -1531,8 +1585,6 @@
 
 	$("#inputATM").select2({
 		minimumInputLength: 2,
-
-		selectOnClose: true,
 		tags: [],
 		ajax: {
 			url: 'getAtm',
@@ -1594,6 +1646,9 @@
 		}
 	}
 
+	// $('#example2').DataTable();
+
+	
 
 	$("#inputATM").change(function(){
 		$.ajax({
@@ -1608,7 +1663,6 @@
 		});
 	});
 	$(".sidebar-toggle").click();
-
 	//Timepicker
 	$(".timepicker").timepicker({
 		showInputs: false,
@@ -1618,6 +1672,7 @@
 		showSeconds:true,
 	});
 
+	
 
 	$('#dateClose').datepicker({
 		autoclose: true
@@ -1638,8 +1693,22 @@
 				alert('You must fill date!');
 			} else {
 				if(confirm("Are you sure to close this ticket?")){
-
+					// console.log();
 					$("#modal-next-close").modal('toggle');
+					// $.ajax({
+					//  type:"get",
+					//  url:"closeTicket",
+					//  data:{
+					//      id_ticket:event.data.id_ticket,
+					//      root_cause:$("#saveCloseRoute").val(),
+					//      couter_measure:$("#saveCloseCouter").val()
+					//  },
+					//  success:function(){
+					//      $('#modal-close').modal('toggle');
+					//      $('#modal-ticket').modal('toggle');
+					//  }
+					// });
+
 					$.ajax({
 						type:"GET",
 						url:"getEmailReciver",
@@ -1758,7 +1827,17 @@
 
 				$(".holderCancelNote").text($("#saveReasonCancel").val());
 
-
+				// $.ajax({
+				//  type:"get",
+				//  url:"cancelTicket",
+				//  data:{
+				//      reason:$("#cancelReasonPending").val(),
+				//  },
+				//  success:function(){
+				//      $('#modal-pending').modal('toggle');
+				//      $('#modal-ticket').modal('toggle');
+				//  }
+				// });
 			} else {
 				console.log("no");
 			}
@@ -1771,12 +1850,12 @@
 
 	function closeTicket(id){
 		$('#modal-close').modal('toggle');
-
+		// $('#modal-ticket').modal('toggle');a
 	}
 
 	function sendCloseTicketBtn(id){
 		var body = $("#bodyCloseMail").html();
-
+		//2018-03-16 06:33:57.000000
 		var finish_time = moment($("#timeClose").val() + " " + $("#dateClose").val()).format("YYYY-MM-DD HH:mm:ss.000000");
 
 		$.ajax({
@@ -1809,6 +1888,7 @@
 
 	function sendPendingTicketBtn(id){
 		var body = $("#bodyPendingMail").html();
+		//2018-03-16 06:33:57.000000
 		var finish_time = moment($("#timeClose").val() + " " + $("#dateClose").val()).format("YYYY-MM-DD HH:mm:ss.000000");
 
 		$.ajax({
@@ -1816,6 +1896,9 @@
 			url:"pendingTicket",
 			data:{
 				id_ticket:$('#ticketID').val(),
+				// root_cause:$("#saveCloseRoute").val(),
+				// couter_measure:$("#saveCloseCouter").val(),
+				// finish:finish_time,
 				body:body,
 				subject: $("#emailPendingSubject").val(),
 				to: $("#emailPendingTo").val(),
@@ -1828,6 +1911,7 @@
 				$("#modal-pending").modal('toggle');
 				$("#modal-next-pending").modal('toggle');
 				$("#modal-ticket").modal('toggle');
+				// $("#performance").click();
 				addRows(result);
 			},
 		});
@@ -1838,7 +1922,7 @@
 
 	function sendCancelTicketBtn(id){
 		var body = $("#bodyCancelMail").html();
-
+		//2018-03-16 06:33:57.000000
 		var finish_time = moment($("#timeClose").val() + " " + $("#dateClose").val()).format("YYYY-MM-DD HH:mm:ss.000000");
 
 		$.ajax({
@@ -1846,6 +1930,9 @@
 			url:"cancelTicket",
 			data:{
 				id_ticket:$('#ticketID').val(),
+				// root_cause:$("#saveCloseRoute").val(),
+				// couter_measure:$("#saveCloseCouter").val(),
+				// finish:finish_time,
 				body:body,
 				subject: $("#emailCancelSubject").val(),
 				to: $("#emailCancelTo").val(),
@@ -1858,6 +1945,7 @@
 				$("#modal-cancel").modal('toggle');
 				$("#modal-next-cancel").modal('toggle');
 				$("#modal-ticket").modal('toggle');
+				// $("#performance").click();
 				addRows(result);
 			},
 		});
@@ -1900,7 +1988,7 @@
 					success: function(result){
 						$("#ticketNumber").val("");
 						$("#ticketEngineer").val("");
-						$("#modal-ticket").modal('toggle');
+						$('#modal-ticket').modal('toggle');
 						addRows(result);
 						$("#performance").click();
 					}
@@ -1928,7 +2016,7 @@
 					// heading = heading + '<th style="width: 100px">Number Tiket</th>';
 					heading = heading + '<th style="text-align:center;width: 100px;vertical-align: middle;">Open</th>';
 					heading = heading + '<th style="vertical-align: middle;">Problem</th>';
-					heading = heading + '<th style="width: 40px;vertical-align: middle;">PIC</th>';
+					heading = heading + '<th style="text-align: center;vertical-align: middle;">PIC</th>';
 					heading = heading + '<th style="width: 100px;vertical-align: middle;">Location</th>';
 					heading = heading + '<th style="width: 40px;vertical-align: middle;">Status</th>';
 					heading = heading + '<th style="width: 40px;vertical-align: middle;">Operator</th>';
@@ -1945,6 +2033,7 @@
 				url:url,
 				success:function(result){
 					var body = "";
+					// console.log(result[0]);
 
 					$.each(result, function(key,value){
 						body = body + '<tr>';
@@ -1955,6 +2044,7 @@
 							}
 							body = body + '<td style="width: 50px; vertical-align: middle;">' + value.id_atm + '</td>';
 							body = body + '<td style="width: 100px; vertical-align: middle;">' + value.ticket_number_3party + '</td>';
+							// body = body + '<td style="width: 100px; vertical-align: middle;">51705282    </td>';
 							body = body + '<td style="width: 40px" class="text-center">' + moment(value.open).format('dddd, D MMMM YYYY HH:mm') + '</td>';
 							body = body + '<td>' + value.problem + '</td>';
 							body = body + '<td style="width: 100px">' + value.pic + ' - ' + value.contact_pic + '</td>';
@@ -1979,17 +2069,23 @@
 					$("#tablePerformace").append('</tbody>');
 					
 					$("#tablePerformace").DataTable();
-
+					// $("#tablePerformace").DataTable().rows().remove().draw();
 				},
 			});
 		}
 	}
 
+	// $('#myTab a').click(function (e) {
+	// 	e.preventDefault()
+	// 	console.log(this);
+	// 	$(this).tab('show')
+	// });
+
 	var severityFirst = 1; 
 
 	function getSeverity(severity){
 		var url = "getPerformanceBySeverity?severity=" + severity;
-
+		// $("#tablePerformace").DataTable().clear().draw();
 		dataTicket = [];
 
 		$.ajax({
@@ -2100,7 +2196,6 @@
 				if(severityFirst == 1){
 					severityFirst = 0;
 				} else {
-
 					$("#tablePerformace").DataTable().clear().draw();
 					$.each(dataTicket, function(key,value){
 						$("#tablePerformace").DataTable().row.add([
@@ -2197,6 +2292,8 @@
 				$("#pendingButton").attr("onclick","pendingTicket('" + result[0].id_ticket + "')");
 				$("#closeButton").attr("onclick","closeTicket('" + result[0].id_ticket + "')");
 
+				// $("#ticketStatus").attr("onclick","modalStatus('" + result[0].id_ticket + "')");
+				
 				$('#modal-ticket').modal('toggle');
 				$('#ticketID').val(result[0].id_ticket);
 				$("#modal-ticket-title").html("Ticket ID <b>" + result[0].id_ticket + "</b>");
@@ -2290,10 +2387,24 @@
 
 				console.log(result[0].engineer);
 
-				$("#ticketEngineer").val(result[0].engineer);
-			
-				$("#ticketNumber").val(result[0].ticket_number_3party);
-				
+				// if(result[0].engineer != null){
+					$("#ticketEngineer").val(result[0].engineer);
+				//  $("#ticketEngineer").prop('readonly',true);
+				//  console.log("adfasdfa");
+				// } else {
+				//  $("#ticketEngineer").val("");
+				//  $("#ticketEngineer").prop('readonly',false);
+				// }
+
+				// console.log(result[0].ticket_number_3party);
+
+				// if(result[0].ticket_number_3party != null){
+					$("#ticketNumber").val(result[0].ticket_number_3party);
+				//  $("#ticketNumber").prop('readonly',true);
+				// } else {
+				//  $("#ticketNumber").val("");
+				//  $("#ticketNumber").prop('readonly',false);
+				// }
 
 				$("#ticketActivity").empty();
 				$.each(result[1],function(key,value){
@@ -2319,7 +2430,7 @@
 				$(".holderCloseNote").text("");
 				$(".holderCloseEngineer").text(result[0].engineer);
 
-
+				// 2018-03-15 10:22:08
 				var waktu = moment((result[0].open), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
 				
 
@@ -2329,6 +2440,7 @@
 				$(".holderCloseStatus").html("<b>CLOSE</b>");
 				$(".holderNumberTicket").text($("#ticketNumber").val());
 
+					// $("#ticketNumber").val(result[0].ticket_number_3party);
 
 				$(".holderPendingID").text(result[0].id_ticket);
 				$(".holderPendingRefrence").text(result[0].refrence);
@@ -2344,7 +2456,7 @@
 				$(".holderPendingNote").text("");
 				$(".holderPendingEngineer").text(result[0].engineer);
 
-
+				// 2018-03-15 10:22:08
 				var waktu = moment((result[0].open), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
 				
 
@@ -2368,6 +2480,7 @@
 				$(".holderCancelNote").text("");
 				$(".holderCancelEngineer").text(result[0].engineer);
 
+				// 2018-03-15 10:22:08
 				var waktu = moment((result[0].open), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
 				
 
@@ -2448,6 +2561,67 @@
 		height: '250px'
 	});
 
+	function sendOpenTicketBtn(){
+		if(confirm("Are you sure to send this ticket?")){
+			// var dear = "Bu Retno";
+			
+			// var problem = $("#inputLocation").val();
+			// var idTicket = $("#inputticket").val();
+			// var refrence = $("#inputRefrence").val();
+			// var customer = $("#inputClient").val();
+			// var pic = $("#inputPIC").val();
+			// var contact = $("#inputContact").val();
+			// var problem = $("#inputProblem").val();
+			// var location = $("#inputLocation").val();
+			// var engineer = $("#inputEngineer").val();
+			// var date = $("#inputDate").val();
+			// var serial = $("#inputSerial").val();
+
+			console.log("Yes");
+
+			// var body=data.replace(/^.*?<body>(.*?)<\/body>.*?$/s,"$1");
+			// $("body").html(body);
+			var body = $("#bodyOpenMail").html();
+			// console.log(body);
+
+			$.ajax({
+				type:"GET",
+				url:"mailOpenTicket",
+				data:{
+					body:body,
+					subject: $("#emailOpenSubject").val(),
+					to: $("#emailOpenTo").val(),
+					cc: $("#emailOpenCc").val(),
+					attachment: $("#emailOpenAttachment").val()
+				},
+				success: function(result){
+					console.log("success");
+					alert('Email Has Been Sent!');
+					$("#createparam").click();
+					// window.location('/tisygy');
+				},
+			});
+
+			// $.ajax({
+			//  type:"GET",
+			//  url:"testMail",
+			//  data:{
+			//      body:body,
+			//      subject: $("#emailOpenSubject").val(),
+			//      to: $("#emailOpenTo").val(),
+			//      cc: $("#emailOpenCc").val(),
+			//      attachment: $("#emailOpenAttachment").val()
+			//  },
+			//  success: function(result){
+			//      console.log("success");
+			//      alert('Email Has Been Sent!');
+			//      $("#performance").click();
+			//      // window.location('/tisygy');
+			//  },
+			// });
+		}
+	}
+
 	function reserveIdTicket() {
 		if("{Auth::check()}"){
 			if("{{Auth::user()->id}}" == 4){
@@ -2474,10 +2648,13 @@
 		} else {
 			window.location('/login');
 		}
+
+		
 	}
 
 	
-	function createEmailBody() {
+
+	function createEmailBody(){
 		$("#sendTicket").show();
 		$("#makeTicket").hide();
 		
@@ -2535,11 +2712,14 @@
 		
 		$(".holderEngineer").text($("#inputEngineer").val());
 		$(".holderDate").text(waktu);
+		// .("#holderCounter").text($("#inputticket").val();
+		// .("#holderRoot").text($("#inputticket").val();
 
 		$(".holderStatus").html("<b>OPEN</b>");
 		$(".holderWaktu").html("<b>" + waktu2 + "</b>");
 
 		report = moment($("#inputReport1").val() + " " + $("#inputReport2").val()).format("YYYY-MM-DD HH:mm:ss.000000");
+		// report = moment("13:56:30 03/27/2018").format("YYYY-MM-DD HH:mm:ss.000000");
 
 		if("{{Auth::user()->id}}" == 4){
 			$.ajax({
@@ -2645,6 +2825,7 @@
 			$("#holderDate").text(waktu);
 			$("#holderSerial").text($("#inputSerial").val());
 			$("#holderSeverity").text($("#inputSeverity").val());
+			// $("#holderRoot").text($("#inputticket").val();
 			$("#holderNote").text($("#inputNote").val());
 			$("#holderStatus").html("<b>OPEN</b>");
 			$("#holderWaktu").html("<b>" + waktu2 + "</b>");
@@ -2657,31 +2838,8 @@
 			}
 			
 		}
-	}
 
-	function sendOpenTicketBtn(){
-		if(confirm("Are you sure to send this ticket?")){
-			console.log("Yes");
-			var body = $("#bodyOpenMail").html();
 
-			$.ajax({
-				type:"GET",
-				url:"mailOpenTicket",
-				data:{
-					body:body,
-					subject: $("#emailOpenSubject").val(),
-					to: $("#emailOpenTo").val(),
-					cc: $("#emailOpenCc").val(),
-					attachment: $("#emailOpenAttachment").val()
-				},
-				success: function(result){
-					console.log("success");
-					alert('Email Has Been Sent!');
-					$("#create").click();
-					// window.location('/tisygy');
-				},
-			});
-		}
 	}
 
 	function getBankAtm(){
@@ -2753,6 +2911,7 @@
 		}
 
 		perawan = 1;
+		// console.log(perawan);
 	});
 
 
@@ -2768,6 +2927,7 @@
 		$("#noteDiv").show();
 		$("#serialDiv").show();
 		$("#reportDiv").show();
+		
 		$("#createTicket").show();
 		getBankAtm();
 	});

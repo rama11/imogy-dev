@@ -116,7 +116,7 @@ class AdminController extends Controller
 		// echo "</pre>";
 
 		
-		return view('admin',compact('data','users','persen','count','absen',));
+		return view('admin',compact('data','users','persen','count','absen'));
 	}
 
 	public function test_page(){
@@ -439,13 +439,13 @@ class AdminController extends Controller
 
 	public function addUserShifting(Request $request){
 		$date = date('Y-m-d h:i:s', time());
-		if(DB::table('detail_users')->where('id_user',$request->id_user,)->where('on_project',$request->on_project)->get() == NULL){
+		if(DB::table('detail_users')->where('id_user',$request->id_user)->where('on_project',$request->on_project)->get() == NULL){
 			DB::table('detail_users')
-			->insert([
-				'id_user' => $request->id_user,
-				'on_project' => "$request->on_project",
-				]);
-			return redirect('schedule')->with('message', "Add User " . " success.");
+				->insert([
+					'id_user' => $request->id_user,
+					'on_project' => "$request->on_project",
+					]);
+			return redirect('schedule')->with('status', "Add User for " . $request->id_user . " success.");
 
 		} else {
 			DB::table('detail_users')
@@ -458,7 +458,7 @@ class AdminController extends Controller
 				'on_project' => "$request->on_project",
 				]);
 
-			return redirect('schedule')->with('message', "Add User " . " success.");
+			return redirect('schedule')->with('status', "Add User for " . $request->id_user . " success.");
 
 		}
 		
@@ -998,7 +998,6 @@ class AdminController extends Controller
 			];
 		
 			return view('ahistory2',compact('datadet','datas2','kehadiran','persen','count','absen'));
-
 	}
 
 	public function history(){
@@ -1009,8 +1008,7 @@ class AdminController extends Controller
 		$datas = DB::table('waktu_absen')
 			->where('id_user','=',$id)
 			->where('tanggal','like',$tanggal)
-			->orderBy('tanggal','ASC')
-			->orderBy('jam','ASC')
+			->orderBy('tanggal','DESC')
 			->limit(4)
 			->get()
 			->toarray();
@@ -1094,8 +1092,6 @@ class AdminController extends Controller
 			$absen = 100 - ($late + $injury + $ontime),
 			$attendance = 100 - $absen
 		];
-
-
 
 
 		// $absen = 0;	
@@ -1358,7 +1354,7 @@ class AdminController extends Controller
 		// echo $injury . "<br>";
 		// echo $ontime . "<br>";
 		// echo $all . "<br>";
-		
+
 		// echo "<pre>";
 		// print_r($var);
 		// print_r($absenToday);
@@ -1370,6 +1366,7 @@ class AdminController extends Controller
 		// echo "</pre>";
 		return view('admin.teamhistory',compact('datas','datas2','var','status','late','injury','ontime','count','absen','attendance','absenToday','ids','problem'));
 	}
+
 	public function auserhistory ($id,$start = 0,$end = 0){
 	
 		if($start == 0 && $end == 0){
@@ -1678,10 +1675,9 @@ class AdminController extends Controller
 		return json_encode($data);
 	}
 
-	function getScheduleSelected (Request $req){
+	function getScheduleSelected ($id){
 		$data = DB::table('shifting')
-			->where('id_user','=',$req->idUser)
-			->where('id_project','=',$req->idProject)
+			->where('id_user','=',$id)
 			->get()
 			->toArray();
 		return json_encode($data);
@@ -1706,9 +1702,7 @@ class AdminController extends Controller
 					'end' => $req->end,
 					'className' => $req->shift,
 					'hadir' => "00:00:00",
-					'tanggal' => date('Y-m-d h:i:s'),
-					'id_project' => $req->id_project,
-					
+					'tanggal' => date('Y-m-d h:i:s')
 				]
 			);
 
@@ -2943,4 +2937,3 @@ class AdminController extends Controller
 	// }
 
 }
-

@@ -151,6 +151,7 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('/getScheduleAll', 'AdminController@getScheduleAll');
 	Route::get('/getScheduleProject/{id}', 'AdminController@getScheduleProject');
 	Route::get('/getScheduleSelected','AdminController@getScheduleSelected');
+
 	Route::get('/crateSchedule','AdminController@crateSchedule');
 	Route::get('/deleteSchedule/{id}','AdminController@deleteSchedule');
 	Route::get('/changeMonth','AdminController@changeMonth');
@@ -251,9 +252,6 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('getClientTest','TestController@getSettingClient');
 // Route::get('/home', 'HomeController@index')->name('home');
 
-
-
-
 // Project Route
 	Route::get('project','ProjectController@index');
 	Route::get('project/manage','ProjectController@manage');
@@ -261,10 +259,18 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('project/manage/getCustomer','ProjectController@getCustomer');
 	Route::get('project/manage/getMember','ProjectController@getMember');
 	Route::post('project/manage/setProjectList','ProjectController@setProjectList');
+
+	Route::get('project/manage/sendProjectListOpen','ProjectController@sendProjectListOpen');
+	route::get('project/manage/previewSendProjectListOpen',function(){
+		return new App\Mail\MailOpenProject();
+	});
 	// Get Project
 	Route::get('project/manage/getAllProjectList','ProjectController@getAllProjectList');
 	Route::get('project/manage/getDetailProjectList','ProjectController@getDetailProjectList');
+	Route::get('project/manage/getShortDetailProjectList','ProjectController@getShortDetailProjectList');
 	Route::post('project/manage/setUpdateEventProject','ProjectController@setUpdateEventProject');
 
 	
 	Route::get('project/setting','ProjectController@setting');
+
+	Route::get('project/setting/getSettingProject','ProjectController@getSettingProject');

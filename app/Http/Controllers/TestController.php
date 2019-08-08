@@ -43,22 +43,22 @@ class TestController extends Controller
 		$mail = new PHPMailer\PHPMailer(true);
 		
 		// Yandex Configuration
-		$mail_host = env("YANDEX_MAIL_HOST");
-		$mail_port = env("YANDEX_MAIL_PORT");
-		$mail_user = env("YANDEX_MAIL_USERNAME");
-		$mail_pass = env("YANDEX_MAIL_PASSWORD");
-		$mail_auth = env("YANDEX_MAIL_ENCRYPTION");
-		$mail_from = env("YANDEX_MAIL_FROM");
-		$mail_name = env("YANDEX_MAIL_NAME");
+		// $mail_host = env("YANDEX_MAIL_HOST");
+		// $mail_port = env("YANDEX_MAIL_PORT");
+		// $mail_user = env("YANDEX_MAIL_USERNAME");
+		// $mail_pass = env("YANDEX_MAIL_PASSWORD");
+		// $mail_auth = env("YANDEX_MAIL_ENCRYPTION");
+		// $mail_from = env("YANDEX_MAIL_FROM");
+		// $mail_name = env("YANDEX_MAIL_NAME");
 
 		// Gmail Configuration
-		// $mail_host = env("GMAIL_MAIL_HOST");
-		// $mail_port = env("GMAIL_MAIL_PORT");
-		// $mail_user = env("GMAIL_MAIL_USERNAME");
-		// $mail_pass = env("GMAIL_MAIL_PASSWORD");
-		// $mail_auth = env("GMAIL_MAIL_ENCRYPTION");
-		// $mail_from = env("GMAIL_MAIL_FROM");
-		// $mail_name = env("GMAIL_MAIL_NAME");
+		$mail_host = env("GMAIL_MAIL_HOST");
+		$mail_port = env("GMAIL_MAIL_PORT");
+		$mail_user = env("GMAIL_MAIL_USERNAME");
+		$mail_pass = env("GMAIL_MAIL_PASSWORD");
+		$mail_auth = env("GMAIL_MAIL_ENCRYPTION");
+		$mail_from = env("GMAIL_MAIL_FROM");
+		$mail_name = env("GMAIL_MAIL_NAME");
 
 		try {
 			$mail->isSMTP();
@@ -76,7 +76,7 @@ class TestController extends Controller
 			$mail->Subject =  "Testing Performance for Email Gmail";
 			$mail->MsgHTML("testPerformance");
 
-			$mail->addAddress("agastya@sinergy.co.id");
+			$mail->addAddress("aqsharidho@gmail.com");
 			$mail->addCC("prof.agastyo@gmail.com");
 			$mail->send();
 

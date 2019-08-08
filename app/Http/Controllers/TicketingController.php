@@ -1226,10 +1226,10 @@ class TicketingController extends Controller
 			$mail->CharSet = "utf-8";
 			$mail->SMTPAuth = true;
 			$mail->SMTPSecure = "tls";
-			$mail->Host = "smtp.yandex.ru";
+			$mail->Host = "smtp.gmail.com";
 			$mail->Port = 587;
-			$mail->Username = "imogy@sinergy.co.id";
-			$mail->Password = "bpdorgcsuturrmij";
+			$mail->Username = "aqsharidho@gmail.com";
+			$mail->Password = "Ridho731922";
 			$mail->SetFrom('imogy@sinergy.co.id', 'Helpdesk Sinergy');
 			$mail->Subject =  $request->subject;
 			$mail->MsgHTML($request->body);

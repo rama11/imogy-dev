@@ -1,4 +1,4 @@
-@extends('layouts.admin.layoutLight')
+@extends('layouts.admin.layoutLight2')
 @section('content')
 <div class="content-wrapper">
 	<section class="content-header">
@@ -73,4 +73,5 @@
 	$(document).ready(function(){
 	}
 </script>
+
 @endsection

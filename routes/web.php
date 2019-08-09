@@ -139,7 +139,7 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	
 	Route::get('/downloadPDF/{id}','AdminController@download');
 	Route::get('/changeAbsent/{id}','AdminController@changeAbsent');
-	Route::get('/changePassword2','AdminController@changePassword');
+	Route::post('/changePasswords','AdminController@changePassword');
 
 	Route::get('/matikan', 'AdminController@matikan');
 	Route::get('createEvent','AdminController@createAsycal');

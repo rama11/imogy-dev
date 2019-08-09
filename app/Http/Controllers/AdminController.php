@@ -1589,26 +1589,25 @@ class AdminController extends Controller
 		
 	}
 	function changePassword(Request $req){
-		$update = DB::table('users')
-					->where('id','=',$request->id)
-					->update([
-						'password' => 'required|min:8|regex:/^(?=\S*[a-z])(?=\S*[!@#$&*])(?=\S*[A-Z])(?=\S*[\d])\S*$/',
-						'verify_password'   =>  'required|same:password'
-					]);
-		// if (Hash::check($req->old, Auth::user()->password)) {
-		// 	if($req->pass == $req->repass){
-		// 		$update = DB::table('users')
-		// 			->where('id','=','74')
+		// $update = DB::table('users')
+		// 			->where('id','=',$req->id)
 		// 			->update([
 		// 				'password' => Hash::make($req->pass)
 		// 			]);
-		// 		return redirect()->back()->with('success','Password success di rubah');
-		// 	} else {
-		// 		return redirect()->back()->with('error','Password tidak sama');
-		// 	}
-		// } else {
-		// 	return redirect()->back()->with('error','Password lama salah');
-		// }
+		if (Hash::check($req->old, Auth::user()->password)) {
+			if($req->pass == $req->repass){
+				$update = DB::table('users')
+					->where('id','=',$req->id)
+					->update([
+						'password' => Hash::make($req->pass)
+					]);
+				return redirect()->back()->with('success','Password change successful');
+			} else {
+				return redirect()->back()->with('error','Password change unsuccessful');
+			}
+		} else {
+			return redirect()->back()->with('error','Wrong password');
+		}
 	}
 	public function areport(){
 		// echo "asdfas";

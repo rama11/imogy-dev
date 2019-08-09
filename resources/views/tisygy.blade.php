@@ -940,34 +940,35 @@
 								Add ATM
 							</button>
 							<br>
-						
-							<div class="row">
-								<table class="table table-striped col-md-12" style="display: none;" id="emailSetting">
+							<br>
+							<div class="table-responsive">
+								<table class="table table-bordered" style="display: none;" id="emailSetting">
 									<tr>
-										<th style="width: 200px;vertical-align: middle;text-align: center;" rowspan="2" >Client</th>
-										<th rowspan="2" style="vertical-align: middle;text-align: center;">Acronym</th>
-										<th colspan="3" style="vertical-align: middle;text-align: center;">Open</th>
-										<th colspan="3" style="vertical-align: middle;text-align: center;">Close</th>
-										<th rowspan="2" style="vertical-align: middle;text-align: center;">#</th>
+										<th colspan="6" style="vertical-align: middle;text-align: center;">Open</th>
+										<th colspan="6" style="vertical-align: middle;text-align: center;">Close</th>
 									</tr>
 									<tr>
+										<th style="vertical-align: middle;text-align: center;">Client</th>
+										<th style="vertical-align: middle;text-align: center;">Acronym</th>
 										<th style="vertical-align: middle;text-align: center;">Dear</th>
 										<th style="vertical-align: middle;text-align: center;">To</th>
 										<th style="vertical-align: middle;text-align: center;">Cc</th>
 										<th style="vertical-align: middle;text-align: center;">Dear</th>
 										<th style="vertical-align: middle;text-align: center;">To</th>
 										<th style="vertical-align: middle;text-align: center;">Cc</th>
+										<th style="vertical-align: middle;text-align: center;">#</th>
+										
 									</tr>
 									@foreach($clients as $client)
 									<tr>
-										<td style="width: 200px;vertical-align: middle;text-align: center;" >{{$client->client_name}}</td>
+										<td style="vertical-align: middle;text-align: left;">{{$client->client_name}}</td>
 										<td style="vertical-align: middle;text-align: center;">{{$client->client_acronym}}</td>
 										<td style="vertical-align: middle;text-align: center;">{{$client->open_dear}}</td>
-										<td>{!! $client->open_to !!}</td>
-										<td>{!! $client->open_cc !!}</td>
+										<td style="vertical-align: middle;text-align: left;">{!! $client->open_to !!}</td>
+										<td style="vertical-align: middle;text-align: left;">{!! $client->open_cc !!}</td>
 										<td style="vertical-align: middle;text-align: center;">{{ $client->close_dear }}</td>
-										<td>{!! $client->close_to !!}</td>
-										<td>{!! $client->close_cc !!}</td>
+										<td style="vertical-align: middle;text-align: left;">{!! $client->close_to !!}</td>
+										<td style="vertical-align: middle;text-align: left;">{!! $client->close_cc !!}</td>
 
 										<td style="vertical-align: middle;text-align: center;"><button type="button" class="btn btn-block btn-default" onclick="editClient({{$client->id}})">Edit</button></td>
 									</tr>
@@ -1991,6 +1992,7 @@
 						$('#modal-ticket').modal('toggle');
 						addRows(result);
 						$("#performance").click();
+						// location.reload(true);
 					}
 				});
 			}
@@ -2010,7 +2012,7 @@
 			var heading = "";
 			heading = heading + '<thead>';
 				heading = heading + '<tr>';
-					heading = heading + '<th style="width: 150px;vertical-align: middle;">ID Ticket</th>';
+					heading = heading + '<th style="text-align:center;vertical-align: middle;">ID Ticket</th>';
 					heading = heading + '<th style="text-align:center;width: 100px;vertical-align: middle;">ID ATM*</th>';
 					heading = heading + '<th style="text-align:center;width: 100px;vertical-align: middle;">Ticket Number</th>';
 					// heading = heading + '<th style="width: 100px">Number Tiket</th>';
@@ -2018,8 +2020,8 @@
 					heading = heading + '<th style="vertical-align: middle;">Problem</th>';
 					heading = heading + '<th style="text-align: center;vertical-align: middle;">PIC</th>';
 					heading = heading + '<th style="width: 100px;vertical-align: middle;">Location</th>';
-					heading = heading + '<th style="width: 40px;vertical-align: middle;">Status</th>';
-					heading = heading + '<th style="width: 40px;vertical-align: middle;">Operator</th>';
+					heading = heading + '<th style="text-align: center;vertical-align: middle;">Status</th>';
+					heading = heading + '<th style="text-align: center;vertical-align: middle;">Operator</th>';
 					heading = heading + '<th style="width: 40px;vertical-align: middle;"></th>';
 				heading = heading + '</tr>';
 			heading = heading + '</thead>';
@@ -2042,13 +2044,13 @@
 							} else {
 								body = body + '<td style="width: 150px;vertical-align: middle;">' + value.id_ticket + '</td>';
 							}
-							body = body + '<td style="width: 50px; vertical-align: middle;">' + value.id_atm + '</td>';
-							body = body + '<td style="width: 100px; vertical-align: middle;">' + value.ticket_number_3party + '</td>';
+							body = body + '<td style="text-align:center; vertical-align: middle;">' + value.id_atm + '</td>';
+							body = body + '<td style="text-align:center; vertical-align: middle;">' + value.ticket_number_3party + '</td>';
 							// body = body + '<td style="width: 100px; vertical-align: middle;">51705282    </td>';
-							body = body + '<td style="width: 40px" class="text-center">' + moment(value.open).format('dddd, D MMMM YYYY HH:mm') + '</td>';
-							body = body + '<td>' + value.problem + '</td>';
-							body = body + '<td style="width: 100px">' + value.pic + ' - ' + value.contact_pic + '</td>';
-							body = body + '<td style="width: 100px">' + value.location + '</td>';
+							body = body + '<td style="width: 40px; vertical-align: middle;" class="text-center">' + moment(value.open).format('dddd, D MMMM YYYY HH:mm') + '</td>';
+							body = body + '<td style="vertical-align: middle;">' + value.problem + '</td>';
+							body = body + '<td style="width: 100px; vertical-align: middle;">' + value.pic + ' - ' + value.contact_pic + '</td>';
+							body = body + '<td style="width: 100px; vertical-align: middle;">' + value.location + '</td>';
 							if(value.last_status[0] == "OPEN"){
 								body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><span class="label label-danger">' + value.last_status[0] + '</span></td>';
 							} else if(value.last_status[0] == "ON PROGRESS") {
@@ -2060,8 +2062,8 @@
 							} else if(value.last_status[0] == "CANCEL") {
 								body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><span class="label label-success" style="background-color:#555299 !important;">' + value.last_status[0] + '</span></td>';
 							}
-							body = body + '<td style="width: 40px; vertical-align: middle;">' + value.operator + '</td>';
-							body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><button class="btn btn-default" onclick="showTicket(' + value.id_open + ')">Detail</button></td>';
+							body = body + '<td style="width: 40px; text-align: center; vertical-align: middle;">' + value.operator + '</td>';
+							body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><button class="btn btn-default" onclick="showTicket(' + value.id_open + ')">Detail</button>Action</td>';
 						body = body + '</tr>';
 					});
 
@@ -2597,7 +2599,8 @@
 				success: function(result){
 					console.log("success");
 					alert('Email Has Been Sent!');
-					$("#createparam").click();
+					location.reload(true);
+					// $("#createparam").click();
 					// window.location('/tisygy');
 				},
 			});

@@ -1610,7 +1610,7 @@ class AdminController extends Controller
 		}
 	}
 	public function areport(){
-		// echo "asdfas";
+		
 		return view('areport');
 	}
 	public function getReport(Request $req){

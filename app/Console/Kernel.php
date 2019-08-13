@@ -28,10 +28,10 @@ class Kernel extends ConsoleKernel
 		// $schedule->command('inspire')
 		//          ->hourly();
 
-		$schedule->call(function() {
-			$text = "Test Text";
-			syslog(LOG_ERR, "Test Cron Success " . $text);
-		})->everyMinute();
+		// $schedule->call(function() {
+		// 	$text = "Test Text";
+		// 	syslog(LOG_ERR, "Test Cron Success " . $text);
+		// })->everyMinute();
 
 		// Schedule untuk memeriksa hadir tidak nya orang itu
 		// $schedule->call(function (){

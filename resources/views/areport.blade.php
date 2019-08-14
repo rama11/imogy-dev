@@ -70,7 +70,7 @@
 					<div class="box-body">
 						<p>This is all off your absent record. Check this history frequenly for futher, thanks</p>
 						<div class="input-group col-md-1">
-							<button type="button" Sclass="btn btn-default pull-left" id="daterange-btn">
+							<button type="button" class="btn btn-default pull-left" id="daterange-btn">
 									<i class="fa fa-calendar"></i> Date range picker
 								<span>
 									<i class="fa fa-caret-down"></i>

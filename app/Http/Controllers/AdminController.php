@@ -325,9 +325,9 @@ class AdminController extends Controller
 	
 	public function addUser(Request $request){
 		date_default_timezone_set('Asia/Jakarta');
-		$fileName = $request->gambar;
-		$fileName = $request->file('gambar')->getClientOriginalName();
-		$request->file('gambar')->move('img/', $fileName);
+		// $fileName = $request->gambar;
+		// $fileName = $request->file('gambar')->getClientOriginalName();
+		// $request->file('gambar')->move('img/user.png', $fileName);
 		if($request->born == NULL){
 			$request->born = "Born";
 		}
@@ -361,7 +361,7 @@ class AdminController extends Controller
 				'phone' => $request->phone,
 				'address' => $request->address,
 				'hadir' => "00:00:00",
-				'foto' => 'img/' . $fileName,
+				'foto' => 'img/user.png',
 				'present_timing' => '1'
 				]);
 		return redirect('usermanage')->with('status', "Add User for " . $request->name . " success.");

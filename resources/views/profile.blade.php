@@ -295,8 +295,3 @@
 	</section>
 </div>
 @endsection
-@section('script')
-<script type="text/javascript">
-	$("#password").password('toggle');
-</script>
-@endsection

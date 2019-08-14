@@ -424,6 +424,18 @@
 
 	function initFormInputProject(){
 
+		$('#inputProjectCustomer').select2({
+			ajax: {
+				url: '{{url("project/manage/getCustomer")}}',
+				dataType: 'json',
+				processResults: function (data) {
+					return {
+						results: data
+					};
+				}
+			}
+		});
+
 		$('#inputProjectCoordinator').select2({
 			ajax: {
 				url: '{{url("project/manage/getMember")}}',

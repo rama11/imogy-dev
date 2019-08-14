@@ -1525,7 +1525,7 @@
 
 	$("#inputATM").select2({
 		minimumInputLength: 2,
-		selectOnClose: true
+		selectOnClose: true,
 		tags: [],
 		ajax: {
 			url: 'getAtm',

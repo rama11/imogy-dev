@@ -7,10 +7,11 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class MailOpenProject extends Mailable
+class MailRemainderProject extends Mailable
 {
 	use Queueable, SerializesModels;
 	public $data;
+	
 	/**
 	 * Create a new message instance.
 	 *
@@ -31,6 +32,6 @@ class MailOpenProject extends Mailable
 	{
 		return $this
 			->subject($this->data["subject"])
-			->view('project.mailOpenProject');
+			->view('project.mailRemainderProject');
 	}
 }

@@ -1,0 +1,22 @@
+Email Remainder 
+
+Dilakukan ketika mendekati due date dan telah melewati due date
+
+H-14	Remainder 1
+H-7		Remainder 2
+H-3		Remainder 3
+H-2		Remainder 4
+H-1		Remainder 5
+H		Remainder 6
+H+1		Remainder 7
+H+2		Remainder 8
+H+3		Remainder 9
+H+7		Remainder 10
+H+14	Remainder 11
+
+Contoh:
+Due date	-> 19 Agustus 2019
+Sekarang 	-> 12 Agustus 2019
+
+Jadi harusnya sekarang sudah memasuki remainder ke 2
+karena sekarang sudah H-7 dari due date

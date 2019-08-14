@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Mail\MailOpenProject;
+use App\Mail\MailRemainderProject;
 use App\Jobs\QueueEmail;
+use App\Jobs\QueueEmailRemainder;
+use Carbon\Carbon;
 use Mail;
 use Auth;
 use DB;
@@ -94,6 +97,7 @@ class ProjectController extends Controller
 					'project_leader' => $req->Lead,
 				]
 			);
+
 		$teamMemberName = [];
 		$teamMemberEmail = [];
 		foreach ($req->Member as $member) {
@@ -113,14 +117,25 @@ class ProjectController extends Controller
 		$startPeriod[0] = date('j F Y', strtotime("+" . ($req->Duration*0) . " months", strtotime($req->StartPeriod)));
 		$endPeriod[0] = date('j F Y', strtotime("+" . ($req->Duration*1) . " months -1 days", strtotime($req->StartPeriod)));
 
-		DB::table('project__event')
-			->insert(
+		$setProjectEventFirst = DB::table('project__event')
+			->insertGetId(
 				[
 					'project_list_id' => DB::table('project__list')->where('project_pid',$req->PID)->value('id'),
 					'name' => "Preventive Periode " . 1,
 					'note' => date('j F Y', strtotime("+" . ($req->Duration*0) . " months", strtotime($req->StartPeriod))) . " - " . date('j F Y', strtotime("+" . ($req->Duration*1) . " months -1 days", strtotime($req->StartPeriod))),
 					'due_date' => date('Y-m-d', strtotime("+" . ($req->Duration*1) . " months", strtotime($req->StartPeriod))),
 					'status' => "Active"
+				]
+			);
+
+		DB::table('project__event_history')
+			->insert(
+				[
+					'project_event_id' => $setProjectEventFirst,
+					'time' => date("Y-m-d H:i:s"),
+					'note' => "Open Project",
+					'type' => "Update",
+					'updater' => Auth::user()->nickname,
 				]
 			);
 
@@ -151,7 +166,7 @@ class ProjectController extends Controller
 				// "wisnu.darman@sinergy.co.id"
 			),
 			// "to" => array_push(
-			// 	$teamMemberName, 
+			// 	$teamMemberEmail, 
 			// 	DB::table('users')->where('id',$req->Coordinator)->value('email'),
 			// 	DB::table('users')->where('id',$req->Lead)->value('email')
 			// ),
@@ -254,13 +269,83 @@ class ProjectController extends Controller
 
 		);
 
+		$project = DB::table('project__event')
+			->where('project_list_id',111)
+			->where('status','Active')
+			->first();
+
+		$different = ( Carbon::now()->diffInDays(Carbon::parse($project->due_date), false ) * -1);
+
+		$refrence = DB::table('project__remainder_refrence')
+			->where('number_of_days',$different)
+			->first();
+
+		$list = DB::table('project__list')
+			->select(
+					DB::raw("customer.name as customer"),
+					'project__list.project_name',
+					'project__list.project_pid',
+					DB::raw("coordinator.nickname as project_coordinator"),
+					DB::raw("coordinator2.email as project_coordinator_email"),
+					DB::raw("leader.nickname as project_leader"),
+					DB::raw("leader2.email as project_leader_email"),
+					DB::raw("event.name as active_period"),
+					DB::raw("event.due_date as due_date"),
+					DB::raw("IFNULL(history.`updater`, 0) AS updater"),
+					DB::raw("IFNULL(history.`time`, 0) AS time_update"),
+					DB::raw("IFNULL(history.`note`, 0) AS note_update")
+				)
+			->join('project__customer as customer','project__list.project_customer','=','customer.id')
+			->join('project__member as coordinator','project__list.project_coordinator','=','coordinator.id')
+			->join('users as coordinator2','coordinator.user_id','=','coordinator2.id')
+			->join('project__member as leader','project__list.project_leader','=','leader.id')
+			->join('users as leader2','leader.user_id','=','leader2.id')
+			->join('project__event as event','project__list.id','=','event.project_list_id')
+			->join(
+				DB::raw("(SELECT max_id.id AS id, `project_event_id`, `updater`, `time`, `note`
+						FROM `project__event_history`
+						INNER JOIN(
+							SELECT MAX(id) AS id
+							FROM
+								`project__event_history`
+							GROUP BY
+								`project_event_id`
+						) AS max_id
+						ON
+							`project__event_history`.`id` = max_id.id) AS history")
+				,'event.id','=','history.project_event_id','left')
+			->where('project__list.id',111)
+			->where('event.status','Active')
+			->first();
+		// echo "<pre>";
+		// print_r($list);
+		setlocale(LC_TIME, 'id_ID.UTF-8');
+		$data = collect([
+			"to" => $list->project_coordinator_email,
+			"cc" => $list->project_leader_email,
+			"subject" => "[" . $refrence->refrence_name . "] Project - " . $list->customer,
+			"customer" => $list->customer,
+			"name_project" => $list->project_name,
+			"id_project" => $list->project_pid,
+			"active_period" => $list->active_period,
+			"due_date" => Carbon::parse($list->due_date)->formatLocalized('%d %B %Y'),
+			"last_updater" => $list->updater,
+			"last_update_time" => Carbon::parse($list->time_update)->formatLocalized('%d %B %Y'),
+			"last_update_note" => $list->note_update,
+			"remain_time" => Carbon::now()->diffForHumans(Carbon::parse($project->due_date)),
+		]);
+		// print_r($data);
+		// print_r($data["subject"]);
+		// echo "</pre>";
+
+
 		// Mail::to($data["to"])
 		// 	->cc($data["cc"])
-		// 	->send(new MailOpenProject($data));
+		// 	->send(new MailRemainderProject($data));
 
-		dispatch(new QueueEmail($data));
+		dispatch(new QueueEmailRemainder($data));
 		
-		
+		// return new MailRemainderProject($data);
 		// return view('project.mailOpenProject');
 	}
 

@@ -16,6 +16,7 @@ class QueueEmail implements ShouldQueue
 	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 	protected $data;
 	public $tries = 3;
+	
 	/**
 	 * Create a new job instance.
 	 *
@@ -34,7 +35,6 @@ class QueueEmail implements ShouldQueue
 	 */
 	public function handle()
 	{
-		//
 		$data = $this->data;
 
 		Mail::to($data["to"])

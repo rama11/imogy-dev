@@ -259,8 +259,9 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('project/manage/getMember','ProjectController@getMember');
 	Route::post('project/manage/setProjectList','ProjectController@setProjectList');
 	Route::get('project/manage/sendProjectListOpen','ProjectController@sendProjectListOpen');
+	Route::get('project/manage/testSendProjectListOpen','ProjectController@testSendProjectListOpen');
 	route::get('project/manage/previewSendProjectListOpen',function(){
-		return new App\Mail\MailOpenProject();
+		return new App\Mail\MailRemainderProject();
 	});
 	// Get Project
 	Route::get('project/manage/getAllProjectList','ProjectController@getAllProjectList');

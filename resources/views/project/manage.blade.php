@@ -296,6 +296,7 @@
 							<button type="button" class="btn btn-primary" id="back" onclick='
 								document.getElementById("inputProjectForm3").style.display = "inline";
 								document.getElementById("inputProjectForm4").style.display = "none";
+								$("span.select2-selection__choice__remove").show();
 								document.getElementById("modal-default-size").classList.remove("modal-lg");'>Back</button>
 							<button type="button" class="btn btn-success" id="next" onclick='
 								sendInputProject();
@@ -424,39 +425,36 @@
 
 	function initFormInputProject(){
 
-		$('#inputProjectCustomer').select2({
-			ajax: {
-				url: '{{url("project/manage/getCustomer")}}',
-				dataType: 'json',
-				processResults: function (data) {
-					return {
-						results: data
-					};
-				}
+		$.ajax({
+			type:"GET",
+			url:'{{url("project/manage/getCustomer")}}',
+			success: function(result){
+				var listCustomer = result;
+				listCustomer.unshift({id:0,text:"Add New Customer"});
+				$("#inputProjectCustomer").select2({
+					placeholder: "Select a customer",
+					data: result
+				});
 			}
 		});
 
-		$('#inputProjectCoordinator').select2({
-			ajax: {
-				url: '{{url("project/manage/getMember")}}',
-				dataType: 'json',
-				processResults: function (data) {
-					return {
-						results: data.coordinator
-					};
-				}
-			}
-		});
+		$.ajax({
+			type:"GET",
+			url:'{{url("project/manage/getMember")}}',
+			success: function(result){
+				$("#inputProjectCoordinator").select2({
+					placeholder: "Select a Coordinator",
+					data: result.coordinator
+				});
+				$("#inputProjectLead").select2({
+						placeholder: "Select a Project Lead",
+					data: result.all
+				});
 
-		$('#inputProjectLead, #inputProjectMember, #inputProjectMemberCorrention').select2({
-			ajax: {
-				url: '{{url("project/manage/getMember")}}',
-				dataType: 'json',
-				processResults: function (data) {
-					return {
-						results: data.all
-					};
-				}
+				$("#inputProjectMember, #inputProjectMemberCorrention").select2({
+					placeholder: "Select Member",
+					data: result.all
+				});
 			}
 		});
 
@@ -495,16 +493,20 @@
 		var leader = $("#inputProjectLead").select2('data');
 		var members = $("#inputProjectMember").select2('data');
 		
-		
 
 		$("#inputProjectCoordinatorCorrention").val(coordinator[0].text);
 		$("#inputProjectLeadCorrention").val(leader[0].text);
-
+		member = [];
+		$("#inputProjectMemberCorrention").select2().val(null).trigger('change');
 		members.forEach(function(eachMember){
 			member.push(eachMember.id);
 			memberNickname.push(eachMember.text);
 		});
+
+		
 		$("#inputProjectMemberCorrention").select2().val(member).trigger("change");
+		$("span.select2-selection__choice__remove").hide();
+		$("#inputProjectMemberCorrention").next().find(".select2-selection__choice").css("background-color","#e4e4e4").css("border","1px solid #aaa").css("color","#333").css("padding","1px 10px")
 	};
 
 	function sendInputProject(){

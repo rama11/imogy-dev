@@ -42,6 +42,7 @@ class SendProjectRemainder extends Command
 	 */
 	public function handle()
 	{
+		// $this->argument('id');
 		$project = DB::table('project__event')
 			->where('project_list_id',$this->argument('id'))
 			->where('status','Active')
@@ -53,10 +54,14 @@ class SendProjectRemainder extends Command
 
 		date_default_timezone_set('Asia/Jakarta');
 		$different = ( Carbon::now()->diffInDays(Carbon::parse($project->due_date), false ) * -1);
+		$output = "\nId Project : " . $this->argument('id') . "\nDate Now " . Carbon::now()->toDateString() . "\n";
+		$output2 = "Id Project : " . $this->argument('id') . " Date Now " . Carbon::now()->toDateString();
+		echo $output;
 
-		echo "\nId Project : " . $this->argument('id') . "\nDate Now " . Carbon::now()->toDateString() . "\n";
-		print_r("Due date " . $project->due_date . "\n");
-		print_r("Diff days : " .  $different . "\n");
+		syslog(LOG_ERR, "Test - " . $output2);
+
+		// print_r("Due date " . $project->due_date . "\n");
+		// print_r("Diff days : " .  $different . "\n");
 
 		if( in_array( $different , $refrence )){
 			// echo "true";
@@ -64,10 +69,10 @@ class SendProjectRemainder extends Command
 				->where('number_of_days',$different)
 				->first();
 			// print_r($refrence);
-			print_r(Carbon::now()->diffForHumans(Carbon::parse($project->due_date)));
+			// print_r(Carbon::now()->diffForHumans(Carbon::parse($project->due_date)));
 			
-			echo "\n";
-			echo "\n";
+			// echo "\n";
+			// echo "\n";
 
 			$list = DB::table('project__list')
 				->select(
@@ -107,7 +112,7 @@ class SendProjectRemainder extends Command
 				->where('event.status','Active')
 				->first();
 
-			print_r($list);
+			// print_r($list);
 			setlocale(LC_TIME, 'id_ID.UTF-8');
 			$data = collect([
 				"to" => $list->project_coordinator_email,
@@ -124,7 +129,7 @@ class SendProjectRemainder extends Command
 				"remain_time" => Carbon::now()->diffForHumans(Carbon::parse($project->due_date)),
 			]);
 
-			print_r($data);
+			// print_r($data);
 
 			// Mail::to("agastya@sinergy.co.id")
 			// 	->cc("prof.agastyo@gmail.com")
@@ -137,8 +142,7 @@ class SendProjectRemainder extends Command
 		} else {
 			echo "false";
 		}
-
-		echo "\n";
-		echo "\n";
+		// echo "\n";
+		// echo "\n";
 	}
 }

@@ -91,7 +91,7 @@ return [
     |
     */
 
-    'migrations' => 'migrations',
+    'migrations' => 'laravel__migrations',
 
     /*
     |--------------------------------------------------------------------------

@@ -43,7 +43,7 @@ class Kernel extends ConsoleKernel
 				syslog(LOG_ERR, "Loop Success " . $id);
 			}
 
-		})->dailyAt('08:00')->timezone('Jakarta/Asia');
+		})->dailyAt('08:00')->timezone('Asia/Jakarta');
 
 		// $schedule->call(function() {
 		// 	$text = "Test Text";

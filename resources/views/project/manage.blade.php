@@ -618,8 +618,12 @@
 	}
 
 	function updateEventProject( bg_color , classTimeline , id_event){
-		console.log($("#updateBtn" + id_event).text());
-		var str = $("#updateBtn" + id_event).text();
+		// console.log($("#updateBtn" + id_event).text());
+		var typeUpdate = $("#updateBtn" + id_event).text();
+		typeUpdate = typeUpdate.substr(0,typeUpdate.length - 1);
+		
+		iconTimeline = "fa-cog";
+
 		$.ajax({
 			type:"POST",
 			url:"{{url('project/manage/setUpdateEventProject')}}",
@@ -627,13 +631,47 @@
 				_token: "{{ csrf_token() }}",
 				id:$("#inputIdUpdateEventProject" + id_event).val(),
 				note:$("#inputUpdateEventProject" + id_event).val(),
-				type:str.substring(0,str.length - 1),
+				type:typeUpdate,
 				time:moment().format("YYYY-MM-DD HH:mm:ss"),
 			},
 			success:function(result){
+				if(typeUpdate == "Finish"){
+					$(".activeTime").insertAfter('.updateCollom' + (id_event - 1))
+
+					$(".activeTime span.bg-green").removeClass('bg-green').addClass('bg-gray')
+					$(".activeTime i.bg-green").removeClass('bg-green').addClass('bg-gray')
+
+					$(".activeTime.time-label").attr('onclick','$(".afterTime' + id_event + '").slideToggle()')
+					$(".activeTime").removeClass('activeTime' + id_event).addClass('afterTime' + id_event)
+					$(".activeTime").removeClass('activeTime').addClass('afterTime')
+
+					$(".activeTimeTogle").removeClass('activeTimeTogle').addClass('afterTimeTogle')
+					$(".afterTime" + id_event + ".time-label").removeClass('afterTime' + id_event);
+					
+					
+					$(".beforeTime.beforeTimeTogle.updateCollom" + (parseInt(id_event) + 1)).insertAfter(".activeTimeButton")
+					$(".time-label.beforeTime.beforeTimeTogle:first").next().insertAfter(".activeTimeButton")
+					$(".beforeTimeButton:first").next().insertAfter(".activeTimeButton")
+
+					$(".beforeTime.beforeTimeTogle i.bg-red:first").removeClass('bg-red').addClass('bg-green')
+					$(".time-label.beforeTime.beforeTimeTogle span:first").removeClass('bg-red').addClass('bg-green')
+					$(".beforeTime.beforeTimeTogle.updateCollom" + (parseInt(id_event) + 1)).removeClass('beforeTime' + (parseInt(id_event) + 1)).addClass('activeTime' + (parseInt(id_event) + 1)).removeClass('beforeTime').removeClass('beforeTimeTogle').addClass('activeTime').addClass('activeTimeTogle')
+
+					id_event = parseInt(id_event) + 1;
+
+					$(".time-label.beforeTime.beforeTimeTogle:first").attr('onclick','$(".activeTime' + id_event + '").slideToggle()')
+					$(".time-label.beforeTime.beforeTimeTogle:first").removeClass('beforeTime').removeClass('beforeTimeTogle').addClass('activeTime').addClass('activeTimeTogle')
+					$(".beforeTime.beforeTimeTogle:first").removeClass('beforeTime' + id_event).addClass('activeTime' + id_event).removeClass('beforeTime').removeClass('beforeTimeTogle').addClass('activeTime').addClass('activeTimeTogle')
+					
+					id_event = parseInt(id_event) - 1;
+					bg_color = "bg-gray";
+					classTimeline = "afterTime";
+					iconTimeline = "fa-check";
+				}
+
 				var append = "";
-				append = append + '<li class="' + classTimeline + '">';
-				append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
+				append = append + '<li class="' + classTimeline + ' ' + classTimeline + 'Togle ' + classTimeline + id_event + '">';
+				append = append + '	<i class="fa ' + iconTimeline + ' ' + bg_color + '"></i>';
 				append = append + '	<div class="timeline-item">';
 				append = append + '		<span class="time" title="' + moment().format("HH:mm:ss") + '"><i class="fa fa-clock-o"></i> ' + moment().format("DD MMMM YYYY") + '</span>';
 				append = append + '		<h3 class="timeline-header"><a href="#">[{{Auth::user()->nickname}}]</a></h3>';
@@ -672,7 +710,7 @@
 						classTimeline = "afterTime";
 						if(after == false){
 							after = true;
-							append = append + '<li class="time-label" onclick="($(&quot;.' + classTimeline + 'Togle&quot;).length === $(&quot;.' + classTimeline + 'Togle:visible&quot;).length || $(&quot;.' + classTimeline + 'Togle:visible&quot;).length === 0) ? $(&quot;.' + classTimeline + '&quot;).slideToggle() : $(&quot;.' + classTimeline + '&quot;).slideUp()" >';
+							append = append + '<li class="time-label ' + classTimeline + 'Button" onclick="($(&quot;.' + classTimeline + 'Togle&quot;).length === $(&quot;.' + classTimeline + 'Togle:visible&quot;).length || $(&quot;.' + classTimeline + 'Togle:visible&quot;).length === 0) ? $(&quot;.' + classTimeline + '&quot;).slideToggle() : $(&quot;.' + classTimeline + '&quot;).slideUp()" >';
 							append = append + '	<span class="' + bg_color + '">';
 							append = append + '		Show Previous Event';
 							append = append + '	</span>';
@@ -683,7 +721,7 @@
 							active = true;
 							classTimeline = "activeTime";
 							bg_color = "bg-green";
-							append = append + '<li class="time-label " style="' + style + '" onclick="($(&quot;.' + classTimeline + 'Togle&quot;).length === $(&quot;.' + classTimeline + 'Togle:visible&quot;).length || $(&quot;.' + classTimeline + 'Togle:visible&quot;).length === 0) ? $(&quot;.' + classTimeline + '&quot;).slideToggle() : $(&quot;.' + classTimeline + '&quot;).slideUp()" >';
+							append = append + '<li class="time-label ' + classTimeline + 'Button" style="' + style + '" onclick="($(&quot;.' + classTimeline + 'Togle&quot;).length === $(&quot;.' + classTimeline + 'Togle:visible&quot;).length || $(&quot;.' + classTimeline + 'Togle:visible&quot;).length === 0) ? $(&quot;.' + classTimeline + '&quot;).slideToggle() : $(&quot;.' + classTimeline + '&quot;).slideUp()" >';
 							append = append + '	<span class="' + bg_color + '">';
 							append = append + '		Active Event';
 							append = append + '	</span>';
@@ -693,7 +731,7 @@
 							classTimeline = "beforeTime";
 							if(before == false){
 								before = true;
-								append = append + '<li class="time-label" onclick="($(&quot;.' + classTimeline + 'Togle&quot;).length === $(&quot;.' + classTimeline + 'Togle:visible&quot;).length || $(&quot;.' + classTimeline + 'Togle:visible&quot;).length === 0) ? $(&quot;.' + classTimeline + '&quot;).slideToggle() : $(&quot;.' + classTimeline + '&quot;).slideUp()" >';
+								append = append + '<li class="time-label ' + classTimeline + 'Button" onclick="($(&quot;.' + classTimeline + 'Togle&quot;).length === $(&quot;.' + classTimeline + 'Togle:visible&quot;).length || $(&quot;.' + classTimeline + 'Togle:visible&quot;).length === 0) ? $(&quot;.' + classTimeline + '&quot;).slideToggle() : $(&quot;.' + classTimeline + '&quot;).slideUp()" >';
 								append = append + '	<span class="' + bg_color + '">';
 								append = append + '		Show Next Event';
 								append = append + '	</span>';
@@ -719,7 +757,11 @@
 					result.eventHistory.forEach(function(dataHistory,index){
 						if(dataHistory.project_event_id == dataEvent.id){
 							append = append + '<li class="' + classTimeline + ' ' + classTimeline + 'Togle ' + classTimeline + dataEvent.id + '" style="' + style + '">';
-							append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
+							if(dataHistory.type == "Finish"){
+								append = append + '	<i class="fa fa-check ' + bg_color + '"></i>';
+							}else {
+								append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
+							}
 							append = append + '	<div class="timeline-item">';
 							append = append + '		<span class="time" title="' + moment(dataHistory.time,"YYYY-MM-DD HH:mm:ss").format("HH:mm:ss") + '"><i class="fa fa-clock-o"></i> ' + moment(dataHistory.time,"YYYY-MM-DD HH:mm:ss").format("DD MMMM YYYY") + '</span>';
 							append = append + '		<h3 class="timeline-header no-border"><a href="#">[' + dataHistory.updater + ']</a></h3>';
@@ -730,31 +772,29 @@
 							append = append + '</li>';
 						}
 					});
-					if(classTimeline !== "beforeTime"){
-						append = append + '<li class="' + classTimeline + ' ' + classTimeline + 'Togle ' + classTimeline + dataEvent.id + ' updateCollom' + dataEvent.id + '" style="' + style + '">';
-						// append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
-						append = append + '	<div class="timeline-item">';
-						append = append + '		<div class="timeline-body">'
-						append = append + '			<div class="input-group">';
-						append = append + '				<div class="input-group-btn">';
-						append = append + '					<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" id="updateBtn' + dataEvent.id + '">Update';
-						append = append + '						<span class="fa fa-caret-down"></span>';
-						append = append + '					</button>';
-						append = append + '					<ul class="dropdown-menu">';
-						append = append + '						<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Update <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Update</a></li>';
-						append = append + '						<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Finish <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Finish</a></li>';
-						append = append + '					</ul>';
-						append = append + '				</div>';
-						append = append + '				<input type="text" class="form-control" id="inputUpdateEventProject' + dataEvent.id + '">';
-						append = append + '				<input type="hidden" id="inputIdUpdateEventProject' + dataEvent.id + '" value=' + dataEvent.id + '>';
-						append = append + '				<div class="input-group-btn">';
-						append = append + '					<button type="button" class="btn btn-primary" onclick="updateEventProject(&quot;' + bg_color + '&quot;,&quot;' + classTimeline + '&quot;,&quot;' + dataEvent.id + '&quot;)">Go</button>';
-						append = append + '				</div>';
-						append = append + '			</div>';
-						append = append + '		</div>';
-						append = append + '	</div>';
-						append = append + '</li>';
-					}
+					append = append + '<li class="' + classTimeline + ' ' + classTimeline + 'Togle ' + classTimeline + dataEvent.id + ' updateCollom' + dataEvent.id + '" style="' + style + '">';
+					// append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
+					append = append + '	<div class="timeline-item">';
+					append = append + '		<div class="timeline-body">'
+					append = append + '			<div class="input-group">';
+					append = append + '				<div class="input-group-btn">';
+					append = append + '					<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" id="updateBtn' + dataEvent.id + '">Update';
+					append = append + '						<span class="fa fa-caret-down"></span>';
+					append = append + '					</button>';
+					append = append + '					<ul class="dropdown-menu">';
+					append = append + '						<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Update <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Update</a></li>';
+					append = append + '						<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Finish <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Finish</a></li>';
+					append = append + '					</ul>';
+					append = append + '				</div>';
+					append = append + '				<input type="text" class="form-control" id="inputUpdateEventProject' + dataEvent.id + '">';
+					append = append + '				<input type="hidden" id="inputIdUpdateEventProject' + dataEvent.id + '" value=' + dataEvent.id + '>';
+					append = append + '				<div class="input-group-btn">';
+					append = append + '					<button type="button" class="btn btn-primary" onclick="updateEventProject(&quot;' + bg_color + '&quot;,&quot;' + classTimeline + '&quot;,&quot;' + dataEvent.id + '&quot;)">Go</button>';
+					append = append + '				</div>';
+					append = append + '			</div>';
+					append = append + '		</div>';
+					append = append + '	</div>';
+					append = append + '</li>';
 				});
 				append = append + '<li class="beforeTime" style="display:none">';
 				append = append + '	<i class="fa fa-clock-o bg-gray"></i>';

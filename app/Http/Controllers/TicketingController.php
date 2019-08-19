@@ -458,7 +458,7 @@ class TicketingController extends Controller
 				->orderBy('id','DESC')
 				->value('activity');
 
-			 $downtime = 0;
+			$downtime = 0;
 
 			if($check == "CLOSE" || $check == "CANCEL"){
 				$value->open = DB::table('ticketing__activity')
@@ -527,7 +527,7 @@ class TicketingController extends Controller
 
 		foreach ($result as $key => $value) {
 			$temp = explode("/",$value->id_ticket);
-			$value->temp = $temp[2];
+			$value->temp = $temp[2] . "/" . $temp[3];
 
 			$check = DB::table('ticketing__activity')
 				->where('id_ticket','=',$value->id_ticket)
@@ -1410,7 +1410,9 @@ class TicketingController extends Controller
 	}
 
 	public function testMasPras(){
+
 		return view('testMasPras');
+
 	}
 
 	public function testReport($client,$month){
@@ -1508,7 +1510,6 @@ class TicketingController extends Controller
 		$spreadsheet->getActiveSheet()->getColumnDimension('O')->setWidth(80);
 		$spreadsheet->getActiveSheet()->getColumnDimension('P')->setWidth(100);
 		$spreadsheet->getActiveSheet()->getColumnDimension('Q')->setWidth(20);
-		// $spreadsheet->getActiveSheet()->getColumnDimension('R')->setWidth(15);
 
 		// Colom Header
 		$spreadsheet->getActiveSheet(0)
@@ -1529,9 +1530,8 @@ class TicketingController extends Controller
 			->setCellValue('O4','ROOTCOSE')
 			->setCellValue('P4','CONTERMASURE')
 			->setCellValue('Q4','ENGINEER');
-			// ->setCellValue('R4','HANDPHONE');
 		
-		$value1 = $this->getPerformance3($client,$bulan);
+		$value1 = $this->getPerformance3($client,$bulan . "/" . date("Y"));
 
 		foreach ($value1 as $key => $value) {
 			$spreadsheet->getActiveSheet()->getStyle('A' . (5 + $key))->applyFromArray($Colom_Header);
@@ -1635,14 +1635,14 @@ class TicketingController extends Controller
 			->setCellValue('K5','SLA')
 
 			->setCellValue('E6','AWAL')
-			->setCellValue('F6','PERIODE BULAN')
+			->setCellValue('F6','PERIODE PROBLEM')
 			->setCellValue('H6','AKHIR')
 			;
 
 		$spreadsheet->getActiveSheet()->getStyle("I5")->getAlignment()->setWrapText(true);
 		$spreadsheet->getActiveSheet()->getStyle("J5")->getAlignment()->setWrapText(true);
 
-		$value1 = $this->getPerformance5($client,$bulan);
+		$value1 = $this->getPerformance5($client,$bulan . "/" . date("Y"));
 
 		$middle = [
 			'alignment' => [
@@ -1802,9 +1802,6 @@ class TicketingController extends Controller
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
 		$writer->save($name);
 		return response()->download($name);
-		
-
-
 
 		// return $value1;
 

@@ -116,6 +116,7 @@ Route::post('/editProfile', 'AdminController@editProfile');
 
 	Route::get('/user', 'AdminController@user');
 	Route::get('/ahistory', 'AdminController@history');
+	Route::get('/ahistory2', 'AdminController@historydet');
 	Route::get('/ateamhistory', 'AdminController@teamhistory');
 	Route::get('/auserhistory/{id}', 'AdminController@auserhistory');
 	Route::get('/areport', 'AdminController@areport');

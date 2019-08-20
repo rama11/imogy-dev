@@ -176,6 +176,10 @@
 
 										 <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#modalPulang" style="display:none">PULANG</button>
 										
+										@elseif($keterangan == 5)
+										
+										<button type="button" class="btn btn-primary " data-toggle="modal" data-target="#modalPulang" style="display:none">PULANG</button>
+										
 										@else
 
 										<button type="button" class="btn btn-primary " data-toggle="modal" data-target="#modalPulang" id="pulang">PULANG</button>
@@ -397,5 +401,4 @@
 	
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?v=3&libraries=geometry&key={{env('GOOGLE_API_KEY')}}"></script>
->>>
 @endsection

@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+<<<<<<< HEAD
 use App\Mail\MailOpenProject;
 use App\Mail\MailRemainderProject;
 use App\Jobs\QueueEmail;
 use App\Jobs\QueueEmailRemainder;
 use Carbon\Carbon;
 use Mail;
+=======
+>>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
 use Auth;
 use DB;
 
@@ -16,6 +19,7 @@ class ProjectController extends Controller
 {
 	//
 
+<<<<<<< HEAD
 	public function __construct(){
 		
 		$this->middleware('auth');
@@ -24,11 +28,21 @@ class ProjectController extends Controller
 	public function index(){
 
 		return view('project.overview');
+=======
+	public function index(){
+
+		return view('project.overview');
+
+>>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
 	}
 
 	public function manage(){
 
 		return view('project.manage');
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
 	}
 
 	public function getCustomer(){
@@ -38,6 +52,7 @@ class ProjectController extends Controller
 	}
 
 	public function getMember(){
+<<<<<<< HEAD
 		$engineer = DB::table('project__member')
 			->select(DB::raw('id, nickname as text,position'))
 			->where('position','Engineer')
@@ -71,6 +86,12 @@ class ProjectController extends Controller
 				),
 			),
 		);
+=======
+		return DB::table('project__member')
+			->select(DB::raw('id, nickname as text,position'))
+			// ->where('position',$req->type)
+			->get();
+>>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
 	}
 
 	public function setProjectList(Request $req){
@@ -98,6 +119,7 @@ class ProjectController extends Controller
 				]
 			);
 
+<<<<<<< HEAD
 		$teamMemberName = [];
 		$teamMemberEmail = [];
 		foreach ($req->Member as $member) {
@@ -105,10 +127,14 @@ class ProjectController extends Controller
 			$teamMemberName[] = $temp->name;
 			$teamMemberEmail[] = $temp->email;
 
+=======
+		foreach ($req->Member as $member) {
+>>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
 			DB::table('project__team_member')
 				->insert(
 					[
 						'project_list_id' => DB::table('project__list')->where('project_pid',$req->PID)->value('id'),
+<<<<<<< HEAD
 						'user_id' => $temp->id,
 					]
 				);
@@ -152,10 +178,14 @@ class ProjectController extends Controller
 						'note' => $start . " - " . $end,
 						'due_date' => date('Y-m-d', strtotime("+" . ($req->Duration*($i+1)) . " months", strtotime($req->StartPeriod))),
 						'status' => "On Going"
+=======
+						'user_id' => DB::table('users')->where('nickname',$member)->value('id')
+>>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
 					]
 				);
 		}
 
+<<<<<<< HEAD
 		$data = array(
 			"to" => array(
 				"agastya@sinergy.co.id",
@@ -347,6 +377,9 @@ class ProjectController extends Controller
 		
 		// return new MailRemainderProject($data);
 		// return view('project.mailOpenProject');
+=======
+		return null;
+>>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
 	}
 
 	public function getAllProjectList(){
@@ -356,8 +389,12 @@ class ProjectController extends Controller
 					"project__list.project_name",
 					"project__list.project_pid",
 					DB::raw("project__customer.name as project_customer"),
+<<<<<<< HEAD
 					DB::raw("IFNULL ( DATEDIFF(project_event.due_date,'" . date('Y-m-d') . "'),0 )as project_start"),
 					DB::raw("IFNULL ( DATEDIFF(project_event.due_date,'" . date('Y-m-d') . "'),0 )as project_start2"),
+=======
+					"project__list.project_start",
+>>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
 					"project__list.project_periode",
 					"project__list.project_periode_duration",
 					// "project__list.project_coordinator",
@@ -365,6 +402,7 @@ class ProjectController extends Controller
 					DB::raw("leader.nickname as project_leader"),
 					DB::raw("coordinator.nickname as project_coordinator")
 				)
+<<<<<<< HEAD
 			// ->where('project__event.status','Active')
 			->join(
 				DB::raw('(select * from project__event where project__event.status = "Active") AS project_event'),
@@ -372,6 +410,8 @@ class ProjectController extends Controller
 				'=',
 				'project__list.id','left')
 			->orderBy('project_start','ASC')
+=======
+>>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
 			->join('project__customer','project__list.project_customer','=','project__customer.id')
 			->join('project__member as leader','project__list.project_leader','=','leader.id','left outer')
 			->join('project__member as coordinator','project__list.project_coordinator','=','coordinator.id','left outer')
@@ -382,6 +422,7 @@ class ProjectController extends Controller
 	public function getDetailProjectList(Request $req){
 		
 		DB::table('project__event')
+<<<<<<< HEAD
 			->where('project_list_id',$req->id)
 			->value('id');
 
@@ -394,11 +435,32 @@ class ProjectController extends Controller
 			DB::table('project__event_history')
 				->select(
 					'project__event_history.id',
+=======
+ 			->where('project_list_id',$req->id)
+ 			->value('id');
+
+		// return DB::table('project__event')
+ 	// 		->where('project_list_id',$req->id)
+ 	// 		// ->join('project__event_history','project__event_history.project_event_id','=','project__event.id')
+ 	// 		->orderBy('due_date',"ASC")
+ 	// 		->get();
+
+ 		return array("event" => 
+			DB::table('project__event')
+				->where('project_list_id',$req->id)
+	 			->orderBy('due_date',"ASC")
+	 			->get()
+	 		,"eventHistory" => 
+	 		DB::table('project__event_history')
+	 			->select(
+	 				'project__event_history.id',
+>>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
 					'project__event_history.project_event_id',
 					'project__event_history.time',
 					'project__event_history.note',
 					'project__event_history.type',
 					'project__event_history.updater'
+<<<<<<< HEAD
 				)
 				->join(DB::raw('(SELECT id FROM project__event WHERE project_list_id = ' . $req->id . ') AS project_event'),'project_event.id','project__event_history.project_event_id')
 				->orderBy('project__event_history.time','ASC')
@@ -444,6 +506,13 @@ class ProjectController extends Controller
 		}
 
 
+=======
+	 			)
+				->join(DB::raw('(SELECT id FROM project__event WHERE project_list_id = ' . $req->id . ') AS project_event'),'project_event.id','project__event_history.project_event_id')
+				->orderBy('project__event_history.time','ASC')
+	 			->get()
+ 		);
+>>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
 	}
 
 	public function setUpdateEventProject(Request $req){
@@ -457,6 +526,7 @@ class ProjectController extends Controller
 					'updater' => Auth::user()->nickname,
 				]
 			);
+<<<<<<< HEAD
 		
 		if($req->type == "Finish"){
 			DB::table('project__event')
@@ -468,6 +538,8 @@ class ProjectController extends Controller
 				->update(['status'=> 'Active']);
 		}
 		
+=======
+>>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
 		return null;
 	}
 
@@ -476,10 +548,13 @@ class ProjectController extends Controller
 		return view('project.setting');
 
 	}
+<<<<<<< HEAD
 
 	public function getSettingProject(Request $req){
 		return DB::table('project__list')
 			->where('id',$req->id)
 			->get();
 	}
+=======
+>>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
 }

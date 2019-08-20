@@ -122,14 +122,9 @@ html{
 			            </tbody>
 			</table>
 						  <br>
-						  <p class="text-left">
+						  <p class="text-right">
 							For more other history information. Click <a href="{{url('ahistory')}}" style="cursor:pointer">here</b>
 						  </p>
-						  <a href="{{url('downloadPDF',Auth::user()->id)}}">
-							<button type="button" class="btn btn-primary pull-right">
-								<i class="fa fa-download"></i> Download Report
-							</button>
-						  </a>
 					</div>
 					<div class="box-footer clearfix">
 

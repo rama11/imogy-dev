@@ -261,25 +261,25 @@
 						<div class="form-group">
 							<label for="born" class="col-md-3 control-label">Place, Date of Birth</label>
 							<div class="col-md-8">
-								<input id="born" type="text" class="form-control" name="born" >
+								<input id="born" type="text" class="form-control" name="born" required autofocus>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="education" class="col-md-3 control-label">Education</label>
 							<div class="col-md-8">
-								<input id="education" type="text" class="form-control" name="education" >
+								<input id="education" type="text" class="form-control" name="education" required autofocus>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="phone" class="col-md-3 control-label">Phone</label>
 							<div class="col-md-8">
-								<input id="phone" type="text" class="form-control" name="phone" >
+								<input id="phone" type="text" class="form-control" name="phone" required autofocus>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="address" class="col-md-3 control-label">Address</label>
 							<div class="col-md-8">
-								<input id="address" type="text" class="form-control" name="address" >
+								<input id="address" type="text" class="form-control" name="address" required autofocus>
 							</div>
 						</div>
 						<div class="form-group">

@@ -947,34 +947,37 @@
 								Add ATM
 							</button>
 							<br>
-						
-							<div class="row">
-								<table class="table table-striped col-md-12" style="display: none;" id="emailSetting">
+							<br>
+							<div class="box-body">
+								<table class="table table-striped  col-md-12" style="display: none;" id="emailSetting">
 									<tr>
-										<th style="width: 200px;vertical-align: middle;text-align: center;" rowspan="2" >Client</th>
-										<th rowspan="2" style="vertical-align: middle;text-align: center;">Acronym</th>
-										<th colspan="3" style="vertical-align: middle;text-align: center;">Open</th>
-										<th colspan="3" style="vertical-align: middle;text-align: center;">Close</th>
-										<th rowspan="2" style="vertical-align: middle;text-align: center;">#</th>
+										
+										<th colspan="6" style="vertical-align: middle;text-align: center;">Open</th>
+										<th colspan="6" style="vertical-align: middle;text-align: center;">Close</th>
 									</tr>
+									
 									<tr>
+										<th style="vertical-align: middle;text-align: center;">Client</th>
+										<th style="vertical-align: middle;text-align: center;">Acronym</th>
 										<th style="vertical-align: middle;text-align: center;">Dear</th>
 										<th style="vertical-align: middle;text-align: center;">To</th>
 										<th style="vertical-align: middle;text-align: center;">Cc</th>
 										<th style="vertical-align: middle;text-align: center;">Dear</th>
 										<th style="vertical-align: middle;text-align: center;">To</th>
 										<th style="vertical-align: middle;text-align: center;">Cc</th>
+										<th style="vertical-align: middle;text-align: center;">#</th>
+
 									</tr>
 									@foreach($clients as $client)
 									<tr>
 										<td style="width: 200px;vertical-align: middle;text-align: center;" >{{$client->client_name}}</td>
 										<td style="vertical-align: middle;text-align: center;">{{$client->client_acronym}}</td>
 										<td style="vertical-align: middle;text-align: center;">{{$client->open_dear}}</td>
-										<td>{!! $client->open_to !!}</td>
-										<td>{!! $client->open_cc !!}</td>
-										<td style="vertical-align: middle;text-align: center;">{{ $client->close_dear }}</td>
-										<td>{!! $client->close_to !!}</td>
-										<td>{!! $client->close_cc !!}</td>
+										<td style="vertical-align: middle;text-align: left;">{!! $client->open_to !!}</td>
+										<td style="vertical-align: middle;text-align: left;">{!! $client->open_cc !!}</td>
+										<td style="vertical-align: middle;text-align: left;">{{ $client->close_dear }}</td>
+										<td style="vertical-align: middle;text-align: left;">{!! $client->close_to !!}</td>
+										<td style="vertical-align: middle;text-align: left;">{!! $client->close_cc !!}</td>
 
 										<td style="vertical-align: middle;text-align: center;"><button type="button" class="btn btn-block btn-default" onclick="editClient({{$client->id}})">Edit</button></td>
 									</tr>
@@ -2082,7 +2085,7 @@
 				if(severityFirst == 1){
 					severityFirst = 0;
 				} else {
-					$("#tablePerformace").DataTable().clear().draw();
+					$("#tablePerformace").c ().clear().draw();
 					$.each(dataTicket, function(key,value){
 						$("#tablePerformace").DataTable().row.add([
 							value[0],

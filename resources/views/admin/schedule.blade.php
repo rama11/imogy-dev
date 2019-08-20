@@ -441,6 +441,7 @@
 								end: endShift2,
 								shift: originalEventObject.Shift,
 								id_project: globalProject
+
 							},
 							success: function(result){
 								// console.log(result);

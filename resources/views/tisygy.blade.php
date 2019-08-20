@@ -1,7 +1,7 @@
 @extends('layouts.admin.layoutLight2')
 
 @section('head')
-	<link rel="stylesheet" href="{{url('plugins/select2/select2.min.css')}}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
 	<link rel="stylesheet" href="{{url('dist/css/AdminLTE.min.css')}}">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -1425,7 +1425,7 @@
 			},
 		});
 	}
-	
+
 	$('#atmTable').DataTable({
 		"paging": true,
 		"lengthChange": false,
@@ -1600,7 +1600,7 @@
 		});
 	});
 	$(".sidebar-toggle").click();
-	
+
 	//Timepicker
 	$(".timepicker").timepicker({
 		showInputs: false,
@@ -1930,7 +1930,6 @@
 				url:url,
 				success:function(result){
 					var body = "";
-
 					$.each(result, function(key,value){
 						body = body + '<tr>';
 							if((value.id_ticket).indexOf('/') == 3){
@@ -2276,7 +2275,6 @@
 			
 				$("#ticketNumber").val(result[0].ticket_number_3party);
 				
-
 				$("#ticketActivity").empty();
 				$.each(result[1],function(key,value){
 					$("#ticketActivity").append('<li>' + moment(value.date).format("MMMM DD (HH:mm)") + ' [' + value.operator + '] - ' + value.note + '</li>');
@@ -2309,6 +2307,7 @@
 
 				$(".holderCloseStatus").html("<b>CLOSE</b>");
 				$(".holderNumberTicket").text($("#ticketNumber").val());
+
 
 
 				$(".holderPendingID").text(result[0].id_ticket);
@@ -2347,7 +2346,6 @@
 
 				$(".holderCancelNote").text("");
 				$(".holderCancelEngineer").text(result[0].engineer);
-				
 				var waktu = moment((result[0].open), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
 				
 
@@ -2433,7 +2431,6 @@
 			console.log("Yes");
 			var body = $("#bodyOpenMail").html();
 			
-
 			$.ajax({
 				type:"GET",
 				url:"mailOpenTicket",
@@ -2451,7 +2448,6 @@
 					// window.location('/tisygy');
 				},
 			});
-			
 		}
 	}
 
@@ -2653,6 +2649,7 @@
 			$("#holderDate").text(waktu);
 			$("#holderSerial").text($("#inputSerial").val());
 			$("#holderSeverity").text($("#inputSeverity").val());
+
 			$("#holderNote").text($("#inputNote").val());
 			$("#holderStatus").html("<b>OPEN</b>");
 			$("#holderWaktu").html("<b>" + waktu2 + "</b>");

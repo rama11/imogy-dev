@@ -76,7 +76,7 @@
 </head>
 <body>
 	<div style="text-align: right;line-height: 0.5;">
-		<p>Ceated at : {{date('l, d F Y')}}</p>
+		<p>Created at : {{date('l, d F Y')}}</p>
 		<p>By : {{Auth::user()->name}}</p>
 	</div>
 	<h2>

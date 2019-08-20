@@ -913,8 +913,11 @@ class AdminController extends Controller
 			->where('tanggal','like',$tanggal)
 			->orderBy('tanggal','ASC')
 			->orderBy('jam','ASC')
+			->limit(4)
 			->get()
 			->toarray();
+
+			
 
 		$kehadiran = DB::table('users')
 			->where('id_user','=',$id)
@@ -1607,7 +1610,8 @@ class AdminController extends Controller
 					'className' => $req->shift,
 					'hadir' => "00:00:00",
 					'tanggal' => date('Y-m-d h:i:s'),
-					'id_project' => $req->id_project
+					'id_project' => $req->id_project,
+					
 				]
 			);
 

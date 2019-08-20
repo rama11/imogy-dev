@@ -16,7 +16,6 @@
 Route::get('/', function () {
     return view('welcome2');
 });
-
 // Route::get('/', function(){ 
 //     return Redirect::to('https://sinergy-dev.xyz', 301); 
 // });
@@ -268,7 +267,7 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('project/manage/getDetailProjectList','ProjectController@getDetailProjectList');
 	Route::get('project/manage/getShortDetailProjectList','ProjectController@getShortDetailProjectList');
 	Route::post('project/manage/setUpdateEventProject','ProjectController@setUpdateEventProject');
-
 	
 	Route::get('project/setting','ProjectController@setting');
 	Route::get('project/setting/getSettingProject','ProjectController@getSettingProject');
+

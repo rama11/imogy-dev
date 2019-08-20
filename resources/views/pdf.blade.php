@@ -76,52 +76,71 @@
 <body>
 
 	<div style="text-align: right;line-height: 0.5;">
-		<p>Ceated at : {{date('l, d F Y')}}</p>
+		<p>Created at : {{date('l, d F Y')}}</p>
 		<p>By : {{Auth::user()->name}}</p>
 	</div>
+	<br>
 	<h2>
 		Attendance on {{date('F')}} for {{$name}}
 	</h2>
 
 	
-	<table class="table-bordered">
-		<tr>
-			<th>My Schedule</th>
-			<th>My Present Time</th>
-			<th>Date</th>
-			<th>Where</th>
-			<th style="width: 40px">Status</th>
-		</tr>
-		@foreach($datas as $key => $data)
+<table class="table table-bordered" id="table_id">
+	<tr>
+		<th style="text-align: center;">My Schedule</th>
+		<th style="text-align: center;">My Present Time</th>
+		<th style="text-align: center;">Date</th>
+		<th style="text-align: center;">Where</th>
+		<th style="width: 40px" style="text-align: center;">Status</th>
+	</tr>
+	<tbody>
+	@foreach($datas as $key =>$data)
 		<tr>
 			<td>{{$kehadiran[$key]->hadir}}</td>
 			<td>{{$data->jam}}</td>
-			<td>{{date("d/m/Y", strtotime($data->tanggal))}}</td>
-			<td>{{$data->location}}</td>
-			@if($data->late == "On-Time")
-			<td style="vertical-align: middle;">
-				<span>{{$data->late}}</span>
+			<td rowspan="2" style="vertical-align: middle;text-align: center;">{{date("d/m/Y", strtotime($data->tanggal))}}</td>
+			<td rowspan="2" style="vertical-align: middle;text-align: center;">{{$data->location}}</td>
+		@if($data->late == "On-Time")
+			<td rowspan="2" style="vertical-align: middle;text-align: center;">
+				<span class="label label-success" >{{$data->late}}</span>
 			</td>
-			@elseif($data->late == "Injury-Time")
-			<td style="vertical-align: middle;">
-				<span>{{$data->late}}</span>
+		@elseif($data->late == "Injury-Time")
+			<td rowspan="2" style="vertical-align: middle;text-align: center;">
+				<span class="label label-warning" >{{$data->late}}</span>
 			</td>
-			@else
-			<td style="vertical-align: middle;">
-				<span>{{$data->late}}</span>
+		@elseif($data->late == "Late")
+			<td rowspan="2" style="vertical-align: middle;text-align: center;">
+				<span class="label label-danger" >{{$data->late}}</span>
 			</td>
-			@endif
+		@else
+			<td rowspan="2" style="vertical-align: middle;text-align: center;">
+				<span class="label label-info" >{{$data->late}}</span>
+			</td>
+		@endif
 		</tr>
+		<tr>	
+		@if($data->harus_pulang)
+			<td style="text-align: right;">{{$data->harus_pulang}}</td>
+			<td style="text-align: right;">{{$data->pulang}}</td>
+		@else
+			<td style="text-align: right;">-</td>
+			<td style="text-align: right;">-</td>
+		@endif
+		</tr>		
 		@endforeach
-	</table>
+		<div class="row">
+			<div class="col-12 d-flex jutify-content-end">
+
+			</div>
+		</div>
+	</tbody>
+</table>
 	<!-- <h2>On Time : {{$count['2']}}</h2>
 	<h2>Injury : {{$count['1']}}</h2>
 	<h2>Late : {{$count['0']}}</h2>
 	<h2>Absent : {{$absen}}</h2>
 	<h2>Attendance : {{$count['2'] + $count['1'] + $count['0']}}</h2>
 	<br> -->
-
-
 </body>
 </html>
 

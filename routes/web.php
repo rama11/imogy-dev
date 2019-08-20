@@ -150,7 +150,7 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('/schedule','AdminController@schedule');
 	Route::get('/getScheduleAll', 'AdminController@getScheduleAll');
 	Route::get('/getScheduleProject/{id}', 'AdminController@getScheduleProject');
-	Route::get('/getScheduleSelected/','AdminController@getScheduleSelected');
+	Route::get('/getScheduleSelected','AdminController@getScheduleSelected');
 	Route::get('/crateSchedule','AdminController@crateSchedule');
 	Route::get('/deleteSchedule/{id}','AdminController@deleteSchedule');
 	Route::get('/changeMonth','AdminController@changeMonth');

@@ -445,7 +445,7 @@ class AdminController extends Controller
 					'id_user' => $request->id_user,
 					'on_project' => "$request->on_project",
 					]);
-			return redirect('schedule')->with('status', "Add User for " . $request->id_user . " success.");
+			return redirect('schedule')->with('message', "Add User " . " success.");
 
 		} else {
 			DB::table('detail_users')
@@ -458,7 +458,7 @@ class AdminController extends Controller
 				'on_project' => "$request->on_project",
 				]);
 
-			return redirect('schedule')->with('status', "Add User for " . $request->id_user . " success.");
+			return redirect('schedule')->with('message', "Add User " . " success.");
 
 		}
 		
@@ -1578,9 +1578,10 @@ class AdminController extends Controller
 		return json_encode($data);
 	}
 
-	function getScheduleSelected ($id){
+	function getScheduleSelected (Request $req){
 		$data = DB::table('shifting')
-			->where('id_user','=',$id)
+			->where('id_user','=',$req->idUser)
+			->where('id_project','=',$req->idProject)
 			->get()
 			->toArray();
 		return json_encode($data);
@@ -1605,7 +1606,8 @@ class AdminController extends Controller
 					'end' => $req->end,
 					'className' => $req->shift,
 					'hadir' => "00:00:00",
-					'tanggal' => date('Y-m-d h:i:s')
+					'tanggal' => date('Y-m-d h:i:s'),
+					'id_project' => $req->id_project
 				]
 			);
 

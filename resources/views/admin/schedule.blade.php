@@ -1,4 +1,4 @@
-@extends((Auth::user()->role == "1") ? 'layouts.admin.layout' : 'layouts.engineer.elayout')
+@extends((Auth::user()->role == "1") ? 'layouts.admin.layout ' : 'layouts.engineer.elayout')
 @section('content')
 <style>
 	.loader {
@@ -86,7 +86,8 @@
 		<h1>
 			Shifting Schedule
 		</h1>
-		<a href="#" class="pull-right btn-box-tool text-green pull-left" data-toggle="modal" data-target="#modal-addusershifting"><i class="fa fa-plus"></i> Add User Shifting</a>			
+		<a href="#" class="pull-right btn-box-tool text-green pull-left" data-toggle="modal" data-target="#modal-addusershifting"><i class="fa fa-cog"></i> Change User Shifting</a>
+		<a href="#" class="pull-right btn-box-tool text-yellow pull-left" data-toggle="modal" data-target="#modal-addusershifting"><i class="fa fa-cog"></i> Modify User Shifting</a>
 		<ol class="breadcrumb">
 			<li><a href="{{url('admin')}}"><i class="fa fa-dashboard"></i> Home</a></li>
 			<li class="active">Shifting Schedule</li>
@@ -96,7 +97,6 @@
 
 	<section class="content">
 		<div class="row">
-
 			<!-- Panel Kiri -->
 			<section class="col-lg-3 col-xs-3" id="panel_simple">
 				
@@ -115,12 +115,6 @@
 							@endforeach
 						</ul>
 					</div>
-
-					<div>
-
-
-					</div>
-
 					<div class="box-body" id="listName" style="display: none;">
 						<p id="name"></p>
 						<ul class="nav nav-stacked" id="ulUser"></ul>
@@ -149,6 +143,13 @@
 						</div>
 					</div>
 				</div>
+				<!-- @if(session('message'))
+				<div class="alert alert-success alert-dismissible" style="margin-top: 330px;margin-right: 0px; position:fixed; top:0; left:260px; width:200px;">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+					<h4><i class="icon fa fa-check"></i> Success!</h4>
+						{{session('message')}}
+				</div>
+				@endif -->
 
 				<div class="box box-danger box-solid" id="deletePlace" style="display: none;">
 					<div class="box-header">
@@ -173,6 +174,7 @@
 				</div>
 			</section>			
 		</div>
+		
 	</section>
 
 	<div class="modal fade in" id="modal-addusershifting"  tabindex="-1" role="dialog">
@@ -248,6 +250,7 @@
 				startShift: start,
 				endShift: end,
 				Shift: shift,
+
 			};
 
 			// store the Event Object in the DOM element so we can get to it later
@@ -437,7 +440,7 @@
 								start: startShift2,
 								end: endShift2,
 								shift: originalEventObject.Shift,
-								id_project:globalProject,
+								id_project: globalProject
 							},
 							success: function(result){
 								// console.log(result);
@@ -536,7 +539,7 @@
 
 	function refresh_calendar(){
 		$("#calendar").fullCalendar('removeEventSources');
-		$("#calendar").fullCalendar('addEventSource', '/getScheduleSelected/' + globalIdUser);
+		$("#calendar").fullCalendar('addEventSource', '/getScheduleSelected?idUser=' + globalIdUser +'&idProject=' + globalProject);
 	}
 </script>
 @endsection

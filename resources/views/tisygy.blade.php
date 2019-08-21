@@ -53,7 +53,7 @@
 					<ul class="nav nav-tabs" id="myTab">
 						<li class="active"><a href="#tab_1" data-toggle="tab" onclick="getDashboard()">Dashboard</a></li>
 						<li>
-							<a href="#tab_2" data-toggle="tab" onclick="getCreateParameter()">Create</a>
+							<a href="#tab_2" data-toggle="tab" id="create" onclick="getCreateParameter()">Create</a>
 						</li>
 						<li>
 							<a href="#tab_3" data-toggle="tab" id="performance" onclick="getPerformance()">Performance</a>
@@ -295,7 +295,10 @@
 											</div>
 										</div>
 										<div class="form-group" id="problemDiv" style="display: none;">
-											<label for="inputEmail" class="col-sm-2 control-label">Problem</label>
+											<label for="inputEmail"
+											
+											 class="col-sm-2 control-label">Problem</label>
+
 											<div class="col-sm-10">
 												<input type="text" class="form-control" id="inputProblem" placeholder="" required></div>
 										</div>
@@ -948,14 +951,13 @@
 							</button>
 							<br>
 							<br>
-							<div class="box-body">
-								<table class="table table-striped  col-md-12" style="display: none;" id="emailSetting">
+							<div class="table-responsive">
+								<table class="table table-striped" style="display: none;" id="emailSetting">
 									<tr>
 										
 										<th colspan="6" style="vertical-align: middle;text-align: center;">Open</th>
 										<th colspan="6" style="vertical-align: middle;text-align: center;">Close</th>
 									</tr>
-									
 									<tr>
 										<th style="vertical-align: middle;text-align: center;">Client</th>
 										<th style="vertical-align: middle;text-align: center;">Acronym</th>
@@ -967,6 +969,7 @@
 										<th style="vertical-align: middle;text-align: center;">Cc</th>
 										<th style="vertical-align: middle;text-align: center;">#</th>
 
+
 									</tr>
 									@foreach($clients as $client)
 									<tr>
@@ -975,9 +978,10 @@
 										<td style="vertical-align: middle;text-align: center;">{{$client->open_dear}}</td>
 										<td style="vertical-align: middle;text-align: left;">{!! $client->open_to !!}</td>
 										<td style="vertical-align: middle;text-align: left;">{!! $client->open_cc !!}</td>
-										<td style="vertical-align: middle;text-align: left;">{{ $client->close_dear }}</td>
+										<td style="vertical-align: middle;text-align: center;">{{ $client->close_dear }}</td>
 										<td style="vertical-align: middle;text-align: left;">{!! $client->close_to !!}</td>
 										<td style="vertical-align: middle;text-align: left;">{!! $client->close_cc !!}</td>
+
 
 										<td style="vertical-align: middle;text-align: center;"><button type="button" class="btn btn-block btn-default" onclick="editClient({{$client->id}})">Edit</button></td>
 									</tr>
@@ -1889,8 +1893,9 @@
 					success: function(result){
 						$("#ticketNumber").val("");
 						$("#ticketEngineer").val("");
-						$('#modal-ticket').modal('toggle');
+						$("#modal-ticket").modal('toggle');
 						addRows(result);
+						$("#performance").click();
 					}
 				});
 			}
@@ -2085,7 +2090,8 @@
 				if(severityFirst == 1){
 					severityFirst = 0;
 				} else {
-					$("#tablePerformace").c ().clear().draw();
+
+					$("#tablePerformace").DataTable().clear().draw();
 					$.each(dataTicket, function(key,value){
 						$("#tablePerformace").DataTable().row.add([
 							value[0],
@@ -2312,7 +2318,6 @@
 				$(".holderNumberTicket").text($("#ticketNumber").val());
 
 
-
 				$(".holderPendingID").text(result[0].id_ticket);
 				$(".holderPendingRefrence").text(result[0].refrence);
 				$(".holderPendingPIC").text(result[0].pic);
@@ -2429,6 +2434,7 @@
 		height: '250px'
 	});
 
+<<<<<<< HEAD
 	function sendOpenTicketBtn(){
 		if(confirm("Are you sure to send this ticket?")){
 			console.log("Yes");
@@ -2483,8 +2489,7 @@
 	}
 
 	
-
-	function createEmailBody(){
+	function createEmailBody() {
 		$("#sendTicket").show();
 		$("#makeTicket").hide();
 		
@@ -2652,7 +2657,6 @@
 			$("#holderDate").text(waktu);
 			$("#holderSerial").text($("#inputSerial").val());
 			$("#holderSeverity").text($("#inputSeverity").val());
-
 			$("#holderNote").text($("#inputNote").val());
 			$("#holderStatus").html("<b>OPEN</b>");
 			$("#holderWaktu").html("<b>" + waktu2 + "</b>");
@@ -2665,8 +2669,31 @@
 			}
 			
 		}
+	}
 
+	function sendOpenTicketBtn(){
+		if(confirm("Are you sure to send this ticket?")){
+			console.log("Yes");
+			var body = $("#bodyOpenMail").html();
 
+			$.ajax({
+				type:"GET",
+				url:"mailOpenTicket",
+				data:{
+					body:body,
+					subject: $("#emailOpenSubject").val(),
+					to: $("#emailOpenTo").val(),
+					cc: $("#emailOpenCc").val(),
+					attachment: $("#emailOpenAttachment").val()
+				},
+				success: function(result){
+					console.log("success");
+					alert('Email Has Been Sent!');
+					$("#create").click();
+					// window.location('/tisygy');
+				},
+			});
+		}
 	}
 
 	function getBankAtm(){

@@ -151,6 +151,7 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('/getScheduleAll', 'AdminController@getScheduleAll');
 	Route::get('/getScheduleProject/{id}', 'AdminController@getScheduleProject');
 	Route::get('/getScheduleSelected','AdminController@getScheduleSelected');
+
 	Route::get('/crateSchedule','AdminController@crateSchedule');
 	Route::get('/deleteSchedule/{id}','AdminController@deleteSchedule');
 	Route::get('/changeMonth','AdminController@changeMonth');
@@ -250,6 +251,7 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('getCreateParameter','TicketingController@getCreateParameter');
 	Route::get('getClientTest','TestController@getSettingClient');
 // Route::get('/home', 'HomeController@index')->name('home');
+
 // Project Route
 	Route::get('project','ProjectController@index');
 	Route::get('project/manage','ProjectController@manage');
@@ -270,4 +272,5 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	
 	Route::get('project/setting','ProjectController@setting');
 	Route::get('project/setting/getSettingProject','ProjectController@getSettingProject');
+
 

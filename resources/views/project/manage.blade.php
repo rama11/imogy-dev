@@ -424,7 +424,7 @@
 	});
 
 	function initFormInputProject(){
-
+		// Get Customer for Input Project
 		$.ajax({
 			type:"GET",
 			url:'{{url("project/manage/getCustomer")}}',
@@ -438,6 +438,7 @@
 			}
 		});
 
+		// Get Member for Input Project
 		$.ajax({
 			type:"GET",
 			url:'{{url("project/manage/getMember")}}',
@@ -493,7 +494,6 @@
 		var leader = $("#inputProjectLead").select2('data');
 		var members = $("#inputProjectMember").select2('data');
 		
-
 		$("#inputProjectCoordinatorCorrention").val(coordinator[0].text);
 		$("#inputProjectLeadCorrention").val(leader[0].text);
 		member = [];
@@ -502,7 +502,6 @@
 			member.push(eachMember.id);
 			memberNickname.push(eachMember.text);
 		});
-
 		
 		$("#inputProjectMemberCorrention").select2().val(member).trigger("change");
 		$("span.select2-selection__choice__remove").hide();
@@ -623,7 +622,6 @@
 		typeUpdate = typeUpdate.substr(0,typeUpdate.length - 1);
 		
 		iconTimeline = "fa-cog";
-
 		$.ajax({
 			type:"POST",
 			url:"{{url('project/manage/setUpdateEventProject')}}",

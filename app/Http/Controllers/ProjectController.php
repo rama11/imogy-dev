@@ -21,6 +21,7 @@ class ProjectController extends Controller
 		$this->middleware('auth');
 	}
 
+
 	public function index(){
 
 		return view('project.overview');
@@ -77,7 +78,7 @@ class ProjectController extends Controller
 	}
 
 	public function setProjectList(Request $req){
-		if($req->Customer == 0){
+		if(DB::table('project__customer')->where('name',$req->CustomerName)->get()->isEmpty()){
 			DB::table('project__customer')
 				->insert(
 					[
@@ -214,6 +215,7 @@ class ProjectController extends Controller
 	}
 
 	public function sendProjectListOpen( $data ) {
+
 
 	}
 
@@ -353,6 +355,23 @@ class ProjectController extends Controller
 		// return view('project.mailOpenProject');
 	}
 
+	public function sendProjectListOpen(Request $req){
+		$to = [
+			'agastya@sinergy.co.id',
+			'prof.agastyo@gmail.com'
+		];
+		$cc = [
+			'imogy@sinergy.co.id',
+			'hellosinergy@gmail.com'
+		];
+		
+		Mail::to($to)
+			->cc($cc)
+			->send(new MailOpenProject());
+		
+		// return view('project.mailOpenProject');
+	}
+
 	public function getAllProjectList(){
 		return json_encode(array('data' => DB::table('project__list')
 			->select(
@@ -362,7 +381,6 @@ class ProjectController extends Controller
 					DB::raw("project__customer.name as project_customer"),
 					DB::raw("IFNULL ( DATEDIFF(project_event.due_date,'" . date('Y-m-d') . "'),0 )as project_start"),
 					DB::raw("IFNULL ( DATEDIFF(project_event.due_date,'" . date('Y-m-d') . "'),0 )as project_start2"),
-
 					"project__list.project_periode",
 					"project__list.project_periode_duration",
 					// "project__list.project_coordinator",
@@ -391,6 +409,7 @@ class ProjectController extends Controller
 			->value('id');
 
 		return array("event" => 
+
 			DB::table('project__event')
 				->where('project_list_id',$req->id)
 				->orderBy('due_date',"ASC")
@@ -449,6 +468,46 @@ class ProjectController extends Controller
 
 	}
 
+	public function getShortDetailProjectList(Request $req){
+		$event = DB::table('project__event')
+ 			->select('project__event.due_date','project__event.id','project__event.name','project__list.project_pid')
+ 			->join('project__list','project__list.id','=','project__event.project_list_id')
+			->where('project__event.project_list_id',$req->id_project)
+			->where('project__event.status','Active')
+ 			->first();
+
+ 		if(!empty($event)){
+	 		$history = DB::table('project__event_history')
+	 			->where('project_event_id','=',$event->id)
+	 			->orderBy('id','DESC')
+	 			->first();
+
+
+
+		 	if(isset($history->note)){
+				return array(
+					'project_id' => $event->project_pid,
+					'lastest_update' => $history->note,
+					'event_now' => $event->name,
+				);
+		 	} else {
+		 		return array(
+					'project_id' => $event->project_pid,
+					'lastest_update' => "N/A",
+					'event_now' => $event->name,
+				);
+		 	}
+ 		} else {
+	 		return array(
+				'project_id' => "N/A",
+				'lastest_update' => "N/A",
+				'event_now' => "Project Close",
+			);
+ 		}
+
+
+	}
+
 	public function setUpdateEventProject(Request $req){
 		DB::table('project__event_history')
 			->insert(
@@ -471,7 +530,6 @@ class ProjectController extends Controller
 				->update(['status'=> 'Active']);
 		}
 		
-
 		return null;
 	}
 
@@ -480,6 +538,7 @@ class ProjectController extends Controller
 		return view('project.setting');
 
 	}
+
 	public function getSettingProject(Request $req){
 		return DB::table('project__list')
 			->where('id',$req->id)

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 @extends('layouts.admin.layoutLight2')
 @section('head')
 <link rel="stylesheet" href="{{url('plugins/datatables/dataTables.bootstrap.css')}}">
@@ -7,9 +6,6 @@
 	.dataTables_filter {display: none;}
 </style>
 @endsection
-=======
-@extends('layouts.admin.layoutLight')
->>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
 @section('content')
 <div class="content-wrapper">
 	<section class="content-header">
@@ -17,14 +13,7 @@
 			Overview
 			<small>All of project overview</small>
 		</h1>
-<<<<<<< HEAD
-=======
-		<!-- <ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i></a></li>
-			<li><a href="#">Examples</a></li>
-			<li class="active">Blank page</li>
-		</ol> -->
->>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
+
 	</section>
 	<section class="content">
 		<div class="row">
@@ -36,16 +25,9 @@
 						<span class="info-box-text">This Month [July]</span>
 						<span class="info-box-number">90<small>%</small></span>
 					</div>
-<<<<<<< HEAD
 				</div>
 			</div>
-=======
-					<!-- /.info-box-content -->
-				</div>
-				<!-- /.info-box -->
-			</div>
-			<!-- /.col -->
->>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
+
 			<div class="col-md-3 col-sm-6 col-xs-12">
 				<div class="info-box">
 					<span class="info-box-icon bg-red"><i class="fa fa-google-plus"></i></span>
@@ -54,7 +36,6 @@
 						<span class="info-box-text">Need Renewal</span>
 						<span class="info-box-number"></span>
 					</div>
-<<<<<<< HEAD
 				</div>
 			</div>
 		</div>
@@ -196,44 +177,153 @@
 				</div>
 			</div>
 		</div>
-	</section>
-=======
-					<!-- /.info-box-content -->
-				</div>
-				<!-- /.info-box -->
-			</div>
-			<!-- /.col -->
-		</div>
-	<!-- Default box -->
-	<div class="box">
-		<div class="box-header with-border">
-			<h3 class="box-title">Title</h3>
+		
+		<div class="row">
+			<div class="col-md-12">
+				<div class="box">
+					<div class="box-header with-border">
+						<h3 class="box-title">Title</h3>
+						<div class="box-tools">
+							<div class="input-group input-group-sm" style="width: 150px;">
+								<input type="text" id="searchBar" class="form-control pull-right" placeholder="Search">
 
-			<div class="box-tools pull-right">
-				<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
-					<i class="fa fa-minus"></i></button>
-				<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="" data-original-title="Remove">
-					<i class="fa fa-times"></i></button>
+								<div class="input-group-btn">
+									<button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="box-body table-responsive no-padding">
+						<table id="tableProjectSetting" class="table table-hover">
+							<thead>
+								<tr>
+									<!-- <th></th> -->
+									<th>Customer</th>
+									<th>Name Project</th>
+									<th>Time to Due Date</th>
+									<th>Time to Due Date</th>
+									<th>Coordinator</th>
+									<th></th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div class="box-body" style="">
-			Start creating your amazing application!
-		</div>
-		<!-- /.box-body -->
-		<div class="box-footer" style="">
-			Footer
+		
+		<div class="modal fade" id="modalSettingProject">
+			<div class="modal-dialog" id="modal-default-size">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="modalSettingProjectTitle"></h4>
+					</div>
+					<div class="modal-body">
+						<form role="form">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label>Customer</label>
+										<input class="form-control" type="text" id="settingProjectCustomer" readonly>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label>Project ID</label>
+										<input class="form-control" type="text" id="settingProjectPID" readonly>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<label>Name Project</label>
+										<input class="form-control" type="text" id="settingProjectName" readonly>
+									</div>
+								</div>
+							</div>
+							<hr style="margin-top: 0px;">
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label>Project Start</label>
+										<input class="form-control" type="text" id="settingProjectName" readonly>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label>Number of Period</label>
+										<input class="form-control" type="text" id="settingProjectName" readonly>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label>Duration Period</label>
+										<input class="form-control" type="text" id="settingProjectName" readonly>
+									</div>
+								</div>
+							</div>
+							<hr style="margin-top: 0px;">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label>Coordinator</label>
+										<input class="form-control" type="text" id="settingProjectName" readonly>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label>Leader</label>
+										<input class="form-control" type="text" id="settingProjectName" readonly>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<label>Team Member</label>
+										<input class="form-control" type="text" id="settingProjectName" readonly>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-3">
+									<div class="form-group">
+										<label>Get Reminder</label>
+										<input class="form-control" type="checkbox" checked data-toggle="toggle">
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<label>Remaind All</label>
+										<input class="form-control" type="checkbox" checked data-toggle="toggle">
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<label>Remaind All</label>
+										<input class="form-control" type="checkbox" checked data-toggle="toggle">
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+					</div>
+				</div>
+			</div>
 		</div>
 		<!-- /.box-footer-->
 	</div>
 	<!-- /.box -->
 
 </section>
->>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
-</div>
+
 @endsection 
 
 @section('script')
-<<<<<<< HEAD
 <!-- moment.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <!-- HumanizeDuration.js -->
@@ -321,10 +411,6 @@ Custom Color Converter
 			}
 		});
 	};
-=======
-<script>
-	$(document).ready(function(){
-	}
->>>>>>> 3d4ab6fcbea0d9dc6d8140c9dd680333a4f5d45c
+
 </script>
 @endsection

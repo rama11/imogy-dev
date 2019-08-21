@@ -262,20 +262,24 @@
 										<input type="password" id="password" class="form-control" name="old"  data-toggle="password" placeholder="Old Password" required>
 									</div>
 								</div>
-								<br><br>
+								<br>
+								<br>
 								<div class="form-group">
 									<label class="col-md-4 control-label">New Password</label>
 									<div class="col-md-6">
 										<input type="password" class="form-control" name="pass"  data-toggle="password" placeholder="New Password" required>
 									</div>
 								</div>
-								<br><br>
+								<br>
+								<br>
 								<div class="form-group">
 									<label class="col-md-4 control-label">Re New Password</label>
 									<div class="col-md-6">
 										<input type="password" class="form-control" name="repass" placeholder="Re New Password" data-toggle="password" required>
 									</div>
 								</div>
+								<br>
+								<br>
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
@@ -290,9 +294,4 @@
 		</div>
 	</section>
 </div>
-@endsection
-@section('script')
-<script type="text/javascript">
-	$("#password").password('toggle');
-</script>
 @endsection

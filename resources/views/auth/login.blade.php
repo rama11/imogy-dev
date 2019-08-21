@@ -46,6 +46,7 @@ class="hold-transition login-page" style="background-color:#f7f9fd"@endsection
 		
 				<div class="form-group{{ $errors->has('password') ? ' has-error' : '' }} has-feedback">
 					<input id="password" type="password" class="form-control" placeholder="Password" name="password" required>
+					<br>
 					<span class="glyphicon glyphicon-lock form-control-feedback"></span>
 					@if ($errors->has('password'))
 						<span class="help-block">

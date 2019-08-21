@@ -1,4 +1,4 @@
-@extends((Auth::user()->role == "1") ? 'layouts.admin.layoutLight' : 'layouts.engineer.elayout')
+@extends((Auth::user()->role == "1") ? 'layouts.admin.layout' : 'layouts.engineer.elayout')
 @section('content')
 <style>
 	#analog-clock {

@@ -970,10 +970,10 @@
 									<tr>
 										<td style="vertical-align: middle;text-align: left;">{{$client->client_name}}</td>
 										<td style="vertical-align: middle;text-align: center;">{{$client->client_acronym}}</td>
-										<td style="vertical-align: middle;text-align: center;">{{$client->open_dear}}</td>
+										<td style="vertical-align: middle;text-align: left;">{{$client->open_dear}}</td>
 										<td style="vertical-align: middle;text-align: left;">{!! $client->open_to !!}</td>
 										<td style="vertical-align: middle;text-align: left;">{!! $client->open_cc !!}</td>
-										<td style="vertical-align: middle;text-align: center;">{{ $client->close_dear }}</td>
+										<td style="vertical-align: middle;text-align: left;">{{ $client->close_dear }}</td>
 										<td style="vertical-align: middle;text-align: left;">{!! $client->close_to !!}</td>
 										<td style="vertical-align: middle;text-align: left;">{!! $client->close_cc !!}</td>
 

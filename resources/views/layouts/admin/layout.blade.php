@@ -203,11 +203,11 @@
 									<a href="{{ url('debugMode')}}" class="btn btn-danger btn-flat">Debug</a>
 								</div> -->
 								<div class="pull-right">
-									<a class="btn btn-default btn-flat" href="{{ route('logout') }}"
-											onclick="event.preventDefault();
-													 document.getElementById('logout-form').submit();">
-											Logout
 
+									<a class="btn btn-default btn-flat"  href="{{ route('logout') }}"
+												onclick="event.preventDefault();
+                                                document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
 										</a>
 										<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
 											{{ csrf_field() }}

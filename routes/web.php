@@ -270,6 +270,8 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('project/manage/getShortDetailProjectList','ProjectController@getShortDetailProjectList');
 	Route::post('project/manage/setUpdateEventProject','ProjectController@setUpdateEventProject');
 	
+	Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+	
 	Route::get('project/setting','ProjectController@setting');
 	Route::get('project/setting/getSettingProject','ProjectController@getSettingProject');
 

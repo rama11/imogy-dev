@@ -104,9 +104,6 @@
 			
 			
 			<ul class="sidebar-menu" data-widget="tree">
-				<li class="header" onclick="url()">
-					Main Menu
-				</li>
 				<li class="" id="dashboard">
 					<a href="admin">
 						<i class="fa fa-dashboard"></i> <span>Dashboard</span>

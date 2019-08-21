@@ -70,11 +70,11 @@
 					<div class="box-body">
 						<p>This is all off your absent record. Check this history frequenly for futher, thanks</p>
 						<div class="input-group col-md-1">
-							<button type="button" class="btn btn-default pull-right" id="daterange-btn">
-								<span>
+							<button type="button" class="btn btn-default pull-left" id="daterange-btn">
 									<i class="fa fa-calendar"></i> Date range picker
+								<span>
+									<i class="fa fa-caret-down"></i>
 								</span>
-								<i class="fa fa-caret-down"></i>
 							</button>
 						</div>
 						<br>
@@ -120,7 +120,11 @@
 		// $(document).ajaxStart(function() { Pace.restart(); });
 
 		$('#reservation').daterangepicker();
-		$('#reservationtime').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A'});
+		$('#reservationtime').daterangepicker(
+			{	timePicker: true, 
+				timePickerIncrement: 30,
+				format: 'MM/DD/YYYY h:mm A'
+			});
 		$('#daterange-btn').daterangepicker(
 			{
 				ranges: {

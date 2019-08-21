@@ -195,13 +195,13 @@
 						<div class="form-group">
 							<label for="email" class="col-md-3 control-label">E-Mail Address</label>
 							<div class="col-md-8">
-								<input id="email" type="email" class="form-control" name="email" required>
+								<input id="email" type="email" class="form-control" name="email" required autofocus>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="email" class="col-md-3 control-label">Password</label>
 							<div class="col-md-8">
-								<input id="email" type="Password" class="form-control" name="password" required>
+								<input id="email" type="Password" class="form-control" name="password" required autofocus>
 							</div>
 						</div>
 						<div class="form-group">
@@ -282,13 +282,13 @@
 								<input id="address" type="text" class="form-control" name="address" required autofocus>
 							</div>
 						</div>
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label for="foto" class="col-md-3 control-label">Photo</label>
 							<div class="col-md-8">
-								<input type="file" id="inputgambar" name="gambar" required image >
+								<input type="file" id="inputgambar" name="gambar">
 								<p class="help-block">Only .jpg .jpeg and .png are allowed</p>
 							</div>
-						</div>
+						</div> -->
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>

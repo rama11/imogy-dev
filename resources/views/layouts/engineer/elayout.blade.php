@@ -244,40 +244,49 @@ $(document).ready(function(){
 	switch(path[path.length - 1]) {
 		case "admin":
 			$("#dashboard").addClass("active");
-			$("#usermanage").removeClass("active");
-			$("#location").removeClass("active");
 			$("#absen").removeClass("active");
 			$("#tisygy").removeClass("active");
-			$("#sycal").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			console.log("admin");
+
 						break;
-		
-		case "absen":
+
+			case "absen":
 			$("#dashboard").removeClass("active");
-			$("#usermanage").removeClass("active");
-			$("#location").removeClass("active");
-			$("#tisygy").removeClass("active");
 			$("#absen").addClass("active");
-			$("#sycal").removeClass("active");
-			// console.log("absen");
-			break;
-		case "tisygy":
-			$("#dashboard").removeClass("active");
+			$("#tisygy").removeClass("active");
 			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
+			console.log("absen");
+			
+						break;
+
+			case "ahistory":
+			$("#dashboard").removeClass("active");
+			$("#absen").addClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			console.log("ahistory");
+
+						break;			
+
+			case "tisygy":
+			$("#dashboard").removeClass("active");
 			$("#absen").removeClass("active");
 			$("#tisygy").addClass("active");
-			$("#sycal").removeClass("active");
-			// console.log("tisygy");
-			break;
-		case "sycal":
-			$("#dashboard").removeClass("active");
 			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
-			$("#absen").removeClass("active");
-			$("#tisygy").removeClass("active");
-			$("#sycal").addClass("active");
-			// console.log("sycal");
-			break;
+			console.log("tisygy");
+			
+						break;
+
+			
 		default:
 			$("#dashboard").addClass("active");
 	};

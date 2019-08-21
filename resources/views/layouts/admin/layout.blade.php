@@ -439,6 +439,39 @@ $(document).ready(function(){
 			
 						break;
 
+						case "ahistory":
+			$("#dashboard").removeClass("active");
+			$("#absen").addClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			console.log("ahistory");
+
+				break;
+
+			case "ateamhistory":
+			$("#dashboard").removeClass("active");
+			$("#absen").addClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			console.log("ateamhistory");
+
+				break;
+
+			case "areport":
+			$("#dashboard").removeClass("active");
+			$("#absen").addClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			console.log("location");
+
+				break;
+
 			case "tisygy":
 			$("#dashboard").removeClass("active");
 			$("#absen").removeClass("active");
@@ -481,6 +514,8 @@ $(document).ready(function(){
 			console.log("location");
 
 						break;
+
+												
 		default:
 			$("#dashboard").addClass("active");
 	};

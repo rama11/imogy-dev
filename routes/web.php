@@ -139,7 +139,7 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	
 	Route::get('/downloadPDF/{id}','AdminController@download');
 	Route::get('/changeAbsent/{id}','AdminController@changeAbsent');
-	Route::get('/changePassword2','AdminController@changePassword');
+	Route::post('/changePasswords','AdminController@changePassword');
 
 	Route::get('/matikan', 'AdminController@matikan');
 	Route::get('createEvent','AdminController@createAsycal');
@@ -174,8 +174,8 @@ Route::post('/editProfile', 'AdminController@editProfile');
 		// echo "<h1 style='font-size:100px'>Mas Danang Nganteng</h1>";
 	// });
 	Route::get('reserveIdTicket','TicketingController@createIdTicket');
-	Route::get('setNewTicket','TicketingController@setNewTicket');
 	Route::get('getEmailReciver', 'TicketingController@getEmailReciver');
+	Route::get('setNewTicket','TicketingController@setNewTicket');
 	Route::get('mailOpenTicket','TicketingController@mailOpenTicket');
 	// Route::get('getPerformance','TicketingController@getPerformance');
 	// Route::get('getPerformance2','TicketingController@getPerformance2');

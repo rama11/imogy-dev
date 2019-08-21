@@ -1,6 +1,12 @@
 @extends((Auth::user()->role == "1") ? 'layouts.admin.layout' : 'layouts.engineer.elayout')
 
 @section('content')
+
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-show-password/1.0.3/bootstrap-show-password.min.js"></script>
+
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header" >
@@ -238,7 +244,7 @@
 
 			<div class="modal fade in" id="modal-password"  tabindex="-1" role="dialog">
 				<div class="modal-dialog">
-					<form method="POST" action="{{url('changePassword2')}}">
+					<form method="POST" action="{{url('changePasswords')}}">
 						<input type="hidden" name="id" value="{{Auth::user()->id}}">
 						 {!! csrf_field() !!}
 						<div class="modal-content">
@@ -253,21 +259,21 @@
 								<div class="form-group">
 									<label class="col-md-4 control-label">Old Password</label>
 									<div class="col-md-6">
-										<input type="password" class="form-control" name="old" placeholder="" required>
+										<input type="password" id="password" class="form-control" name="old"  data-toggle="password" placeholder="Old Password" required>
 									</div>
 								</div>
 								<br><br>
 								<div class="form-group">
 									<label class="col-md-4 control-label">New Password</label>
 									<div class="col-md-6">
-										<input type="password" class="form-control" name="pass" placeholder="" required>
+										<input type="password" class="form-control" name="pass"  data-toggle="password" placeholder="New Password" required>
 									</div>
 								</div>
 								<br><br>
 								<div class="form-group">
 									<label class="col-md-4 control-label">Re New Password</label>
 									<div class="col-md-6">
-										<input type="password" class="form-control" name="repass" placeholder="" required>
+										<input type="password" class="form-control" name="repass" placeholder="Re New Password" data-toggle="password" required>
 									</div>
 								</div>
 							</div>
@@ -284,4 +290,9 @@
 		</div>
 	</section>
 </div>
+@endsection
+@section('script')
+<script type="text/javascript">
+	$("#password").password('toggle');
+</script>
 @endsection

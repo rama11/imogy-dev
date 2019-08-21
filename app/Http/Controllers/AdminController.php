@@ -1013,17 +1013,17 @@ class AdminController extends Controller
 		$datas = DB::table('waktu_absen')
 			->where('id_user','=',$id)
 			->where('tanggal','like',$tanggal)
-			->orderBy('tanggal','ASC')
-			->orderBy('jam','ASC')
-			->limit(3)
+			->orderBy('tanggal','DESC')
+			->orderBy('jam','DESC')
+			->limit(4)
 			->get()
 			->toarray();
 
 		$kehadiran = DB::table('users')
 			->where('id_user','=',$id)
 			->join('waktu_absen','waktu_absen.id_user','=','users.id')
-			->orderBy('tanggal','ASC')
-			->orderBy('jam','ASC')
+			->orderBy('tanggal','DESC')
+			->orderBy('jam','DESC')
 			->get()
 			->toarray();
 		
@@ -1832,25 +1832,27 @@ class AdminController extends Controller
 	}
 
 	function changePassword(Request $req){
-		$update = DB::table('users')
-					->where('id','=','83')
-					->update([
-						'password' => Hash::make("Sip2018!")
-					]);
-		// if (Hash::check($req->old, Auth::user()->password)) {
-		// 	if($req->pass == $req->repass){
-		// 		$update = DB::table('users')
-		// 			->where('id','=','74')
+		// $update = DB::table('users')
+		// 			->where('id','=',$req->id)
 		// 			->update([
 		// 				'password' => Hash::make($req->pass)
 		// 			]);
-		// 		return redirect()->back()->with('success','Password success di rubah');
-		// 	} else {
-		// 		return redirect()->back()->with('error','Password tidak sama');
-		// 	}
-		// } else {
-		// 	return redirect()->back()->with('error','Password lama salah');
-		// }
+		if (Hash::check($req->old, Auth::user()->password)) {
+			if($req->pass == $req->repass){
+				$update = DB::table('users')
+					->where('id','=',$req->id)
+					->update([
+						'password' => Hash::make($req->pass)
+					]);
+				return redirect()->back()->with('success','Password change successful');
+			} else {
+				return redirect()->back()->with('error','Password change unsuccessful');
+
+			}
+		} else {
+			return redirect()->back()->with('error','Wrong password');
+
+		}
 	}
 
 	public function areport(){

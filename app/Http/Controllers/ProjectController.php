@@ -214,11 +214,6 @@ class ProjectController extends Controller
 		// return null;
 	}
 
-	public function sendProjectListOpen( $data ) {
-
-
-	}
-
 	public function testSendProjectListOpen(Request $req){
 		$data = array(
 			"to" => array(
@@ -427,45 +422,6 @@ class ProjectController extends Controller
 				->orderBy('project__event_history.time','ASC')
 				->get()
 		);
-	}
-
-	public function getShortDetailProjectList(Request $req){
-		$event = DB::table('project__event')
-			->select('project__event.due_date','project__event.id','project__event.name','project__list.project_pid')
-			->join('project__list','project__list.id','=','project__event.project_list_id')
-			->where('project__event.project_list_id',$req->id_project)
-			->where('project__event.status','Active')
-			->first();
-
-		if(!empty($event)){
-			$history = DB::table('project__event_history')
-				->where('project_event_id','=',$event->id)
-				->orderBy('id','DESC')
-				->first();
-
-
-
-			if(isset($history->note)){
-				return array(
-					'project_id' => $event->project_pid,
-					'lastest_update' => $history->note,
-					'event_now' => $event->name,
-				);
-			} else {
-				return array(
-					'project_id' => $event->project_pid,
-					'lastest_update' => "N/A",
-					'event_now' => $event->name,
-				);
-			}
-		} else {
-			return array(
-				'project_id' => "N/A",
-				'lastest_update' => "N/A",
-				'event_now' => "Project Close",
-			);
-		}
-
 	}
 
 	public function getShortDetailProjectList(Request $req){

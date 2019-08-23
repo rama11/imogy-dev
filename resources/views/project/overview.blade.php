@@ -126,7 +126,7 @@
 									</ul>
 								</div>
 								<div class="box-footer" style="">
-									Footer
+									<a>More...</a>
 								</div>
 							</div>
 						</div>
@@ -157,26 +157,102 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<div class="box">
-					
-					<div class="box">
-						<div class="box-header with-border">
-							<h3 class="box-title">Title</h3>
+				<div class="box box-info">
+					<div class="box-header with-border">
+						<h3 class="box-title">Project With Closest Due Date</h3>
 
-							<div class="box-tools pull-right">
-								<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
-									<i class="fa fa-minus"></i></button>
-								<button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="" data-original-title="Remove">
-									<i class="fa fa-times"></i></button>
-							</div>
-						</div>
-						<div class="box-body" style="">
-							Start creating your amazing application!
-						</div>
-						<div class="box-footer" style="">
-							Footer
+						<div class="box-tools pull-right">
+							<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+							</button>
+							<button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
 						</div>
 					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+							<table class="table no-margin">
+								<thead>
+									<tr>
+										<th>Project ID</th>
+										<th>Name</th>
+										<th>Lastest Act</th>
+										<th>Due Date</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">297/SOMPO/PO 228/SIP/VI/2017</a></td>
+										<td>
+											<a href="#">[PT. Sompo Insurance Indonesia]</a>
+											<br>Renewal UPS
+										</td>
+										<td style="vertical-align:middle;"><span class="label label-info">Update</span></td>
+										<td style="vertical-align:middle;">7 day ago</td>
+									</tr>
+									<tr>
+										<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">009/BANK RIAU/SPK 001/SIP/I/2018</a></td>
+										<td>
+											<a href="#">[PT. Bank Riau Kepri]</a>
+											<br>Pengadaan Perangkat WAN Optimizer Sangfor PT. Bank Riau Kepri
+										</td>
+										<td style="vertical-align:middle;"><span class="label label-warning">Pending</span></td>
+										<td style="vertical-align:middle;">7 day ago</td>
+									</tr>
+									<tr>
+										<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">076/BANK RIAU/SPK 063/SIP/VI/2018</a></td>
+										<td>
+											<a href="#">[PT. Bank Riau Kepri]</a>
+											<br>Pengadaan jasa Maintenance WAN Router PT. Bank Riau Kepri
+										</td>
+										<td style="vertical-align:middle;"><span class="label label-info">Update</span></td>
+										<td style="vertical-align:middle;">7 day ago</td>
+									</tr>
+									<tr>
+										<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">051/BANK RIAU/SPK 027/SIP/IV/2018</a></td>
+										<td>
+											<a href="#">[PT. Bank Riau Kepri]</a>
+											<br>Perpanjangan Lisensi Antivirus Palo Alto
+										</td>
+										<td style="vertical-align:middle;"><span class="label label-warning">Pending</span></td>
+										<td style="vertical-align:middle;">7 day ago</td>
+									</tr>
+									<tr>
+										<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">075/BANK RIAU/ADD SPK 059/SIP/V/2018</a></td>
+										<td>
+											<a href="#">[PT. Bank Riau Kepri]</a>
+											<br>Pengadaan Jasa Perpanjangan Lisensi Antivirus Trend Micro PT. Bank Riau Kepri
+										</td>
+										<td style="vertical-align:middle;"><span class="label label-info">Update</span></td>
+										<td style="vertical-align:middle;">7 day ago</td>
+									</tr>
+									<tr>
+										<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">343/BANK RIAU/SPK 128/SIP/XII/2018</a></td>
+										<td>
+											<a href="#">[PT. Bank Riau Kepri]</a>
+											<br>Renewal OP Manager For 520 Device PT. Bank Riau Kepri
+										</td>
+										<td style="vertical-align:middle;"><span class="label label-info">Update</span></td>
+										<td style="vertical-align:middle;">7 day ago</td>
+									</tr>
+									<tr>
+										<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">010/BANK RIAU/SPK 002/SIP/I/2018</a></td>
+										<td>
+											<a href="#">[PT. Bank Riau Kepri]</a>
+											<br>Pengadaan Perangkat Priveleged Access Manager PT. Bank Riau Kepri
+										</td>
+										<td style="vertical-align:middle;"><span class="label label-warning">Pending</span></td>
+										<td style="vertical-align:middle;">7 day ago</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<!-- /.table-responsive -->
+					</div>
+					<!-- /.box-body -->
+					<div class="box-footer clearfix">
+						<a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">View All Project</a>
+					</div>
+					<!-- /.box-footer -->
 				</div>
 			</div>
 		</div>

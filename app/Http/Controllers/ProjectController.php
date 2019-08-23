@@ -51,6 +51,11 @@ class ProjectController extends Controller
 			->where('position','Helpdesk')
 			->get();
 
+		$rd_party = DB::table('project__member')
+			->select(DB::raw('id, nickname as text,position'))
+			->where('position','3rd Party')
+			->get();
+
 		$coordinator = DB::table('project__member')
 			->select(DB::raw('id, nickname as text,position'))
 			->where('position','Coordinator')
@@ -71,6 +76,10 @@ class ProjectController extends Controller
 				array(
 					"text" => "Helpdesk",
 					"children" => $helpdesk
+				),
+				array(
+					"text" => "3rd Party",
+					"children" => $rd_party
 				),
 			),
 		);
@@ -106,16 +115,37 @@ class ProjectController extends Controller
 		$teamMemberEmail = [];
 		foreach ($req->Member as $member) {
 			$temp = DB::table('users')->where('nickname',$member)->first();
-			$teamMemberName[] = $temp->name;
-			$teamMemberEmail[] = $temp->email;
+			if(empty($temp)){
+				$teamMemberName[] = $member;
+				if(empty(DB::table('project__member')->where('nickname',$member)->first())){
+					DB::table('project__member')
+						->insert([
+							'user_id' => "-",
+							'nickname' => $member,
+							'position' => "3rd Party"
+						]);
+				}
 
-			DB::table('project__team_member')
-				->insert(
-					[
-						'project_list_id' => DB::table('project__list')->where('project_pid',$req->PID)->value('id'),
-						'user_id' => $temp->id,
-					]
-				);
+				DB::table('project__team_member')
+					->insert(
+						[
+							'project_list_id' => DB::table('project__list')->where('project_pid',$req->PID)->value('id'),
+							'user_id' => DB::table('project__member')->where('nickname',$member)->value('id'),
+						]
+					);
+			}
+			else {
+				$teamMemberName[] = $temp->name;
+				$teamMemberEmail[] = $temp->email;
+
+				DB::table('project__team_member')
+					->insert(
+						[
+							'project_list_id' => DB::table('project__list')->where('project_pid',$req->PID)->value('id'),
+							'user_id' => $temp->id,
+						]
+					);
+			}
 		}
 		
 		$startPeriod[0] = date('j F Y', strtotime("+" . ($req->Duration*0) . " months", strtotime($req->StartPeriod)));
@@ -208,7 +238,7 @@ class ProjectController extends Controller
 		// 	->cc($data["cc"])
 		// 	->send(new MailOpenProject($data));
 
-		dispatch(new QueueEmail($data));
+		// dispatch(new QueueEmail($data));
 		// return new MailOpenProject($data);
 
 		// return null;

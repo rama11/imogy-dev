@@ -284,7 +284,7 @@
 								<div class="row">
 									<div class="col-md-12">
 										<div class="form-group">
-											<label>Team Member</label>
+											<label>Team Member / 3rd party</label>
 											<select class="form-control select2" id="inputProjectMemberCorrention" style="width: 100%" multiple="multiple" readonly></select>
 										</div>
 									</div>
@@ -392,7 +392,8 @@
 
 		//Date picker for Input Project
 		$('#inputProjectStart').datepicker({
-			autoclose: true
+			autoclose: true,
+			format: 'dd/mm/yyyy'
 		});
 
 		// Listener at project timeline for Input Project
@@ -411,8 +412,8 @@
 				for (var i = 0; i < periode; i++) {
 					append = append + "<tr>";
 					append = append + "<th>Periode " + (i+1) + "</th>";
-					append = append + "<td>" + moment(start,"MM/DD/YYYY").add(duration * (i+1),'month').subtract(duration,'month').format('D MMMM YYYY') + "</td>";
-					append = append + "<td>" + moment(start,"MM/DD/YYYY").add(duration * (i+1),'month').subtract(1,'days').format('D MMMM YYYY') + "</td>";
+					append = append + "<td>" + moment(start,"DD/MM/YYYY").add(duration * (i+1),'month').subtract(duration,'month').format('D MMMM YYYY') + "</td>";
+					append = append + "<td>" + moment(start,"DD/MM/YYYY").add(duration * (i+1),'month').subtract(1,'days').format('D MMMM YYYY') + "</td>";
 					append = append + "</tr>";
 				}
 				append = append + "</table>";
@@ -424,6 +425,8 @@
 	});
 
 	function initFormInputProject(){
+		$('#inputProjectCoordinator, #inputProjectMember, #inputProjectMemberCorrention, #inputProjectCustomer').empty().trigger("change");
+
 		// Get Customer for Input Project
 		$.ajax({
 			type:"GET",
@@ -448,11 +451,13 @@
 					data: result.coordinator
 				});
 				$("#inputProjectLead").select2({
-						placeholder: "Select a Project Lead",
+					placeholder: "Select a Project Lead",
 					data: result.all
 				});
 
+				result.all.unshift({id:0,text:"Add New 3rd Party"});
 				$("#inputProjectMember, #inputProjectMemberCorrention").select2({
+					closeOnSelect: false,
 					placeholder: "Select Member",
 					data: result.all
 				});
@@ -471,6 +476,21 @@
 				}
 			}
 		});
+
+		// // Add new member for Input Project
+		$("#inputProjectMember").on('select2:select',function(){
+			if($("#inputProjectMember").select2('data')[0].text == "Add New 3rd Party"){
+				var newMember = prompt("Enter new 3rd Party :");
+				if(newMember !== null){
+					$("#inputProjectMember").select2().val('Add New 3rd Party').trigger('change');
+					var newOption = new Option(newMember, newMember, false, false);
+					newOption.selected = true;
+					$('#inputProjectMember').append(newOption).trigger('change');
+					var newOption2 = new Option(newMember, newMember, false, false);
+					$('#inputProjectMemberCorrention').append(newOption2).trigger('change');
+				}
+			}
+		});
 	}
 
 	function correctionInputProject(){
@@ -481,7 +501,7 @@
 		$("#inputProjectNameCorrection").val($("#inputProjectName").val());
 
 		// Correction Periode Input
-		$("#inputProjectStartCorrection").val(moment($("#inputProjectStart").val(),"MM/DD/YYYY").format('DD MMMM YYYY'));
+		$("#inputProjectStartCorrection").val(moment($("#inputProjectStart").val(),"DD/MM/YYYY").format('DD MMMM YYYY'));
 		$("#inputProjectDurationCorrection").val($("#inputProjectPeriod").val() + " Month");
 		$("#inputProjectPeriodCorrection").val($("#inputProjectDuration").val() + " Periode");
 

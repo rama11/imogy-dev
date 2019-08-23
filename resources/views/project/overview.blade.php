@@ -15,11 +15,6 @@
 			Overview
 			<small>All of project overview</small>
 		</h1>
-		<!-- <ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i></a></li>
-			<li><a href="#">Examples</a></li>
-			<li class="active">Blank page</li>
-		</ol> -->
 	</section>
 	<section class="content">
 		<div class="row">
@@ -167,7 +162,6 @@
 							<button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
 						</div>
 					</div>
-					<!-- /.box-header -->
 					<div class="box-body">
 						<div class="table-responsive">
 							<table class="table no-margin">
@@ -246,13 +240,10 @@
 								</tbody>
 							</table>
 						</div>
-						<!-- /.table-responsive -->
 					</div>
-					<!-- /.box-body -->
 					<div class="box-footer clearfix">
 						<a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">View All Project</a>
 					</div>
-					<!-- /.box-footer -->
 				</div>
 			</div>
 		</div>

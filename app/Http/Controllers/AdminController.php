@@ -384,9 +384,6 @@ class AdminController extends Controller
 				]);
 			return redirect('schedule')->with('message', "Add User " . " success.");
 		} else {
-			DB::table('shifting')
-			->where('id_user','=',$request->id_user)
-			->delete();
 			DB::table('detail_users')
 			->where('id_user','=',$request->id_user)
 			->delete();

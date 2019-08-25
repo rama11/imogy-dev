@@ -423,74 +423,75 @@ $(document).ready(function(){
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("admin");
+			break;
 
-						break;
-
-			case "absen":
+		case "absen":
 			$("#dashboard").removeClass("active");
 			$("#absen").addClass("active");
 			$("#tisygy").removeClass("active");
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("absen");
+			break;
 			
-						break;
-
-						case "ahistory":
+		case "ahistory":
 			$("#dashboard").removeClass("active");
 			$("#absen").addClass("active");
 			$("#tisygy").removeClass("active");
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("ahistory");
+			break;
 
-				break;
-
-			case "ateamhistory":
+		case "ateamhistory":
 			$("#dashboard").removeClass("active");
 			$("#absen").addClass("active");
 			$("#tisygy").removeClass("active");
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("ateamhistory");
+			break;
 
-				break;
-
-			case "areport":
+		case "areport":
 			$("#dashboard").removeClass("active");
 			$("#absen").addClass("active");
 			$("#tisygy").removeClass("active");
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("location");
+			break;
 
-				break;
-
-			case "tisygy":
+		case "tisygy":
 			$("#dashboard").removeClass("active");
 			$("#absen").removeClass("active");
 			$("#tisygy").addClass("active");
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("tisygy");
+			break;
 			
-						break;
-			
-			case "usermanage":
+		case "usermanage":
 			$("#dashboard").removeClass("active");
 			$("#absen").removeClass("active");
 			$("#tisygy").removeClass("active");
 			$("#usermanage").addClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("usermanage");
-						break;
+			break;
 		
 		case "schedule":
 			$("#dashboard").removeClass("active");
@@ -499,22 +500,31 @@ $(document).ready(function(){
 			$("#usermanage").removeClass("active");
 			$("#schedule").addClass("active");
 			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("schedule");
-			
-						break;
+			break;
 
-			case "location":
+		case "location":
 			$("#dashboard").removeClass("active");
 			$("#absen").removeClass("active");
 			$("#tisygy").removeClass("active");
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").addClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("location");
+			break;
 
-						break;
-
-												
+		case "schedule#":
+			$("#dashboard").removeClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").addClass("active");
+			console.log("location");
+			break;										
 		default:
 			$("#dashboard").addClass("active");
 	};

@@ -1266,7 +1266,7 @@
 				$("#countProgress").text(result[0][1]);
 				$("#countPending").text(result[0][2]);
 				$("#countClose").text(result[0][3]);
-				$("#countCancel").text(result[0][4]);
+				$("#countCancel").text(result[0][4]); 
 				$("#countAll").text(result[0][5]);
 
 				$("#countCritical").text(result[4][0]['count']);
@@ -1319,9 +1319,25 @@
 							  "#8e44ad",
 							  "#34495e",
 							  "#1abc9c",
+							  "#7f8c8d",
+							  "#2ecc71",
+							  "#e67e22",
+							  "#c0392b",
+							  "#3498db",
+							  "#8e44ad",
+							  "#34495e",
+							  "#1abc9c",
 							  "#7f8c8d"
 							],
 							hoverBackgroundColor: [
+							  "#40d47e",
+							  "#e98b39",
+							  "#d14233",
+							  "#4aa3df",
+							  "#9b50ba",
+							  "#3d566e",
+							  "#1dd2af",
+							  "#8c9899",
 							  "#40d47e",
 							  "#e98b39",
 							  "#d14233",

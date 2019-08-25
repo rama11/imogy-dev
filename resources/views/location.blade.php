@@ -79,7 +79,6 @@
 		<!-- /.content -->
 </div>
 
-
 <!-- Modal Edit Location -->
 
 <div class="modal fade in" id="modal-default"  tabindex="-1" role="dialog">
@@ -89,7 +88,7 @@
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">×</span></button>
-					<h4 class="modal-title">Edit Location Modal</h4>
+					<h4 class="modal-title">Edit Location</h4>
 				</div>
 				<div class="modal-body">
 					<p id="nameLoc"></p>
@@ -110,15 +109,6 @@
 									<option value="{{$loc->id}}">{{$loc->name}}</option>
 								@endforeach
 								</select>
-							</div>
-						</div>
-						<div class="col-md-12" id="holderShifting" style="display: none;">
-							<div class="form-group">
-								<div class="checkbox">
-									<label id="checkShifting">
-										
-									</label>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -191,8 +181,7 @@
 				</div>
 			</div>
 		</form>
-	</div>
-	
+	</div>	
 </div>
 
 @endsection

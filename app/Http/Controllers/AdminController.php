@@ -96,7 +96,7 @@ class AdminController extends Controller
 		// print_r($count);
 		// echo "</pre>";
 		
-		return view('admin',compact('data','users','persen','count','absen',));
+		return view('admin',compact('data','users','persen','count','absen'));
 	}
 	public function test_page(){
 		return view('test_page');
@@ -107,6 +107,9 @@ class AdminController extends Controller
 			// ->limit(9)
 			->get()
 			->toArray();
+		$shifting = DB::table('users')
+			->where('shifting','=','shifitng')
+			->get();	
 		$waktu_absen = DB::table('waktu_absen')
 			->get()
 			->toArray();
@@ -118,13 +121,14 @@ class AdminController extends Controller
 			->toArray();
 		$privileges = DB::table('privilege')
 			->get();
+
 		// $shifting = DB::table('users')
 		// echo "<pre>";
 		// print_r($privileges);
 		// echo "</pre>";
 		// Auth::user()->name = "Rama";
 		// echo Auth::user()->name;
-		return view('usermanage',compact('users','waktu_absen','location','presents_timing','privileges'));
+		return view('usermanage',compact('users','waktu_absen','location','presents_timing','privileges','shifting'));
 	}
 	public function user(){
 		$users = DB::table('users')
@@ -325,9 +329,11 @@ class AdminController extends Controller
 	
 	public function addUser(Request $request){
 		date_default_timezone_set('Asia/Jakarta');
+		
 		// $fileName = $request->gambar;
 		// $fileName = $request->file('gambar')->getClientOriginalName();
 		// $request->file('gambar')->move('img/user.png', $fileName);
+		
 		if($request->born == NULL){
 			$request->born = "Born";
 		}
@@ -340,6 +346,7 @@ class AdminController extends Controller
 		if($request->address == NULL){
 			$request->address = "Address Now";
 		}
+		
 		$date = date('Y-m-d h:i:s', time());
 		DB::table('users')
 			->insert([
@@ -356,7 +363,7 @@ class AdminController extends Controller
 				'gender' => $request->gender,
 				'jabatan' => $request->jabatan,
 				'born' => $request->born,
-				'shifting' => 1,
+				'shifting' => 0,
 				'education' => $request->education,
 				'phone' => $request->phone,
 				'address' => $request->address,
@@ -366,23 +373,27 @@ class AdminController extends Controller
 				]);
 		return redirect('usermanage')->with('status', "Add User for " . $request->name . " success.");
 	}
+
 	public function addUserShifting(Request $request){
 		$date = date('Y-m-d h:i:s', time());
 		if(DB::table('detail_users')->where('id_user',$request->id_user,)->where('on_project',$request->on_project)->get() == NULL){
 			DB::table('detail_users')
 			->insert([
 				'id_user' => $request->id_user,
-				'on_project' => "$request->on_project",
+				'on_project' => $request->on_project,
 				]);
 			return redirect('schedule')->with('message', "Add User " . " success.");
 		} else {
+			DB::table('shifting')
+			->where('id_user','=',$request->id_user)
+			->delete();
 			DB::table('detail_users')
-			->where('id_user',$request->id_user)
+			->where('id_user','=',$request->id_user)
 			->delete();
 			DB::table('detail_users')
 			->insert([
 				'id_user' => $request->id_user,
-				'on_project' => "$request->on_project",
+				'on_project' => $request->on_project,
 				]);
 			return redirect('schedule')->with('message', "Add User " . " success.");
 		}
@@ -1387,7 +1398,16 @@ class AdminController extends Controller
 	}
 	public function schedule ($month = "") {
 		$nameUsers = DB::table('users')
+			->where('shifting', 'LIKE', '%1%')
 			->get();
+		
+		$nameUsersShif = DB::table('users')
+			->where('shifting', 'LIKE', '%0%')
+			->get();
+		$nameUsersShif2 = DB::table('users')
+			->where('shifting', 'LIKE', '%1%')
+			->get();	
+
 		$users = DB::table('detail_users')
 			->join('users','users.id','=','detail_users.id_user')
 			->join('project','project.id','=','detail_users.on_project')
@@ -1423,7 +1443,7 @@ class AdminController extends Controller
 			->get()
 			->toArray();
 		if($month == ""){
-			return view('admin.schedule',compact('users','projects','nameUsers'));
+			return view('admin.schedule',compact('users','projects','nameUsers','nameUsersShif','nameUsersShif2'));
 		} else {
 			return $users;
 		}
@@ -1508,23 +1528,45 @@ class AdminController extends Controller
 	}
 	
 	function editProfile(Request $request){
-		if($request->name == NULL){
+	if($request->name == NULL){
 			$request->name = Auth::user()->name;
-		} else if($request->email == NULL){
+		}else if ($request->email == NULL){
 			$request->email = Auth::user()->email;
-		}else if($request->role == NULL){
+		}else if ($request->role == NULL){
 			$request->role = Auth::user()->jabatan;
-		} else {
-			DB::table("users")
-				->where('id',$request->id)
-				->update([
-					"name" => $request->name,
-					"email" => $request->email,
-					"jabatan" => $request->role
-				]);
+		}else if ($request->shifting == NULL){
+			$request->shifting = Auth::user()->shifting;
+		}else {
+			DB::table('detail_users')
+				->where('id_user','=',$request->id)
+				->delete();
+			DB::table('shifting')
+				->where('id_user','=',$request->id)
+				->delete();
+			DB::table('users')
+			->where('id','=',$request->id)
+			->update([
+				"name" => $request->name,
+				"email" => $request->email,
+				"jabatan" => $request->role,
+				"shifting" => $request->shifting
+			]);
+				return redirect()->back();
+			}
+	if(DB::table('users')->where('id','=',$request->id)->where('shifting','=',0 )){				
+		DB::table('users')
+			->where('id','=',$request->id)
+			->update([
+				"name" => $request->name,
+				"email" => $request->email,
+				"jabatan" => $request->role,
+				"shifting" => $request->shifting
+			]);
 			return redirect()->back();
-		}
+
+		} 
 	}
+
 	function editUser(Request $request){
 		if($request->name == NULL){
         	$request->name = Auth::user()->name;
@@ -1534,8 +1576,8 @@ class AdminController extends Controller
         }
         if($request->gender == NULL){
         	$request->gender = Auth::user()->gender;
-        }
-        if($request->born == NULL){
+		}
+		if($request->born == NULL){
         	$request->born = Auth::user()->born;
         }
         if($request->education == NULL){
@@ -1720,9 +1762,14 @@ class AdminController extends Controller
 			
 			$tittle = 'Attandance Report ' . $req->startDate . ' to ' . $req->endDate;
 			$pdf = PDF::loadView('pdf2',compact('var','summary','data','details','tittle'));
-			return $pdf->stream("Report " . $data['start'] . " to " . $data['end'] . " .pdf");
-			return $details;
-			return view('pdf2',compact('var','summary','data','details','tittle'));
+			return $pdf->stream($tittle ."Report " . $data['start'] . " to " . $data['end'] . " .pdf");
+			// return $details;
+
+		// 	$tittle = 'My Attendence';
+		// $pdf = PDF::loadView('pdf', compact('datas','kehadiran','count','name','absen'));
+		// return $pdf->stream($tittle .".pdf");
+			
+			// return view('pdf2',compact('var','summary','data','details','tittle'));
 			// return view('pdf4',compact('var','summary','data','details'));
 		} else {
 			$var['start'] = $req->start;

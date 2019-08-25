@@ -134,7 +134,6 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('/raw/{id}', 'AdminController@raw');
 	Route::post('/raw/{id}', 'AdminController@raw');
 	Route::get('/createPresenceLocation', 'AdminController@createPresenceLocation');
-	// Route::get('/raw/{id}', 'AdminController@raw');
 	Route::get('/asycal', 'AdminController@asycal');
 	
 	Route::get('/downloadPDF/{id}','AdminController@download');

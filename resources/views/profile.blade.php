@@ -214,7 +214,7 @@
 
 								<div class="form-group">
 									<label>Education</label>
-									<inputtype="text" class="form-control" name="education" value="{{Auth::user()->education}}" >
+									<input type="text" class="form-control" name="education" value="{{Auth::user()->education}}" >
 								</div>
 
 								<div class="form-group">
@@ -224,7 +224,7 @@
 
 								<div class="form-group">
 									<label>Address</label>
-									<inputtype="text" class="form-control" name="address" value="{{Auth::user()->address}}" >
+									<input type="text" class="form-control" name="address" value="{{Auth::user()->address}}" >
 								</div>
 
 								<div class="form-group">

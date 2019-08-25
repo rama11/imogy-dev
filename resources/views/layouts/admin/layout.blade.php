@@ -424,7 +424,7 @@ $(document).ready(function(){
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
-			$("#project").removeClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("admin");
 			break;
 
@@ -435,7 +435,7 @@ $(document).ready(function(){
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
-			$("#project").removeClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("absen");
 			break;
 
@@ -446,7 +446,7 @@ $(document).ready(function(){
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
-			$("#project").removeClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("ahistory");
 			break;
 
@@ -457,7 +457,9 @@ $(document).ready(function(){
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
-			$("#project").removeClass("active");
+
+			$("#schedule#").removeClass("active");
+
 			console.log("ateamhistory");
 			break;
 
@@ -468,7 +470,7 @@ $(document).ready(function(){
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
-			$("#project").removeClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("location");
 			break;
 
@@ -479,7 +481,7 @@ $(document).ready(function(){
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
-			$("#project").removeClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("tisygy");
 			break;
 			
@@ -490,7 +492,7 @@ $(document).ready(function(){
 			$("#usermanage").addClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
-			$("#project").removeClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("usermanage");
 			break;
 		
@@ -501,7 +503,8 @@ $(document).ready(function(){
 			$("#usermanage").removeClass("active");
 			$("#schedule").addClass("active");
 			$("#location").removeClass("active");
-			$("#project").removeClass("active");
+			$("#schedule#").removeClass("active");
+
 			console.log("schedule");
 			break;
 
@@ -512,21 +515,20 @@ $(document).ready(function(){
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").addClass("active");
-			$("#project").removeClass("active");
+			$("#schedule#").removeClass("active");
 			console.log("location");
 			break;
 
-		case "location":
+		case "schedule#":
 			$("#dashboard").removeClass("active");
 			$("#absen").removeClass("active");
 			$("#tisygy").removeClass("active");
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
-			$("#project").addClass("active");
+			$("#schedule#").addClass("active");
 			console.log("location");
-			break;
-												
+			break;										
 		default:
 			$("#dashboard").addClass("active");
 	};

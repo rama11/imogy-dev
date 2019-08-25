@@ -187,7 +187,7 @@
 										@endif
 									@endif
 								@else 
-									<button type="button" class="btn btn-primary " data-toggle="modal" data-target="#myModal" id="absen">ABSEN</button>
+									<button type="button" class="btn btn-success " data-toggle="modal" data-target="#myModal" id="absen">ABSEN</button>
 								@endif
 								<button style="display: none;" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal2" id="berhasil">Berhasil</button>
 								<button style="display: none;" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal3" id="gagal">Gagal</button>

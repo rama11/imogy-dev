@@ -159,6 +159,16 @@
 								</select>                                    
 							</div>
 						</div>
+						<div class="form-group">
+							<label for="shifting" class="col-md-3 control-label">Shifting</label>
+							<div class="col-md-9">
+								<select name="shifting" class="form-control">
+										<option disabled="disabled" selected="selected">Choose One</option>
+										<option value="0">NON SHIFTING</option>
+										<option value="1">SHIFTING</option>
+								</select>                                    
+							</div>
+						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
@@ -261,34 +271,27 @@
 						<div class="form-group">
 							<label for="born" class="col-md-3 control-label">Place, Date of Birth</label>
 							<div class="col-md-8">
-								<input id="born" type="text" class="form-control" name="born" required autofocus>
+								<input id="born" type="text" class="form-control" name="born">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="education" class="col-md-3 control-label">Education</label>
 							<div class="col-md-8">
-								<input id="education" type="text" class="form-control" name="education" required autofocus>
+								<input id="education" type="text" class="form-control" name="education">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="phone" class="col-md-3 control-label">Phone</label>
 							<div class="col-md-8">
-								<input id="phone" type="text" class="form-control" name="phone" required autofocus>
+								<input id="phone" type="text" class="form-control" name="phone">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="address" class="col-md-3 control-label">Address</label>
 							<div class="col-md-8">
-								<input id="address" type="text" class="form-control" name="address" required autofocus>
+								<input id="address" type="text" class="form-control" name="address">
 							</div>
 						</div>
-						<!-- <div class="form-group">
-							<label for="foto" class="col-md-3 control-label">Photo</label>
-							<div class="col-md-8">
-								<input type="file" id="inputgambar" name="gambar">
-								<p class="help-block">Only .jpg .jpeg and .png are allowed</p>
-							</div>
-						</div> -->
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>

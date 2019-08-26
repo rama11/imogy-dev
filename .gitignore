@@ -27,6 +27,7 @@ private.key
 
 # Ignore AdminLTE Folder
 public/AdminLTE/
+public/.well-known/
 
 # Ignore Other
 sftp-config.json.backup

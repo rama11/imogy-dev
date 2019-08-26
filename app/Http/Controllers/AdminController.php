@@ -1657,7 +1657,7 @@ class AdminController extends Controller
 			->toArray();
 
 		if($month == ""){
-			return view('admin.schedule',compact('users','projects','nameUsers','nameUsersShif','nameUsersShif2'));
+			return view('schedule',compact('users','projects','nameUsers','nameUsersShif','nameUsersShif2'));
 		} else {
 			return $users;
 		}
@@ -1697,7 +1697,7 @@ class AdminController extends Controller
 	function getScheduleSelected (Request $req){
 		$data = DB::table('shifting')
 			->where('id_user','=',$req->idUser)
-			->where('id_project','=',$req->idProject)
+			// ->where('id_project','=',$req->idProject)
 			->get()
 			->toArray();
 		return json_encode($data);

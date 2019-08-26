@@ -184,6 +184,7 @@ class ProjectController extends Controller
 						'project_list_id' => $setProjectFirst,
 						'name' => "Preventive Periode " . ($i+1),
 						'note' => $start . " - " . $end,
+						'start_date' => date('Y-m-d', strtotime("+" . ($req->Duration*$i) . " months", strtotime($req->StartPeriod))),
 						'due_date' => date('Y-m-d', strtotime("+" . ($req->Duration*($i+1)) . " months", strtotime($req->StartPeriod))),
 						'status' => "On Going"
 
@@ -529,5 +530,17 @@ class ProjectController extends Controller
 		return DB::table('project__list')
 			->where('id',$req->id)
 			->get();
+	}
+
+	public function getSettingPeriod(Request $req){
+		$projectDetail = DB::table('project__list')
+			->where('id',$req->id)
+			->first();
+		return array(
+			$projectDetail,
+			DB::table('project__event')
+				->where('project_list_id',$projectDetail->id)
+				->get()
+		);
 	}
 }

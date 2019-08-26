@@ -273,5 +273,6 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	
 	Route::get('project/setting','ProjectController@setting');
 	Route::get('project/setting/getSettingProject','ProjectController@getSettingProject');
+	Route::get('project/setting/getSettingPeriod','ProjectController@getSettingPeriod');
 
 

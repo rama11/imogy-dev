@@ -517,6 +517,7 @@
 		$("#inputProjectCoordinatorCorrention").val(coordinator[0].text);
 		$("#inputProjectLeadCorrention").val(leader[0].text);
 		member = [];
+		memberNickname = [];
 		$("#inputProjectMemberCorrention").select2().val(null).trigger('change');
 		members.forEach(function(eachMember){
 			member.push(eachMember.id);

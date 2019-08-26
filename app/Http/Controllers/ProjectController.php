@@ -97,8 +97,8 @@ class ProjectController extends Controller
 			$req->Customer = DB::table('project__customer')->where('name',$req->CustomerName)->value('id');
 		}
 
-		DB::table('project__list')
-			->insert(
+		$setProjectFirst = DB::table('project__list')
+			->insertGetId(
 				[
 					'project_name' => $req->Name,
 					'project_pid' => $req->PID,
@@ -129,7 +129,7 @@ class ProjectController extends Controller
 				DB::table('project__team_member')
 					->insert(
 						[
-							'project_list_id' => DB::table('project__list')->where('project_pid',$req->PID)->value('id'),
+							'project_list_id' => $setProjectFirst,
 							'user_id' => DB::table('project__member')->where('nickname',$member)->value('id'),
 						]
 					);
@@ -141,7 +141,7 @@ class ProjectController extends Controller
 				DB::table('project__team_member')
 					->insert(
 						[
-							'project_list_id' => DB::table('project__list')->where('project_pid',$req->PID)->value('id'),
+							'project_list_id' => $setProjectFirst,
 							'user_id' => $temp->id,
 						]
 					);
@@ -154,7 +154,7 @@ class ProjectController extends Controller
 		$setProjectEventFirst = DB::table('project__event')
 			->insertGetId(
 				[
-					'project_list_id' => DB::table('project__list')->where('project_pid',$req->PID)->value('id'),
+					'project_list_id' => $setProjectFirst,
 					'name' => "Preventive Periode " . 1,
 					'note' => date('j F Y', strtotime("+" . ($req->Duration*0) . " months", strtotime($req->StartPeriod))) . " - " . date('j F Y', strtotime("+" . ($req->Duration*1) . " months -1 days", strtotime($req->StartPeriod))),
 					'due_date' => date('Y-m-d', strtotime("+" . ($req->Duration*1) . " months", strtotime($req->StartPeriod))),
@@ -181,7 +181,7 @@ class ProjectController extends Controller
 			DB::table('project__event')
 				->insert(
 					[
-						'project_list_id' => DB::table('project__list')->where('project_pid',$req->PID)->value('id'),
+						'project_list_id' => $setProjectFirst,
 						'name' => "Preventive Periode " . ($i+1),
 						'note' => $start . " - " . $end,
 						'due_date' => date('Y-m-d', strtotime("+" . ($req->Duration*($i+1)) . " months", strtotime($req->StartPeriod))),

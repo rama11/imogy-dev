@@ -66,146 +66,7 @@
 									<th>Time to Due Date</th>
 									<th>Time to Due Date</th>
 									<th>Coordinator</th>
-									<th></th>
-								</tr>
-							</thead>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="modal fade" id="modalSettingProject">
-			<div class="modal-dialog" id="modal-default-size">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title" id="modalSettingProjectTitle"></h4>
-					</div>
-					<div class="modal-body">
-						<form role="form">
-							<div class="row">
-								<div class="col-md-6">
-									<div class="form-group">
-										<label>Customer</label>
-										<input class="form-control" type="text" id="settingProjectCustomer" readonly>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label>Project ID</label>
-										<input class="form-control" type="text" id="settingProjectPID" readonly>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-group">
-										<label>Name Project</label>
-										<input class="form-control" type="text" id="settingProjectName" readonly>
-									</div>
-								</div>
-							</div>
-							<hr style="margin-top: 0px;">
-							<div class="row">
-								<div class="col-md-4">
-									<div class="form-group">
-										<label>Project Start</label>
-										<input class="form-control" type="text" id="settingProjectName" readonly>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label>Number of Period</label>
-										<input class="form-control" type="text" id="settingProjectName" readonly>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label>Duration Period</label>
-										<input class="form-control" type="text" id="settingProjectName" readonly>
-									</div>
-								</div>
-							</div>
-							<hr style="margin-top: 0px;">
-							<div class="row">
-								<div class="col-md-6">
-									<div class="form-group">
-										<label>Coordinator</label>
-										<input class="form-control" type="text" id="settingProjectName" readonly>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label>Leader</label>
-										<input class="form-control" type="text" id="settingProjectName" readonly>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-group">
-										<label>Team Member</label>
-										<input class="form-control" type="text" id="settingProjectName" readonly>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-3">
-									<div class="form-group">
-										<label>Get Reminder</label>
-										<input class="form-control" type="checkbox" checked data-toggle="toggle">
-									</div>
-								</div>
-								<div class="col-md-3">
-									<div class="form-group">
-										<label>Remaind All</label>
-										<input class="form-control" type="checkbox" checked data-toggle="toggle">
-									</div>
-								</div>
-								<div class="col-md-3">
-									<div class="form-group">
-										<label>Remaind All</label>
-										<input class="form-control" type="checkbox" checked data-toggle="toggle">
-									</div>
-								</div>
-							</div>
-						</form>
-					</div>
-					<div class="modal-footer">
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="col-md-12">
-				<div class="box">
-					<div class="box-header with-border">
-						<h3 class="box-title">Title</h3>
-						<div class="box-tools">
-							<div class="input-group input-group-sm" style="width: 150px;">
-								<input type="text" id="searchBar" class="form-control pull-right" placeholder="Search">
-
-								<div class="input-group-btn">
-									<button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="box-body table-responsive no-padding">
-						<table id="tableProjectSetting" class="table table-hover">
-							<thead>
-								<tr>
-									<!-- <th></th> -->
-									<th>Customer</th>
-									<th>Name Project</th>
-									<th>Time to Due Date</th>
-									<th>Time to Due Date</th>
-									<th>Coordinator</th>
-									<th></th>
-									<th></th>
+									<th style="width: 75px;"></th>
 								</tr>
 							</thead>
 						</table>
@@ -352,6 +213,9 @@
 								</div>
 							</div>
 							<hr>
+							<hr>
+							<hr>
+							<hr>
 							<div class="row">
 								<div class="col-md-12">
 									<label>Period Schema</label>
@@ -376,11 +240,8 @@
 				</div>
 			</div>
 		</div>
-		<!-- /.box-footer-->
-	</div>
-	<!-- /.box -->
-
-</section>
+	</section>
+</div>
 
 @endsection 
 
@@ -431,8 +292,8 @@ Custom Color Converter
 			"columns": [
 				{ "data" : "project_customer" },
 				{ "data" : "project_name" },
-				{ "data" : "project_start" , "orderData":[ 4 ] , "targets": [ 1 ]},
-				{ "data" : "project_start2" , "targets": [ 4 ] , "visible": false , "searchable": false},
+				{ "data" : "project_start" , "orderData":[ 3 ] , "targets": [ 1 ]},
+				{ "data" : "project_start2" , "targets": [ 3 ] , "visible": false , "searchable": false},
 				{ "data" : "project_coordinator" },
 				{ 
 					"data": null,
@@ -469,17 +330,15 @@ Custom Color Converter
 	})
 
 	$(document).on('click','p.btn-primary.btn-xs',function(){
-		var row =  $(this).closest('tr').find(".idRowPeriod").text();
-		console.log(row)
-		$(".updatePeriod" + row).toggle()
+		var idRowPeriod =  $(this).closest('tr').find(".idRowPeriod").text();
+		// console.log(idRowPeriod)
+		$(".updatePeriodTd" + idRowPeriod).toggle()
+		$(".startPeriod" + idRowPeriod).toggle()
+		$(".endPeriod" + idRowPeriod).toggle()
 		// editPeriod(row.data().id);
 	})
 
 	$(document).on('click','.savePeriodeChange',function(){
-		// var row =  $(this).closest('tr').find(".idRowPeriod").text();
-		// console.log(row)
-		// $(".updatePeriod" + row).toggle()
-		// editPeriod(row.data().id);
 		savePeriodeChange()
 	})
 
@@ -517,6 +376,7 @@ Custom Color Converter
 				// console.log(id);
 				periods = result[1]
 				result = result[0]
+				$(".table-period-schema tbody").html('')
 				$("#modalSettingPeriodTitle").html('<h4 class="modal-title">Period Setting for ' + result.project_name + '</h4><p>' + result.project_pid + '</p>');
 				$("#settingPeriodStart").val(moment(result.project_start).format("D MMMM YYYY"))
 				$("#settingPeriodPeriod").val(result.project_periode + ' Periods')
@@ -532,40 +392,35 @@ Custom Color Converter
 						period.status = '<span class="label bg-gray"> ' + period.status + ' </span>'
 					}
 
-					append += '<tr>'
+					var valuePeriod = moment(period.note.split("-")[0],"D MMMM YYYY ").format("D MMMM YYYY") + " - " + moment(period.note.split("-")[1]," D MMMM YYYY").format("D MMMM YYYY")
+
+					append += '<tr class="updatePeriod' + period.id + '">'
 					append += '<td style="display:none" class="idRowPeriod">' + period.id + '</td>'
 					append += '<td>' + period.name + '</td>'
-					append += '<td class="text-center">' + moment(period.note.split("-")[0],"D MMMM YYYY ").format("D MMMM YYYY") + '</td>'
-					append += '<td class="text-center">' + moment(period.note.split("-")[1]," D MMMM YYYY").format("D MMMM YYYY") + '</td>'
+					append += '<td style="display:none" class="updatePeriodTd' + period.id + '" colspan="2">'
+					append += '	<input type="text" class="form-control pull-right updatePeriodPicker' + period.id + '" style="text-align:center;">'
+					append += '</td>'
+					append += '<td class="text-center startPeriod' + period.id + '">' + moment(period.note.split("-")[0],"D MMMM YYYY ").format("D MMMM YYYY") + '</td>'
+					append += '<td class="text-center endPeriod' + period.id + '">' + moment(period.note.split("-")[1]," D MMMM YYYY").format("D MMMM YYYY") + '</td>'
 					append += '<td>' + period.status + '</td>'
 					append += '<td><p class="btn btn-primary btn-xs">Edit</p></td>'
-					append += '</tr>'
-
-					append += '<tr style="display:none" class="updatePeriod' + period.id + '">'
-					append += '<td class="text-right"><label>Edit Range Event</label></td>'
-					append += '<td colspan="3">'
-					// append += '		<div class="form-group">'
-					// append += '			<div class="input-group">'
-					// append += '				<div class="input-group-addon">'
-					// append += '					<i class="fa fa-calendar"></i>'
-					// append += '				</div>'
-					append += '				<input type="text" class="form-control pull-right updatePeriodPicker' + period.id + '">'
-					// append += '			</div>'
-					// append += '			<!-- /.input group -->'
-					// append += '		</div>'
-					append += '</td>'
-					append += '<td></td>'
 					append += '</tr>'
 
 					$(".table-period-schema tbody").append(append)
 
 					$(".updatePeriod" + period.id).daterangepicker({
-						opens: 'left'
+						opens: 'center',
+						drops: "up",
+						startDate: moment(period.note.split("-")[0],"D MMMM YYYY ").format("DD/MM/YYYY"),
+					    endDate: moment(period.note.split("-")[0],"D MMMM YYYY ").format("DD/MM/YYYY"),
+						locale: {
+							format:"DD/MM/YYYY",
+						}
 					},function(start, end, label){
-						console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+						// console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
 						var datePickerSelector = ".updatePeriodPicker" + period.id;
 						$(datePickerSelector).val(start.format('D MMMM YYYY') + ' to ' + end.format('D MMMM YYYY'))
-						console.log(datePickerSelector)
+						// console.log(datePickerSelector)
 
 						tempPeriodeChange.push({
 							"id_event":period.id,

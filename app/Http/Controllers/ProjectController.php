@@ -527,9 +527,34 @@ class ProjectController extends Controller
 	}
 
 	public function getSettingProject(Request $req){
-		return DB::table('project__list')
-			->where('id',$req->id)
+		$projectDetail = DB::table('project__list')
+			->select(
+				'project__list.id',
+				'project__list.project_name',
+				'project__list.project_pid',
+				DB::raw('project__customer.name AS project_customer'),
+				'project__list.project_start',
+				'project__list.project_periode',
+				'project__list.project_periode_duration',
+				'project__list.project_coordinator',
+				'project__list.project_leader'
+				// DB::raw("leader.nickname as project_leader"),
+				// DB::raw("coordinator.nickname as project_coordinator")
+			)
+			->join('project__customer','project__list.project_customer','=','project__customer.id')
+			// ->join('project__member as leader','project__list.project_leader','=','leader.id','left outer')
+			// ->join('project__member as coordinator','project__list.project_coordinator','=','coordinator.id','left outer')
+			->where('project__list.id',$req->id)
 			->get();
+
+		$projectDetail[0]->team = DB::table('project__team_member')
+			->where('project__team_member.project_list_id',$req->id)
+			->join('users','project__team_member.user_id','=','users.id')
+			->join('project__member','users.id','=','project__member.user_id')
+			// ->pluck('users.nickname');
+			->pluck('project__member.id');
+
+		return $projectDetail;
 	}
 
 	public function getSettingPeriod(Request $req){

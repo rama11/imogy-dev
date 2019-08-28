@@ -1,8 +1,11 @@
 @extends('layouts.admin.layoutLight2')
 @section('head')
+<link rel="stylesheet" href="{{url('plugins/select2/select2.min.css')}}">
+<link rel="stylesheet" href="{{url('dist/css/AdminLTE.min.css')}}">
 <link rel="stylesheet" href="{{url('plugins/datatables/dataTables.bootstrap.css')}}">
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-<link rel="stylesheet" type="text/css" href="{{url('plugins/daterangepicker/daterangepicker.css')}}" />
+<link rel="stylesheet" href="{{url('plugins/daterangepicker/daterangepicker.css')}}" />
+
 <style>
 	.dataTables_filter {display: none;}
 </style>
@@ -107,39 +110,39 @@
 									</div>
 								</div>
 							</div>
-							<hr style="margin-top: 0px;">
+							<!-- <hr style="margin-top: 0px;">
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
 										<label>Project Start</label>
-										<input class="form-control" type="text" id="settingProjectName" readonly>
+										<input class="form-control" type="text" id="settingProjectStart" readonly>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label>Number of Period</label>
-										<input class="form-control" type="text" id="settingProjectName" readonly>
+										<input class="form-control" type="text" id="settingProjectPeriod" readonly>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label>Duration Period</label>
-										<input class="form-control" type="text" id="settingProjectName" readonly>
+										<input class="form-control" type="text" id="settingProjectDuration" readonly>
 									</div>
 								</div>
-							</div>
+							</div> -->
 							<hr style="margin-top: 0px;">
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
 										<label>Coordinator</label>
-										<input class="form-control" type="text" id="settingProjectName" readonly>
+										<select class="form-control select2" id="settingProjectCoordinator" style="width: 100%"></select>
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label>Leader</label>
-										<input class="form-control" type="text" id="settingProjectName" readonly>
+										<select class="form-control select2" id="settingProjectLeader" style="width: 100%"></select>
 									</div>
 								</div>
 							</div>
@@ -147,7 +150,7 @@
 								<div class="col-md-12">
 									<div class="form-group">
 										<label>Team Member</label>
-										<input class="form-control" type="text" id="settingProjectName" readonly>
+										<select class="form-control select2" id="settingProjectTeam" multiple="multiple" style="width: 100%"></select>
 									</div>
 								</div>
 							</div>
@@ -243,6 +246,8 @@
 @endsection 
 
 @section('script')
+<!-- Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
 <!-- moment.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <!-- HumanizeDuration.js -->
@@ -258,6 +263,30 @@ Custom Color Converter
 <script>
 	$(document).ready(function(){
 		getAllProjectList();
+
+		// Get Member for Input Project
+		$.ajax({
+			type:"GET",
+			url:'{{url("project/manage/getMember")}}',
+			success: function(result){
+				$("#settingProjectCoordinator").select2({
+					placeholder: "Select a Coordinator",
+					data: result.coordinator
+				});
+				$("#settingProjectLeader").select2({
+					placeholder: "Select a Project Lead",
+					data: result.all
+				});
+
+				$("#settingProjectTeam").select2({
+					closeOnSelect: false,
+					placeholder: "Select Member",
+					data: result.all
+				});
+			}
+		});
+
+		// editProject(25);
 	});
 
 	var tempPeriodeChange = []
@@ -345,7 +374,11 @@ Custom Color Converter
 	// 	editProject(row.data().id);
 	// });
 
+
+
 	function editProject(id){
+		
+
 		$.ajax({
 			type:"GET",
 			url:"{{url('project/setting/getSettingProject')}}",
@@ -354,7 +387,19 @@ Custom Color Converter
 			},
 			success:function(result){
 				// console.log(id);
-				$("#modalSettingProjectTitle").text('Setting for Project');
+				var project = result[0]
+				$("#modalSettingProjectTitle").text('Setting for Project ' + project.project_name);
+				$("#settingProjectCustomer").val(project.project_customer)
+				$("#settingProjectPID").val(project.project_pid)
+				$("#settingProjectName").val(project.project_name)
+
+				$("#settingProjectCoordinator").val(project.project_coordinator).trigger('change')
+				$("#settingProjectLeader").val(project.project_leader).trigger('change')
+				$("#settingProjectTeam").val(project.team).trigger('change')
+
+				// $("#settingProjectLeader").val(project.project_leader)
+				// $("#settingProjectTeam").val(project.project_name)
+
 				$("#modalSettingProject").modal('show');
 			}
 		});

@@ -213,9 +213,6 @@
 								</div>
 							</div>
 							<hr>
-							<hr>
-							<hr>
-							<hr>
 							<div class="row">
 								<div class="col-md-12">
 									<label>Period Schema</label>
@@ -261,7 +258,6 @@ Custom Color Converter
 <script>
 	$(document).ready(function(){
 		getAllProjectList();
-		editPeriod(15);
 	});
 
 	var tempPeriodeChange = []
@@ -410,7 +406,7 @@ Custom Color Converter
 
 					$(".updatePeriod" + period.id).daterangepicker({
 						opens: 'center',
-						drops: "up",
+						drops: "down",
 						startDate: moment(period.note.split("-")[0],"D MMMM YYYY ").format("DD/MM/YYYY"),
 					    endDate: moment(period.note.split("-")[0],"D MMMM YYYY ").format("DD/MM/YYYY"),
 						locale: {
@@ -428,6 +424,15 @@ Custom Color Converter
 							"due_date":end.format('YYYY-MM-DD')})
 					})
 
+					$(".updatePeriod" + period.id).on('show.daterangepicker', function (ev, picker) {
+						if (picker.element.offset().top - $(window).scrollTop() + picker.container.outerHeight() > $(window).height()) {
+							picker.drops = 'up';
+						} else {
+							picker.drops = 'down';
+						}
+						picker.move();
+					});
+
 				})
 				$("#modalSettingPeriod").modal('show');
 			}
@@ -435,7 +440,20 @@ Custom Color Converter
 	};
 
 	function savePeriodeChange(){
-		console.log(tempPeriodeChange)
+		tempPeriodeChange.forEach(function(period,index){
+			var note = moment(period.start_date,"YYYY-MM-DD").format("D MMMM YYYY") + " - " + moment(period.due_date,"YYYY-MM-DD").format("D MMMM YYYY");
+			tempPeriodeChange[index].note = note
+		})
+		if(tempPeriodeChange.length != 0){
+			$.ajax({
+				type:"GET",
+				url:"{{url('project/setting/setSettingPeriod')}}",
+				data:{
+					periods:tempPeriodeChange
+				}
+			});
+		}
+		
 	}
 
 </script>

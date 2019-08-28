@@ -536,11 +536,25 @@ class ProjectController extends Controller
 		$projectDetail = DB::table('project__list')
 			->where('id',$req->id)
 			->first();
+		
 		return array(
 			$projectDetail,
 			DB::table('project__event')
 				->where('project_list_id',$projectDetail->id)
 				->get()
 		);
+	}
+
+	public function setSettingPeriod(Request $req){
+		foreach ($req->periods as $period) {
+			DB::table('project__event')
+				->where('id',$period["id_event"])
+				->update([
+					"start_date" => $period["start_date"],
+					"due_date" => $period["due_date"],
+					"note" => $period["note"]
+				]);
+		}
+		return $req->period;
 	}
 }

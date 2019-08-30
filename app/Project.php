@@ -27,4 +27,8 @@ class Project extends Model
 	public function member_project(){
 		return $this->hasMany('App\ProjectMember','project_list_id','id');
 	}
+
+	public function event_project(){
+		return $this->hasMany('App\ProjectEvent','project_list_id','id');
+	}
 }

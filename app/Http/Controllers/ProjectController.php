@@ -520,6 +520,76 @@ class ProjectController extends Controller
 			DB::table('project__event')
 				->where('id',$req->id + 1)
 				->update(['status'=> 'Active']);
+
+			$projectDetail = Project::find($req->id_project);
+			$data = array(
+				"to" => array(
+					"agastya@sinergy.co.id",
+					'prof.agastyo@gmail.com',
+
+					// "siwi@sinergy.co.id",
+					// "johan@sinergy.co.id",
+					// "dicky@sinergy.co.id",
+					// "ferdinand@sinergy.co.id",
+					// "wisnu.darman@sinergy.co.id"
+				),
+				"cc" => array(
+					// "endraw@sinergy.co.id",
+					// "msm@sinergy.co.id",
+
+					'imogy@sinergy.co.id',
+					'hellosinergy@gmail.com'
+				),
+				// "subject" => "Open Project - " . $req->CustomerName,
+				"subject" => "Finish Period Project - " . $projectDetail->customer_project,
+				'name' => Auth::user()->name,
+				'phone' => Auth::user()->phone,
+
+				"customer" => $projectDetail->customer_project,
+				// "customer" => $req->CustomerName,
+				"name_project" => $projectDetail->project_name,
+				// "name_project" => $req->Name,
+				"project_id" => $projectDetail->project_name,
+				// "project_id" => $req->PID,
+				"activePeriod" => ProjectEvent::find($req->id)->name,
+				"nextPeriod" => ProjectEvent::find($req->id + 1)->name,
+				// "period" => $req->Period . "x",
+				"duration" => $projectDetail->project_name . " Bulan",
+				// "historyPeriod" => array(
+				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Open Project'],
+				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Penyesuaian jadwal dengan planing sebelumnya'],
+				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Ada problem mengenai Telefon yang ada'],
+				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Setelah pemeriksaan dibutuhkan RMA'],
+				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Barang RMA yang baru sudah di terima'],
+				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Barang RMA yang lama sudah di kirim'],
+				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Penjadwalan PM sudah di lakukan'],
+				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'PM Telah selesai dilaksanakan, laporan sedang di proses'],
+				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => ''],
+				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'PM Telah selesai dilaksanakan, laporan sedang di proses'],
+				// ),
+				"historyPeriod" => $projectDetail->history_project->where('project_event_id',$req->id)
+				// "duration" => $req->Duration . " Bulan",
+				// "start" => "1 August 2019",
+				// "start" => $startPeriod,
+				// "end" => "31 October 2019",
+				// "end" => $endPeriod,
+				
+				"coordinatorName" => $projectDetail->coordinator_project->name,
+				// "coordinatorName" => DB::table('users')->where('id',$req->Coordinator)->value('name'),
+				"coordinatorEmail" => $projectDetail->coordinator_project->email,
+				// "coordinatorEmail" => DB::table('users')->where('id',$req->Coordinator)->value('email'),
+				
+				"teamLeadName" => $projectDetail->leader_project->name,
+				// "teamLeadName" => DB::table('users')->where('id',$req->Lead)->value('name'),
+				"teamLeadEmail" => $projectDetail->leader_project->email,
+				// "teamLeadEmail" => DB::table('users')->where('id',$req->Lead)->value('email'),
+
+				"teamMemberName" => $projectDetail->member_project->pluck('name'),
+				// "teamMemberName" => $teamMemberName,
+				"teamMemberEmail" => $projectDetail->member_project->pluck('email')
+				// "teamMemberEmail" => $teamMemberEmail
+
+			);
 		}
 		
 		return null;

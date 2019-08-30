@@ -80,6 +80,7 @@
 		
 		<div class="modal fade" id="modalSettingProject">
 			<div class="modal-dialog" id="modalSettingProject-default-size">
+				<input type="hidden" id="SettingProjectId">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -98,7 +99,7 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<label>Project ID</label>
-										<input class="form-control" type="text" id="settingProjectPID" readonly>
+										<input class="form-control" type="text" id="settingProjectPID">
 									</div>
 								</div>
 							</div>
@@ -106,7 +107,7 @@
 								<div class="col-md-12">
 									<div class="form-group">
 										<label>Name Project</label>
-										<input class="form-control" type="text" id="settingProjectName" readonly>
+										<input class="form-control" type="text" id="settingProjectName">
 									</div>
 								</div>
 							</div>
@@ -177,6 +178,8 @@
 						</form>
 					</div>
 					<div class="modal-footer">
+						<button class="btn btn-success saveSettingChange">Save</button>
+						<!-- <button class="btn btn-success savePeriodeChange">Save</button> -->
 					</div>
 				</div>
 			</div>
@@ -367,6 +370,10 @@ Custom Color Converter
 		savePeriodeChange()
 	})
 
+	$(document).on('click','.saveSettingChange',function(){
+		saveSettingChange()
+	})
+
 	// $('#tableProjectSetting').on('click','td.edit-td', function () {
 	// 	var tr = $(this).closest('tr');
 	// 	$("#tableProjectSetting").DataTable().row( tr );
@@ -378,7 +385,8 @@ Custom Color Converter
 
 	function editProject(id){
 		
-
+		$("#SettingProjectId").val('');
+		$("#SettingProjectId").val(id);
 		$.ajax({
 			type:"GET",
 			url:"{{url('project/setting/getSettingProject')}}",
@@ -404,6 +412,29 @@ Custom Color Converter
 			}
 		});
 	};
+
+	function saveSettingChange(){
+		$.ajax({
+			type:"GET",
+			url:"{{url('project/setting/setSettingProject')}}",
+			data:{
+				id:$("#SettingProjectId").val(),
+				ProjectPID:$("#settingProjectPID").val(),
+				ProjectName:$("#settingProjectName").val(),
+				ProjectCoordinator:$("#settingProjectCoordinator").val(),
+				ProjectLeader:$("#settingProjectLeader").val(),
+				ProjectTeam:$("#settingProjectTeam").val(),
+			},
+			success: function(result){
+				$("#modalSettingProject").modal('hide')
+			}
+		})
+		// console.log($("#settingProjectPID").val())
+		// console.log($("#settingProjectName").val())
+		// console.log($("#settingProjectCoordinator").val())
+		// console.log($("#settingProjectLeader").val())
+		// console.log($("#settingProjectTeam").val())
+	}
 
 	function editPeriod(id){
 		var periods = []

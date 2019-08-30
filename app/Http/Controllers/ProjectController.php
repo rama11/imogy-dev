@@ -7,6 +7,10 @@ use App\Mail\MailOpenProject;
 use App\Mail\MailRemainderProject;
 use App\Jobs\QueueEmail;
 use App\Jobs\QueueEmailRemainder;
+
+use App\Project;
+use App\ProjectMember;
+
 use Carbon\Carbon;
 use Mail;
 use Auth;
@@ -457,40 +461,40 @@ class ProjectController extends Controller
 
 	public function getShortDetailProjectList(Request $req){
 		$event = DB::table('project__event')
- 			->select('project__event.due_date','project__event.id','project__event.name','project__list.project_pid')
- 			->join('project__list','project__list.id','=','project__event.project_list_id')
+			->select('project__event.due_date','project__event.id','project__event.name','project__list.project_pid')
+			->join('project__list','project__list.id','=','project__event.project_list_id')
 			->where('project__event.project_list_id',$req->id_project)
 			->where('project__event.status','Active')
- 			->first();
+			->first();
 
- 		if(!empty($event)){
-	 		$history = DB::table('project__event_history')
-	 			->where('project_event_id','=',$event->id)
-	 			->orderBy('id','DESC')
-	 			->first();
+		if(!empty($event)){
+			$history = DB::table('project__event_history')
+				->where('project_event_id','=',$event->id)
+				->orderBy('id','DESC')
+				->first();
 
 
 
-		 	if(isset($history->note)){
+			if(isset($history->note)){
 				return array(
 					'project_id' => $event->project_pid,
 					'lastest_update' => $history->note,
 					'event_now' => $event->name,
 				);
-		 	} else {
-		 		return array(
+			} else {
+				return array(
 					'project_id' => $event->project_pid,
 					'lastest_update' => "N/A",
 					'event_now' => $event->name,
 				);
-		 	}
- 		} else {
-	 		return array(
+			}
+		} else {
+			return array(
 				'project_id' => "N/A",
 				'lastest_update' => "N/A",
 				'event_now' => "Project Close",
 			);
- 		}
+		}
 
 
 	}
@@ -549,12 +553,41 @@ class ProjectController extends Controller
 
 		$projectDetail[0]->team = DB::table('project__team_member')
 			->where('project__team_member.project_list_id',$req->id)
-			->join('users','project__team_member.user_id','=','users.id')
-			->join('project__member','users.id','=','project__member.user_id')
+			// ->join('users','project__team_member.user_id','=','users.id')
+			// ->join('project__member','project__team_member.id','=','project__member.user_id')
 			// ->pluck('users.nickname');
-			->pluck('project__member.id');
+			->pluck('project__team_member.user_id');
 
 		return $projectDetail;
+	}
+
+	public function setSettingProject(Request $req){
+		$settingProject = Project::find($req->id);
+		
+		$settingProject->fill([
+			"project_pid" => $req->ProjectPID,
+			"project_name" => $req->ProjectName,
+			"project_coordinator" => $req->ProjectCoordinator,
+			"project_leader" => $req->ProjectLeader
+		]);
+
+		$settingProject->save();
+		
+		$settingProject->member_project()->delete();
+		// foreach ($req->ProjectTeam as $key => $value) {
+		// 	echo "<br>" . $value;
+			
+		// }
+		foreach($req->ProjectTeam as $value){   
+			$project_member = new ProjectMember();
+
+			$project_member->project_list_id = $req->id;
+			$project_member->user_id = $value;
+			$project_member->save();
+
+			// echo "<br>" . $value;
+		};
+
 	}
 
 	public function getSettingPeriod(Request $req){

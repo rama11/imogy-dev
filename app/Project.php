@@ -31,4 +31,15 @@ class Project extends Model
 	public function event_project(){
 		return $this->hasMany('App\ProjectEvent','project_list_id','id');
 	}
+
+	public function history_project(){
+		return $this->hasManyThrough(
+			'App\ProjectHistory',
+			'App\ProjectEvent',
+			'project_list_id',
+			'project_event_id',
+			'id',
+			'id'
+		);
+	}
 }

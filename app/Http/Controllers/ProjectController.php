@@ -449,11 +449,12 @@ class ProjectController extends Controller
 				->select(
 					'project__event_history.id',
 					'project__event_history.time',
+					DB::raw('`project_event`.`id` AS `project_event_id`'),
 					'project__event_history.note',
 					'project__event_history.type',
 					'project__event_history.updater'
 				)
-				->join(DB::raw('(SELECT id FROM project__event WHERE project_list_id = ' . $req->id . ') AS project_event'),'project_event.id','project__event_history.project_event_id')
+				->join(DB::raw('(SELECT * FROM project__event WHERE project_list_id = ' . $req->id . ') AS project_event'),'project_event.id','project__event_history.project_event_id')
 				->orderBy('project__event_history.time','ASC')
 				->get()
 		);

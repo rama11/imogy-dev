@@ -260,8 +260,75 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::post('project/manage/setProjectList','ProjectController@setProjectList');
 	Route::get('project/manage/sendProjectListOpen','ProjectController@sendProjectListOpen');
 	Route::get('project/manage/testSendProjectListOpen','ProjectController@testSendProjectListOpen');
-	route::get('project/manage/previewSendProjectListOpen',function(){
-		return new App\Mail\MailRemainderProject();
+	route::get('project/manage/previewFinishEventProject',function(){
+		$data = array(
+			"to" => array(
+				"agastya@sinergy.co.id",
+				'prof.agastyo@gmail.com',
+
+				// "siwi@sinergy.co.id",
+				// "johan@sinergy.co.id",
+				// "dicky@sinergy.co.id",
+				// "ferdinand@sinergy.co.id",
+				// "wisnu.darman@sinergy.co.id"
+			),
+			"cc" => array(
+				// "endraw@sinergy.co.id",
+				// "msm@sinergy.co.id",
+
+				'imogy@sinergy.co.id',
+				'hellosinergy@gmail.com'
+			),
+			// "subject" => "Open Project - " . $req->CustomerName,
+			"subject" => "Open Project - PT. Bussan Auto Finance",
+			'name' => Auth::user()->name,
+			'phone' => Auth::user()->phone,
+
+			"customer" => "PT. Bussan Auto Finance",
+			// "customer" => $req->CustomerName,
+			"name_project" => "Cisco IP Phone Branch Denpasar",
+			// "name_project" => $req->Name,
+			"project_id" => "244/SOMPO/478/SIP/IX/2018",
+			// "project_id" => $req->PID,
+			"activePeriod" => "Preventive Maintenance 1",
+			"nextPeriod" => "Preventive Maintenance 2",
+			// "period" => $req->Period . "x",
+			"duration" => "3 Bulan",
+			"historyPeriod" => array(
+				['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Open Project'],
+				['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Penyesuaian jadwal dengan planing sebelumnya'],
+				['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Ada problem mengenai Telefon yang ada'],
+				['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Setelah pemeriksaan dibutuhkan RMA'],
+				['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Barang RMA yang baru sudah di terima'],
+				['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Barang RMA yang lama sudah di kirim'],
+				['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Penjadwalan PM sudah di lakukan'],
+				['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'PM Telah selesai dilaksanakan, laporan sedang di proses'],
+				['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => ''],
+				['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'PM Telah selesai dilaksanakan, laporan sedang di proses'],
+			),
+			// "duration" => $req->Duration . " Bulan",
+			// "start" => "1 August 2019",
+			// "start" => $startPeriod,
+			// "end" => "31 October 2019",
+			// "end" => $endPeriod,
+			
+			"coordinatorName" => "Wisnu Darman",
+			// "coordinatorName" => DB::table('users')->where('id',$req->Coordinator)->value('name'),
+			"coordinatorEmail" => "wisnu.darman@sinergy.co.id",
+			// "coordinatorEmail" => DB::table('users')->where('id',$req->Coordinator)->value('email'),
+			
+			"teamLeadName" => "Johan Ardi Wibisono",
+			// "teamLeadName" => DB::table('users')->where('id',$req->Lead)->value('name'),
+			"teamLeadEmail" => "johan@sinergy.co.id",
+			// "teamLeadEmail" => DB::table('users')->where('id',$req->Lead)->value('email'),
+
+			"teamMemberName" => array("Rama Agastya","Siwi Karuniawati","M Dicky Ardiansyah","Yohanis Ferdinand"),
+			// "teamMemberName" => $teamMemberName,
+			"teamMemberEmail" => array("agastya@sinergy.co.id","siwi@sinergy.co.id","dicky@sinergy.co.id","yohanis@sinergy.co.id")
+			// "teamMemberEmail" => $teamMemberEmail
+
+		);
+		return new App\Mail\MailFinishEventProject($data);
 	});
 	// Get Project
 	Route::get('project/manage/getAllProjectList','ProjectController@getAllProjectList');

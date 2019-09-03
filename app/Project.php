@@ -29,7 +29,10 @@ class Project extends Model
 	}
 
 	public function member_project_detail(){
-		return $this->belongsToMany('App\User','project__team_member','project_list_id','user_id');
+		return $this
+			->hasMany('App\ProjectMember','project_list_id','id')
+			->join('project__member','project__team_member.user_id','=','project__member.id')
+			->join('users','users.id','=','project__member.user_id');
 	}
 
 	public function customer_project(){

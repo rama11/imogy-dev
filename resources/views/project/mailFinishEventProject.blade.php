@@ -79,8 +79,8 @@
 			<th>Finish note</th>
 			<th>:</th>
 			<td>
-				<b>[2019-08-30 09:56:29 - Wisnu]<br>
-				Penagihan telah selesai dilakukan oleh pihak Finance dan tanda terima sudah di serahkan</b>
+				<b>[{{$data["finish_time"]}} - {{$data["finish_updater"]}}]<br>
+				{{$data["finish_note"]}}</b>
 			</td>
 		</tr>
 		<tr style="color: white;">

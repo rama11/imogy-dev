@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Mail\MailOpenProject;
 use App\Mail\MailRemainderProject;
+use App\Mail\MailFinishEventProject;
+
 use App\Jobs\QueueEmail;
 use App\Jobs\QueueEmailRemainder;
+use App\Jobs\QueueFinishPeriodProject;
 
 use App\Project;
 use App\ProjectMember;
+use App\ProjectEvent;
 
 use Carbon\Carbon;
 use Mail;
@@ -243,7 +247,7 @@ class ProjectController extends Controller
 		// 	->cc($data["cc"])
 		// 	->send(new MailOpenProject($data));
 
-		// dispatch(new QueueEmail($data));
+		dispatch(new QueueEmail($data));
 		// return new MailOpenProject($data);
 
 		// return null;
@@ -515,83 +519,61 @@ class ProjectController extends Controller
 		if($req->type == "Finish"){
 			DB::table('project__event')
 				->where('id',$req->id)
-				->update(['status'=>'Passed']);
+				->update([
+					'status' => 'Passed',
+					'finish_date' => $req->time,
+				]);
 
 			DB::table('project__event')
 				->where('id',$req->id + 1)
 				->update(['status'=> 'Active']);
 
-			$projectDetail = Project::find($req->id_project);
+			$projectDetail = Project::find(ProjectEvent::find($req->id)->project_list_id);
 			$data = array(
 				"to" => array(
 					"agastya@sinergy.co.id",
 					'prof.agastyo@gmail.com',
-
-					// "siwi@sinergy.co.id",
-					// "johan@sinergy.co.id",
-					// "dicky@sinergy.co.id",
-					// "ferdinand@sinergy.co.id",
-					// "wisnu.darman@sinergy.co.id"
 				),
 				"cc" => array(
-					// "endraw@sinergy.co.id",
-					// "msm@sinergy.co.id",
-
 					'imogy@sinergy.co.id',
 					'hellosinergy@gmail.com'
 				),
-				// "subject" => "Open Project - " . $req->CustomerName,
-				"subject" => "Finish Period Project - " . $projectDetail->customer_project,
+				"subject" => "Finish Period Project - " . $projectDetail->customer_project->name,
 				'name' => Auth::user()->name,
 				'phone' => Auth::user()->phone,
 
-				"customer" => $projectDetail->customer_project,
-				// "customer" => $req->CustomerName,
+				"customer" => $projectDetail->customer_project->name,
 				"name_project" => $projectDetail->project_name,
-				// "name_project" => $req->Name,
 				"project_id" => $projectDetail->project_pid,
-				// "project_id" => $req->PID,
-				"activePeriod" => ProjectEvent::find($req->id)->name,
-				"nextPeriod" => ProjectEvent::find($req->id + 1)->name,
-				// "period" => $req->Period . "x",
+				"activePeriod" => $projectDetail->event_project()->where('id',$req->id)->first()->name,
+				"nextPeriod" => $projectDetail->event_project()->where('id',$req->id + 1)->first()->name,
 				"duration" => $projectDetail->project_periode_duration . " Bulan",
-				// "historyPeriod" => array(
-				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Open Project'],
-				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Penyesuaian jadwal dengan planing sebelumnya'],
-				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Ada problem mengenai Telefon yang ada'],
-				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Setelah pemeriksaan dibutuhkan RMA'],
-				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Barang RMA yang baru sudah di terima'],
-				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Barang RMA yang lama sudah di kirim'],
-				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'Penjadwalan PM sudah di lakukan'],
-				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'PM Telah selesai dilaksanakan, laporan sedang di proses'],
-				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => ''],
-				// 	['updater' => 'Rama', 'time' => "2019-08-30 09:56:29", 'note' => 'PM Telah selesai dilaksanakan, laporan sedang di proses'],
-				// ),
 				"historyPeriod" => $projectDetail->history_project->where('project_event_id',$req->id),
-				// "duration" => $req->Duration . " Bulan",
-				// "start" => "1 August 2019",
-				// "start" => $startPeriod,
-				// "end" => "31 October 2019",
-				// "end" => $endPeriod,
+				
 				
 				"coordinatorName" => $projectDetail->coordinator_project->first()->name,
-				// "coordinatorName" => DB::table('users')->where('id',$req->Coordinator)->value('name'),
 				"coordinatorEmail" => $projectDetail->coordinator_project->first()->email,
-				// "coordinatorEmail" => DB::table('users')->where('id',$req->Coordinator)->value('email'),
 				
 				"teamLeadName" =>  $projectDetail->leader_project->first()->name,
-				// "teamLeadName" => DB::table('users')->where('id',$req->Lead)->value('name'),
 				"teamLeadEmail" =>  $projectDetail->leader_project->first()->email,
-				// "teamLeadEmail" => DB::table('users')->where('id',$req->Lead)->value('email'),
 
-				"teamMemberName" => $projectDetail->member_project->pluck('name'),
-				// "teamMemberName" => $teamMemberName,
-				"teamMemberEmail" => $projectDetail->member_project->pluck('email')
-				// "teamMemberEmail" => $teamMemberEmail
+				"teamMemberName" => $projectDetail->member_project_detail->pluck('name'),
+				"teamMemberEmail" => $projectDetail->member_project_detail->pluck('email'),
+
+				"finish_note" => $projectDetail->history_project->where('project_event_id',$req->id)->sortByDesc('time')->first()->note,
+				"finish_updater" => $projectDetail->history_project->where('project_event_id',$req->id)->sortByDesc('time')->first()->updater,
+				"finish_time" => $projectDetail->history_project->where('project_event_id',$req->id)->sortByDesc('time')->first()->time,
 
 			);
+
+			dispatch(new QueueFinishPeriodProject($data));
+
+			// return new MailFinishEventProject($data);
+
 		}
 		
+
+
 		return null;
 	}
 
@@ -644,20 +626,16 @@ class ProjectController extends Controller
 
 		$settingProject->save();
 		
-		$settingProject->member_project()->delete();
-		// foreach ($req->ProjectTeam as $key => $value) {
-		// 	echo "<br>" . $value;
-			
-		// }
-		foreach($req->ProjectTeam as $value){   
-			$project_member = new ProjectMember();
+		if(isset($req->ProjectTeam)){
+			$settingProject->member_project()->delete();
+			foreach($req->ProjectTeam as $value){   
+				$project_member = new ProjectMember();
 
-			$project_member->project_list_id = $req->id;
-			$project_member->user_id = $value;
-			$project_member->save();
-
-			// echo "<br>" . $value;
-		};
+				$project_member->project_list_id = $req->id;
+				$project_member->user_id = $value;
+				$project_member->save();
+			};
+		}
 
 	}
 

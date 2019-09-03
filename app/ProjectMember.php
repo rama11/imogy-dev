@@ -22,4 +22,8 @@ class ProjectMember extends Model
 		return $this->belongsTo('App\Project','id','project_list_id');
 	}
 
+	public function detail_member(){
+		return $this->hasOne('App\User','id','user_id');
+	}
+
 }

@@ -51,14 +51,23 @@ class TestController extends Controller
 		// $mail_from = env("YANDEX_MAIL_FROM");
 		// $mail_name = env("YANDEX_MAIL_NAME");
 
+		// YANDEX_MAIL_DRIVER=smtp
+		// YANDEX_MAIL_HOST=smtp.yandex.ru
+		// YANDEX_MAIL_PORT=587
+		// YANDEX_MAIL_USERNAME=imogy@sinergy.co.id
+		// YANDEX_MAIL_PASSWORD=hxzlglnccehzohhk
+		// YANDEX_MAIL_ENCRYPTION=tls
+		// YANDEX_MAIL_FROM=imogy@sinergy.co.id
+		// YANDEX_MAIL_NAME="Helpdesk Sinergy"
+
 		// Gmail Configuration
-		$mail_host = env("GMAIL_MAIL_HOST");
-		$mail_port = env("GMAIL_MAIL_PORT");
-		$mail_user = env("GMAIL_MAIL_USERNAME");
-		$mail_pass = env("GMAIL_MAIL_PASSWORD");
-		$mail_auth = env("GMAIL_MAIL_ENCRYPTION");
-		$mail_from = env("GMAIL_MAIL_FROM");
-		$mail_name = env("GMAIL_MAIL_NAME");
+		$mail_host = "smtp.yandex.ru";
+		$mail_port = "587";
+		$mail_user = "imogy@sinergy.co.id";
+		$mail_pass = "vwjzakygpyqrgedx";
+		$mail_auth = "tls";
+		$mail_from = "imogy@sinergy.co.id";
+		$mail_name = "Helpdesk Sinergy";
 
 		try {
 			$mail->isSMTP();

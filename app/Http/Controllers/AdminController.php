@@ -1697,7 +1697,7 @@ class AdminController extends Controller
 	function getScheduleSelected (Request $req){
 		$data = DB::table('shifting')
 			->where('id_user','=',$req->idUser)
-			// ->where('id_project','=',$req->idProject)
+			->where('id_project','=',$req->idProject)
 			->get()
 			->toArray();
 		return json_encode($data);

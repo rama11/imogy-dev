@@ -13,7 +13,6 @@
 		<link rel="stylesheet" href="{{url('bootstrap/css/bootstrap.min.css')}}">
 		<link rel="stylesheet" href="{{url('dist/css/AdminLTE.min.css')}}">
 		<link rel="stylesheet" href="{{url('dist/css/skins/_all-skins.min.css')}}">
-		
 		@yield('head')
 	</head>
 	<body class="hold-transition skin-blue sidebar-mini">
@@ -105,7 +104,7 @@
 							Main Menu
 						</li>
 						<li class="" id="dashboard">
-							<a href="admin">
+							<a href="{{ url('/admin')}}">
 								<i class="fa fa-dashboard"></i> <span>Dashboard</span>
 							</a>
 						</li>

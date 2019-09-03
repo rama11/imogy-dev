@@ -1594,7 +1594,7 @@ class AdminController extends Controller
 		// echo "<pre>";
 		// print_r($datas);
 		// echo "</pre>";
-
+		
 		$adsen = 0;
 		$tittle = 'My Attendence';
 		$pdf = PDF::loadView('pdf', compact('datas','kehadiran','count','name','absen'));

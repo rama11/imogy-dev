@@ -48,13 +48,7 @@
 	   folder instead of downloading all of them to reduce the load. -->
 	<link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">	
 
-	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-	<!--[if lt IE 9]>
-	<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	<![endif]-->
-
+	
 	<!-- Google Font -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
@@ -262,11 +256,11 @@
 			<!-- sidebar menu: : style can be found in sidebar.less -->
 			
 			<ul class="sidebar-menu" data-widget="tree">
-				<li class="header" onclick="url()"></li>
-				
-				
+				<li class="header" onclick="url()">
+							Main Menu
+						</li>
 				<li class="" id="dashboard">
-					<a href="admin">
+					<a href="{{ url('/admin') }}">
 						<i class="fa fa-dashboard"></i> <span>Dashboard</span>
 					</a>
 				</li>
@@ -425,6 +419,7 @@ $(document).ready(function(){
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
 			$("#schedule#").removeClass("active");
+			$("#project").removeClass("active");
 			console.log("admin");
 			break;
 
@@ -436,6 +431,7 @@ $(document).ready(function(){
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
 			$("#schedule#").removeClass("active");
+			$("#project").removeClass("active");
 			console.log("absen");
 			break;
 
@@ -447,6 +443,7 @@ $(document).ready(function(){
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
 			$("#schedule#").removeClass("active");
+			$("#project").removeClass("active");
 			console.log("ahistory");
 			break;
 
@@ -457,8 +454,8 @@ $(document).ready(function(){
 			$("#usermanage").removeClass("active");
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
-
 			$("#schedule#").removeClass("active");
+			$("#project").removeClass("active");
 
 			console.log("ateamhistory");
 			break;
@@ -471,6 +468,7 @@ $(document).ready(function(){
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
 			$("#schedule#").removeClass("active");
+			$("#project").removeClass("active");
 			console.log("location");
 			break;
 
@@ -482,6 +480,7 @@ $(document).ready(function(){
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
 			$("#schedule#").removeClass("active");
+			$("#project").removeClass("active");
 			console.log("tisygy");
 			break;
 			
@@ -493,6 +492,7 @@ $(document).ready(function(){
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
 			$("#schedule#").removeClass("active");
+			$("#project").removeClass("active");
 			console.log("usermanage");
 			break;
 		
@@ -504,7 +504,7 @@ $(document).ready(function(){
 			$("#schedule").addClass("active");
 			$("#location").removeClass("active");
 			$("#schedule#").removeClass("active");
-
+			$("#project").removeClass("active");
 			console.log("schedule");
 			break;
 
@@ -516,6 +516,7 @@ $(document).ready(function(){
 			$("#schedule").removeClass("active");
 			$("#location").addClass("active");
 			$("#schedule#").removeClass("active");
+			$("#project").removeClass("active");
 			console.log("location");
 			break;
 
@@ -527,8 +528,21 @@ $(document).ready(function(){
 			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
 			$("#schedule#").addClass("active");
+			$("#project").removeClass("active");
 			console.log("location");
-			break;										
+			break;
+
+		case "project":
+			$("#dashboard").removeClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#project").addClass("active");
+			console.log("location");
+			break;				
+
 		default:
 			$("#dashboard").addClass("active");
 	};

@@ -1,12 +1,22 @@
-@extends('layouts.admin.layoutLight2')
+@extends((Auth::user()->role == "1") ? 'layouts.admin.layoutLight2 ' : 'layouts.engineer.elayout')
+
 @section('head')
 <link rel="stylesheet" href="{{url('plugins/datepicker/datepicker3.css')}}">
 <link rel="stylesheet" href="{{url('plugins/select2/select2.min.css')}}">
 <link rel="stylesheet" href="{{url('dist/css/AdminLTE.min.css')}}">
 <link rel="stylesheet" href="{{url('plugins/datatables/dataTables.bootstrap.css')}}">
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css"> -->
-<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"> -->
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
+<link rel="stylesheet" href="{{url('dist/css/AdminLTE.min.css')}}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="{{ url('plugins/timepicker/bootstrap-timepicker.min.css')}}">
+<link rel="stylesheet" href="{{ url('plugins/datatables/dataTables.bootstrap.css')}}">
+<link rel="stylesheet" href="{{ url('plugins/daterangepicker/daterangepicker.css')}}">
+<link rel="stylesheet" href="{{ url('plugins/morris/morris.css')}}">
+
+<link rel="stylesheet" href="{{ url('plugins/datepicker/datepicker3.css')}}">
 <style type="text/css">
 	.dataTables_filter {display: none;}
 	select[readonly].select2-hidden-accessible + .select2-container {

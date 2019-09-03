@@ -1,4 +1,5 @@
-@extends('layouts.admin.layoutLight2')
+@extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : 'layouts.engineer.elayout')
+
 
 @section('head')
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">

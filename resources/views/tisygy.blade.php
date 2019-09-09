@@ -1962,7 +1962,7 @@
 					heading = heading + '<th style="width: 100px;vertical-align: middle;">Location</th>';
 					heading = heading + '<th style="text-align: center;vertical-align: middle;">Status</th>';
 					heading = heading + '<th style="text-align: center;vertical-align: middle;">Operator</th>';
-					heading = heading + '<th style="width: 40px;vertical-align: middle;"></th>';
+					heading = heading + '<th style="width: 40px;vertical-align: middle;">Action</th>';
 				heading = heading + '</tr>';
 			heading = heading + '</thead>';
 			heading = heading + '<tbody>';

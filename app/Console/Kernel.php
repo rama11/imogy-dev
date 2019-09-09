@@ -143,7 +143,6 @@ class Kernel extends ConsoleKernel
 			DB::table('users')
 				->update(['condition' => "off"]);
 		})->dailyAt('1:00');
-
 		// $schedule->call(function (){
 		// 	$ids = DB::table('users')
 		// 		->select('id','name','hadir','location','shifting')

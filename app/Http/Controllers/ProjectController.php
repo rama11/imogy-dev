@@ -165,6 +165,7 @@ class ProjectController extends Controller
 					'project_list_id' => $setProjectFirst,
 					'name' => "Preventive Periode " . 1,
 					'note' => date('j F Y', strtotime("+" . ($req->Duration*0) . " months", strtotime($req->StartPeriod))) . " - " . date('j F Y', strtotime("+" . ($req->Duration*1) . " months -1 days", strtotime($req->StartPeriod))),
+					'start_date' => date('Y-m-d', strtotime("+" . ($req->Duration*0) . " months", strtotime($req->StartPeriod))),
 					'due_date' => date('Y-m-d', strtotime("+" . ($req->Duration*1) . " months", strtotime($req->StartPeriod))),
 					'status' => "Active"
 				]

@@ -812,6 +812,7 @@
 					append = append + '					</button>';
 					append = append + '					<ul class="dropdown-menu">';
 					append = append + '						<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Update <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Update</a></li>';
+					append = append + '						<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Submit <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Submit</a></li>';
 					append = append + '						<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Finish <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Finish</a></li>';
 					append = append + '					</ul>';
 					append = append + '				</div>';

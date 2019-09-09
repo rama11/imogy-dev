@@ -60,8 +60,10 @@ class SendProjectRemainder extends Command
 
 		syslog(LOG_ERR, "Test - " . $output2);
 
-		// print_r("Due date " . $project->due_date . "\n");
-		// print_r("Diff days : " .  $different . "\n");
+		print_r("Refrence date \n");
+		print_r($refrence);
+		print_r("Due date " . $project->due_date . "\n");
+		print_r("Diff days : " .  $different . "\n");
 
 		if( in_array( $different , $refrence )){
 			// echo "true";
@@ -142,7 +144,7 @@ class SendProjectRemainder extends Command
 		} else {
 			echo "false";
 		}
-		// echo "\n";
+		echo "\n";
 		// echo "\n";
 	}
 }

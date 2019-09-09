@@ -1771,9 +1771,9 @@ class AdminController extends Controller
 			DB::table('detail_users')
 				->where('id_user','=',$request->id)
 				->delete();
-			DB::table('shifting')
-				->where('id_user','=',$request->id)
-				->delete();
+			// DB::table('shifting')
+			// 	->where('id_user','=',$request->id)
+			// 	->delete();
 			DB::table('users')
 			->where('id','=',$request->id)
 			->update([

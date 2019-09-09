@@ -138,11 +138,11 @@ class Kernel extends ConsoleKernel
 		// 	}
 		// })->everyMinute();
 
-		// $schedule->call(function () {
-		// 	date_default_timezone_set("Asia/Jakarta");
-		// 	DB::table('users')
-		// 		->update(['condition' => "off"]);
-		// })->dailyAt('1:00');
+		$schedule->call(function () {
+			date_default_timezone_set("Asia/Jakarta");
+			DB::table('users')
+				->update(['condition' => "off"]);
+		})->dailyAt('1:00');
 
 		// $schedule->call(function (){
 		// 	$ids = DB::table('users')

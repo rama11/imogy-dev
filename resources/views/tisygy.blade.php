@@ -2002,7 +2002,7 @@
 								body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><span class="label label-success" style="background-color:#555299 !important;">' + value.last_status[0] + '</span></td>';
 							}
 							body = body + '<td style="width: 40px; text-align: center; vertical-align: middle;">' + value.operator + '</td>';
-							body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><button class="btn btn-default" onclick="showTicket(' + value.id_open + ')">Detail</button>Action</td>';
+							body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><button class="btn btn-default" onclick="showTicket(' + value.id_open + ')">Detail</button></td>';
 						body = body + '</tr>';
 					});
 
@@ -2051,7 +2051,7 @@
 							heading = heading + '<th style="width: 100px;vertical-align: middle;">Location</th>';
 							heading = heading + '<th style="width: 40px;vertical-align: middle;">Status</th>';
 							heading = heading + '<th style="width: 40px;vertical-align: middle;">Operator</th>';
-							heading = heading + '<th style="width: 40px;vertical-align: middle;"></th>';
+							heading = heading + '<th style="width: 40px;vertical-align: middle;">Action</th>';
 						heading = heading + '</tr>';
 					heading = heading + '</thead>';
 					heading = heading + '<tbody>';

@@ -529,6 +529,15 @@ class ProjectController extends Controller
 				->where('id',$req->id + 1)
 				->update(['status'=> 'Active']);
 
+			DB::table('project__event_history')
+				->insert([
+					'project_event_id' => $req->id + 1,
+					'time' => $req->time,
+					'note' => 'Open New Period',
+					'type' => 'Update',
+					'updater' => Auth::user()->nickname,
+				]);
+
 			$projectDetail = Project::find(ProjectEvent::find($req->id)->project_list_id);
 			$data = array(
 				"to" => array(

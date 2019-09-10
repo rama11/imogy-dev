@@ -432,6 +432,8 @@
 				$("#inputProjectPeriodResult").append(append);
 			}
 		});
+
+		showProjectDetail(128);
 	});
 
 	function initFormInputProject(){
@@ -788,7 +790,10 @@
 							append = append + '<li class="' + classTimeline + ' ' + classTimeline + 'Togle ' + classTimeline + dataEvent.id + '" style="' + style + '">';
 							if(dataHistory.type == "Finish"){
 								append = append + '	<i class="fa fa-check ' + bg_color + '"></i>';
-							}else {
+							} else if (dataHistory.type == "Submit"){
+								append = append + '	<i class="fa fa-bookmark ' + bg_color + '"></i>';
+							} 
+							else {
 								append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
 							}
 							append = append + '	<div class="timeline-item">';

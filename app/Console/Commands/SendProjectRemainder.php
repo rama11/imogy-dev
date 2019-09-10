@@ -43,17 +43,32 @@ class SendProjectRemainder extends Command
 	public function handle()
 	{
 		// $this->argument('id');
-		$project = DB::table('project__event')
+		$project__event_history = DB::table('project__event')
 			->where('project_list_id',$this->argument('id'))
 			->where('status','Active')
-			->first();
+			->join('project__event_history','project__event_history.project_event_id','=','project__event.id')
+			->get();
+
+			// After Submit BAST
+		if($project__event_history->contains('type','Submit')){
+			$project_time_refrance = $project__event_history->where('type','Submit')->first()->time;
+			$type_refrence = "BAST Remainder";
+		} else {
+			// Before Submit BAST
+			$project_time_refrance = DB::table('project__event')
+				->where('project_list_id',$this->argument('id'))
+				->where('status','Active')
+				->value('due_date');
+			$type_refrence = "PM Remainder";
+		}
 
 		$refrence = DB::table('project__remainder_refrence')
+			->where('type',$type_refrence)
 			->pluck('number_of_days')
 			->toArray();
 
 		date_default_timezone_set('Asia/Jakarta');
-		$different = ( Carbon::now()->diffInDays(Carbon::parse($project->due_date), false ) * -1);
+		$different = ( Carbon::now()->diffInDays(Carbon::parse($project_time_refrance), false ) * -1);
 		$output = "\nId Project : " . $this->argument('id') . "\nDate Now " . Carbon::now()->toDateString() . "\n";
 		$output2 = "Id Project : " . $this->argument('id') . " Date Now " . Carbon::now()->toDateString();
 		echo $output;
@@ -62,7 +77,7 @@ class SendProjectRemainder extends Command
 
 		print_r("Refrence date \n");
 		print_r($refrence);
-		print_r("Due date " . $project->due_date . "\n");
+		print_r("Due date " . $project_time_refrance . "\n");
 		print_r("Diff days : " .  $different . "\n");
 
 		if( in_array( $different , $refrence )){
@@ -71,7 +86,7 @@ class SendProjectRemainder extends Command
 				->where('number_of_days',$different)
 				->first();
 			// print_r($refrence);
-			// print_r(Carbon::now()->diffForHumans(Carbon::parse($project->due_date)));
+			// print_r(Carbon::now()->diffForHumans(Carbon::parse($project_time_refrance)));
 			
 			// echo "\n";
 			// echo "\n";
@@ -128,7 +143,7 @@ class SendProjectRemainder extends Command
 				"last_updater" => $list->updater,
 				"last_update_time" => Carbon::parse($list->time_update)->formatLocalized('%d %B %Y'),
 				"last_update_note" => $list->note_update,
-				"remain_time" => Carbon::now()->diffForHumans(Carbon::parse($project->due_date)),
+				"remain_time" => Carbon::now()->diffForHumans(Carbon::parse($project_time_refrance)),
 			]);
 
 			// print_r($data);

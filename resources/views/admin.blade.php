@@ -1,4 +1,4 @@
-@extends((Auth::user()->jabatan == "5") ? 'layouts.kemendagri.layout' : ((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : 'layouts.engineer.elayout'))
+@extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
 @section('content')
 <div class="content-wrapper">
 		<!-- Content Header (Page header) -->
@@ -111,7 +111,11 @@
 										@elseif($user->jabatan == 2)
 										<span class="label label-success">Helpdesk</span>
 										@elseif($user->jabatan == 3)
-										<span class="label label-success">Engineer</span>																						
+										<span class="label label-success">Engineer</span>
+										@elseif($user->jabatan == 4)
+										<span class="label label-success">Project Cordinator</span>
+										@elseif($user->jabatan == 5)
+										<span class="label label-success">Super User</span>																						
 										@endif
 									</td>	
 								</tr>

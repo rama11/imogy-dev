@@ -153,14 +153,7 @@
 
 								<p>
 									{{Auth::user()->name}} 
-
-									@if(Auth::user()->jabatan = 1)
 										<small><i class="fa fa-circle text-success"></i> Admin</small>
-									@elseif(Auth::user()->jabatan = 2)
-										<small><i class="fa fa-circle text-success"></i> Engineer</small>
-									@elseif(Auth::user()->jabatan = 3)
-										<small><i class="fa fa-circle text-success"></i> Helpdesk</small>
-									@endif
 								</p>
 							</li>
 							<!-- Menu Body -->
@@ -231,15 +224,7 @@
 				</a>
 				<div class="pull-left info">
 					<p>{{Auth::user()->name}}</p>
-
-						@if(Auth::user()->jabatan = 1)
-							<small><i class="fa fa-circle text-success"></i> Admin</small>
-						@elseif(Auth::user()->jabatan = 2)
-							<small><i class="fa fa-circle text-success"></i> Engineer</small>
-						@elseif(Auth::user()->jabatan = 3)
-							<small><i class="fa fa-circle text-success"></i> Helpdesk</small>
-						@endif
-					
+						<small><i class="fa fa-circle text-success"> </i>  Admin</small>					
 				</div>
 			</div>
 			<!-- search form -->
@@ -270,12 +255,12 @@
 						<span>AOGY</span>
 					</a>
 				</li>
-				<li class="" id="tisygy">
+				<!-- <li class="" id="tisygy">
 					<a href="{{ url('tisygy')}}">
 						<i class="fa fa-paper-plane"></i>
 						<span>TISYGY</span>
 					</a>
-				</li>
+				</li> -->
 				<!-- @if(Auth::user()->id == 4 || Auth::user()->id == 6)
 				<li class="" id="controll">
 					<a href="{{ url('/controll')}}">
@@ -302,12 +287,12 @@
 						<span>Set Absent Location</span>
 					</a>
 				</li>
-				<li class="" id="project">
+				<!-- <li class="" id="project">
 					<a href="{{ url('project/manage')}}">
 						<i class="fa fa-calendar"></i>
 						<span>Project Manage</span>
 					</a>
-				</li>
+				</li> -->
 				<!-- <li class="" id="announcement">
 					<a href="{{ url('announcement')}}">
 						<i class="fa fa-bookmark-o"></i>

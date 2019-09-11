@@ -3,8 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Auth;
 
-class HelpdeskRole
+class ShiftingLocRole
 {
     /**
      * Handle an incoming request.
@@ -15,6 +16,9 @@ class HelpdeskRole
      */
     public function handle($request, Closure $next)
     {
-        return $next($request);
+        if(Auth::user()->jabatan == 1 || Auth::user()->jabatan == 2 || Auth::user()->jabatan == 5){
+            return $next($request);
+        }
+            return abort(404);
     }
 }

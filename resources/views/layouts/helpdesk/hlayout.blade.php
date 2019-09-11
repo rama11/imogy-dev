@@ -26,31 +26,27 @@
 	<link rel="stylesheet" href="plugins/datepicker/datepicker3.css">
 	<!-- Daterange picker -->
 	<link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
-	<!-- bootstrap wysihtml5 - text editor -->
-	<link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+	
 	<!-- Select2 -->
 	<link rel="stylesheet" href="../../plugins/select2/select2.min.css">
 
 	<!-- fullCalendar 2.2.5-->
-  <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/fullcalendar/fullcalendar.min.css')}}">
-  <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/fullcalendar/fullcalendar.print.css')}}" media="print">
+	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/fullcalendar/fullcalendar.min.css')}}">
+	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/fullcalendar/fullcalendar.print.css')}}" media="print">
 	<!-- DataTables -->
 	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/datatables/dataTables.bootstrap.css')}}">
 	
-	
+	<!-- Pace style -->
+	<!-- <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/pace/pace.min.css')}}" > -->
 	 <!-- CHART -->
   
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
-  <!-- AdminLTE Skins. Choose a skin from the css/skins
-       folder instead of downloading all of them to reduce the load. -->
-  <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
-
-	
-
-	
+	<!-- Ionicons -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+	<!-- Theme style -->
+	<link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
+	<!-- AdminLTE Skins. Choose a skin from the css/skins
+	   folder instead of downloading all of them to reduce the load. -->
+	<link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">	
 
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -61,15 +57,74 @@
 
 	<!-- Google Font -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+	@yield('head')
+	<style type="text/css">
+		.switch {
+			position: relative;
+			display: inline-block;
+			width: 60px;
+			height: 34px;
+		}
+
+		.switch input {display:none;}
+
+		.slider {
+			position: absolute;
+			cursor: pointer;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: #ccc;
+			-webkit-transition: .4s;
+			transition: .4s;
+		}
+
+		.slider:before {
+			position: absolute;
+			content: "";
+			height: 26px;
+			width: 26px;
+			left: 4px;
+			bottom: 4px;
+			background-color: white;
+			-webkit-transition: .4s;
+			transition: .4s;
+		}
+
+		input:checked + .slider {
+			background-color: #2196F3;
+		}
+
+		input:focus + .slider {
+			box-shadow: 0 0 1px #2196F3;
+		}
+
+		input:checked + .slider:before {
+			-webkit-transform: translateX(26px);
+			-ms-transform: translateX(26px);
+			transform: translateX(26px);
+		}
+
+		/* Rounded sliders */
+		.slider.round {
+			border-radius: 34px;
+		}
+
+		.slider.round:before {
+			border-radius: 50%;
+		}
+	</style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
 
 	<header class="main-header">
 		<!-- Logo -->
-		<a href="{{url('helpdesk')}}" class="logo"  style="background-color: #2b4e62">
+		<a href="{{url('admin')}}" class="logo"  style="background-color: #2b4e62">
 			<!-- mini logo for sidebar mini 50x50 pixels -->
-			<span class="logo-mini"><img src="img/square.png"></span>
+			<span class="logo-mini"><img src="img/iconwhitek.png" style="padding:5px;width: 45px; height: 45px;"></span>
 			<!-- logo for regular state and mobile devices -->
 			<span class="logo-lg" style="background-color: #2b4e62"><img src="img/bar.png" width="70px" align="center"></span>
 		</a>
@@ -83,202 +138,6 @@
 			<div class="navbar-custom-menu">
 				<ul class="nav navbar-nav">
 					<!-- Messages: style can be found in dropdown.less-->
-					<li class="dropdown messages-menu">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="fa fa-envelope-o"></i>
-							<span class="label label-success">4</span>
-						</a>
-						<ul class="dropdown-menu">
-							<li class="header">You have 4 messages</li>
-							<li>
-								<!-- inner menu: contains the actual data -->
-								<ul class="menu">
-									<li><!-- start message -->
-										<a href="#">
-											<div class="pull-left">
-												<img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-											</div>
-											<h4>
-												Support Team
-												<small><i class="fa fa-clock-o"></i> 5 mins</small>
-											</h4>
-											<p>Why not buy a new awesome theme?</p>
-										</a>
-									</li>
-									<!-- end message -->
-									<li>
-										<a href="#">
-											<div class="pull-left">
-												<img src="dist/img/user3-128x128.jpg" class="img-circle" alt="User Image">
-											</div>
-											<h4>
-												AdminLTE Design Team
-												<small><i class="fa fa-clock-o"></i> 2 hours</small>
-											</h4>
-											<p>Why not buy a new awesome theme?</p>
-										</a>
-									</li>
-									<li>
-										<a href="#">
-											<div class="pull-left">
-												<img src="dist/img/user4-128x128.jpg" class="img-circle" alt="User Image">
-											</div>
-											<h4>
-												Developers
-												<small><i class="fa fa-clock-o"></i> Today</small>
-											</h4>
-											<p>Why not buy a new awesome theme?</p>
-										</a>
-									</li>
-									<li>
-										<a href="#">
-											<div class="pull-left">
-												<img src="dist/img/user3-128x128.jpg" class="img-circle" alt="User Image">
-											</div>
-											<h4>
-												Sales Department
-												<small><i class="fa fa-clock-o"></i> Yesterday</small>
-											</h4>
-											<p>Why not buy a new awesome theme?</p>
-										</a>
-									</li>
-									<li>
-										<a href="#">
-											<div class="pull-left">
-												<img src="dist/img/user4-128x128.jpg" class="img-circle" alt="User Image">
-											</div>
-											<h4>
-												Reviewers
-												<small><i class="fa fa-clock-o"></i> 2 days</small>
-											</h4>
-											<p>Why not buy a new awesome theme?</p>
-										</a>
-									</li>
-								</ul>
-							</li>
-							<li class="footer"><a href="#">See All Messages</a></li>
-						</ul>
-					</li>
-					<!-- Notifications: style can be found in dropdown.less -->
-					<li class="dropdown notifications-menu">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="fa fa-bell-o"></i>
-							<span class="label label-warning">10</span>
-						</a>
-						<ul class="dropdown-menu">
-							<li class="header">You have 10 notifications</li>
-							<li>
-								<!-- inner menu: contains the actual data -->
-								<ul class="menu">
-									<li>
-										<a href="#">
-											<i class="fa fa-users text-aqua"></i> 5 new members joined today
-										</a>
-									</li>
-									<li>
-										<a href="#">
-											<i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the
-											page and may cause design problems
-										</a>
-									</li>
-									<li>
-										<a href="#">
-											<i class="fa fa-users text-red"></i> 5 new members joined
-										</a>
-									</li>
-									<li>
-										<a href="#">
-											<i class="fa fa-shopping-cart text-green"></i> 25 sales made
-										</a>
-									</li>
-									<li>
-										<a href="#">
-											<i class="fa fa-user text-red"></i> You changed your username
-										</a>
-									</li>
-								</ul>
-							</li>
-							<li class="footer"><a href="#">View all</a></li>
-						</ul>
-					</li>
-					<!-- Tasks: style can be found in dropdown.less -->
-					<li class="dropdown tasks-menu">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="fa fa-flag-o"></i>
-							<span class="label label-danger">9</span>
-						</a>
-						<ul class="dropdown-menu">
-							<li class="header">You have 9 tasks</li>
-							<li>
-								<!-- inner menu: contains the actual data -->
-								<ul class="menu">
-									<li><!-- Task item -->
-										<a href="#">
-											<h3>
-												Design some buttons
-												<small class="pull-right">20%</small>
-											</h3>
-											<div class="progress xs">
-												<div class="progress-bar progress-bar-aqua" style="width: 20%" role="progressbar"
-														 aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-													<span class="sr-only">20% Complete</span>
-												</div>
-											</div>
-										</a>
-									</li>
-									<!-- end task item -->
-									<li><!-- Task item -->
-										<a href="#">
-											<h3>
-												Create a nice theme
-												<small class="pull-right">40%</small>
-											</h3>
-											<div class="progress xs">
-												<div class="progress-bar progress-bar-green" style="width: 40%" role="progressbar"
-														 aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-													<span class="sr-only">40% Complete</span>
-												</div>
-											</div>
-										</a>
-									</li>
-									<!-- end task item -->
-									<li><!-- Task item -->
-										<a href="#">
-											<h3>
-												Some task I need to do
-												<small class="pull-right">60%</small>
-											</h3>
-											<div class="progress xs">
-												<div class="progress-bar progress-bar-red" style="width: 60%" role="progressbar"
-														 aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-													<span class="sr-only">60% Complete</span>
-												</div>
-											</div>
-										</a>
-									</li>
-									<!-- end task item -->
-									<li><!-- Task item -->
-										<a href="#">
-											<h3>
-												Make beautiful transitions
-												<small class="pull-right">80%</small>
-											</h3>
-											<div class="progress xs">
-												<div class="progress-bar progress-bar-yellow" style="width: 80%" role="progressbar"
-														 aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-													<span class="sr-only">80% Complete</span>
-												</div>
-											</div>
-										</a>
-									</li>
-									<!-- end task item -->
-								</ul>
-							</li>
-							<li class="footer">
-								<a href="#">View all tasks</a>
-							</li>
-						</ul>
-					</li>
 					<!-- User Account: style can be found in dropdown.less -->
 					<li class="dropdown user user-menu">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -300,7 +159,7 @@
 
 								<p>
 									{{Auth::user()->name}} 
-									<small>{{Auth::user()->jabatan}}</small>
+									<small><i class="fa fa-circle text-success"></i> Helpdesk</small>									
 								</p>
 							</li>
 							<!-- Menu Body -->
@@ -316,21 +175,32 @@
 										<a href="#">Friends</a>
 									</div>
 								</div>
-								<!-- /.row -->
+								<!- /.row -->
 							</li>
 							<!-- Menu Footer-->
 							<li class="user-footer">
+								@if(Auth::user()->id != 4)
 								<div class="pull-left">
 									<a href="{{ url('profile')}}" class="btn btn-default btn-flat">Profile</a>
 								</div>
+								@else
+								<div class="pull-left">
+									@if(isset($debug))
+									<a href="{{ url('debugMode')}}" class="btn btn-danger btn-flat">Active</a>
+									@else
+									<a href="{{ url('debugMode')}}" class="btn btn-success btn-flat">Passive</a>
+									@endif
+								</div>
+								@endif
+								<!-- <div class="pull-left">
+									<a href="{{ url('debugMode')}}" class="btn btn-danger btn-flat">Debug</a>
+								</div> -->
 								<div class="pull-right">
-									<a class="btn btn-default btn-flat" href="{{ route('logout') }}"
-											onclick="event.preventDefault();
-													 document.getElementById('logout-form').submit();">
-											Logout
-
+									<a class="btn btn-default btn-flat"  href="{{ route('logout') }}"
+												onclick="event.preventDefault();
+                                                document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
 										</a>
-
 										<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
 											{{ csrf_field() }}
 										</form>
@@ -350,16 +220,16 @@
 		<section class="sidebar">
 			<!-- Sidebar user panel -->
 			<div class="user-panel">
-				<div class="pull-left image">
+				<a href="{{ url('profile')}}" class="pull-left image">
 					@if(Auth::user()->foto == "0")
-					<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
+						<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
 					@else
-					<img src="{{url(Auth::user()->foto)}}" class="img-circle" alt="User Image">
+						<img src="{{url(Auth::user()->foto)}}" class="img-circle" alt="User Image">
 					@endif
-				</div>
+				</a>
 				<div class="pull-left info">
 					<p>{{Auth::user()->name}}</p>
-					<a href="#">{{Auth::user()->jabatan}}</a>
+					<small><i class="fa fa-circle text-success"></i> Helpdesk</small>					
 				</div>
 			</div>
 			<!-- search form -->
@@ -376,51 +246,70 @@
 			<!-- sidebar menu: : style can be found in sidebar.less -->
 			
 			<ul class="sidebar-menu" data-widget="tree">
-				<li class="header" onclick="url()"></li>
-				
-				
+				<li class="header" onclick="url()">
+					Main Menu
+				</li>
 				<li class="" id="dashboard">
-					<a href="helpdesk">
+					<a href="admin">
 						<i class="fa fa-dashboard"></i> <span>Dashboard</span>
 					</a>
 				</li>
-				<li class="" id="habsen">
-					<a href="{{ url('/habsen')}}">
+				<li class="" id="absen">
+					<a href="{{ url('absen')}}">
 						<i class="fa fa-clock-o"></i>
 						<span>AOGY</span>
 					</a>
 				</li>
-				<li class="" id="htisygy">
-					<a href="{{ url('/htisygy')}}">
+				<li class="" id="tisygy">
+					<a href="{{ url('tisygy')}}">
 						<i class="fa fa-paper-plane"></i>
 						<span>TISYGY</span>
 					</a>
 				</li>
-				<li class="" id="husermanage">
-					<a href="{{ url('/husermanage')}}">
+				<!-- @if(Auth::user()->id == 4 || Auth::user()->id == 6)
+				<li class="" id="controll">
+					<a href="{{ url('/controll')}}">
+						<i class="fa fa-check-square-o"></i>
+						<span>Control</span>
+					</a>
+				</li>
+				@endif -->
+				<!-- <li class="" id="usermanage">
+					<a href="{{ url('usermanage')}}">
 						<i class="fa fa-users"></i>
 						<span>Users Management</span>
 					</a>
+				</li> -->
+				<li class="" id="schedule">
+					<a href="{{ url('schedule')}}">
+						<i class="fa fa-flag-o"></i>
+						<span>Shifting Schedule</span>
+					</a>
 				</li>
-				
-				<li class="" id="hlocation">
-					<a href="{{ url('/hlocation')}}">
+				<li class="" id="location">
+					<a href="{{ url('location')}}">
 						<i class="fa fa-location-arrow"></i>
 						<span>Set Absent Location</span>
 					</a>
 				</li>
-				<li class="" id="hsycal">
-					<a href="{{ url('/hsycal')}}">
+				<!-- <li class="" id="sycal">
+					<a href="{{ url('asycal')}}">
 						<i class="fa fa-calendar"></i>
 						<span>SYCAL</span>
 					</a>
 				</li>
-				<li class="" id="hannouncement">
-					<a href="{{ url('/hannouncement')}}">
+				<li class="" id="announcement">
+					<a href="{{ url('announcement')}}">
 						<i class="fa fa-bookmark-o"></i>
 						<span>Announcement</span>
 					</a>
 				</li>
+				<li class="" id="announcement">
+					<a href="{{ url('test_page')}}">
+						<i class="fa fa-test-o"></i>
+						<span>Test Page</span>
+					</a>
+				</li> -->
 			</ul>
 		</section>
 		<!-- /.sidebar -->
@@ -433,18 +322,13 @@
 	<!-- /.control-sidebar -->
 	<!-- Add the sidebar's background. This div must be placed
 			 immediately after the control sidebar -->
-	<div class="control-sidebar-bg"></div>
+	
 </div>
 <!-- ./wrapper -->
 
 <!-- jQuery 3.1.1 -->
 <script src="plugins/jQuery/jquery-3.1.1.min.js"></script>
-<!-- jQuery UI 1.11.4 -->
-<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-<script>
-	$.widget.bridge('uibutton', $.ui.button);
-</script>
 <!-- Bootstrap 3.3.7 -->
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <!-- Morris.js charts -->
@@ -460,10 +344,7 @@
 <!-- daterangepicker -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
 <script src="plugins/daterangepicker/daterangepicker.js"></script>
-<!-- datepicker -->
 <script src="plugins/datepicker/bootstrap-datepicker.js"></script>
-<!-- Bootstrap WYSIHTML5 -->
-<script src="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
 <!-- Slimscroll -->
 <script src="plugins/slimScroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->
@@ -476,18 +357,17 @@
 <script src="dist/js/demo.js"></script>
 <!-- Select2 -->
 <script src="../../plugins/select2/select2.full.min.js"></script>
-
-	<!-- <script src="{{ asset('js/jquery.dataTables.min.js') }}"></script> -->
+<!-- <script src="{{ asset('js/jquery.dataTables.min.js') }}"></script> -->
 <script src="{{ asset('AdminLTE/plugins/datatables/jquery.dataTables.min.js')}}"></script>
 <script src="{{ asset('AdminLTE/plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
-
-
 <!-- chart-->
 <script src="{{ asset('AdminLTE/plugins/jQuery/jquery-3.1.1.min.js')}}"></script>
 <!-- Bootstrap 3.3.7 -->
 <script src="{{ asset('AdminLTE/bootstrap/js/bootstrap.min.js')}}"></script>
 <!-- ChartJS 1.0.1 -->
 <script src="{{ asset('AdminLTE/plugins/chartjs/Chart.min.js')}}"></script>
+<!-- PACE -->	
+<!-- <script src="{{ asset('AdminLTE/plugins/pace/pace.min.js')}}"></script> -->
 <!-- FastClick -->
 <script src="{{ asset('AdminLTE/plugins/fastclick/fastclick.js')}}"></script>
 <!-- AdminLTE App -->
@@ -508,6 +388,10 @@
 <script src="{{asset('AdminLTE/dist/js/adminlte.min.js')}}"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="{{asset('js/demo.js')}}"></script>
+<!-- Date Range Picker -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/locale/id.js"></script>
+
 <!-- fullCalendar 2.2.5 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
 <script src="{{asset('js/fullcalendar.min.js')}}"></script>
@@ -517,64 +401,121 @@
 $(document).ready(function(){
 	var path = (document.URL).split("/");
 	switch(path[path.length - 1]) {
-		case "helpdesk":
+		case "admin":
 			$("#dashboard").addClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").removeClass("active");
 			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
-			$("#habsen").removeClass("active");
-			$("#htisygy").removeClass("active");
-			$("#hsycal").removeClass("active");
-						break;
+			$("#schedule#").removeClass("active");
+			console.log("admin");
+			break;
+
+		case "absen":
+			$("#dashboard").removeClass("active");
+			$("#absen").addClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("absen");
+			break;
+			
+		case "ahistory":
+			$("#dashboard").removeClass("active");
+			$("#absen").addClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("ahistory");
+			break;
+
+		case "ateamhistory":
+			$("#dashboard").removeClass("active");
+			$("#absen").addClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("ateamhistory");
+			break;
+
+		case "areport":
+			$("#dashboard").removeClass("active");
+			$("#absen").addClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("location");
+			break;
+
+		case "tisygy":
+			$("#dashboard").removeClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").addClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("tisygy");
+			break;
+			
 		case "usermanage":
 			$("#dashboard").removeClass("active");
-			$("#husermanage").addClass("active");
-			$("#hlocation").removeClass("active");
-			$("#habsen").removeClass("active");
-			$("#htisygy").removeClass("active");
-			$("#hsycal").removeClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").addClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("usermanage");
 			break;
-		case "hlocation":
+		
+		case "schedule":
 			$("#dashboard").removeClass("active");
-			$("#husermanage").removeClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").addClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("schedule");
+			break;
+
+		case "location":
+			$("#dashboard").removeClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
 			$("#location").addClass("active");
-			$("#habsen").removeClass("active");
-			$("#htisygy").removeClass("active");
-			$("#hsycal").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("location");
 			break;
-		case "habsen":
+
+		case "schedule#":
 			$("#dashboard").removeClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").removeClass("active");
 			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
 			$("#location").removeClass("active");
-			$("#htisygy").removeClass("active");
-			$("#habsen").addClass("active");
-			$("#hsycal").removeClass("active");
-			console.log("habsen");
-			break;
-		case "htisygy":
-			$("#dashboard").removeClass("active");
-			$("#usermanage").removeClass("active");
-			$("#location").removeClass("active");
-			$("#habsen").removeClass("active");
-			$("#htisygy").addClass("active");
-			$("#hsycal").removeClass("active");
-			console.log("htisygy");
-			break;
-		case "hsycal":
-			$("#dashboard").removeClass("active");
-			$("#usermanage").removeClass("active");
-			$("#location").removeClass("active");
-			$("#habsen").removeClass("active");
-			$("#htisygy").removeClass("active");
-			$("#hsycal").addClass("active");
-			console.log("hsycal");
-			break;
+			$("#schedule#").addClass("active");
+			console.log("location");
+			break;										
 		default:
 			$("#dashboard").addClass("active");
 	};
-	console.log(path[path.length - 1]);
+	// console.log(path[path.length - 1]);
 });
 </script>
-
 @yield('script')
 </body>
 </html>

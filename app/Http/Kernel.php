@@ -52,17 +52,16 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'debugging' => \App\Http\Middleware\Debugging::class,
-        'admin' => \App\Http\Middleware\AdminRole::class,
-        'helpdesk' => \App\Http\Middleware\HelpdeskRole::class,
-        'engineer' => \App\Http\Middleware\EngineerRole::class,
-
-
         'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+
+        'aogy.role' => \App\Http\Middleware\AogyRole::class,
+        'tisygy.role' => \App\Http\Middleware\TisygyRole::class,
+        'project.role' => \App\Http\Middleware\ProjectRole::class,
+        'shiftingloc.role' => \App\Http\Middleware\ShiftingLocRole::class,
     ];
 }

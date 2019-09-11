@@ -1,4 +1,4 @@
-@extends((Auth::user()->role == "1") ? 'layouts.admin.layout' : 'layouts.engineer.elayout')
+@extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
 
 @section('content')
 
@@ -117,6 +117,10 @@
 															<small> Helpdesk</small>
 														@elseif(Auth::user()->jabatan == 3)
 															<small> Engineer</small>
+														@elseif(Auth::user()->jabatan == 4)
+															<small> Project Cordinator</small>
+														@elseif(Auth::user()->jabatan == 5)
+															<small> Super User</small>	
 														@endif
 													
 													</td>

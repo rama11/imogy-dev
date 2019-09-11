@@ -423,7 +423,6 @@ class AdminController extends Controller
 				'updated_at' => $date,
 				'location' => $request->location,
 				'condition' => 'off',
-				'role' => $request->role,
 				'team' => $request->team,
 				'gender' => $request->gender,
 				'jabatan' => $request->jabatan,
@@ -1763,8 +1762,8 @@ class AdminController extends Controller
 			$request->name = Auth::user()->name;
 		}else if ($request->email == NULL){
 			$request->email = Auth::user()->email;
-		}else if ($request->role == NULL){
-			$request->role = Auth::user()->jabatan;
+		}else if ($request->jabatan == NULL){
+			$request->jabatan = Auth::user()->jabatan;
 		}else if ($request->shifting == NULL){
 			$request->shifting = Auth::user()->shifting;
 		}else {
@@ -1779,7 +1778,7 @@ class AdminController extends Controller
 			->update([
 				"name" => $request->name,
 				"email" => $request->email,
-				"jabatan" => $request->role,
+				"jabatan" => $request->jabatan,
 				"shifting" => $request->shifting
 			]);
 
@@ -1791,7 +1790,7 @@ class AdminController extends Controller
 			->update([
 				"name" => $request->name,
 				"email" => $request->email,
-				"jabatan" => $request->role,
+				"jabatan" => $request->jabatan,
 				"shifting" => $request->shifting
 			]);
 			return redirect()->back();

@@ -26,9 +26,6 @@ class Kernel extends ConsoleKernel
 	 */
 	protected function schedule(Schedule $schedule)
 	{
-		// $schedule->command('inspire')
-		//          ->hourly();
-
 		$schedule->call(function() {
 			syslog(LOG_ERR, "Test Cron Success ");
 
@@ -45,6 +42,10 @@ class Kernel extends ConsoleKernel
 
 		})->dailyAt('08:00')->timezone('Asia/Jakarta');
 
+		$schedule->call(function () {
+			DB::table('users')
+				->update(['condition' => "off"]);
+		})->daily()->timezone('Asia/Jakarta');
 		// $schedule->call(function() {
 		// 	$text = "Test Text";
 
@@ -137,12 +138,6 @@ class Kernel extends ConsoleKernel
 		// 		}
 		// 	}
 		// })->everyMinute();
-
-		$schedule->call(function () {
-			date_default_timezone_set("Asia/Jakarta");
-			DB::table('users')
-				->update(['condition' => "off"]);
-		})->dailyAt('1:00');
 		// $schedule->call(function (){
 		// 	$ids = DB::table('users')
 		// 		->select('id','name','hadir','location','shifting')

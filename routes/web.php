@@ -87,36 +87,20 @@ Route::post('/editProfile', 'AdminController@editProfile');
 		Route::get('/ateamhistory', 'AdminController@teamhistory');
 		Route::get('/areport', 'AdminController@areport');	
 	});
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 	Route::middleware(['shiftingloc.role'])->group(function () {
 		Route::get('/location', 'AdminController@location');
 		Route::get('/getLocation/{id}' , 'AdminController@getLocation');
 		Route::get('/setLocation' , 'AdminController@setLocation');
 		Route::get('/addLocation' , 'AdminController@addLocation');
 		Route::get('/getLocationAfter','AdminController@getLocationAfter');
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 		Route::get('/schedule','AdminController@schedule');
 		Route::get('/getScheduleAll', 'AdminController@getScheduleAll');
 		Route::get('/getScheduleProject/{id}', 'AdminController@getScheduleProject');
 		Route::get('/getScheduleSelected','AdminController@getScheduleSelected');
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 		Route::get('/crateSchedule','AdminController@crateSchedule');
 		Route::get('/deleteSchedule/{id}','AdminController@deleteSchedule');
 		Route::get('/changeMonth','AdminController@changeMonth');
 	});
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 	Route::get('/getMasuk/{id}', 'AdminController@getMasuk');
 	Route::get('/getProfile/{id}', 'AdminController@getProfile');
 	Route::get('/setMasuk', 'AdminController@setMasuk');
@@ -128,10 +112,6 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('/getReportPerUser','AdminController@getReportPerUser');
 	// Location Controll oleh Admin
 	
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 	Route::get('/absen', 'AdminController@absen');
 
 	Route::get('/raw/{id}', 'AdminController@raw');
@@ -146,11 +126,8 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('createEvent','AdminController@createAsycal');
 	Route::get('deleteEvent','AdminController@deleteAsycal');
 	Route::get('/json','AdminController@jsonAsycal');
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 	// Ticketing Route
 	// dgsdfgdfgsfg`
 	
@@ -160,13 +137,9 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('/testHollyday/{date}','AdminController@testHollyday');
 	// Route::post('/atisygy', 'AdminController@add_atisygy');
 // Ticketing Route
-<<<<<<< HEAD
 
 Route::middleware(['tisygy.role'])->group(function () {
 
-=======
-Route::middleware(['tisygy.role'])->group(function () {
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 	Route::get('tisygy', 'TicketingController@tisygy');
 	Route::get('tisygy2', 'TicketingController@tisygy2');
 	// Route::get('tisygy', function(){
@@ -193,18 +166,7 @@ Route::middleware(['tisygy.role'])->group(function () {
 	Route::get('newAtm','TicketingController@newAtm');
 	Route::get('updateIdTicket','TicketingController@updateIdTicket');
 	Route::get('getReportTicket/{client}/{month}','TicketingController@testReport');
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 });
-	
-	
-	
-	
-	
-	
-	
 	
 	// Route::get('getReportTicket/{client}/{month}',function($client,$month){
 	// 	echo $client . "<br>";
@@ -257,10 +219,6 @@ Route::middleware(['tisygy.role'])->group(function () {
 // Route::get('/home', 'HomeController@index')->name('home');
 // Project Route
 Route::middleware(['project.role'])->group(function () {
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 	Route::get('project','ProjectController@index');
 	Route::get('project/manage','ProjectController@manage');
 	// Input Project
@@ -347,9 +305,5 @@ Route::middleware(['project.role'])->group(function () {
 	Route::get('project/setting/setSettingProject','ProjectController@setSettingProject');
 	Route::get('project/setting/getSettingPeriod','ProjectController@getSettingPeriod');
 	Route::get('project/setting/setSettingPeriod','ProjectController@setSettingPeriod');
-<<<<<<< HEAD
 });
 
-=======
-});
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841

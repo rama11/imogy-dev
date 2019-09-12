@@ -28,16 +28,10 @@ class Kernel extends ConsoleKernel
 	{
 		$schedule->call(function() {
 			Artisan::call('SendAllProjectRemainder:send_all');
-		})->dailyAt('08:00');
+		})->dailyAt('08:00')->timezone('Asia/Jakarta');
 
 		$schedule->call(function () {
-			DB::table('users')
-				->update(['condition' => "off"]);
-		})->dailyAt('1:00');
-
-		$schedule->call(function () {
-			DB::table('users')
-				->update(['condition' => "off"]);
+			Artisan::call('UsersCondition:condition');
 		})->daily()->timezone('Asia/Jakarta');
 		// $schedule->call(function() {
 		// 	$text = "Test Text";

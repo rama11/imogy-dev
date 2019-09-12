@@ -22,7 +22,7 @@ Route::get('/', function () {
 // })->where('any', '.*');
 // Route::get('/test_cron','AdminController@test_cron');
 Route::get('maps', function () {
-    return view('maps');
+    // return view('maps');
 });
 // Dibawah adalah route yang hanya bisa di pangil jika sudah terAuthentification (login)
 Auth::routes();

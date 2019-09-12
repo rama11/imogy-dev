@@ -30,20 +30,13 @@ class Kernel extends ConsoleKernel
 		//          ->hourly();
 
 		$schedule->call(function() {
-			syslog(LOG_ERR, "Test Cron Success ");
+			Artisan::call('SendAllProjectRemainder:send_all');
+		})->dailyAt('08:00');
 
-			$projectAll = DB::table('project__list')
-				->pluck('id')
-				->toArray();
-
-			foreach ($projectAll as $id) {
-				Artisan::call('ProjectRemainder:send',[
-					'id' => $id
-				]);
-				syslog(LOG_ERR, "Loop Success " . $id);
-			}
-
-		})->dailyAt('08:00')->timezone('Asia/Jakarta');
+		$schedule->call(function () {
+			DB::table('users')
+				->update(['condition' => "off"]);
+		})->dailyAt('1:00');
 
 		// $schedule->call(function() {
 		// 	$text = "Test Text";
@@ -138,11 +131,7 @@ class Kernel extends ConsoleKernel
 		// 	}
 		// })->everyMinute();
 
-		$schedule->call(function () {
-			date_default_timezone_set("Asia/Jakarta");
-			DB::table('users')
-				->update(['condition' => "off"]);
-		})->dailyAt('1:00');
+		
 		// $schedule->call(function (){
 		// 	$ids = DB::table('users')
 		// 		->select('id','name','hadir','location','shifting')

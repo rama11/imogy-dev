@@ -64,27 +64,47 @@ class SendProjectRemainder extends Command
 
 		$refrence = DB::table('project__remainder_refrence')
 			->where('type',$type_refrence)
+			->orderBy('number_of_days','ASC')
 			->pluck('number_of_days')
 			->toArray();
 
 		date_default_timezone_set('Asia/Jakarta');
 		$different = ( Carbon::now()->diffInDays(Carbon::parse($project_time_refrance), false ) * -1);
-		$output = "\nId Project : " . $this->argument('id') . "\nDate Now " . Carbon::now()->toDateString() . "\n";
-		$output2 = "Id Project : " . $this->argument('id') . " Date Now " . Carbon::now()->toDateString();
-		echo $output;
+		$output = "Id Project : " . $this->argument('id') . " Date Now " . Carbon::now()->toDateString();
+		echo "\n" . $output . "\n";
 
-		syslog(LOG_ERR, "Test - " . $output2);
+		
 
-		print_r("Refrence date \n");
-		print_r($refrence);
+		// print_r("Refrence date \n");
+		// print_r($refrence);
+		// foreach ($refrence as $key => $value) {
+		// 	print_r($value . " " . Carbon::parse($project_time_refrance)->addDays($value) . " \n");
+		// }
+		$start_cheking_date = Carbon::parse($project_time_refrance)->addDays($this->get_clostest($different,$refrence,$type_refrence)[0] + 1);
+		$end_cheking_date =  Carbon::parse($project_time_refrance)->addDays($this->get_clostest($different,$refrence,$type_refrence)[1])->addHours(23)->addMinutes(59);
 		print_r("Due date " . $project_time_refrance . "\n");
 		print_r("Diff days : " .  $different . "\n");
+		print_r("Check update from " . $start_cheking_date  . " to " . $end_cheking_date . "\n");
+		// print_r("Clostest to days start : " .  $this->get_clostest($different,$refrence,$type_refrence)[0] . "\n");
+		// print_r("Clostest to days end : " .  $this->get_clostest($different,$refrence,$type_refrence)[1] . "\n");
 
-		if( in_array( $different , $refrence )){
+		$project__event_history = DB::table('project__event')
+			->where('project_list_id',$this->argument('id'))
+			->where('status','Active')
+			->whereRaw('`time` BETWEEN "' . $start_cheking_date . '" AND "' . $end_cheking_date . '"')
+			->join('project__event_history','project__event_history.project_event_id','=','project__event.id')
+			->get();
+
+		// print_r("Event History data \n");
+		// print_r($project__event_history);
+
+		$refrence = DB::table('project__remainder_refrence')
+			->where('number_of_days',$different)
+			->first();
+
+		if( $project__event_history->isEmpty() && isset($refrence) ){
 			// echo "true";
-			$refrence = DB::table('project__remainder_refrence')
-				->where('number_of_days',$different)
-				->first();
+			
 			// print_r($refrence);
 			// print_r(Carbon::now()->diffForHumans(Carbon::parse($project_time_refrance)));
 			
@@ -141,7 +161,7 @@ class SendProjectRemainder extends Command
 				"active_period" => $list->active_period,
 				"due_date" => Carbon::parse($list->due_date)->formatLocalized('%d %B %Y'),
 				"last_updater" => $list->updater,
-				"last_update_time" => Carbon::parse($list->time_update)->formatLocalized('%d %B %Y'),
+				"last_update_time" => Carbon::parse($list->time_update)->formatLocalized('%R - %d %B %Y'),
 				"last_update_note" => $list->note_update,
 				"remain_time" => Carbon::now()->diffForHumans(Carbon::parse($project_time_refrance)),
 			]);
@@ -155,11 +175,30 @@ class SendProjectRemainder extends Command
 			QueueEmailRemainder::dispatch($data);
 
 			// return new MailRemainderProject($data);
-
+			syslog(LOG_NOTICE, "Check - Id Project : " . $this->argument('id') . " from " . $start_cheking_date  . " to " . $end_cheking_date . " Diff - " .  $different . " [Success]");
 		} else {
-			echo "false";
+			echo "Remainder - false";
 		}
 		echo "\n";
-		// echo "\n";
+		echo "\n";
+	}
+
+	public function get_clostest($number,$array,$type_refrence){
+		$closest = null;
+		$start = 0;
+		$end = 0;
+		foreach ($array as $key => $item) {
+			if ($number > $item) {
+				if($key == count($array) - 1){
+					$end = $array[count($array) - 1];
+				} else {
+					$end = $array[ $key + 1];
+					$start = $item;
+				}
+			} else if ($number <= $array[0] && $number >= 0){
+				$end = $array[0];
+			}
+		}
+		return array($start,$end);
 	}
 }

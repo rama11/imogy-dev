@@ -9,47 +9,46 @@ use Mail;
 
 class SendAllProjectRemainder extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'SendAllProjectRemainder:send_all';
+	/**
+	 * The name and signature of the console command.
+	 *
+	 * @var string
+	 */
+	protected $signature = 'SendAllProjectRemainder:send_all';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'To send all project with SendProjectRemainder artisan command';
+	/**
+	 * The console command description.
+	 *
+	 * @var string
+	 */
+	protected $description = 'To send all project with SendProjectRemainder artisan command';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
+	/**
+	 * Create a new command instance.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+	}
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
-    {
-        //
-        $projectAll = DB::table('project__list')
-                ->pluck('id')
-                ->toArray();
+	/**
+	 * Execute the console command.
+	 *
+	 * @return mixed
+	 */
+	public function handle()
+	{
+		//
+		$projectAll = DB::table('project__list')
+			->pluck('id')
+			->toArray();
 
-            foreach ($projectAll as $id) {
-                Artisan::call('ProjectRemainder:send',[
-                    'id' => $id
-                ]);
-                syslog(LOG_ERR, "Loop Success " . $id);
-            }
-    }
+		foreach ($projectAll as $id) {
+			Artisan::call('ProjectRemainder:send',[
+				'id' => $id
+			]);
+		}
+	}
 }

@@ -66,13 +66,9 @@
 			width: 60px;
 			height: 34px;
 		}
-<<<<<<< HEAD
 
 		.switch input {display:none;}
 
-=======
-		.switch input {display:none;}
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 		.slider {
 			position: absolute;
 			cursor: pointer;
@@ -84,10 +80,6 @@
 			-webkit-transition: .4s;
 			transition: .4s;
 		}
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 		.slider:before {
 			position: absolute;
 			content: "";
@@ -99,7 +91,6 @@
 			-webkit-transition: .4s;
 			transition: .4s;
 		}
-<<<<<<< HEAD
 
 		input:checked + .slider {
 			background-color: #2196F3;
@@ -109,31 +100,15 @@
 			box-shadow: 0 0 1px #2196F3;
 		}
 
-=======
-		input:checked + .slider {
-			background-color: #2196F3;
-		}
-		input:focus + .slider {
-			box-shadow: 0 0 1px #2196F3;
-		}
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 		input:checked + .slider:before {
 			-webkit-transform: translateX(26px);
 			-ms-transform: translateX(26px);
 			transform: translateX(26px);
 		}
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 		/* Rounded sliders */
 		.slider.round {
 			border-radius: 34px;
 		}
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 		.slider.round:before {
 			border-radius: 50%;
 		}
@@ -299,7 +274,6 @@
 						<i class="fa fa-check-square-o"></i>
 						<span>Control</span>
 					</a>
-<<<<<<< HEAD
 				</li>
 				@endif -->
 				<!-- <li class="" id="usermanage">
@@ -314,22 +288,6 @@
 						<span>Shifting Schedule</span>
 					</a>
 				</li>
-=======
-				</li>
-				@endif -->
-				<!-- <li class="" id="usermanage">
-					<a href="{{ url('usermanage')}}">
-						<i class="fa fa-users"></i>
-						<span>Users Management</span>
-					</a>
-				</li>
-				<li class="" id="schedule">
-					<a href="{{ url('schedule')}}">
-						<i class="fa fa-flag-o"></i>
-						<span>Shifting Schedule</span>
-					</a>
-				</li>
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 				<li class="" id="location">
 					<a href="{{ url('location')}}">
 						<i class="fa fa-location-arrow"></i>
@@ -455,10 +413,6 @@ $(document).ready(function(){
 			$("#schedule#").removeClass("active");
 			console.log("admin");
 			break;
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 		case "absen":
 			$("#dashboard").removeClass("active");
 			$("#absen").addClass("active");
@@ -480,10 +434,6 @@ $(document).ready(function(){
 			$("#schedule#").removeClass("active");
 			console.log("ahistory");
 			break;
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 		case "ateamhistory":
 			$("#dashboard").removeClass("active");
 			$("#absen").addClass("active");
@@ -494,10 +444,6 @@ $(document).ready(function(){
 			$("#schedule#").removeClass("active");
 			console.log("ateamhistory");
 			break;
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 		case "areport":
 			$("#dashboard").removeClass("active");
 			$("#absen").addClass("active");
@@ -508,10 +454,6 @@ $(document).ready(function(){
 			$("#schedule#").removeClass("active");
 			console.log("location");
 			break;
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 		case "tisygy":
 			$("#dashboard").removeClass("active");
 			$("#absen").removeClass("active");

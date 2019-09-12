@@ -131,11 +131,6 @@ class Kernel extends ConsoleKernel
 		// 		}
 		// 	}
 		// })->everyMinute();
-<<<<<<< HEAD
-=======
-
-		
->>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 		// $schedule->call(function (){
 		// 	$ids = DB::table('users')
 		// 		->select('id','name','hadir','location','shifting')

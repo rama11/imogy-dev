@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -10,8 +9,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
 // Route yang di panggil pertama sendiri atau sebelum login
 Route::get('/', function () {
     return view('welcome2');
@@ -19,30 +16,22 @@ Route::get('/', function () {
 // Route::get('/', function(){ 
 //     return Redirect::to('https://sinergy-dev.xyz', 301); 
 // });
-
 // Route::get('{any}', function() {
     // return Redirect::to('https://sinergy-dev.xyz', 301); 
    // return redirect('https://targetdomain.com');
 // })->where('any', '.*');
-
 // Route::get('/test_cron','AdminController@test_cron');
-
 Route::get('maps', function () {
     return view('maps');
 });
-
-
 // Dibawah adalah route yang hanya bisa di pangil jika sudah terAuthentification (login)
 Auth::routes();
 Route::get('/authenticate/{id}','HomeController@authenticate');
-
 // Engginer Route
 // Route::get('/home', function(){
 	// echo "asdfasd";
 // });
-
 Route::get('testexcel','AdminController@testXLSX')->name('testexcel');
-
 Route::get('/home', 'AdminController@index');
 Route::get('/raw3/{id}','HomeController@raw');
 Route::get('/history', 'HomeController@history');
@@ -53,14 +42,11 @@ Route::get('/ehistory', 'HomeController@ehistory');
 Route::get('/etisygy', 'HomeController@etisygy');
 Route::get('/eannoun', 'HomeController@eannoun');
 Route::get('/eteamhistory', 'HomeController@eteamhistory');
-
 // Helpdesk Route
 Route::get('/helpdesk', 'HelpdeskController2@index');
 Route::get('/raw2/{id}','HelpdeskController2@raw');
-
 Route::post('/addUser', 'HelpdeskController2@addUser');
 Route::post('/editUser', 'HelpdeskController2@editUser');
-
 	//Route::get('/history2', 'HelpdeskController2@history');
 	// Route::get('/profile', 'HelpdeskController2@profile');
 	Route::get('/hsycal', 'HelpdeskController2@hsycal');
@@ -69,35 +55,25 @@ Route::post('/editUser', 'HelpdeskController2@editUser');
 	Route::get('/husermanage', 'HelpdeskController2@husermanage');
 	Route::get('/hhistory', 'HelpdeskController2@hhistory');
 	Route::get('/hteamhistory', 'HelpdeskController2@hteamhistory');
-
-
 	// User Manage Oleh Helpdesk
 	Route::get('/getMasuk/{id}', 'HelpdeskController2@getMasuk');
 	Route::get('/getProfile/{id}', 'HelpdeskController2@getProfile');
 	Route::get('/setMasuk', 'HelpdeskController2@setMasuk');
-
 	Route::get('/user', 'HelpdeskController2@user');
 	Route::get('/hhistory', 'HelpdeskController2@history');
 	Route::get('/hteamhistory', 'HelpdeskController2@teamhistory');
 	Route::get('/huserhistory/{id}', 'HelpdeskController2@huserhistory');
-
 	// Location Controll oleh Helpdesk
 	Route::get('/hlocation', 'HelpdeskController2@location');
 	Route::get('/getLocation/{id}' , 'HelpdeskController2@getLocation');
 	Route::get('/setLocation' , 'HelpdeskController2@setLocation');
 	Route::get('/addLocation' , 'HelpdeskController2@addLocation');
-
 	Route::get('/habsen', 'HelpdeskController2@absen');
-
 	Route::post('/htisygy', 'HelpdeskController2@add_atisygy');
-
 	Route::get('/downloadPDF/{id}','HelpdeskController2@download');
 	Route::get('/schedule','HelpdeskController2@schedule');
 	Route::get('/changeAbsent/{id}','HelpdeskController2@changeAbsent');
-
 // Admin Route
-
-
 Route::get('/admin', 'AdminController@index');
 Route::get('/test_page', 'AdminController@test_page');
 Route::get('/announcement', 'AdminController@announcement');
@@ -105,31 +81,37 @@ Route::post('/addUser', 'AdminController@addUser');
 Route::post('/addUserShifting', 'AdminController@addUserShifting');
 Route::post('/editUser', 'AdminController@editUser');
 Route::post('/editProfile', 'AdminController@editProfile');
-
-
-
 	// User Manage Oleh Admin
-	Route::get('/usermanage', 'AdminController@usermanage');
+	Route::middleware(['aogy.role'])->group(function () {
+		Route::get('/usermanage', 'AdminController@usermanage');
+		Route::get('/ateamhistory', 'AdminController@teamhistory');
+		Route::get('/areport', 'AdminController@areport');	
+	});
+	Route::middleware(['shiftingloc.role'])->group(function () {
+		Route::get('/location', 'AdminController@location');
+		Route::get('/getLocation/{id}' , 'AdminController@getLocation');
+		Route::get('/setLocation' , 'AdminController@setLocation');
+		Route::get('/addLocation' , 'AdminController@addLocation');
+		Route::get('/getLocationAfter','AdminController@getLocationAfter');
+		Route::get('/schedule','AdminController@schedule');
+		Route::get('/getScheduleAll', 'AdminController@getScheduleAll');
+		Route::get('/getScheduleProject/{id}', 'AdminController@getScheduleProject');
+		Route::get('/getScheduleSelected','AdminController@getScheduleSelected');
+		Route::get('/crateSchedule','AdminController@crateSchedule');
+		Route::get('/deleteSchedule/{id}','AdminController@deleteSchedule');
+		Route::get('/changeMonth','AdminController@changeMonth');
+	});
 	Route::get('/getMasuk/{id}', 'AdminController@getMasuk');
 	Route::get('/getProfile/{id}', 'AdminController@getProfile');
 	Route::get('/setMasuk', 'AdminController@setMasuk');
-
 	Route::get('/user', 'AdminController@user');
 	Route::get('/ahistory', 'AdminController@history');
 	Route::get('/ahistory2', 'AdminController@historydet');
-	Route::get('/ateamhistory', 'AdminController@teamhistory');
 	Route::get('/auserhistory/{id}', 'AdminController@auserhistory');
-	Route::get('/areport', 'AdminController@areport');
 	Route::get('/getReport','AdminController@getReport');
 	Route::get('/getReportPerUser','AdminController@getReportPerUser');
-
 	// Location Controll oleh Admin
-	Route::get('/location', 'AdminController@location');
-	Route::get('/getLocation/{id}' , 'AdminController@getLocation');
-	Route::get('/setLocation' , 'AdminController@setLocation');
-	Route::get('/addLocation' , 'AdminController@addLocation');
-	Route::get('/getLocationAfter','AdminController@getLocationAfter');
-
+	
 	Route::get('/absen', 'AdminController@absen');
 	Route::get('/raw/{id}', 'AdminController@raw');
 	Route::post('/raw/{id}', 'AdminController@raw');
@@ -139,40 +121,24 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('/downloadPDF/{id}','AdminController@download');
 	Route::get('/changeAbsent/{id}','AdminController@changeAbsent');
 	Route::post('/changePasswords','AdminController@changePassword');
-
 	Route::get('/matikan', 'AdminController@matikan');
 	Route::get('createEvent','AdminController@createAsycal');
 	Route::get('deleteEvent','AdminController@deleteAsycal');
 	Route::get('/json','AdminController@jsonAsycal');
-
-
-	Route::get('/schedule','AdminController@schedule');
-	Route::get('/getScheduleAll', 'AdminController@getScheduleAll');
-	Route::get('/getScheduleProject/{id}', 'AdminController@getScheduleProject');
-	Route::get('/getScheduleSelected','AdminController@getScheduleSelected');
-
-	Route::get('/crateSchedule','AdminController@crateSchedule');
-	Route::get('/deleteSchedule/{id}','AdminController@deleteSchedule');
-	Route::get('/changeMonth','AdminController@changeMonth');
-
 	// Ticketing Route
 	// dgsdfgdfgsfg`
-
 	
-
 	
 	Route::get('/hash', 'AdminController@hash');
 	Route::get('getRecentTicket','AdminController@getRecentTicket');
 	Route::get('/testHollyday/{date}','AdminController@testHollyday');
 	// Route::post('/atisygy', 'AdminController@add_atisygy');
-
 // Ticketing Route
+Route::middleware(['tisygy.role'])->group(function () {
 	Route::get('tisygy', 'TicketingController@tisygy');
 	Route::get('tisygy2', 'TicketingController@tisygy2');
 	// Route::get('tisygy', function(){
-		// echo "<h1 style='font-size:100px'>Mas Danang Nganteng</h1>";
-	// });
-	Route::get('reserveIdTicket','TicketingController@createIdTicket');
+		// echo "<h1 style='font-size:100px'>Mas Danang Nganteng</h1gController@createIdTicket');
 	Route::get('getEmailReciver', 'TicketingController@getEmailReciver');
 	Route::get('setNewTicket','TicketingController@setNewTicket');
 	Route::get('mailOpenTicket','TicketingController@mailOpenTicket');
@@ -194,18 +160,24 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('setAtm','TicketingController@setAtm');
 	Route::get('newAtm','TicketingController@newAtm');
 	Route::get('updateIdTicket','TicketingController@updateIdTicket');
-
 	Route::get('getReportTicket/{client}/{month}','TicketingController@testReport');
+});
+	
+	
+	
+	
+	
+	
+	
+	
 	// Route::get('getReportTicket/{client}/{month}',function($client,$month){
 	// 	echo $client . "<br>";
 	// 	echo $month;
-
 	// });
 	
 	Route::get('controll','TicketingController@controll');
 	Route::get('getReportHelpdesk','TestController@getReportHelpdesk');
 	Route::get('getReportHelpdesk2','TestController@getReportHelpdesk2');
-
 	// Testing Route
 	Route::get('testPerformance', 'TestController@performance');
 	Route::get('logging/{type}','TestController@logging_activity');
@@ -226,8 +198,6 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	// Route::get('testValue/{id}','HomeController@testValue');
 	// Route::get('testFaker','AdminController@test_faker');
 	// Route::get('testDBRaw','TestController@testDBRaw');
-
-
 	// Route::get('testPulang','AdminController@testPulang');
 	// // Route::get('testHariRaya','AdminController@testHariRaya');/
 	
@@ -239,19 +209,18 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	// 	$date = 6;
 	// 	echo sprintf("iki adalah sebuah format %02d", $date);
 	// });
-
 //Auth::routes();
 	Route::get('getPerformance2','TicketingController@getPerformance2');
 	Route::get('getPerformanceBySeverity','TicketingController@getPerformanceBySeverity');
 	Route::get('getPerformanceByClient','TicketingController@getPerformanceByClient');
 	
 	Route::get('getPerformance','TicketingController@getPerformance');
-	Route::get('getDashboard','TicketingController@getDashboard');
+	// Route::get('getDashboard','TicketingController@getDashboard');
 	Route::get('getCreateParameter','TicketingController@getCreateParameter');
 	Route::get('getClientTest','TestController@getSettingClient');
 // Route::get('/home', 'HomeController@index')->name('home');
-
 // Project Route
+Route::middleware(['project.role'])->group(function () {
 	Route::get('project','ProjectController@index');
 	Route::get('project/manage','ProjectController@manage');
 	// Input Project
@@ -265,7 +234,6 @@ Route::post('/editProfile', 'AdminController@editProfile');
 			"to" => array(
 				"agastya@sinergy.co.id",
 				'prof.agastyo@gmail.com',
-
 				// "siwi@sinergy.co.id",
 				// "johan@sinergy.co.id",
 				// "dicky@sinergy.co.id",
@@ -275,7 +243,6 @@ Route::post('/editProfile', 'AdminController@editProfile');
 			"cc" => array(
 				// "endraw@sinergy.co.id",
 				// "msm@sinergy.co.id",
-
 				'imogy@sinergy.co.id',
 				'hellosinergy@gmail.com'
 			),
@@ -283,7 +250,6 @@ Route::post('/editProfile', 'AdminController@editProfile');
 			"subject" => "Open Project - PT. Bussan Auto Finance",
 			'name' => Auth::user()->name,
 			'phone' => Auth::user()->phone,
-
 			"customer" => "PT. Bussan Auto Finance",
 			// "customer" => $req->CustomerName,
 			"name_project" => "Cisco IP Phone Branch Denpasar",
@@ -321,12 +287,10 @@ Route::post('/editProfile', 'AdminController@editProfile');
 			// "teamLeadName" => DB::table('users')->where('id',$req->Lead)->value('name'),
 			"teamLeadEmail" => "johan@sinergy.co.id",
 			// "teamLeadEmail" => DB::table('users')->where('id',$req->Lead)->value('email'),
-
 			"teamMemberName" => array("Rama Agastya","Siwi Karuniawati","M Dicky Ardiansyah","Yohanis Ferdinand"),
 			// "teamMemberName" => $teamMemberName,
 			"teamMemberEmail" => array("agastya@sinergy.co.id","siwi@sinergy.co.id","dicky@sinergy.co.id","yohanis@sinergy.co.id")
 			// "teamMemberEmail" => $teamMemberEmail
-
 		);
 		return new App\Mail\MailFinishEventProject($data);
 	});
@@ -341,8 +305,6 @@ Route::post('/editProfile', 'AdminController@editProfile');
 	Route::get('project/setting','ProjectController@setting');
 	Route::get('project/setting/getSettingProject','ProjectController@getSettingProject');
 	Route::get('project/setting/setSettingProject','ProjectController@setSettingProject');
-
 	Route::get('project/setting/getSettingPeriod','ProjectController@getSettingPeriod');
 	Route::get('project/setting/setSettingPeriod','ProjectController@setSettingPeriod');
-
-
+});

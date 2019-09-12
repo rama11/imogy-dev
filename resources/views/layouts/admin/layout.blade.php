@@ -60,9 +60,7 @@
 			width: 60px;
 			height: 34px;
 		}
-
 		.switch input {display:none;}
-
 		.slider {
 			position: absolute;
 			cursor: pointer;
@@ -74,7 +72,6 @@
 			-webkit-transition: .4s;
 			transition: .4s;
 		}
-
 		.slider:before {
 			position: absolute;
 			content: "";
@@ -86,26 +83,21 @@
 			-webkit-transition: .4s;
 			transition: .4s;
 		}
-
 		input:checked + .slider {
 			background-color: #2196F3;
 		}
-
 		input:focus + .slider {
 			box-shadow: 0 0 1px #2196F3;
 		}
-
 		input:checked + .slider:before {
 			-webkit-transform: translateX(26px);
 			-ms-transform: translateX(26px);
 			transform: translateX(26px);
 		}
-
 		/* Rounded sliders */
 		.slider.round {
 			border-radius: 34px;
 		}
-
 		.slider.round:before {
 			border-radius: 50%;
 		}
@@ -153,14 +145,7 @@
 
 								<p>
 									{{Auth::user()->name}} 
-
-									@if(Auth::user()->jabatan = 1)
 										<small><i class="fa fa-circle text-success"></i> Admin</small>
-									@elseif(Auth::user()->jabatan = 2)
-										<small><i class="fa fa-circle text-success"></i> Engineer</small>
-									@elseif(Auth::user()->jabatan = 3)
-										<small><i class="fa fa-circle text-success"></i> Helpdesk</small>
-									@endif
 								</p>
 							</li>
 							<!-- Menu Body -->
@@ -231,15 +216,7 @@
 				</a>
 				<div class="pull-left info">
 					<p>{{Auth::user()->name}}</p>
-
-						@if(Auth::user()->jabatan = 1)
-							<small><i class="fa fa-circle text-success"></i> Admin</small>
-						@elseif(Auth::user()->jabatan = 2)
-							<small><i class="fa fa-circle text-success"></i> Engineer</small>
-						@elseif(Auth::user()->jabatan = 3)
-							<small><i class="fa fa-circle text-success"></i> Helpdesk</small>
-						@endif
-					
+						<small><i class="fa fa-circle text-success"> </i>  Admin</small>					
 				</div>
 			</div>
 			<!-- search form -->
@@ -270,12 +247,12 @@
 						<span>AOGY</span>
 					</a>
 				</li>
-				<li class="" id="tisygy">
+				<!-- <li class="" id="tisygy">
 					<a href="{{ url('tisygy')}}">
 						<i class="fa fa-paper-plane"></i>
 						<span>TISYGY</span>
 					</a>
-				</li>
+				</li> -->
 				<!-- @if(Auth::user()->id == 4 || Auth::user()->id == 6)
 				<li class="" id="controll">
 					<a href="{{ url('/controll')}}">
@@ -302,12 +279,12 @@
 						<span>Set Absent Location</span>
 					</a>
 				</li>
-				<li class="" id="project">
+				<!-- <li class="" id="project">
 					<a href="{{ url('project/manage')}}">
 						<i class="fa fa-calendar"></i>
 						<span>Project Manage</span>
 					</a>
-				</li>
+				</li> -->
 				<!-- <li class="" id="announcement">
 					<a href="{{ url('announcement')}}">
 						<i class="fa fa-bookmark-o"></i>
@@ -422,7 +399,6 @@ $(document).ready(function(){
 			$("#project").removeClass("active");
 			console.log("admin");
 			break;
-
 		case "absen":
 			$("#dashboard").removeClass("active");
 			$("#absen").addClass("active");
@@ -434,7 +410,6 @@ $(document).ready(function(){
 			$("#project").removeClass("active");
 			console.log("absen");
 			break;
-
 		case "ahistory":
 			$("#dashboard").removeClass("active");
 			$("#absen").addClass("active");
@@ -446,7 +421,6 @@ $(document).ready(function(){
 			$("#project").removeClass("active");
 			console.log("ahistory");
 			break;
-
 		case "ateamhistory":
 			$("#dashboard").removeClass("active");
 			$("#absen").addClass("active");
@@ -456,10 +430,8 @@ $(document).ready(function(){
 			$("#location").removeClass("active");
 			$("#schedule#").removeClass("active");
 			$("#project").removeClass("active");
-
 			console.log("ateamhistory");
 			break;
-
 		case "areport":
 			$("#dashboard").removeClass("active");
 			$("#absen").addClass("active");
@@ -471,7 +443,6 @@ $(document).ready(function(){
 			$("#project").removeClass("active");
 			console.log("location");
 			break;
-
 		case "tisygy":
 			$("#dashboard").removeClass("active");
 			$("#absen").removeClass("active");
@@ -507,7 +478,6 @@ $(document).ready(function(){
 			$("#project").removeClass("active");
 			console.log("schedule");
 			break;
-
 		case "location":
 			$("#dashboard").removeClass("active");
 			$("#absen").removeClass("active");
@@ -519,7 +489,6 @@ $(document).ready(function(){
 			$("#project").removeClass("active");
 			console.log("location");
 			break;
-
 		case "schedule#":
 			$("#dashboard").removeClass("active");
 			$("#absen").removeClass("active");
@@ -531,7 +500,6 @@ $(document).ready(function(){
 			$("#project").removeClass("active");
 			console.log("location");
 			break;
-
 		case "project":
 			$("#dashboard").removeClass("active");
 			$("#absen").removeClass("active");
@@ -542,7 +510,6 @@ $(document).ready(function(){
 			$("#project").addClass("active");
 			console.log("location");
 			break;				
-
 		default:
 			$("#dashboard").addClass("active");
 	};

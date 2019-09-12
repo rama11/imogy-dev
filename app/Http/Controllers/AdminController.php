@@ -28,9 +28,9 @@ class AdminController extends Controller
 		// date_default_timezone_set("ETC/GMT-5");
 		// date_default_timezone_set("Asia/Jakarta");
 		// echo date('H:i:s');
-		$debug = DB::table('console')
-			->where('id_user','=',4)
-			->value('mode');
+		// $debug = DB::table('console')
+		// 	->where('id_user','=',4)
+		// 	->value('mode');
 
 	}
 

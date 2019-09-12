@@ -58,7 +58,11 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
         'aogy.role' => \App\Http\Middleware\AogyRole::class,
         'tisygy.role' => \App\Http\Middleware\TisygyRole::class,
         'project.role' => \App\Http\Middleware\ProjectRole::class,

@@ -27,20 +27,13 @@ class Kernel extends ConsoleKernel
 	protected function schedule(Schedule $schedule)
 	{
 		$schedule->call(function() {
-			syslog(LOG_ERR, "Test Cron Success ");
+			Artisan::call('SendAllProjectRemainder:send_all');
+		})->dailyAt('08:00');
 
-			$projectAll = DB::table('project__list')
-				->pluck('id')
-				->toArray();
-
-			foreach ($projectAll as $id) {
-				Artisan::call('ProjectRemainder:send',[
-					'id' => $id
-				]);
-				syslog(LOG_ERR, "Loop Success " . $id);
-			}
-
-		})->dailyAt('08:00')->timezone('Asia/Jakarta');
+		$schedule->call(function () {
+			DB::table('users')
+				->update(['condition' => "off"]);
+		})->dailyAt('1:00');
 
 		$schedule->call(function () {
 			DB::table('users')
@@ -138,6 +131,11 @@ class Kernel extends ConsoleKernel
 		// 		}
 		// 	}
 		// })->everyMinute();
+<<<<<<< HEAD
+=======
+
+		
+>>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 		// $schedule->call(function (){
 		// 	$ids = DB::table('users')
 		// 		->select('id','name','hadir','location','shifting')

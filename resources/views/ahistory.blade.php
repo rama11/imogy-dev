@@ -78,7 +78,11 @@ html{
 					<li><a href="{{url('ahistory')}}">
 						<i class="fa fa-book"></i>My Attendance</a>
 					</li>
+<<<<<<< HEAD
 					@if(Auth::user()->jabatan == "1" || Auth::user()->jabatan == 5)
+=======
+					@if(Auth::user()->jabatan == "1" || Auth::user()->jabatan == 
+>>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
 						<li>
 							<a href="{{url('ateamhistory')}}">
 								<i class="fa fa-users"></i>

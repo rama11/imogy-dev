@@ -159,9 +159,7 @@
 
 								<p>
 									{{Auth::user()->name}} 
-
-									<small><i class="fa fa-circle text-success"></i> Engineer</small>	
-									
+							        <small><i class="fa fa-circle text-success"></i> Project Cordinator</small>
 								</p>
 							</li>
 							<!-- Menu Body -->
@@ -231,9 +229,7 @@
 				</a>
 				<div class="pull-left info">
 					<p>{{Auth::user()->name}}</p>
-					
-					<small><i class="fa fa-circle text-success"></i> Engineer</small>	
-
+					<small><i class="fa fa-circle text-success"></i> Project Cordinator</small>
 					
 				</div>
 			</div>

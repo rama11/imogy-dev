@@ -1,4 +1,4 @@
-@extends((Auth::user()->role == "1") ? 'layouts.admin.layout' : 'layouts.engineer.elayout')
+@extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
 
 @section('content')
 <style>
@@ -78,7 +78,7 @@ html{
 					<li><a href="{{url('ahistory')}}">
 						<i class="fa fa-book"></i>My Attendance</a>
 					</li>
-					@if(Auth::user()->role == "1")
+					@if(Auth::user()->jabatan == 1 || Auth::user()->jabatan == 5)
 						<li>
 							<a href="{{url('ateamhistory')}}">
 								<i class="fa fa-users"></i>
@@ -91,7 +91,7 @@ html{
 							Reporting
 						</a>
 						</li>
-					@endif
+					@endif	
 				</ol>
 			</section>
 			<section class="content">

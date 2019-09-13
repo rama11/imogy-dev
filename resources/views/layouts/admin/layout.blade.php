@@ -166,6 +166,10 @@
 										<small><i class="fa fa-circle text-success"></i> Engineer</small>
 									@elseif(Auth::user()->jabatan = 3)
 										<small><i class="fa fa-circle text-success"></i> Helpdesk</small>
+									@elseif(Auth::user()->jabatan = 4)
+										<small><i class="fa fa-circle text-success"></i> Project Cordinator</small>
+									@elseif(Auth::user()->jabatan = 5)
+										<small><i class="fa fa-circle text-success"></i> Super User</small>	
 									@endif
 								</p>
 							</li>
@@ -243,6 +247,10 @@
 							<small><i class="fa fa-circle text-success"></i> Engineer</small>
 						@elseif(Auth::user()->jabatan = 3)
 							<small><i class="fa fa-circle text-success"></i> Helpdesk</small>
+						@elseif(Auth::user()->jabatan = 4)
+							<small><i class="fa fa-circle text-success"></i> Project Cordinator</small>
+						@elseif(Auth::user()->jabatan = 5)
+							<small><i class="fa fa-circle text-success"></i> Super User</small>	
 						@endif
 					
 				</div>
@@ -261,9 +269,9 @@
 			<!-- sidebar menu: : style can be found in sidebar.less -->
 			
 			<ul class="sidebar-menu" data-widget="tree">
-				<li class="header" onclick="url()"></li>
-				
-				
+				<li class="header" onclick="url()">
+					Main Menu
+				</li>
 				<li class="" id="dashboard">
 					<a href="admin">
 						<i class="fa fa-dashboard"></i> <span>Dashboard</span>
@@ -275,12 +283,12 @@
 						<span>AOGY</span>
 					</a>
 				</li>
-				<li class="" id="tisygy">
+				<!-- <li class="" id="tisygy">
 					<a href="{{ url('tisygy')}}">
 						<i class="fa fa-paper-plane"></i>
 						<span>TISYGY</span>
 					</a>
-				</li>
+				</li> -->
 				<!-- @if(Auth::user()->id == 4 || Auth::user()->id == 6)
 				<li class="" id="controll">
 					<a href="{{ url('/controll')}}">

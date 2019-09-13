@@ -159,9 +159,7 @@
 
 								<p>
 									{{Auth::user()->name}} 
-
-									<small><i class="fa fa-circle text-success"></i> Engineer</small>	
-									
+						            <small><i class="fa fa-circle text-success"></i> Super User</small>    
 								</p>
 							</li>
 							<!-- Menu Body -->
@@ -231,10 +229,7 @@
 				</a>
 				<div class="pull-left info">
 					<p>{{Auth::user()->name}}</p>
-					
-					<small><i class="fa fa-circle text-success"></i> Engineer</small>	
-
-					
+						<small><i class="fa fa-circle text-success"></i> Super User</small>    
 				</div>
 			</div>
 			<!-- search form -->
@@ -265,12 +260,12 @@
 						<span>AOGY</span>
 					</a>
 				</li>
-				<!-- <li class="" id="tisygy">
+				<li class="" id="tisygy">
 					<a href="{{ url('tisygy')}}">
 						<i class="fa fa-paper-plane"></i>
 						<span>TISYGY</span>
 					</a>
-				</li> -->
+				</li>
 				<!-- @if(Auth::user()->id == 4 || Auth::user()->id == 6)
 				<li class="" id="controll">
 					<a href="{{ url('/controll')}}">
@@ -279,7 +274,7 @@
 					</a>
 				</li>
 				@endif -->
-				<!-- <li class="" id="usermanage">
+				<li class="" id="usermanage">
 					<a href="{{ url('usermanage')}}">
 						<i class="fa fa-users"></i>
 						<span>Users Management</span>
@@ -296,7 +291,7 @@
 						<i class="fa fa-location-arrow"></i>
 						<span>Set Absent Location</span>
 					</a>
-				</li> -->
+				</li>
 				<!-- <li class="" id="sycal">
 					<a href="{{ url('asycal')}}">
 						<i class="fa fa-calendar"></i>

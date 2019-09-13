@@ -26,17 +26,15 @@ class Kernel extends ConsoleKernel
 	 */
 	protected function schedule(Schedule $schedule)
 	{
-		// $schedule->command('inspire')
-		//          ->hourly();
-
 		$schedule->call(function() {
 			Artisan::call('SendAllProjectRemainder:send_all');
-		})->dailyAt('08:00');
+		})->dailyAt('08:00')->timezone('Asia/Jakarta');
 
 		$schedule->call(function () {
 			DB::table('users')
 				->update(['condition' => "off"]);
 		})->dailyAt('1:00');
+
 
 		// $schedule->call(function() {
 		// 	$text = "Test Text";
@@ -130,6 +128,12 @@ class Kernel extends ConsoleKernel
 		// 		}
 		// 	}
 		// })->everyMinute();
+		// $schedule->call(function (){
+		// 	$ids = DB::table('users')
+		// 		->select('id','name','hadir','location','shifting')
+		// 		->orderBy('shifting','DESC')
+		// 		->get()
+		// 		->toarray();
 
 		
 		// $schedule->call(function (){
@@ -138,6 +142,7 @@ class Kernel extends ConsoleKernel
 		// 		->orderBy('shifting','DESC')
 		// 		->get()
 		// 		->toarray();
+
 
 		// 	syslog(LOG_ERR, "Test Cron Success" . $ids);
 

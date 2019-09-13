@@ -152,7 +152,7 @@
 						<div class="form-group">
 							<label for="location" class="col-md-3 control-label">Jabatan</label>
 							<div class="col-md-9">
-								<select id="privilege" name="role" class="form-control" id="role">
+								<select id="privilege" name="jabatan" class="form-control" id="jabatan">
 									@foreach($privileges as $privilege)
 										<option value="{{$privilege->id}}">{{$privilege->privilege_name}}</option>
 									@endforeach
@@ -228,16 +228,6 @@
 										<option value="{{$loc->id}}">{{$loc->name}}</option>
 									@endforeach
 								</select>                                    
-							</div>
-						</div>
-						<div class="form-group{{ $errors->has('location') ? ' has-error' : '' }}">
-							<label for="location" class="col-md-3 control-label">Role</label>
-							<div class="col-md-8">
-								<select id="lokasi"  name="role" class="form-control" id="role">
-									<option value="3">Engineer</option>
-									<option value="2">Helpdesk</option>
-									<option value="1">Admin</option>
-								</select>                                 
 							</div>
 						</div>
 						<div class="form-group{{ $errors->has('location') ? ' has-error' : '' }}">

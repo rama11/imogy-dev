@@ -1,6 +1,7 @@
 <?php
  
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
@@ -12,8 +13,11 @@ use App\Mail\Ticket;
 use App\Mail\TicketMail;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+
 class AdminController extends Controller
 {
+
 	/**
 	 * Create a new controller instance.
 	 *
@@ -27,30 +31,40 @@ class AdminController extends Controller
 		$debug = DB::table('console')
 			->where('id_user','=',4)
 			->value('mode');
+
 	}
+
 	/**
 	 * Show the application dashboard.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
+
 	public function index(){
+
 		$users = DB::table('users')
 			->where('team','=',Auth::user()->team)
 			->orderBy('condition', 'desc')
 			// ->limit(9)
 			->get();
+
 		$onwork_users = DB::table('users')
 			->where('condition','=','on')
 			->count();
+
 		$offwork_users = DB::table('users')
 			->where('condition','=','off')
 			->count();	
+
 		$offwork_users = $users->count() - $onwork_users;
+
 		$data = array(
 			"onwork_users" => $onwork_users,
 			"offwork_users" => $offwork_users
 		);
+
 		$users = $users->toArray();
+
 		$late = DB::table('waktu_absen')
 			->where('tanggal','like','%-' . date('m') .'-%')
 			->where('id_user','=',auth::user()->id)
@@ -70,12 +84,14 @@ class AdminController extends Controller
 			->where('tanggal','like','%-' . date('m') .'-%')
 			->where('id_user','=',auth::user()->id)
 			->count();			
+
 		if($late == 0 && $injury == 0 && $ontime == 0 && $all == 0){
 			$late = 1;
 			$injury = 1;
 			$ontime = 1;
 			$all = 1;
 		}
+
 		$count = [
 			$late,
 			$injury,
@@ -83,6 +99,7 @@ class AdminController extends Controller
 			$late + $injury + $ontime,
 			$absen = $all - ($late + $injury + $ontime)
 		];
+
 		$persen = [
 			$late = round($late / $all * 100,0),
 			$injury = round($injury / $all * 100,0),
@@ -90,17 +107,22 @@ class AdminController extends Controller
 			$absen = 100 - ($late + $injury + $ontime),
 			$attendance = 100 - $absen
 		];
+
 		//('datas','datas2','kehadiran','persen','count','absen'));
+
 		// echo "<pre>";
 		// print_r($persen);
 		// print_r($count);
 		// echo "</pre>";
 		
+
 		return view('admin',compact('data','users','persen','count','absen'));
 	}
+
 	public function test_page(){
 		return view('test_page');
 	}
+
 	public function usermanage(){
 		$users = DB::table('users')
 			->orderBy('condition', 'desc')
@@ -119,17 +141,24 @@ class AdminController extends Controller
 		$presents_timing = DB::table('present_timing')
 			->get()
 			->toArray();
+
 		$privileges = DB::table('privilege')
 			->get();
 
+
 		// $shifting = DB::table('users')
+
 		// echo "<pre>";
 		// print_r($privileges);
 		// echo "</pre>";
+
 		// Auth::user()->name = "Rama";
+
 		// echo Auth::user()->name;
+
 		return view('usermanage',compact('users','waktu_absen','location','presents_timing','privileges','shifting'));
 	}
+
 	public function user(){
 		$users = DB::table('users')
 			->orderBy('condition', 'desc')
@@ -139,11 +168,15 @@ class AdminController extends Controller
 		$waktu_absen = DB::table('waktu_absen')
 			->get()
 			->toArray();
+
+
 		return view('data123',compact('users','waktu_absen'));
 	}
+
 	public function asycal(){
 		return view('asycal',compact('users','waktu_absen'));
 	}
+
 	public function jsonAsycal(){
 		$data = array(
 			[
@@ -203,11 +236,13 @@ class AdminController extends Controller
 				// 'borderColor'=> "#3c8dbc" //Primary (light-blue)
 			]
 		);
+
 		$data2 = DB::table('calendar')
 			->get()
 			->toArray();
 		return $data2;
 	}
+
 	public function createAsycal(Request $req){
 		DB::table('calendar')
 			->insert([
@@ -220,14 +255,17 @@ class AdminController extends Controller
 				]);
 		return $req->end;
 	}
+
 	public function location(){
 		$users = DB::table('users')
 			->orderBy('location','ASC')
 			->get()
 			->toArray();
+
 		$location = DB::table('location')
 			->get()
 			->toArray();
+
 		foreach ($users as $user) {
 			for ($i=0; $i < sizeof($location); $i++) { 
 				if($user->location == $location[$i]->id){
@@ -235,23 +273,29 @@ class AdminController extends Controller
 				}
 			}
 		}
+
 		$privileges = DB::table('privilege')
 			->get();
+
 		// echo "<pre>";
 		// print_r($users);
 		// print_r($location);
 		// echo "</pre>";
+
 		return view('location',compact('users','location','privileges'));
 	}
+
 	public function getLocation($id){
 		$users = DB::table('users')
 			// ->orderBy('location','ASC')
 			->where('id','=',$id)
 			->get()
 			->toArray();
+
 		$location = DB::table('location')
 			->get()
 			->toArray();
+
 		foreach ($users as $user) {
 			// echo $user->location . "<br>";
 			for ($i=0; $i < sizeof($location); $i++) { 
@@ -266,40 +310,56 @@ class AdminController extends Controller
 		// echo "</pre>";
 		return $users;
 	}
+
 	public function getMasuk($id){
+
 		$users = DB::table('users')
 			->where('id','=',$id)
 			->get()
 			->toArray();
+
 		$result = DB::table('present_timing')
 			->where('id',$users[0]->present_timing)
 			->value('name');
+
 		$result = [$users[0]->id,$users[0]->name,$result];
+
 		return $result;
 	}
+
 	public function getProfile($id){
 		$users = DB::table('users')
 			->where('id','=',$id)
 			->get()
 			->toArray();
+
 		return $users;
 	}
+
 	public function setMasuk(Request $request){
+
 		DB::table('users')
 			->where('id','=',$request->id)
 			->update(['present_timing' => $request->masuk]);
+
 		return redirect('usermanage')->with('status', $request->name);
 	}
+
 	public function setLocation(Request $request){
+
 		DB::table('users')
 			->where('id','=',$request->id)
 			->update(['location' => $request->location]);
+
 		echo "Id : " . $request->id . "<br>";
 		echo "Location : " . $request->location . "<br>";
 		echo "Name : " . $request->name . "<br>";
+
 		return redirect('location')->with('status', "Change location for " . $request->name . "success.");
 	}
+
 	public function addLocation(Request $request){
+
 		DB::table('location')
 			->insert([
 				'name' => $request->pleace,
@@ -307,8 +367,10 @@ class AdminController extends Controller
 				'lang' => $request->lng,
 				'radius' => '500'
 				]);
+
 		return redirect('location')->with('status', "Add location for " . $request->pleace . " success.");
 	}
+
 	public function getLocationAfter(Request $req){
 		$getProject = DB::table('project')
 			->where('id_location','=',$req->location)
@@ -317,6 +379,7 @@ class AdminController extends Controller
 		return $getProject;
 		// $req->location;
 	}
+
 	// public function project(Request $req){
 	// 	$project = DB::table('project')
 	// 		->where('id','=',$req->id)
@@ -327,12 +390,14 @@ class AdminController extends Controller
 	// 		->firs();
 	// }
 	
+
 	public function addUser(Request $request){
 		date_default_timezone_set('Asia/Jakarta');
 		
 		// $fileName = $request->gambar;
 		// $fileName = $request->file('gambar')->getClientOriginalName();
 		// $request->file('gambar')->move('img/user.png', $fileName);
+
 		
 		if($request->born == NULL){
 			$request->born = "Born";
@@ -358,7 +423,6 @@ class AdminController extends Controller
 				'updated_at' => $date,
 				'location' => $request->location,
 				'condition' => 'off',
-				'role' => $request->role,
 				'team' => $request->team,
 				'gender' => $request->gender,
 				'jabatan' => $request->jabatan,
@@ -371,34 +435,41 @@ class AdminController extends Controller
 				'foto' => 'img/user.png',
 				'present_timing' => '1'
 				]);
+
 		return redirect('usermanage')->with('status', "Add User for " . $request->name . " success.");
 	}
 
 	public function addUserShifting(Request $request){
 		$date = date('Y-m-d h:i:s', time());
-		if(DB::table('detail_users')->where('id_user',$request->id_user,)->where('on_project',$request->on_project)->get() == NULL){
+		if(DB::table('detail_users')->where('id_user',$request->id_user)->where('on_project',$request->on_project)->get() == NULL){
 			DB::table('detail_users')
 			->insert([
 				'id_user' => $request->id_user,
 				'on_project' => $request->on_project,
 				]);
 			return redirect('schedule')->with('message', "Add User " . " success.");
+
 		} else {
 			DB::table('detail_users')
 			->where('id_user','=',$request->id_user)
 			->delete();
+
 			DB::table('detail_users')
 			->insert([
 				'id_user' => $request->id_user,
 				'on_project' => $request->on_project,
 				]);
+
 			return redirect('schedule')->with('message', "Add User " . " success.");
+
 		}
 		
 	}
+
 	
 	public function absen(){
 		// if(Auth::user()->shifting == 1){
+
 		// } else {
 			date_default_timezone_set("Asia/Jakarta");
 			$location = Auth::user()->location;
@@ -406,10 +477,14 @@ class AdminController extends Controller
 				->where('id','=',$location)
 				->get()
 				->first();
+
 			$id = Auth::user()->id;
+
+
 			
 			$hari_malam = date('d') - 1;
 			$hari_malam = date('Y/m/') . $hari_malam;
+
 			$pulang_malam = DB::table('waktu_absen')
 				->where('id_user','=',$id)
 				->where('tanggal','=',$hari_malam)
@@ -429,6 +504,7 @@ class AdminController extends Controller
 				->where('id_user','=',Auth::user()->id)
 				->where('start','LIKE',date('Y-m-d') . '%')
 				->first();			
+
 			// echo $pulang . "<br>";
 			// echo $pulang_malam . "<br>";
 			// echo $hari_malam . "<br>";
@@ -442,6 +518,7 @@ class AdminController extends Controller
 			// print_r($belum);	
 			// echo "</pre>";
 			
+
 			if($belum == NULL){
 				if($pulang_malam == "22:00:00"){
 					if(date('Y/m/d') != $hari_malam){
@@ -451,6 +528,7 @@ class AdminController extends Controller
 							->where('id_user','=',$id)
 							->where('tanggal','=',$hari_malam)
 							->value('late');
+
 						if($kemaren == "On-Time"){
 							$keterangan = 1;
 						} else if($kemaren == "Injury-Time") {
@@ -461,16 +539,19 @@ class AdminController extends Controller
 							$keterangan = 4;
 						}
 						$sudah = "sudah";
+
 						$pulang = DB::table('waktu_absen')
 							->where('id_user','=',$id)
 							->where('tanggal','=',$hari_malam)
 							->value('pulang');
+
 						if($pulang == "" ){
 							$sudah_pulang = "belum";
 						} else {
 							$sudah_pulang = "sudah";
 						}
 					}
+
 				} else {
 					$sudah = "belum";
 					$sudah_pulang = "belum";
@@ -493,32 +574,42 @@ class AdminController extends Controller
 					->where('id_user','=',$id)
 					->where('tanggal','=',date('Y/m/d'))
 					->value('pulang');
+
 				if($pulang == "" ){
 					$sudah_pulang = "belum";
 				} else {
 					$sudah_pulang = "sudah";
 					// $tidakShifting = "true";
+
 				}
+
 			}
+
 			if(Auth::user()->shifting == 1 ){
 				$getSchedule = DB::table('shifting')
 					->where('id_user','=',Auth::user()->id)
 					->where('start','LIKE',date('Y-m-d') . '%')
 					->first();
+
 				// echo "<pre>";
 				// print_r($getSchedule);
 				// echo "</pre>";
+
 				if($getSchedule == NULL){
+
 					// $tidakShifting = true;
 					$sudah = "sudah";
 					$keterangan = 6;
+
 				} else {
 				
 					$liburCondition = substr($getSchedule->start, 11,5);
+
 					if($liburCondition == "Libur"){
 						$sudah = "sudah";
 						$keterangan = 5;
 	
+
 					}
 				}
 			}
@@ -527,10 +618,12 @@ class AdminController extends Controller
 			return view('absen',compact('sudah', 'keterangan', 'layout', 'sudah_pulang', 'point'));
 				
 	}
+
 	public function createPresenceLocation(Request $request){
 		$id_absen = DB::table('waktu_absen')
 			->orderBy('id','DESC')	
 			->value('id');
+
 		DB::table('absen_location')
 			->insert([
 				'id' => NULL,
@@ -540,54 +633,70 @@ class AdminController extends Controller
 				'lng' => $request->lng
 			]);
 	}
+
 	public function raw($id){
 		date_default_timezone_set("Asia/Jakarta");
+
 		$hari_malam = date('d') - 1;
 		$hari_malam = date('Y/m/') . $hari_malam;
+
 		$pulang_malam = DB::table('waktu_absen')
 			->where('id_user','=',$id)
 			->where('tanggal','=',$hari_malam)
 			->value('hadir');
+
 		echo "Jadwal masuk kemaren " . $pulang_malam . "<br>Hari Malam : " . $hari_malam . "<br><br>";
+
 		$done = DB::table('waktu_absen')
 			->where('id_user','=',$id)
 			->where('tanggal','=',date('Y/m/d'))
 			->count();
+
 		$con = "on";
 		$condition = DB::table('users')
 			->where('id','=',$id)
 			->update(['condition' => $con]);	
+
 		// if ($done == 0 || Auth::user()->id == "4") {
 		if ($done == 0) {
+
 			echo "Online - Offline<br>";
 			echo "--Mula " . Auth::user()->condition;
+
 			// if(Auth::user()->condition == "off"){
 				
 			// } else {
 				
 			// }
+
 			echo "<br>--Akhirnya " . $con;
 			$location = Auth::user()->location;
 			echo  "<br><br>Location : " . $location . "<br>";
+
 			date_default_timezone_set("Asia/Jakarta");
 			echo "<br> Jam sekarang : " . date('H:i:s') . " <br>";
 			echo "Harus hadir : " . Auth::user()->hadir . "<br><br>";
 			
 			echo "Menggunakan present timing : " . Auth::user()->present_timing . "<br><br>";
+
 			$now = time();
 			// $now = time() - 3600;
+
 			if(Auth::user()->shifting == 0)
 			{
 				echo "<b>Non-Shifting</b><br>";
 				$on_time = DB::table('present_timing')
 					->where('id',Auth::user()->present_timing)
 					->value('on_time');
+
 				$injury_time = DB::table('present_timing')
 					->where('id',Auth::user()->present_timing)
 					->value('injury_time');
+
 				$late_time = DB::table('present_timing')
 					->where('id',Auth::user()->present_timing)
 					->value('late_time');
+
 				if($now <= strtotime($on_time)) {
 					$late = "On-Time";
 					echo $now . "<br>";
@@ -602,6 +711,7 @@ class AdminController extends Controller
 					echo $now . "<br>";
 					echo "Late-Time<br>";
 				}
+
 				$insert = DB::table('waktu_absen')
 					->insert([
 						'id' => NULL,
@@ -612,23 +722,29 @@ class AdminController extends Controller
 						'location' => $location,
 						'late' => $late
 					]);
+
 			} else {
 				$getSchedule = DB::table('shifting')
 					->where('id_user','=',$id)
 					->where('start','LIKE',date('Y-m-d') . '%')
 					->first();
+
 				echo "<b>Shifting</b><br>";
+
 				echo "<pre>";
 				print_r($getSchedule);
 				echo $now;
 				echo "</pre>";
+
 				if($getSchedule){
+
 					$masuk = date('H:i:s',strtotime($getSchedule->start) - 25200);
 					// $masuk = "22:40:00";
 					echo "asdfadsasdfads " . $masuk;
 					echo "<br> Jadwalnya " . date('H:i:s',strtotime($masuk)) . " " . strtotime($masuk);
 					echo "<br> Sekarangg " . date('H:i:s',time()) . " " . time();
 					echo "<br>";
+
 					if($now <= strtotime($masuk) + 60){
 						$late = "On-Time";
 					} elseif ($now > strtotime($masuk) + 60 && $now <= strtotime($masuk) + 930) {
@@ -636,6 +752,7 @@ class AdminController extends Controller
 					} else {
 						$late = "Late";
 					}
+
 					$insert = DB::table('waktu_absen')
 					->insert([
 						'id' => NULL,
@@ -646,6 +763,7 @@ class AdminController extends Controller
 						'location' => $location,
 						'late' => $late
 					]);
+
 				} else {
 					$late = "On-Time";
 					$insert = DB::table('waktu_absen')
@@ -659,19 +777,24 @@ class AdminController extends Controller
 						'late' => $late
 					]);
 				}
+
 			}
 			echo "<br>" . date('Y-m-d');
 			echo "<br>" . $late;
+
 		} else {
+
 			echo "Anda sudah absen hari ini ";
 			$pulang = DB::table('waktu_absen')
 				->where('id_user','=',$id)
 				->where('tanggal','=',date('Y/m/d'))
 				->value('pulang');
+
 			$pulang2 = DB::table('waktu_absen')
 				->where('id_user','=',$id)
 				->where('tanggal','=',$hari_malam)
 				->value('pulang');
+
 			$sql = DB::table('waktu_absen')
 				->where('id_user','=',$id)
 				->where('tanggal','=',$hari_malam)
@@ -682,19 +805,25 @@ class AdminController extends Controller
 			$condition = DB::table('users')
 				->where('id','=',$id)
 				->update(['condition' => $con]);	
+
 			echo "<br> sql pulang2 : ";
 			echo($sql);
 			echo "<br> pulang : " . $pulang;
 			echo "<br> pulang2 : " . $pulang2;
+
 			if($pulang == null || $pulang2 == null){
+
 				$shifting = DB::table('users')
 					->where('id',$id)
 					->value('shifting');
+
 				if($shifting == 1){
 					echo "<br>Shifting --";
+
 					if($pulang2 != null){
 						$Date = date('Y-m-d');
 						$hari_malam2 = date('Y-m-d', strtotime($Date. ' - 1 days'));
+
 						$waktu_pulang = DB::table('shifting')
 							->where('id_user','=',$id)
 							->where('start','LIKE',$hari_malam2 . "%")
@@ -702,14 +831,18 @@ class AdminController extends Controller
 							->value('end');
 							
 						$harus_pulang = substr(substr($waktu_pulang,11),0,8);
+
 						$id = DB::table('waktu_absen')
 							->where('id_user','=',$id)
 							->where('tanggal','=',$hari_malam)
 							->value('id');
+
 						echo $id;
+
 						echo "<br> Dia harus absen pulang malam";
 						
 						echo " -- " . $hari_malam . " -- " . $id;
+
 						DB::table('waktu_absen')
 							->where('id',$id)
 							->update(['pulang' => date('H:i:s',time()),'harus_pulang' => $harus_pulang]);
@@ -725,52 +858,69 @@ class AdminController extends Controller
 							->where('id_user','=',$id)
 							->where('tanggal','=',date('Y/m/d'))
 							->value('id');
+
 						echo $harus_pulang;
+
 						echo "<br> Dia tidak pulang malam";
+
 						DB::table('waktu_absen')
 							->where('id',$id)
 							->update(['pulang' => date('H:i:s',time()),'harus_pulang' => $harus_pulang]);
 					}
+
 				} else {
+
 					if($id == 40){
 						$pulangnya = "17:30:00";
 					} else {
 						$pulangnya = "16:30:00";
 					}
+
 					$id = DB::table('waktu_absen')
 						->where('id_user','=',$id)
 						->where('tanggal','=',date('Y/m/d'))
 						->value('id');
+
+
 					DB::table('waktu_absen')
 						->where('id',$id)
 						->update(['pulang' => date('H:i:s',time()), 'harus_pulang' => $pulangnya]);
 				}
+
 			} else {
 				echo "<br>Anda sudah absen pulang hari ini ";
 			}
 		}
 	}
+
 	public function getRecentTicket(){
 		$data = DB::table('Ticket')
 			->orderBy('nomor','DESC')
 			->get();
+
 		return $data;
 	}
+
 	public function announcement(){
 		return view('announcement');
 	}
+
 	public function historydet(){
+
 		$id = Auth::user()->id;
 		
 		$tanggal = date('Y') . "-" . date('m') . "%";
+
 		
 		$datadet = DB::table('waktu_absen')
 			->where('id_user','=',$id)
 			->where('tanggal','like',$tanggal)
 			->orderBy('tanggal','ASC')
 			->orderBy('jam','ASC')
+
 			->get()
 			->toarray();
+
 			
 	
 			$kehadiran = DB::table('users')
@@ -854,7 +1004,9 @@ class AdminController extends Controller
 			];
 		
 			return view('ahistory2',compact('datadet','datas2','kehadiran','persen','count','absen'));
+
 	}
+
 	public function history(){
 		// echo "asdfas";
 		$id = Auth::user()->id;
@@ -868,6 +1020,7 @@ class AdminController extends Controller
 			->limit(4)
 			->get()
 			->toarray();
+
 		$kehadiran = DB::table('users')
 			->where('id_user','=',$id)
 			->join('waktu_absen','waktu_absen.id_user','=','users.id')
@@ -883,6 +1036,7 @@ class AdminController extends Controller
 			$datas = array_reverse($datas);
 			$kehadiran = array_slice(array_reverse($kehadiran), 0, count($datas));
 		}
+
 		$datas2 = DB::table('waktu_absen')
 			->where('id_user','=',$id)
 			->join('location','waktu_absen.location','=','location.id')
@@ -891,6 +1045,7 @@ class AdminController extends Controller
 			->get()
 			->toarray();
 		$datas2 = array_reverse($datas2);
+
 		$location = DB::table('location')
 			->get()
 			->toArray();
@@ -902,6 +1057,7 @@ class AdminController extends Controller
 				}
 			}
 		}
+
 		$late = DB::table('waktu_absen')
 			->where('tanggal','like',$tanggal)
 			->where('id_user','=',auth::user()->id)
@@ -921,6 +1077,7 @@ class AdminController extends Controller
 			->where('tanggal','like',$tanggal)
 			->where('id_user','=',auth::user()->id)
 			->count();			
+
 		$count = [
 			$late,
 			$injury,
@@ -928,12 +1085,14 @@ class AdminController extends Controller
 			$late + $injury + $ontime,
 			$absen = $all - ($late + $injury + $ontime)
 		];
+
 		if($late == 0 && $injury == 0 && $ontime == 0 && $all == 0){
 			$late == 1 ;
 			$injury == 1 ;
 			$ontime == 1 ;
 			$all = 1;
 		}
+
 		$persen = [
 			$late = round($late / $all * 100,0),
 			$injury = round($injury / $all * 100,0),
@@ -941,7 +1100,12 @@ class AdminController extends Controller
 			$absen = 100 - ($late + $injury + $ontime),
 			$attendance = 100 - $absen
 		];
+
+
+
+
 		// $absen = 0;	
+
 		// echo'<pre>';
 		// print_r($datas);
 		// echo$late."<br>";
@@ -953,6 +1117,7 @@ class AdminController extends Controller
 		// echo'</pre>';
 		return view('ahistory',compact('datas','datas2','kehadiran','persen','count','absen'));
 	}
+
 	public function teamhistory(){
 		// echo "asdfas";
 		$id = Auth::user()->id;
@@ -972,27 +1137,33 @@ class AdminController extends Controller
 			->get()
 			->toarray();
 		$datas2 = array_reverse($datas2);
+
 		$users = DB::table('users')
 			->select('id','name','team')
 			->where('team','=',AUth::user()->team)
 			->orderBy('location')
 			->get()
 			->toArray();
+
 		$status;
 		foreach($users as $user){
 			$status[] = $user->name;
 		}
+
 		foreach($users as $user){
 			$IDUser[] = $user->id;
 		}
+
 		$ids = DB::table('users')
 			->select('id','name','hadir','location')
 			->get()
 			->toarray();
+
 		$done = DB::table('waktu_absen')
 			->where('tanggal','=',date('Y/m/d'))
 			->get()
 			->toarray();
+
 		foreach ($done as $key => $value) {
 			foreach ($ids as $key2 => $value2) {
 				if($value->id_user == $value2->id){
@@ -1003,12 +1174,16 @@ class AdminController extends Controller
 				}
 			}
 		}
+
 		foreach ($ids as $key => $value) {
 			$ids[$key] = $value->id;
 		}
+
 		// echo "<pre>";
 		// print_r($ids);
 		// echo "</pre>";
+
+
 		if(!isset($absenToday)){
 			// echo "sudah absen semua";
 			$absenToday = array();
@@ -1065,17 +1240,20 @@ class AdminController extends Controller
 						// echo "<br>Dia tidak Libur";
 						$problem[$key] = "Belum absen";
 					}
+
 					// echo date_format(date_add(date_create($hours[0]->hadir),date_interval_create_from_date_string("8 hours")),'H:i:s') . " -- " . date('H:i:s');
 					
 				}
 			}
 		}
+
 		
 		// echo "<pre>";
 		// print_r($absenToday);
 		// print_r($problem);
 		// print_r($done);
 		// echo "</pre>";
+
 		foreach ($status as $key => $stat) {
 			$all = DB::table('waktu_absen')
 				->where('id_user','=',$IDUser[$key])
@@ -1100,12 +1278,15 @@ class AdminController extends Controller
 				->where('late','=',"injury-time")
 				->get()
 				->toarray();
+
 			$where =  DB::table('users')
 				->join('location','users.location','=','location.id')
 				->where('users.id','=',$IDUser[$key])
 				->select('location.name')
 				->get()
 				->toarray();
+
+
 			$var[$stat]["all"] = sizeof($all);
 			$var[$stat]["late"] = sizeof($late);
 			$var[$stat]["ontime"] = sizeof($ontime);
@@ -1113,6 +1294,7 @@ class AdminController extends Controller
 			$var[$stat]["where"] = $where[0]->name;
 			$var[$stat]["id"] = $IDUser[$key];
 		}
+
 		foreach ($datas2 as $data) {
 			// echo $user->location . "<br>";
 			for ($i=0; $i < sizeof($users); $i++) { 
@@ -1121,6 +1303,7 @@ class AdminController extends Controller
 				}
 			}
 		}
+
 		foreach ($datas as $data) {
 			// echo $user->location . "<br>";
 			for ($i=0; $i < sizeof($users); $i++) { 
@@ -1129,6 +1312,7 @@ class AdminController extends Controller
 				}
 			}
 		}
+
 		$late = DB::table('waktu_absen')
 			->where('tanggal','like','%' . date('y') . '-' . date('m') .'-%')
 			->where('late','=','Late')
@@ -1144,6 +1328,7 @@ class AdminController extends Controller
 		$all = DB::table('waktu_absen')
 			->where('tanggal','like','%' . date('y') . '-' . date('m') .'-%')
 			->count();			
+
 		$count = [
 			$late,
 			$injury,
@@ -1151,12 +1336,14 @@ class AdminController extends Controller
 			$late + $injury + $ontime,
 			$all - ($late + $injury + $ontime)
 		];
+
 		if($late == 0 && $injury == 0 && $ontime == 0 && $all == 0){
 			$late == 1 ;
 			$injury == 1 ;
 			$ontime == 1 ;
 			$all = 1;
 		}
+
 		$late = round($late / $all * 100,0);
 		$injury = round($injury / $all * 100,0);
 		$ontime = round($ontime / $all * 100,0);
@@ -1172,6 +1359,7 @@ class AdminController extends Controller
 			$absen = 100 - ($late + $injury + $ontime);
 			$attendance = 100 - $absen;
 		}
+
 		// echo $late . "<br>";
 		// echo $injury . "<br>";
 		// echo $ontime . "<br>";
@@ -1188,6 +1376,7 @@ class AdminController extends Controller
 		// echo "</pre>";
 		return view('admin.teamhistory',compact('datas','datas2','var','status','late','injury','ontime','count','absen','attendance','absenToday','ids','problem'));
 	}
+
 	public function auserhistory ($id,$start = 0,$end = 0){
 	
 		if($start == 0 && $end == 0){
@@ -1209,6 +1398,7 @@ class AdminController extends Controller
 				->toarray();
 			$datas = $this->getAbsen($start,$end,$id)->toarray();
 		}
+
 		$kehadiran = DB::table('users')
 			->where('id_user','=',$id)
 			->join('waktu_absen','waktu_absen.id_user','=','users.id')
@@ -1226,9 +1416,11 @@ class AdminController extends Controller
 			$datas = array_reverse($datas);
 			$kehadiran = array_slice(array_reverse($kehadiran), 0, count($datas));
 		}
+
 		$location = DB::table('location')
 			->get()
 			->toArray();
+
 		foreach ($datas as $data) {
 			// echo $user->location . "<br>";
 			for ($i=0; $i < sizeof($location); $i++) { 
@@ -1237,10 +1429,12 @@ class AdminController extends Controller
 				}
 			}
 		}
+
 		$name = DB::table('users')
 			->where('id','=',$id)
 			->get();
 		$name = $name[0]->name;
+
 		if($start != 0 && $end != 0){
 			$late = DB::table('waktu_absen')
 				->where('tanggal','>=',$start)
@@ -1286,6 +1480,7 @@ class AdminController extends Controller
 				->where('id_user','=',$id)
 				->count();
 		}
+
 		$count = [
 			$late,
 			$injury,
@@ -1293,15 +1488,18 @@ class AdminController extends Controller
 			$all - ($late + $injury + $ontime),
 			$late + $injury + $ontime
 		];
+
 		if($late == 0 && $injury == 0 && $ontime == 0 && $all == 0){
 			$late == 1 ;
 			$injury == 1 ;
 			$ontime == 1 ;
 			$all = 1;
 		}
+
 		$late = round($late / $all * 100,1);
 		$injury = round($injury / $all * 100,1);
 		$ontime = round($ontime / $all * 100,1);
+
 		if ($all != 0){
 			$status = "absen";
 			$absen = 100;
@@ -1315,13 +1513,16 @@ class AdminController extends Controller
 			$absen = 100 - ($late + $injury + $ontime);
 			$attendance = 100 - $absen;
 		}
+
 		$data = [$count,$late,$injury,$ontime,$absen,$name,$datas,$kehadiran,$id,$attendance,$status];
 		// echo "<pre>";
 		// print_r($all);
 		// echo "</pre>";
 		return $data;
 	}
+
 	function download($id){
+
 		$datas = DB::table('waktu_absen')
 			->where('id_user','=',$id)
 			->where('tanggal','like','%-' . date('m') .'-%')
@@ -1336,9 +1537,11 @@ class AdminController extends Controller
 			->orderBy('jam','ASC')
 			->get()
 			->toarray();
+
 		$location = DB::table('location')
 			->get()
 			->toArray();
+
 		foreach ($datas as $data) {
 			// echo $user->location . "<br>";
 			for ($i=0; $i < sizeof($location); $i++) { 
@@ -1347,6 +1550,7 @@ class AdminController extends Controller
 				}
 			}
 		}
+
 		$late = DB::table('waktu_absen')
 			->where('tanggal','like','%-' . date('m') .'-%')
 			->where('id_user','=',$id)
@@ -1366,6 +1570,7 @@ class AdminController extends Controller
 			->where('tanggal','like','%-' . date('m') .'-%')
 			->where('id_user','=',$id)
 			->count();
+
 			
 		$count = [
 			$late,
@@ -1374,6 +1579,7 @@ class AdminController extends Controller
 			0,
 			$all
 		];
+
 		$late = round($late / $all * 100,1);
 		$injury = round($injury / $all * 100,1);
 		$ontime = round($ontime / $all * 100,1);
@@ -1381,19 +1587,25 @@ class AdminController extends Controller
 		$name = DB::table('users')
 			->where('id','=',$id)
 			->get();
+
 		$name = $name[0]->name;
+
 		// echo "<pre>";
 		// print_r($datas);
 		// echo "</pre>";
+		
 		$adsen = 0;
 		$tittle = 'My Attendence';
 		$pdf = PDF::loadView('pdf', compact('datas','kehadiran','count','name','absen'));
 		return $pdf->stream($tittle .".pdf");
 	}
+
 	public function changeMonth(Request $req){
 		return $this->schedule($req->start);
 	}
+
 	public function schedule ($month = "") {
+
 		$nameUsers = DB::table('users')
 			->where('shifting', 'LIKE', '%1%')
 			->get();
@@ -1411,11 +1623,13 @@ class AdminController extends Controller
 			->select('users.id','users.name','project.project','detail_users.on_project')
 			->get()
 			->toArray();
+
 		if($month == ""){
 			$when = date('Y-m');
 		} else {
 			$when = $month;
 		}
+
 		foreach ($users as $user) {
 			$user->shift_malam = 0;$user->shift_sore = 0;$user->shift_pagi = 0;$user->shift_libur = 0;
 			
@@ -1436,38 +1650,49 @@ class AdminController extends Controller
 					$user->shift_libur++;
 			}
 		}
+
 		$projects = DB::table('project')
 			->get()
 			->toArray();
+
 		if($month == ""){
-			return view('admin.schedule',compact('users','projects','nameUsers','nameUsersShif','nameUsersShif2'));
+			return view('schedule',compact('users','projects','nameUsers','nameUsersShif','nameUsersShif2'));
 		} else {
 			return $users;
 		}
+
 		// echo "<pre>";
 		// print_r($projects);
 		// print_r($users);
 		// echo "</pre>";
+
+
 	}
+
 	function getScheduleAll (){
 		$datas = DB::table('shifting')
 			->orderBy('start')
 			->get()
 			->toArray();
+
 		$user_detail = DB::table('detail_users')
 			->join('project','project.id','=','detail_users.on_project')
 			->get()
 			->toArray();
+
 		return json_encode($datas);
 	}
+
 	function getScheduleProject ($id){
 		$data = DB::table('shifting')
 			->join('detail_users','detail_users.id_user','=','shifting.id_user')
 			->where('detail_users.on_project','=',$id)
 			->get()
 			->toArray();
+
 		return json_encode($data);
 	}
+
 	function getScheduleSelected (Request $req){
 		$data = DB::table('shifting')
 			->where('id_user','=',$req->idUser)
@@ -1476,6 +1701,7 @@ class AdminController extends Controller
 			->toArray();
 		return json_encode($data);
 	}
+
 	public function crateSchedule (Request $req){
 		$user = DB::table('users')->where("name","LIKE","%" . $req->name)->first();
 		// echo "title : " . $req->title . "<br>";
@@ -1484,6 +1710,7 @@ class AdminController extends Controller
 		// echo "shift : " . $req->shift . "<br>";
 		// echo "name : " . $req->name . "<br>";
 		// echo "id : " . $user->id . "<br>";
+
 		DB::table('shifting')
 			->insert(
 				[
@@ -1499,15 +1726,19 @@ class AdminController extends Controller
 					
 				]
 			);
+
 		return DB::table('shifting')->orderBy('id','DESC')->first()->id;
 	}
+
 	public function deleteSchedule ($id) {
 		DB::table('shifting')
 			->where('id','=',$id)
 			->delete();
 	}
+
 	function changeAbsent(Request $req,$id){
 		echo $id . " alasan " . $req->alasan;
+
 		if($req->alasan == "Libur"){
 			echo "<br>Dia Pengen Libur";
 			DB::table('waktu_absen')
@@ -1521,33 +1752,36 @@ class AdminController extends Controller
 				->update(['late' => $req->alasan]);
 			echo "<br>Dia Tidak Libur";
 		}
+
 		return redirect()->back();		
 	}
 	
 	function editProfile(Request $request){
+
 	if($request->name == NULL){
 			$request->name = Auth::user()->name;
 		}else if ($request->email == NULL){
 			$request->email = Auth::user()->email;
-		}else if ($request->role == NULL){
-			$request->role = Auth::user()->jabatan;
+		}else if ($request->jabatan == NULL){
+			$request->jabatan = Auth::user()->jabatan;
 		}else if ($request->shifting == NULL){
 			$request->shifting = Auth::user()->shifting;
 		}else {
 			DB::table('detail_users')
 				->where('id_user','=',$request->id)
 				->delete();
-			DB::table('shifting')
-				->where('id_user','=',$request->id)
-				->delete();
+			// DB::table('shifting')
+			// 	->where('id_user','=',$request->id)
+			// 	->delete();
 			DB::table('users')
 			->where('id','=',$request->id)
 			->update([
 				"name" => $request->name,
 				"email" => $request->email,
-				"jabatan" => $request->role,
+				"jabatan" => $request->jabatan,
 				"shifting" => $request->shifting
 			]);
+
 				return redirect()->back();
 			}
 	if(DB::table('users')->where('id','=',$request->id)->where('shifting','=',0 )){				
@@ -1556,7 +1790,7 @@ class AdminController extends Controller
 			->update([
 				"name" => $request->name,
 				"email" => $request->email,
-				"jabatan" => $request->role,
+				"jabatan" => $request->jabatan,
 				"shifting" => $request->shifting
 			]);
 			return redirect()->back();
@@ -1627,6 +1861,7 @@ class AdminController extends Controller
         }
 		
 	}
+
 	function changePassword(Request $req){
 		// $update = DB::table('users')
 		// 			->where('id','=',$req->id)
@@ -1643,47 +1878,101 @@ class AdminController extends Controller
 				return redirect()->back()->with('success','Password change successful');
 			} else {
 				return redirect()->back()->with('error','Password change unsuccessful');
+
 			}
 		} else {
 			return redirect()->back()->with('error','Wrong password');
+
 		}
 	}
+
 	public function areport(){
 		
+
 		return view('areport');
 	}
+
 	public function getReport(Request $req){
 		// echo "<pre>";
 		// echo $req->start . "<br>";
 		// echo $req->end;
 		// echo "</pre>";
+
 		$query = DB::table('waktu_absen')
 			->where('tanggal','>=',$req->start)
 			->where('tanggal','<=',$req->end)
-			->where('id_user','<>',32)
-			->where('id_user','<>',35)
-			->where('id_user','<>',74)
-			->where('id_user','<>',76)
+
+			// ->orWhere('id_user','=',47)
+			// ->orWhere('id_user','=',77)
+			// ->orWhere('id_user','=',80)
+			// ->orWhere('id_user','=',78)
+			// ->orWhere('id_user','=',41)
+			// ->orWhere('id_user','=',46)
+			// ->orWhere('id_user','=',75)
+			// ->orWhere('id_user','=',79)
+
+			// ->orWhere('id_user','=',40)
+			// ->orWhere('id_user','=',31)
+			// ->orWhere('id_user','=',33)
+			// ->orWhere('id_user','=',34)
+			// ->orWhere('id_user','=',36)
+			// ->orWhere('id_user','=',45)
+
+			// ->orWhere('id_user','=',4)
+			// ->orWhere('id_user','=',6)
+			// ->orWhere('id_user','=',7)
+			// ->orWhere('id_user','=',26)
+			// ->orWhere('id_user','=',27)
+			// ->orWhere('id_user','=',28)
+			// ->orWhere('id_user','=',23)
+			// ->orWhere('id_user','=',81)
+
 			->get()
 			->toArray();
+
 		$users = DB::table('users')
 			->select('id','name','team')
-			// ->where('team','=',Auth::user()->team)
-			->where('id','<>',32)
-			->where('id','<>',35)
-			->where('id','<>',74)
-			->where('id','<>',76)
+
+			// ->orWhere('id','=',47)
+			// ->orWhere('id','=',77)
+			// ->orWhere('id','=',80)
+			// ->orWhere('id','=',78)
+			// ->orWhere('id','=',41)
+			// ->orWhere('id','=',46)
+			// ->orWhere('id','=',75)
+			// ->orWhere('id','=',79)
+
+			// ->orWhere('id','=',40)
+			// ->orWhere('id','=',31)
+			// ->orWhere('id','=',33)
+			// ->orWhere('id','=',34)
+			// ->orWhere('id','=',36)
+			// ->orWhere('id','=',45)
+
+			// ->orWhere('id','=',4)
+			// ->orWhere('id','=',6)
+			// ->orWhere('id','=',7)
+			// ->orWhere('id','=',26)
+			// ->orWhere('id','=',27)
+			// ->orWhere('id','=',28)
+			// ->orWhere('id','=',23)
+			// ->orWhere('id','=',81)
+			
 			->orderBy('location')
 			->get()
 			->toArray();
+
 		$status;
 		foreach($users as $user){
 			$status[] = $user->name;
 		}
+
 		foreach($users as $user){
 			$IDUser[] = $user->id;
 		}
+
 		foreach ($status as $key => $stat) {
+
 			$all = DB::table('waktu_absen')
 				->where('id_user','=',$IDUser[$key])
 				->where('tanggal','>=',$req->start)
@@ -1720,12 +2009,15 @@ class AdminController extends Controller
 				->where('late','<>',"on-time")
 				->get()
 				->toarray();
+
 			$where =  DB::table('users')
 				->join('location','users.location','=','location.id')
 				->where('users.id','=',$IDUser[$key])
 				->select('location.name')
 				->get()
 				->toarray();
+
+
 			$var[$stat]["all"] = sizeof($all);
 			$var[$stat]["all"] = sizeof($late) + sizeof($ontime) + sizeof($injury);
 			$var[$stat]["late"] = sizeof($late);
@@ -1735,6 +2027,7 @@ class AdminController extends Controller
 			$var[$stat]["where"] = $where[0]->name;
 			$var[$stat]["id"] = $IDUser[$key];
 		}
+
 		if($req->pdf){
 			$summary[0] = 0; $summary[1] = 0; $summary[2] = 0; $summary[3] = 0; $summary[4] = 0;
 			foreach ($var as $key => $val) {
@@ -1746,6 +2039,7 @@ class AdminController extends Controller
 			$summary[4] = $summary[0] + $summary[1] + $summary[2];
 			$data['start'] = $req->startDate;
 			$data['end'] = $req->endDate;
+
 			foreach ($IDUser as $key => $value) {
 				$details [] = $this->auserhistory($value,$req->start,$req->end);
 				foreach ($details as $detail) {
@@ -1757,6 +2051,7 @@ class AdminController extends Controller
 				}
 			}
 			
+
 			$tittle = 'Attandance Report ' . $req->startDate . ' to ' . $req->endDate;
 			$pdf = PDF::loadView('pdf2',compact('var','summary','data','details','tittle'));
 			return $pdf->stream($tittle ."Report " . $data['start'] . " to " . $data['end'] . " .pdf");
@@ -1778,16 +2073,19 @@ class AdminController extends Controller
 			// return $data;
 		}
 	}
+
 	public function getReportPerUser(Request $req){
 		// echo "<pre>";
 		// echo $req->start . "<br>";
 		// echo $req->end;
 		// echo "</pre>";
+
 		$query = DB::table('waktu_absen')
 			->where('tanggal','>=',$req->start)
 			->where('tanggal','<=',$req->end)
 			->get()
 			->toArray();
+
 		$users = DB::table('users')
 			->select('id','name','team')
 			->where('team','=',Auth::user()->team)
@@ -1795,14 +2093,18 @@ class AdminController extends Controller
 			->orderBy('location')
 			->get()
 			->toArray();
+
 		$status;
 		foreach($users as $user){
 			$status[] = $user->name;
 		}
+
 		foreach($users as $user){
 			$IDUser[] = $user->id;
 		}
+
 		foreach ($status as $key => $stat) {
+
 			$all = DB::table('waktu_absen')
 				->where('id_user','=',$IDUser[$key])
 				->where('tanggal','>=',$req->start)
@@ -1839,12 +2141,15 @@ class AdminController extends Controller
 				->where('late','<>',"on-time")
 				->get()
 				->toarray();
+
 			$where =  DB::table('users')
 				->join('location','users.location','=','location.id')
 				->where('users.id','=',$IDUser[$key])
 				->select('location.name')
 				->get()
 				->toarray();
+
+
 			$var[$stat]["all"] = sizeof($all);
 			$var[$stat]["all"] = sizeof($late) + sizeof($ontime) + sizeof($injury);
 			$var[$stat]["late"] = sizeof($late);
@@ -1854,6 +2159,7 @@ class AdminController extends Controller
 			$var[$stat]["where"] = $where[0]->name;
 			$var[$stat]["id"] = $IDUser[$key];
 		}
+
 		if($req->pdf){
 			$summary[0] = 0; $summary[1] = 0; $summary[2] = 0; $summary[3] = 0; $summary[4] = 0;
 			foreach ($var as $key => $val) {
@@ -1865,6 +2171,7 @@ class AdminController extends Controller
 			$summary[4] = $summary[0] + $summary[1] + $summary[2];
 			$data['start'] = $req->startDate;
 			$data['end'] = $req->endDate;
+
 			foreach ($IDUser as $key => $value) {
 				$details [] = $this->auserhistory($value,$req->start,$req->end);
 				foreach ($details as $detail) {
@@ -1888,12 +2195,15 @@ class AdminController extends Controller
 			return $var;
 		}
 	}
+
 	public function matikan(){
+
 		$ids = DB::table('users')
 			->select('id','name','hadir','location','shifting')
 			->orderBy('shifting','DESC')
 			->get()
 			->toarray();
+
 				// GMT +6
 		// date_default_timezone_set("Asia/Dhaka");
 				// GMT +7
@@ -1906,7 +2216,11 @@ class AdminController extends Controller
 		// date_default_timezone_set("America/Anchorage");
 				// GMT -7
 		// date_default_timezone_set("Etc/GMT-6");
+
+
+
 		echo "<h1>Tanggal : " . date('Y/m/d') . " on " . date_default_timezone_get() . " hari " . date('l') . "</h1>";
+
 		foreach ($ids as $key => $value) {
 			echo $value->shifting . "<br>";
 			$date = (int)substr($value->hadir, 0, 2);
@@ -1925,6 +2239,7 @@ class AdminController extends Controller
 					}
 					$date = $date + 9;
 					$date = sprintf("%02d", $date);
+
 					// echo "<pre>";
 						// print_r($schedule->start);
 						echo (int)substr($schedule->start, 11,3);
@@ -1935,6 +2250,7 @@ class AdminController extends Controller
 				$date = sprintf("%02d", $date);
 				// echo $date;
 			}
+
 			$arr = explode(' ',trim($value->name));
 			
 			if($date > 24){
@@ -1945,9 +2261,11 @@ class AdminController extends Controller
 				$over = FALSE;
 				echo "-- over FALSE -- ";
 			}
+
 			if($value->shifting == 0){
 				$shifting = FALSE;
 				echo "not Shifting -- ";
+
 				if(date('l') == "Saturday" || date('l') == "Sunday"){
 					echo "Libur <br>";
 					echo $arr[0] . " -- tidak usah absen <br><br>";
@@ -1964,18 +2282,22 @@ class AdminController extends Controller
 							$date = date_create(date('Y/m/d'));
 							date_sub($date,date_interval_create_from_date_string("1 days"));
 							$date2 = $date->format('Y/m/d');
+
 							$count1 = DB::table('waktu_absen')
 								->where('id_user','=',$value->id)
 								->where('tanggal','=',date('Y/m/d'))
 								->count();
+
 							$count2 = DB::table('waktu_absen')
 								->where('id_user','=',$value->id)
 								->where('tanggal','=',$date2)
 								->count();
+
 							echo "<br> Count 1 = "; 
 							print_r($count1);
 							echo "<br> Count 2 = ";
 							print_r($count2);
+
 							if ($count1 == 0 && $count2 == 0) {
 								echo "<br>--- Dia tidak masuk";
 								$insert = DB::table('waktu_absen')
@@ -1991,6 +2313,7 @@ class AdminController extends Controller
 							} else {
 								echo "<br>--- Dia masuk";
 							}
+
 							echo "<br>";
 							echo "<br>";
 						} else {    
@@ -2035,18 +2358,22 @@ class AdminController extends Controller
 							$date = date_create(date('Y/m/d'));
 							date_sub($date,date_interval_create_from_date_string("1 days"));
 							$date2 = $date->format('Y/m/d');
+
 							$count1 = DB::table('waktu_absen')
 								->where('id_user','=',$value->id)
 								->where('tanggal','=',date('Y/m/d'))
 								->count();
+
 							$count2 = DB::table('waktu_absen')
 								->where('id_user','=',$value->id)
 								->where('tanggal','=',$date2)
 								->count();
+
 							echo "<br> Count 1 = "; 
 							print_r($count1);
 							echo "<br> Count 2 = ";
 							print_r($count2);
+
 							if ($count1 == 0 && $count2 == 0) {
 								echo "<br>--- Dia tidak masuk";
 								$insert = DB::table('waktu_absen')
@@ -2062,6 +2389,7 @@ class AdminController extends Controller
 							} else {
 								echo "<br>--- Dia masuk";
 							}
+
 							echo "<br>";
 							echo "<br>";
 						} else {    
@@ -2094,7 +2422,9 @@ class AdminController extends Controller
 			}
 		}
 	}
+
 	public function testHollyday($date){
+
 		$hollydays = array([
 			"1",
 			"Jan",
@@ -2225,6 +2555,7 @@ class AdminController extends Controller
 		// 	->select('id','name','hadir')
 		// 	->get();
 		// return $hollyday[1][1];
+
 		$hollydayNow;
 		foreach ($hollydays as $hollyday) {
 			if($date ==  $hollyday[0] . "-" .$hollyday[1]){
@@ -2232,15 +2563,19 @@ class AdminController extends Controller
 				$hollydayNow = $hollyday[3];
 			}
 		}
+
 		if(isset($hollydayNow)){
 			return $hollydayNow;
 		} else {
 			return FALSE;
 		}
+
 		// return json_encode($hollydays);
 	}
+
 	public function test_cron(){
 		date_default_timezone_set("Asia/Jakarta");
+
 		$ids = DB::table('users')
 			->select('id','name','hadir','location','shifting','nickname')
 			->where('id','<>','32')
@@ -2255,14 +2590,17 @@ class AdminController extends Controller
 			
 			$libur = FALSE;
 			if($value->shifting == 1){
+
 				$schedule = DB::table('shifting')
 					->where('id_user','=',$value->id)
 					->where('start','LIKE',date("Y-m-d").'%')
 					->first();
+
 				$date = (int)substr($schedule->start, 11,2);
 				if((int)substr($schedule->start, 11,2) == 0){
 					$libur = TRUE;
 				}
+
 				$date = $date + 9;
 				$date = sprintf("%02d", $date);
 				echo "------------------------------------------------<br>Start : " . $schedule->start . "<br>Jam : ";
@@ -2272,9 +2610,11 @@ class AdminController extends Controller
 				$date = sprintf("%02d", $date);
 				echo $date;
 			}
+
 			if($value->shifting == 0){
 				$shifting = FALSE;
 				echo " not Shifting -- ";
+
 				if(date('l') == "Saturday" || date('l') == "Sunday"){
 					echo "Libur <br>";
 					echo $value->id . " - " . $value->nickname . " -- tidak usah absen <br><br>";
@@ -2311,6 +2651,7 @@ class AdminController extends Controller
 				}
 			} else {
 				$over_time = $date;
+
 				if($over_time > 24){
 					$date = $date - 24;
 					$over = TRUE;
@@ -2319,6 +2660,7 @@ class AdminController extends Controller
 					$over = FALSE;
 					echo "-- over FALSE -- ";
 				}
+
 				$shifting = TRUE;
 				echo "Shifting -- <br>";
 				echo $value->id . " - " . $value->nickname . " must absent before " . $date . " and now is " . date("H");
@@ -2333,18 +2675,22 @@ class AdminController extends Controller
 							$date = date_create(date('Y/m/d'));
 							date_sub($date,date_interval_create_from_date_string("1 days"));
 							$date2 = $date->format('Y/m/d');
+
 							$count1 = DB::table('waktu_absen')
 								->where('id_user','=',$value->id)
 								->where('tanggal','=',date('Y/m/d'))
 								->count();
+
 							$count2 = DB::table('waktu_absen')
 								->where('id_user','=',$value->id)
 								->where('tanggal','=',$date2)
 								->count();
+
 							echo "<br> Count 1 = "; 
 							print_r($count1);
 							echo "<br> Count 2 = ";
 							print_r($count2);
+
 							if ($count1 == 0 && $count2 == 0) {
 								echo "<br>--- Dia tidak masuk";
 								$insert = DB::table('waktu_absen')
@@ -2360,6 +2706,7 @@ class AdminController extends Controller
 							} else {
 								echo "<br>--- Dia masuk";
 							}
+
 							echo "<br>";
 							echo "<br>";
 						} else {    
@@ -2392,20 +2739,26 @@ class AdminController extends Controller
 			}
 		}
 	}
+
 	public function testXLSX(){
 		$spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
 		$sheet->setCellValue('A1', 'Hello World !');
+
 		$writer = new Xlsx($spreadsheet);
 		// $writer->save('hello world.xlsx');
+
 		return $writer->save('hello world.xlsx');
 	}
+
 	public function testCalendar(){
 		return view('testCalendar');
 	}
+
 	public function testPulang(){
 		$start = "2018-06-21";
 		$end = "2018-06-30";
+
 		if(!isset($name)){
 			$results = DB::table('waktu_absen')
 				->join('users','users.id','=','waktu_absen.id_user')
@@ -2445,33 +2798,46 @@ class AdminController extends Controller
 				);
 		}
 			
+
+
 		// $per_user = $results->orderBy('users.nickname','ASC')->get();
 		// $results = $results->orderBy('waktu_absen.pulang','DESC')->get();
 		$results = $results->orderBy('waktu_absen.tanggal','DESC')->get();
+
 		// echo "<pre>";
 		// print_r($result);
 		// echo "</pre>";
+
 		return view('testPulang',compact('results'));
 	}
+
 	public function test_faker(){
 		$faker = \Faker\Factory::create();
+
 		$fake = $faker->name;
+
 		return $fake;
 	}
+
 	
 	public function getAbsen($start,$end,$id_user){
 	// public function getAbsen(){
 		// echo "hahaha";
+
 		// $start = '2019-02-26';
 		// $end = '2019-03-25';
 		// // Mbak indri
 		// $id_user = '40';
+
 		// Yefta
 		// $id_user = '47';
+
+
 		// $data = $data;
 		// $start = $start;
 		// $end = $end;
 		// $id_user = $id_user;
+
 		$datetime1 = date_create($start);
 		$datetime2 = date_create($end);
 		$interval = date_diff($datetime1, $datetime2)->days;
@@ -2485,19 +2851,25 @@ class AdminController extends Controller
 			->get();
 		
 		// echo $data[0]->tanggal;
+
 		$shifting = DB::table('users')
 			->where('id',$id_user)
 			->value('shifting');
+
 		$location = DB::table('users')
 			->where('id',$id_user)
 			->value('location');
+
 		$tanggal = [];
 		for ($i=0; $i < sizeof($data); $i++) { 
 			$tanggal[] = $data[$i]->tanggal;
 		}
+
 		// echo "<pre>";
 		// print_r($tanggal);
 		// echo "</pre>";
+
+
 		if($shifting == 0){
 			for ($i=0; $i < $interval; $i++) { 
 				// Office Hours (Senin - Jumat)
@@ -2538,6 +2910,7 @@ class AdminController extends Controller
 							"harus_pulang"=>null
 						);
 						$data[] = (object)$temp;
+
 						// $data[] = $object;
 						// $data[] = $temp;
 					}
@@ -2550,13 +2923,16 @@ class AdminController extends Controller
 				->orderBy('start','DESC')
 				->limit($interval)
 				->get();
+
 			$libur = [];
 			for ($i=0; $i < sizeof($source); $i++) { 
 				$libur[] = substr($source[$i]->start, 0,10);
 			}
+
 			// echo "<pre>";
 			// print_r($libur);
 			// echo "</pre>";
+
 			for ($i=0; $i < $interval; $i++) { 
 				// Shiffting 
 				// $day = ["Fri", "Thu", "Wed", "Tue", "Mon"];
@@ -2601,11 +2977,14 @@ class AdminController extends Controller
 				// echo "<br>";
 			}
 		}
+
 		// $data->sortBy('tanggal');
 		// usort($data,'tanggal');
 		
+
 		// $data->append($temp);
 		// array_push($temp,$data);
+
 		return $data;
 		// return $user;
 	}
@@ -2631,16 +3010,21 @@ class AdminController extends Controller
 				echo "<td>" . $key->pulang . "</td>";
 				echo "<td>" . $key->harus_pulang . "</td>";
 				echo "</tr>";
+
 			}
 			// print_r($result[0]);
 		}
 		echo "</table>";
+
 		// print_r($this->getAbsen('2019-02-26','2019-03-25','31'));
 		// print_r($this->getAbsen('2019-02-26','2019-03-25','33'));
 		// echo "</pre>";
+
 		// return $this->getAbsen('2019-02-26','2019-03-25','33');
 	}
+
 	// public function hash(){
 	// 	DB::table('users')->where('id','=',41)->update(['password' => Hash::make("Sip2017!")]);
 	// }
+
 }

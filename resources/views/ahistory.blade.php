@@ -78,7 +78,7 @@ html{
 					<li><a href="{{url('ahistory')}}">
 						<i class="fa fa-book"></i>My Attendance</a>
 					</li>
-					@if(Auth::user()->jabatan == 1 || Auth::user()->jabatan == 5)
+					@if(Auth::user()->jabatan == "1" || Auth::user()->jabatan == 5)
 						<li>
 							<a href="{{url('ateamhistory')}}">
 								<i class="fa fa-users"></i>
@@ -91,7 +91,7 @@ html{
 							Reporting
 						</a>
 						</li>
-					@endif	
+					@endif
 				</ol>
 			</section>
 			<section class="content">

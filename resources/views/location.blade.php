@@ -2,18 +2,18 @@
 @section('content')
 <style type="text/css">
 	.pac-container {
-    background-color: #fff;
-    z-index: 1070;
-    position: fixed;
-    display: inline-block;
-    float: left;
-}
-.modal{
-    z-index: 1060;  
+		background-color: #fff;
+		z-index: 1070;
+		position: fixed;
+		display: inline-block;
+		float: left;
+	}
+	.modal{
+		z-index: 1060;  
 
-.modal-backdrop{
-    z-index: 1050;        
-}​
+	.modal-backdrop{
+		z-index: 1050;        
+	}​
 
 </style>
 
@@ -250,8 +250,8 @@
 		});
 
 		google.maps.event.addListener(marker, 'dragend', function (evt) {
-		    $("#lat").val(evt.latLng.lat());
-		    $("#lng").val(evt.latLng.lng());
+			$("#lat").val(evt.latLng.lat());
+			$("#lng").val(evt.latLng.lng());
 		});
 	}
 

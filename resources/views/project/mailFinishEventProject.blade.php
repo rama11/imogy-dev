@@ -3,8 +3,8 @@
 	</p>
 	<p>
 		Dear All,
-		<br>Sehubungan dengan adanya project baru, saya sebagai project coordinator disini akan menyampaikan project yang akan kita kerjakan bersama. 
-		<br>Berikut untuk detailnya :
+		<br>Karena telah update nya menjadi status finish, dengan ini periode project ini dinyatakan selesai.
+		<br>Untuk detail lebih lanjut bisa dilihat lebih lanjut di bawah ini.
 		<br>
 		<br>
 	</p>
@@ -28,45 +28,6 @@
 			<td>a</td>
 		</tr>
 		<tr>
-			<th>Jumlah Periode</th>
-			<th>:</th>
-			<td>{{$data["period"]}}</td>
-		</tr>
-		<tr>
-			<th>Durasi Periode</th>
-			<th>:</th>
-			<td>{{$data["duration"]}}</td>
-		</tr>
-		<tr style="color: white;">
-			<td>a</td>
-		</tr>
-		<tr>
-			<th colspan="3">Sekema Periode</th>
-		</tr>
-		<tr>
-			<td colspan="3">
-				<table style="text-align: left;">
-					<tr>
-						<th>Periode</th>
-						<th colspan="2" style="text-align: center;">Start</th>
-						<th colspan="2" style="text-align: center;">End</th>
-					</tr>
-					@foreach($data["start"] as $key => $value)
-					<tr>
-						<th>Periode {{($key + 1)}}</th>
-						<td></td>
-						<td style="text-align: right;">{{$value}}</td>
-						<td style="text-align: center;"><b>-</b></td>
-						<td colspan="2" style="text-align: left;">{{$data["end"][$key]}}</td>
-					</tr>
-					@endforeach
-				</table>
-			</td>
-		</tr>
-		<tr style="color: white;">
-			<td>a</td>
-		</tr>
-		<tr>
 			<th>Project Coordinator</th>
 			<th>:</th>
 			<td>{{$data["coordinatorName"]}}</td>
@@ -84,6 +45,51 @@
 				{{$value}}<br>
 				@endforeach
 			</td>
+		</tr>
+		<tr style="color: white;">
+			<td>a</td>
+		</tr>
+		<tr>
+			<th>Duration</th>
+			<th>:</th>
+			<td>{{$data["duration"]}}</td>
+		</tr>
+		<tr>
+			<th>Active Periode</th>
+			<th>:</th>
+			<td>{{$data["activePeriod"]}}</td>
+		</tr>
+		
+		<tr style="color: white;">
+			<td>a</td>
+		</tr>
+		<tr style="vertical-align: top;">
+			<th>History Periode</th>
+			<th>:</th>
+			<td>
+				@foreach($data["historyPeriod"] as $history)
+				[{{$history['time']}} - {{$history['updater']}}] {{$history['note']}}<br>
+				@endforeach
+			</td>
+		</tr>
+		<tr style="color: white;">
+			<td>a</td>
+		</tr>
+		<tr style="vertical-align: top;">
+			<th>Finish note</th>
+			<th>:</th>
+			<td>
+				<b>[{{$data["finish_time"]}} - {{$data["finish_updater"]}}]<br>
+				{{$data["finish_note"]}}</b>
+			</td>
+		</tr>
+		<tr style="color: white;">
+			<td>a</td>
+		</tr>
+		<tr>
+			<th>Next Periode</th>
+			<th>:</th>
+			<td>{{$data["nextPeriod"]}}</td>
 		</tr>
 	</table>
 	<br>

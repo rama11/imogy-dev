@@ -1,12 +1,22 @@
-@extends('layouts.admin.layoutLight2')
+@extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
+
 @section('head')
 <link rel="stylesheet" href="{{url('plugins/datepicker/datepicker3.css')}}">
 <link rel="stylesheet" href="{{url('plugins/select2/select2.min.css')}}">
 <link rel="stylesheet" href="{{url('dist/css/AdminLTE.min.css')}}">
 <link rel="stylesheet" href="{{url('plugins/datatables/dataTables.bootstrap.css')}}">
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css"> -->
-<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"> -->
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
+<link rel="stylesheet" href="{{url('dist/css/AdminLTE.min.css')}}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="{{ url('plugins/timepicker/bootstrap-timepicker.min.css')}}">
+<link rel="stylesheet" href="{{ url('plugins/datatables/dataTables.bootstrap.css')}}">
+<link rel="stylesheet" href="{{ url('plugins/daterangepicker/daterangepicker.css')}}">
+<link rel="stylesheet" href="{{ url('plugins/morris/morris.css')}}">
+
+<link rel="stylesheet" href="{{ url('plugins/datepicker/datepicker3.css')}}">
 <style type="text/css">
 	.dataTables_filter {display: none;}
 	select[readonly].select2-hidden-accessible + .select2-container {
@@ -284,7 +294,7 @@
 								<div class="row">
 									<div class="col-md-12">
 										<div class="form-group">
-											<label>Team Member</label>
+											<label>Team Member / 3rd party</label>
 											<select class="form-control select2" id="inputProjectMemberCorrention" style="width: 100%" multiple="multiple" readonly></select>
 										</div>
 									</div>
@@ -296,6 +306,7 @@
 							<button type="button" class="btn btn-primary" id="back" onclick='
 								document.getElementById("inputProjectForm3").style.display = "inline";
 								document.getElementById("inputProjectForm4").style.display = "none";
+								$("span.select2-selection__choice__remove").show();
 								document.getElementById("modal-default-size").classList.remove("modal-lg");'>Back</button>
 							<button type="button" class="btn btn-success" id="next" onclick='
 								sendInputProject();
@@ -391,7 +402,8 @@
 
 		//Date picker for Input Project
 		$('#inputProjectStart').datepicker({
-			autoclose: true
+			autoclose: true,
+			format: 'dd/mm/yyyy'
 		});
 
 		// Listener at project timeline for Input Project
@@ -410,8 +422,8 @@
 				for (var i = 0; i < periode; i++) {
 					append = append + "<tr>";
 					append = append + "<th>Periode " + (i+1) + "</th>";
-					append = append + "<td>" + moment(start,"MM/DD/YYYY").add(duration * (i+1),'month').subtract(duration,'month').format('D MMMM YYYY') + "</td>";
-					append = append + "<td>" + moment(start,"MM/DD/YYYY").add(duration * (i+1),'month').subtract(1,'days').format('D MMMM YYYY') + "</td>";
+					append = append + "<td>" + moment(start,"DD/MM/YYYY").add(duration * (i+1),'month').subtract(duration,'month').format('D MMMM YYYY') + "</td>";
+					append = append + "<td>" + moment(start,"DD/MM/YYYY").add(duration * (i+1),'month').subtract(1,'days').format('D MMMM YYYY') + "</td>";
 					append = append + "</tr>";
 				}
 				append = append + "</table>";
@@ -420,9 +432,13 @@
 				$("#inputProjectPeriodResult").append(append);
 			}
 		});
+
+		showProjectDetail(128);
 	});
 
 	function initFormInputProject(){
+		$('#inputProjectCoordinator, #inputProjectMember, #inputProjectMemberCorrention, #inputProjectCustomer').empty().trigger("change");
+
 		// Get Customer for Input Project
 		$.ajax({
 			type:"GET",
@@ -430,7 +446,6 @@
 			success: function(result){
 				var listCustomer = result;
 				listCustomer.unshift({id:0,text:"Add New Customer"});
-
 				$("#inputProjectCustomer").select2({
 					placeholder: "Select a customer",
 					data: result
@@ -443,16 +458,20 @@
 			type:"GET",
 			url:'{{url("project/manage/getMember")}}',
 			success: function(result){
-				$("#inputProjectCoordinator").select2();
-				$("#inputProjectLead, #inputProjectMember, #inputProjectMemberCorrention").select2();
-				var listMember = result;
-				listMember.forEach(function(member){
-					newOption = new Option(member.text, member.id, false, false);
-					if(member.position == "Coordinator"){
-						$('#inputProjectCoordinator').append(newOption).trigger('change');
-					} else if (member.position == "Member"){
-						$("#inputProjectLead, #inputProjectMember, #inputProjectMemberCorrention").append(newOption).trigger('change');
-					}
+				$("#inputProjectCoordinator").select2({
+					placeholder: "Select a Coordinator",
+					data: result.coordinator
+				});
+				$("#inputProjectLead").select2({
+					placeholder: "Select a Project Lead",
+					data: result.all
+				});
+
+				result.all.unshift({id:0,text:"Add New 3rd Party"});
+				$("#inputProjectMember, #inputProjectMemberCorrention").select2({
+					closeOnSelect: false,
+					placeholder: "Select Member",
+					data: result.all
 				});
 			}
 		});
@@ -469,6 +488,21 @@
 				}
 			}
 		});
+
+		// // Add new member for Input Project
+		$("#inputProjectMember").on('select2:select',function(){
+			if($("#inputProjectMember").select2('data')[0].text == "Add New 3rd Party"){
+				var newMember = prompt("Enter new 3rd Party :");
+				if(newMember !== null){
+					$("#inputProjectMember").select2().val('Add New 3rd Party').trigger('change');
+					var newOption = new Option(newMember, newMember, false, false);
+					newOption.selected = true;
+					$('#inputProjectMember').append(newOption).trigger('change');
+					var newOption2 = new Option(newMember, newMember, false, false);
+					$('#inputProjectMemberCorrention').append(newOption2).trigger('change');
+				}
+			}
+		});
 	}
 
 	function correctionInputProject(){
@@ -479,7 +513,7 @@
 		$("#inputProjectNameCorrection").val($("#inputProjectName").val());
 
 		// Correction Periode Input
-		$("#inputProjectStartCorrection").val(moment($("#inputProjectStart").val(),"MM/DD/YYYY").format('DD MMMM YYYY'));
+		$("#inputProjectStartCorrection").val(moment($("#inputProjectStart").val(),"DD/MM/YYYY").format('DD MMMM YYYY'));
 		$("#inputProjectDurationCorrection").val($("#inputProjectPeriod").val() + " Month");
 		$("#inputProjectPeriodCorrection").val($("#inputProjectDuration").val() + " Periode");
 
@@ -492,16 +526,19 @@
 		var leader = $("#inputProjectLead").select2('data');
 		var members = $("#inputProjectMember").select2('data');
 		
-		
-
 		$("#inputProjectCoordinatorCorrention").val(coordinator[0].text);
 		$("#inputProjectLeadCorrention").val(leader[0].text);
-
+		member = [];
+		memberNickname = [];
+		$("#inputProjectMemberCorrention").select2().val(null).trigger('change');
 		members.forEach(function(eachMember){
 			member.push(eachMember.id);
 			memberNickname.push(eachMember.text);
 		});
+		
 		$("#inputProjectMemberCorrention").select2().val(member).trigger("change");
+		$("span.select2-selection__choice__remove").hide();
+		$("#inputProjectMemberCorrention").next().find(".select2-selection__choice").css("background-color","#e4e4e4").css("border","1px solid #aaa").css("color","#333").css("padding","1px 10px")
 	};
 
 	function sendInputProject(){
@@ -613,8 +650,11 @@
 	}
 
 	function updateEventProject( bg_color , classTimeline , id_event){
-		console.log($("#updateBtn" + id_event).text());
-		var str = $("#updateBtn" + id_event).text();
+		// console.log($("#updateBtn" + id_event).text());
+		var typeUpdate = $("#updateBtn" + id_event).text();
+		typeUpdate = typeUpdate.substr(0,typeUpdate.length - 1);
+		
+		iconTimeline = "fa-cog";
 		$.ajax({
 			type:"POST",
 			url:"{{url('project/manage/setUpdateEventProject')}}",
@@ -622,13 +662,47 @@
 				_token: "{{ csrf_token() }}",
 				id:$("#inputIdUpdateEventProject" + id_event).val(),
 				note:$("#inputUpdateEventProject" + id_event).val(),
-				type:str.substring(0,str.length - 1),
+				type:typeUpdate,
 				time:moment().format("YYYY-MM-DD HH:mm:ss"),
 			},
 			success:function(result){
+				if(typeUpdate == "Finish"){
+					$(".activeTime").insertAfter('.updateCollom' + (id_event - 1))
+
+					$(".activeTime span.bg-green").removeClass('bg-green').addClass('bg-gray')
+					$(".activeTime i.bg-green").removeClass('bg-green').addClass('bg-gray')
+
+					$(".activeTime.time-label").attr('onclick','$(".afterTime' + id_event + '").slideToggle()')
+					$(".activeTime").removeClass('activeTime' + id_event).addClass('afterTime' + id_event)
+					$(".activeTime").removeClass('activeTime').addClass('afterTime')
+
+					$(".activeTimeTogle").removeClass('activeTimeTogle').addClass('afterTimeTogle')
+					$(".afterTime" + id_event + ".time-label").removeClass('afterTime' + id_event);
+					
+					
+					$(".beforeTime.beforeTimeTogle.updateCollom" + (parseInt(id_event) + 1)).insertAfter(".activeTimeButton")
+					$(".time-label.beforeTime.beforeTimeTogle:first").next().insertAfter(".activeTimeButton")
+					$(".beforeTimeButton:first").next().insertAfter(".activeTimeButton")
+
+					$(".beforeTime.beforeTimeTogle i.bg-red:first").removeClass('bg-red').addClass('bg-green')
+					$(".time-label.beforeTime.beforeTimeTogle span:first").removeClass('bg-red').addClass('bg-green')
+					$(".beforeTime.beforeTimeTogle.updateCollom" + (parseInt(id_event) + 1)).removeClass('beforeTime' + (parseInt(id_event) + 1)).addClass('activeTime' + (parseInt(id_event) + 1)).removeClass('beforeTime').removeClass('beforeTimeTogle').addClass('activeTime').addClass('activeTimeTogle')
+
+					id_event = parseInt(id_event) + 1;
+
+					$(".time-label.beforeTime.beforeTimeTogle:first").attr('onclick','$(".activeTime' + id_event + '").slideToggle()')
+					$(".time-label.beforeTime.beforeTimeTogle:first").removeClass('beforeTime').removeClass('beforeTimeTogle').addClass('activeTime').addClass('activeTimeTogle')
+					$(".beforeTime.beforeTimeTogle:first").removeClass('beforeTime' + id_event).addClass('activeTime' + id_event).removeClass('beforeTime').removeClass('beforeTimeTogle').addClass('activeTime').addClass('activeTimeTogle')
+					
+					id_event = parseInt(id_event) - 1;
+					bg_color = "bg-gray";
+					classTimeline = "afterTime";
+					iconTimeline = "fa-check";
+				}
+
 				var append = "";
-				append = append + '<li class="' + classTimeline + '">';
-				append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
+				append = append + '<li class="' + classTimeline + ' ' + classTimeline + 'Togle ' + classTimeline + id_event + '">';
+				append = append + '	<i class="fa ' + iconTimeline + ' ' + bg_color + '"></i>';
 				append = append + '	<div class="timeline-item">';
 				append = append + '		<span class="time" title="' + moment().format("HH:mm:ss") + '"><i class="fa fa-clock-o"></i> ' + moment().format("DD MMMM YYYY") + '</span>';
 				append = append + '		<h3 class="timeline-header"><a href="#">[{{Auth::user()->nickname}}]</a></h3>';
@@ -667,7 +741,7 @@
 						classTimeline = "afterTime";
 						if(after == false){
 							after = true;
-							append = append + '<li class="time-label" onclick="($(&quot;.' + classTimeline + 'Togle&quot;).length === $(&quot;.' + classTimeline + 'Togle:visible&quot;).length || $(&quot;.' + classTimeline + 'Togle:visible&quot;).length === 0) ? $(&quot;.' + classTimeline + '&quot;).slideToggle() : $(&quot;.' + classTimeline + '&quot;).slideUp()" >';
+							append = append + '<li class="time-label ' + classTimeline + 'Button" onclick="($(&quot;.' + classTimeline + 'Togle&quot;).length === $(&quot;.' + classTimeline + 'Togle:visible&quot;).length || $(&quot;.' + classTimeline + 'Togle:visible&quot;).length === 0) ? $(&quot;.' + classTimeline + '&quot;).slideToggle() : $(&quot;.' + classTimeline + '&quot;).slideUp()" >';
 							append = append + '	<span class="' + bg_color + '">';
 							append = append + '		Show Previous Event';
 							append = append + '	</span>';
@@ -678,7 +752,7 @@
 							active = true;
 							classTimeline = "activeTime";
 							bg_color = "bg-green";
-							append = append + '<li class="time-label " style="' + style + '" onclick="($(&quot;.' + classTimeline + 'Togle&quot;).length === $(&quot;.' + classTimeline + 'Togle:visible&quot;).length || $(&quot;.' + classTimeline + 'Togle:visible&quot;).length === 0) ? $(&quot;.' + classTimeline + '&quot;).slideToggle() : $(&quot;.' + classTimeline + '&quot;).slideUp()" >';
+							append = append + '<li class="time-label ' + classTimeline + 'Button" style="' + style + '" onclick="($(&quot;.' + classTimeline + 'Togle&quot;).length === $(&quot;.' + classTimeline + 'Togle:visible&quot;).length || $(&quot;.' + classTimeline + 'Togle:visible&quot;).length === 0) ? $(&quot;.' + classTimeline + '&quot;).slideToggle() : $(&quot;.' + classTimeline + '&quot;).slideUp()" >';
 							append = append + '	<span class="' + bg_color + '">';
 							append = append + '		Active Event';
 							append = append + '	</span>';
@@ -688,7 +762,7 @@
 							classTimeline = "beforeTime";
 							if(before == false){
 								before = true;
-								append = append + '<li class="time-label" onclick="($(&quot;.' + classTimeline + 'Togle&quot;).length === $(&quot;.' + classTimeline + 'Togle:visible&quot;).length || $(&quot;.' + classTimeline + 'Togle:visible&quot;).length === 0) ? $(&quot;.' + classTimeline + '&quot;).slideToggle() : $(&quot;.' + classTimeline + '&quot;).slideUp()" >';
+								append = append + '<li class="time-label ' + classTimeline + 'Button" onclick="($(&quot;.' + classTimeline + 'Togle&quot;).length === $(&quot;.' + classTimeline + 'Togle:visible&quot;).length || $(&quot;.' + classTimeline + 'Togle:visible&quot;).length === 0) ? $(&quot;.' + classTimeline + '&quot;).slideToggle() : $(&quot;.' + classTimeline + '&quot;).slideUp()" >';
 								append = append + '	<span class="' + bg_color + '">';
 								append = append + '		Show Next Event';
 								append = append + '	</span>';
@@ -714,7 +788,14 @@
 					result.eventHistory.forEach(function(dataHistory,index){
 						if(dataHistory.project_event_id == dataEvent.id){
 							append = append + '<li class="' + classTimeline + ' ' + classTimeline + 'Togle ' + classTimeline + dataEvent.id + '" style="' + style + '">';
-							append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
+							if(dataHistory.type == "Finish"){
+								append = append + '	<i class="fa fa-check ' + bg_color + '"></i>';
+							} else if (dataHistory.type == "Submit"){
+								append = append + '	<i class="fa fa-bookmark ' + bg_color + '"></i>';
+							} 
+							else {
+								append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
+							}
 							append = append + '	<div class="timeline-item">';
 							append = append + '		<span class="time" title="' + moment(dataHistory.time,"YYYY-MM-DD HH:mm:ss").format("HH:mm:ss") + '"><i class="fa fa-clock-o"></i> ' + moment(dataHistory.time,"YYYY-MM-DD HH:mm:ss").format("DD MMMM YYYY") + '</span>';
 							append = append + '		<h3 class="timeline-header no-border"><a href="#">[' + dataHistory.updater + ']</a></h3>';
@@ -725,31 +806,30 @@
 							append = append + '</li>';
 						}
 					});
-					if(classTimeline !== "beforeTime"){
-						append = append + '<li class="' + classTimeline + ' ' + classTimeline + 'Togle ' + classTimeline + dataEvent.id + ' updateCollom' + dataEvent.id + '" style="' + style + '">';
-						// append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
-						append = append + '	<div class="timeline-item">';
-						append = append + '		<div class="timeline-body">'
-						append = append + '			<div class="input-group">';
-						append = append + '				<div class="input-group-btn">';
-						append = append + '					<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" id="updateBtn' + dataEvent.id + '">Update';
-						append = append + '						<span class="fa fa-caret-down"></span>';
-						append = append + '					</button>';
-						append = append + '					<ul class="dropdown-menu">';
-						append = append + '						<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Update <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Update</a></li>';
-						append = append + '						<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Finish <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Finish</a></li>';
-						append = append + '					</ul>';
-						append = append + '				</div>';
-						append = append + '				<input type="text" class="form-control" id="inputUpdateEventProject' + dataEvent.id + '">';
-						append = append + '				<input type="hidden" id="inputIdUpdateEventProject' + dataEvent.id + '" value=' + dataEvent.id + '>';
-						append = append + '				<div class="input-group-btn">';
-						append = append + '					<button type="button" class="btn btn-primary" onclick="updateEventProject(&quot;' + bg_color + '&quot;,&quot;' + classTimeline + '&quot;,&quot;' + dataEvent.id + '&quot;)">Go</button>';
-						append = append + '				</div>';
-						append = append + '			</div>';
-						append = append + '		</div>';
-						append = append + '	</div>';
-						append = append + '</li>';
-					}
+					append = append + '<li class="' + classTimeline + ' ' + classTimeline + 'Togle ' + classTimeline + dataEvent.id + ' updateCollom' + dataEvent.id + '" style="' + style + '">';
+					// append = append + '	<i class="fa fa-cog ' + bg_color + '"></i>';
+					append = append + '	<div class="timeline-item">';
+					append = append + '		<div class="timeline-body">'
+					append = append + '			<div class="input-group">';
+					append = append + '				<div class="input-group-btn">';
+					append = append + '					<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" id="updateBtn' + dataEvent.id + '">Update';
+					append = append + '						<span class="fa fa-caret-down"></span>';
+					append = append + '					</button>';
+					append = append + '					<ul class="dropdown-menu">';
+					append = append + '						<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Update <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Update</a></li>';
+					append = append + '						<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Submit <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Submit</a></li>';
+					append = append + '						<li onclick="document.getElementById(&apos;updateBtn' + dataEvent.id + '&apos;).innerHTML = &apos;Finish <span class=&quot;fa fa-caret-down&quot;></span>&apos;;"><a href="#">Finish</a></li>';
+					append = append + '					</ul>';
+					append = append + '				</div>';
+					append = append + '				<input type="text" class="form-control" id="inputUpdateEventProject' + dataEvent.id + '">';
+					append = append + '				<input type="hidden" id="inputIdUpdateEventProject' + dataEvent.id + '" value=' + dataEvent.id + '>';
+					append = append + '				<div class="input-group-btn">';
+					append = append + '					<button type="button" class="btn btn-primary" onclick="updateEventProject(&quot;' + bg_color + '&quot;,&quot;' + classTimeline + '&quot;,&quot;' + dataEvent.id + '&quot;)">Go</button>';
+					append = append + '				</div>';
+					append = append + '			</div>';
+					append = append + '		</div>';
+					append = append + '	</div>';
+					append = append + '</li>';
 				});
 				append = append + '<li class="beforeTime" style="display:none">';
 				append = append + '	<i class="fa fa-clock-o bg-gray"></i>';

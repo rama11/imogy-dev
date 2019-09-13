@@ -13,7 +13,6 @@
 		<link rel="stylesheet" href="{{url('bootstrap/css/bootstrap.min.css')}}">
 		<link rel="stylesheet" href="{{url('dist/css/AdminLTE.min.css')}}">
 		<link rel="stylesheet" href="{{url('dist/css/skins/_all-skins.min.css')}}">
-		
 		@yield('head')
 	</head>
 	<body class="hold-transition skin-blue sidebar-mini">
@@ -105,7 +104,7 @@
 							Main Menu
 						</li>
 						<li class="" id="dashboard">
-							<a href="admin">
+							<a href="{{ url('/admin')}}">
 								<i class="fa fa-dashboard"></i> <span>Dashboard</span>
 							</a>
 						</li>
@@ -139,6 +138,12 @@
 								<span>Set Absent Location</span>
 							</a>
 						</li>
+						<li class="" id="project">
+							<a href="{{ url('project/manage')}}">
+								<i class="fa fa-calendar"></i>
+								<span>Project Manage</span>
+							</a>
+						</li>
 					</ul>
 				</section>
 			</aside>
@@ -150,6 +155,135 @@
 		<script src="{{url('dist/js/adminlte.min.js')}}"></script>
 
 		<script type="text/javascript">
+			$(document).ready(function(){
+				var path = (document.URL).split("/");
+				switch((document.URL).split("/")[(document.URL).split("/").length - 1]) {
+					case "admin":
+						$("#dashboard").addClass("active");
+						$("#absen").removeClass("active");
+						$("#tisygy").removeClass("active");
+						$("#usermanage").removeClass("active");
+						$("#schedule").removeClass("active");
+						$("#location").removeClass("active");
+						$("#project").removeClass("active");
+						console.log("admin");
+						break;
+
+					case "absen":
+						$("#dashboard").removeClass("active");
+						$("#absen").addClass("active");
+						$("#tisygy").removeClass("active");
+						$("#usermanage").removeClass("active");
+						$("#schedule").removeClass("active");
+						$("#location").removeClass("active");
+						$("#project").removeClass("active");
+						console.log("absen");
+						break;
+
+					case "ahistory":
+						$("#dashboard").removeClass("active");
+						$("#absen").addClass("active");
+						$("#tisygy").removeClass("active");
+						$("#usermanage").removeClass("active");
+						$("#schedule").removeClass("active");
+						$("#location").removeClass("active");
+						$("#project").removeClass("active");
+						console.log("ahistory");
+						break;
+
+					case "ateamhistory":
+						$("#dashboard").removeClass("active");
+						$("#absen").addClass("active");
+						$("#tisygy").removeClass("active");
+						$("#usermanage").removeClass("active");
+						$("#schedule").removeClass("active");
+						$("#location").removeClass("active");
+						$("#project").removeClass("active");
+						console.log("ateamhistory");
+						break;
+
+					case "areport":
+						$("#dashboard").removeClass("active");
+						$("#absen").addClass("active");
+						$("#tisygy").removeClass("active");
+						$("#usermanage").removeClass("active");
+						$("#schedule").removeClass("active");
+						$("#location").removeClass("active");
+						$("#project").removeClass("active");
+						console.log("location");
+						break;
+
+					case "tisygy":
+						$("#dashboard").removeClass("active");
+						$("#absen").removeClass("active");
+						$("#tisygy").addClass("active");
+						$("#usermanage").removeClass("active");
+						$("#schedule").removeClass("active");
+						$("#location").removeClass("active");
+						$("#project").removeClass("active");
+						console.log("tisygy");
+						break;
+						
+					case "usermanage":
+						$("#dashboard").removeClass("active");
+						$("#absen").removeClass("active");
+						$("#tisygy").removeClass("active");
+						$("#usermanage").addClass("active");
+						$("#schedule").removeClass("active");
+						$("#location").removeClass("active");
+						$("#project").removeClass("active");
+						console.log("usermanage");
+						break;
+					
+					case "schedule":
+						$("#dashboard").removeClass("active");
+						$("#absen").removeClass("active");
+						$("#tisygy").removeClass("active");
+						$("#usermanage").removeClass("active");
+						$("#schedule").addClass("active");
+						$("#location").removeClass("active");
+						$("#project").removeClass("active");
+						console.log("schedule");
+						break;
+
+					case "location":
+						$("#dashboard").removeClass("active");
+						$("#absen").removeClass("active");
+						$("#tisygy").removeClass("active");
+						$("#usermanage").removeClass("active");
+						$("#schedule").removeClass("active");
+						$("#location").addClass("active");
+						$("#project").removeClass("active");
+						console.log("location");
+						break;
+
+					case "manage":
+						$("#dashboard").removeClass("active");
+						$("#absen").removeClass("active");
+						$("#tisygy").removeClass("active");
+						$("#usermanage").removeClass("active");
+						$("#schedule").removeClass("active");
+						$("#location").removeClass("active");
+						$("#project").addClass("active");
+						console.log("location");
+						break;
+
+					case "project":
+						$("#dashboard").removeClass("active");
+						$("#absen").removeClass("active");
+						$("#tisygy").removeClass("active");
+						$("#usermanage").removeClass("active");
+						$("#schedule").removeClass("active");
+						$("#location").removeClass("active");
+						$("#project").addClass("active");
+						console.log("location");
+						break;
+															
+					default:
+						$("#dashboard").addClass("active");
+				};
+				// console.log(path[path.length - 1]);
+			});
 		</script>
 		@yield('script')
 	</body>

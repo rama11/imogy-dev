@@ -3,8 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Auth;
 
-class AdminRole
+class ProjectRole
 {
     /**
      * Handle an incoming request.
@@ -15,6 +16,9 @@ class AdminRole
      */
     public function handle($request, Closure $next)
     {
-        return $next($request);
+        if(Auth::user()->jabatan == 4 || Auth::user()->jabatan == 5){
+            return $next($request);
+        }
+            return abort(404);
     }
 }

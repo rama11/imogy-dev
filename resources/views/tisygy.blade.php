@@ -1,10 +1,19 @@
 @extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
 
+
 @section('head')
-	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/timepicker/bootstrap-timepicker.min.css')}}">
-	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/daterangepicker/daterangepicker.css')}}">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
-	
+	<link rel="stylesheet" href="{{url('dist/css/AdminLTE.min.css')}}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+
+	<link rel="stylesheet" href="{{ url('plugins/timepicker/bootstrap-timepicker.min.css')}}">
+	<link rel="stylesheet" href="{{ url('plugins/datatables/dataTables.bootstrap.css')}}">
+	<link rel="stylesheet" href="{{ url('plugins/daterangepicker/daterangepicker.css')}}">
+	<link rel="stylesheet" href="{{ url('plugins/morris/morris.css')}}">
+
+	<link rel="stylesheet" href="{{ url('plugins/datepicker/datepicker3.css')}}">
+
 	<style type="text/css">
 		.table2 > tbody > tr > th, .table2 > tbody > tr > td {
 			border-color: #141414;border: 1px solid;padding: 3px;}
@@ -1193,6 +1202,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
 <!-- DataTables -->
 <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
+<!-- moment.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <script src="../../plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.5/Chart.bundle.min.js"></script>
 <script src="../../plugins/input-mask/jquery.inputmask.js"></script>
@@ -1432,77 +1443,6 @@
 		});
 	}
 
-	// var ctx = document.getElementById("pieChart").getContext("2d");
-	// var myChart = new Chart(ctx, config);
-
-	// var pieChartCanvas = $("#pieChart").get(0).getContext("2d");
-	// var pieChart = new Chart(pieChartCanvas);
-	// var PieData = [
-	//  {
-	//      value: 700,
-	//      color: "#f56954",
-	//      highlight: "#f56954",
-	//      label: "Chrome"
-	//  },
-	//  {
-	//      value: 500,
-	//      color: "#00a65a",
-	//      highlight: "#00a65a",
-	//      label: "IE"
-	//  },
-	//  {
-	//      value: 400,
-	//      color: "#f39c12",
-	//      highlight: "#f39c12",
-	//      label: "FireFox"
-	//  },
-	//  {
-	//      value: 600,
-	//      color: "#00c0ef",
-	//      highlight: "#00c0ef",
-	//      label: "Safari"
-	//  },
-	//  {
-	//      value: 300,
-	//      color: "#3c8dbc",
-	//      highlight: "#3c8dbc",
-	//      label: "Opera"
-	//  },
-	//  {
-	//      value: 100,
-	//      color: "#d2d6de",
-	//      highlight: "#d2d6de",
-	//      label: "Navigator"
-	//  }
-	// ];
-	// var pieOptions = {
-	//  //Boolean - Whether we should show a stroke on each segment
-	//  segmentShowStroke: true,
-	//  //String - The colour of each segment stroke
-	//  segmentStrokeColor: "#fff",
-	//  //Number - The width of each segment stroke
-	//  segmentStrokeWidth: 2,
-	//  //Number - The percentage of the chart that we cut out of the middle
-	//  percentageInnerCutout: 50, // This is 0 for Pie charts
-	//  //Number - Amount of animation steps
-	//  animationSteps: 100,
-	//  //String - Animation easing effect
-	//  animationEasing: "easeOutBounce",
-	//  //Boolean - Whether we animate the rotation of the Doughnut
-	//  animateRotate: true,
-	//  //Boolean - Whether we animate scaling the Doughnut from the centre
-	//  animateScale: false,
-	//  //Boolean - whether to make the chart responsive to window resizing
-	//  responsive: true,
-	//  // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-	//  maintainAspectRatio: true,
-	//  //String - A legend template
-	//  legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
-	// };
-	// //Create pie or douhnut chart
-	// // You can switch between pie and douhnut using the method below.
-	// pieChart.Doughnut(PieData, pieOptions);
-
 	$('#atmTable').DataTable({
 		"paging": true,
 		"lengthChange": false,
@@ -1602,6 +1542,7 @@
 
 	$("#inputATM").select2({
 		minimumInputLength: 2,
+		selectOnClose: true,
 		tags: [],
 		ajax: {
 			url: 'getAtm',
@@ -1663,10 +1604,6 @@
 		}
 	}
 
-	// $('#example2').DataTable();
-
-	
-
 	$("#inputATM").change(function(){
 		$.ajax({
 			type:"GET",
@@ -1689,8 +1626,6 @@
 		showSeconds:true,
 	});
 
-	
-
 	$('#dateClose').datepicker({
 		autoclose: true
 	});
@@ -1710,7 +1645,6 @@
 				alert('You must fill date!');
 			} else {
 				if(confirm("Are you sure to close this ticket?")){
-					// console.log();
 					$("#modal-next-close").modal('toggle');
 					// $.ajax({
 					//  type:"get",
@@ -1844,17 +1778,7 @@
 
 				$(".holderCancelNote").text($("#saveReasonCancel").val());
 
-				// $.ajax({
-				//  type:"get",
-				//  url:"cancelTicket",
-				//  data:{
-				//      reason:$("#cancelReasonPending").val(),
-				//  },
-				//  success:function(){
-				//      $('#modal-pending').modal('toggle');
-				//      $('#modal-ticket').modal('toggle');
-				//  }
-				// });
+
 			} else {
 				console.log("no");
 			}
@@ -1867,12 +1791,12 @@
 
 	function closeTicket(id){
 		$('#modal-close').modal('toggle');
-		// $('#modal-ticket').modal('toggle');a
+
 	}
 
 	function sendCloseTicketBtn(id){
 		var body = $("#bodyCloseMail").html();
-		//2018-03-16 06:33:57.000000
+
 		var finish_time = moment($("#timeClose").val() + " " + $("#dateClose").val()).format("YYYY-MM-DD HH:mm:ss.000000");
 
 		$.ajax({
@@ -1939,7 +1863,7 @@
 
 	function sendCancelTicketBtn(id){
 		var body = $("#bodyCancelMail").html();
-		//2018-03-16 06:33:57.000000
+
 		var finish_time = moment($("#timeClose").val() + " " + $("#dateClose").val()).format("YYYY-MM-DD HH:mm:ss.000000");
 
 		$.ajax({
@@ -2038,7 +1962,7 @@
 					heading = heading + '<th style="width: 100px;vertical-align: middle;">Location</th>';
 					heading = heading + '<th style="text-align: center;vertical-align: middle;">Status</th>';
 					heading = heading + '<th style="text-align: center;vertical-align: middle;">Operator</th>';
-					heading = heading + '<th style="width: 40px;vertical-align: middle;"></th>';
+					heading = heading + '<th style="width: 40px;vertical-align: middle;">Action</th>';
 				heading = heading + '</tr>';
 			heading = heading + '</thead>';
 			heading = heading + '<tbody>';
@@ -2051,7 +1975,6 @@
 				url:url,
 				success:function(result){
 					var body = "";
-					// console.log(result[0]);
 
 					$.each(result, function(key,value){
 						body = body + '<tr>';
@@ -2079,7 +2002,7 @@
 								body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><span class="label label-success" style="background-color:#555299 !important;">' + value.last_status[0] + '</span></td>';
 							}
 							body = body + '<td style="width: 40px; text-align: center; vertical-align: middle;">' + value.operator + '</td>';
-							body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><button class="btn btn-default" onclick="showTicket(' + value.id_open + ')">Detail</button>Action</td>';
+							body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><button class="btn btn-default" onclick="showTicket(' + value.id_open + ')">Detail</button></td>';
 						body = body + '</tr>';
 					});
 
@@ -2087,7 +2010,7 @@
 					$("#tablePerformace").append('</tbody>');
 					
 					$("#tablePerformace").DataTable();
-					// $("#tablePerformace").DataTable().rows().remove().draw();
+
 				},
 			});
 		}
@@ -2103,7 +2026,7 @@
 
 	function getSeverity(severity){
 		var url = "getPerformanceBySeverity?severity=" + severity;
-		// $("#tablePerformace").DataTable().clear().draw();
+
 		dataTicket = [];
 
 		$.ajax({
@@ -2128,7 +2051,7 @@
 							heading = heading + '<th style="width: 100px;vertical-align: middle;">Location</th>';
 							heading = heading + '<th style="width: 40px;vertical-align: middle;">Status</th>';
 							heading = heading + '<th style="width: 40px;vertical-align: middle;">Operator</th>';
-							heading = heading + '<th style="width: 40px;vertical-align: middle;"></th>';
+							heading = heading + '<th style="width: 40px;vertical-align: middle;">Action</th>';
 						heading = heading + '</tr>';
 					heading = heading + '</thead>';
 					heading = heading + '<tbody>';
@@ -2405,24 +2328,10 @@
 
 				console.log(result[0].engineer);
 
-				// if(result[0].engineer != null){
-					$("#ticketEngineer").val(result[0].engineer);
-				//  $("#ticketEngineer").prop('readonly',true);
-				//  console.log("adfasdfa");
-				// } else {
-				//  $("#ticketEngineer").val("");
-				//  $("#ticketEngineer").prop('readonly',false);
-				// }
-
-				// console.log(result[0].ticket_number_3party);
-
-				// if(result[0].ticket_number_3party != null){
-					$("#ticketNumber").val(result[0].ticket_number_3party);
-				//  $("#ticketNumber").prop('readonly',true);
-				// } else {
-				//  $("#ticketNumber").val("");
-				//  $("#ticketNumber").prop('readonly',false);
-				// }
+				$("#ticketEngineer").val(result[0].engineer);
+			
+				$("#ticketNumber").val(result[0].ticket_number_3party);
+				
 
 				$("#ticketActivity").empty();
 				$.each(result[1],function(key,value){
@@ -2448,7 +2357,7 @@
 				$(".holderCloseNote").text("");
 				$(".holderCloseEngineer").text(result[0].engineer);
 
-				// 2018-03-15 10:22:08
+
 				var waktu = moment((result[0].open), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
 				
 
@@ -2474,7 +2383,7 @@
 				$(".holderPendingNote").text("");
 				$(".holderPendingEngineer").text(result[0].engineer);
 
-				// 2018-03-15 10:22:08
+
 				var waktu = moment((result[0].open), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
 				
 
@@ -2498,7 +2407,6 @@
 				$(".holderCancelNote").text("");
 				$(".holderCancelEngineer").text(result[0].engineer);
 
-				// 2018-03-15 10:22:08
 				var waktu = moment((result[0].open), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
 				
 
@@ -2581,27 +2489,9 @@
 
 	function sendOpenTicketBtn(){
 		if(confirm("Are you sure to send this ticket?")){
-			// var dear = "Bu Retno";
-			
-			// var problem = $("#inputLocation").val();
-			// var idTicket = $("#inputticket").val();
-			// var refrence = $("#inputRefrence").val();
-			// var customer = $("#inputClient").val();
-			// var pic = $("#inputPIC").val();
-			// var contact = $("#inputContact").val();
-			// var problem = $("#inputProblem").val();
-			// var location = $("#inputLocation").val();
-			// var engineer = $("#inputEngineer").val();
-			// var date = $("#inputDate").val();
-			// var serial = $("#inputSerial").val();
-
 			console.log("Yes");
-
-			// var body=data.replace(/^.*?<body>(.*?)<\/body>.*?$/s,"$1");
-			// $("body").html(body);
 			var body = $("#bodyOpenMail").html();
-			// console.log(body);
-
+			
 			$.ajax({
 				type:"GET",
 				url:"mailOpenTicket",
@@ -2615,29 +2505,11 @@
 				success: function(result){
 					console.log("success");
 					alert('Email Has Been Sent!');
-					location.reload(true);
-					// $("#createparam").click();
+					$("#performance").click();
 					// window.location('/tisygy');
 				},
 			});
 
-			// $.ajax({
-			//  type:"GET",
-			//  url:"testMail",
-			//  data:{
-			//      body:body,
-			//      subject: $("#emailOpenSubject").val(),
-			//      to: $("#emailOpenTo").val(),
-			//      cc: $("#emailOpenCc").val(),
-			//      attachment: $("#emailOpenAttachment").val()
-			//  },
-			//  success: function(result){
-			//      console.log("success");
-			//      alert('Email Has Been Sent!');
-			//      $("#performance").click();
-			//      // window.location('/tisygy');
-			//  },
-			// });
 		}
 	}
 

@@ -44,6 +44,10 @@
 	.time-label {
 		cursor: pointer;
 	}
+
+	tfoot {
+		display: table-header-group;
+	}
 </style>
 @endsection
 @section('content')
@@ -95,6 +99,16 @@
 									<th>Coordinator</th>
 								</tr>
 							</thead>
+							<tfoot>
+								<tr>
+									<th></th>
+									<th>Customer</th>
+									<th>Name Project</th>
+									<th>Time to Due Date</th>
+									<th>Time to Due Date</th>
+									<th>Coordinator</th>
+								</tr>
+							</tfoot>
 						</table>
 					</div>
 				</div>
@@ -636,7 +650,58 @@
 			paging: false,
 			info:false,
 			scrollX: false,
-			order: [[1, 'asc']]
+			order: [[1, 'asc']],
+
+			initComplete: function () {
+				var duration_to_due_date = []
+				this.api().columns().every( function () {
+					if(this.index() == 4){
+						this.data().each(function(d,i){
+							duration_to_due_date.push(humanizeDuration(moment.duration(d,'days').asMilliseconds(),{ units: ['mo'], round: true, }))
+						})
+					}
+					if(this.index() != 0){
+						console.log('every colom data')
+						var column = this;
+						var select = $('<select class="form-control"><option value=""></option></select>')
+							.appendTo( $(column.footer()).empty() )
+							.on( 'change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+									$(this).val()
+								);
+
+								column
+									.search( val ? '^'+val+'$' : '', true, false )
+									.draw();
+							} );
+
+						
+						column.data().unique().each( function ( d, j ) {
+							select.append( '<option value="' + d + '">' + d +'</option>' )
+						})
+					}
+				})
+				console.log()
+				var column = this.api().columns(3)
+				var select = $('<select class="form-control"><option value=""></option></select>')
+					.appendTo( $(column.footer()).empty() )
+					.on( 'change', function () {
+						var val = $.fn.dataTable.util.escapeRegex(
+							$(this).val()
+						);
+
+						column
+							.search( val ? '^'+val+'$' : '', true, false )
+							.draw();
+					} );
+
+				
+				duration_to_due_date.data().unique().sort().forEach( function ( d, j ) {
+					select.append( '<option value="' + d + '">' + d +'</option>' )
+				})
+
+				// console.log(duration_to_due_date)
+			}
 		})
 
 	}

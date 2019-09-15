@@ -146,18 +146,6 @@
 								<p>
 									{{Auth::user()->name}} 
 										<small><i class="fa fa-circle text-success"></i> Admin</small>
-<<<<<<< HEAD
-=======
-									@elseif(Auth::user()->jabatan = 2)
-										<small><i class="fa fa-circle text-success"></i> Engineer</small>
-									@elseif(Auth::user()->jabatan = 3)
-										<small><i class="fa fa-circle text-success"></i> Helpdesk</small>
-									@elseif(Auth::user()->jabatan = 4)
-										<small><i class="fa fa-circle text-success"></i> Project Cordinator</small>
-									@elseif(Auth::user()->jabatan = 5)
-										<small><i class="fa fa-circle text-success"></i> Super User</small>	
-									@endif
->>>>>>> dbd2e0ccfdede0c3729dda4aaf0046ff8bf12d68
 								</p>
 							</li>
 							<!-- Menu Body -->
@@ -228,23 +216,6 @@
 				</a>
 				<div class="pull-left info">
 					<p>{{Auth::user()->name}}</p>
-<<<<<<< HEAD
-						<small><i class="fa fa-circle text-success"> </i>  Admin</small>					
-=======
-
-						@if(Auth::user()->jabatan = 1)
-							<small><i class="fa fa-circle text-success"></i> Admin</small>
-						@elseif(Auth::user()->jabatan = 2)
-							<small><i class="fa fa-circle text-success"></i> Engineer</small>
-						@elseif(Auth::user()->jabatan = 3)
-							<small><i class="fa fa-circle text-success"></i> Helpdesk</small>
-						@elseif(Auth::user()->jabatan = 4)
-							<small><i class="fa fa-circle text-success"></i> Project Cordinator</small>
-						@elseif(Auth::user()->jabatan = 5)
-							<small><i class="fa fa-circle text-success"></i> Super User</small>	
-						@endif
-					
->>>>>>> dbd2e0ccfdede0c3729dda4aaf0046ff8bf12d68
 				</div>
 			</div>
 			<!-- search form -->
@@ -262,13 +233,8 @@
 			
 			<ul class="sidebar-menu" data-widget="tree">
 				<li class="header" onclick="url()">
-<<<<<<< HEAD
 							Main Menu
-						</li>
-=======
-					Main Menu
 				</li>
->>>>>>> dbd2e0ccfdede0c3729dda4aaf0046ff8bf12d68
 				<li class="" id="dashboard">
 					<a href="{{ url('/admin') }}">
 						<i class="fa fa-dashboard"></i> <span>Dashboard</span>

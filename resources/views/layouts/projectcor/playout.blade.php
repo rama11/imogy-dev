@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html>
 	<head>
@@ -546,5 +545,4 @@
 		</script>
 		@yield('script')
 	</body>
->>>>>>> dbd2e0ccfdede0c3729dda4aaf0046ff8bf12d68
 </html>

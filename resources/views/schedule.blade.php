@@ -1,5 +1,13 @@
 @extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
 
+@section('head')
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+
+<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/fullcalendar/fullcalendar.min.css')}}">
+<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/fullcalendar/fullcalendar.print.css')}}" media="print">
+@endsection
+
 @section('content')
 <style>
 	.loader {
@@ -208,6 +216,10 @@
 </div>
 @endsection
 @section('script')
+<script src="{{asset('js/jquery-ui.min.js')}}"></script>
+<script src="{{asset('js/fullcalendar.min.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script> 
+
 <script type="text/javascript">
 	var globalIdUser = 0;
 	var globalProject = 0;
@@ -242,11 +254,11 @@
 			$(this).data('eventObject', eventObject);
 
 			// make the event draggable using jQuery UI
-			$(this).draggable({
-				zIndex: 1070,
-				revert: true, // will cause the event to go back to its
-				revertDuration: 0  //  original position after the drag
-			});
+			// $(this).draggable({
+			// 	zIndex: 1070,
+			// 	revert: true, // will cause the event to go back to its
+			// 	revertDuration: 0  //  original position after the drag
+			// });
 
 		});
 	}

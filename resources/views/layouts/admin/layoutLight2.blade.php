@@ -15,7 +15,7 @@
 		<link rel="stylesheet" href="{{url('dist/css/skins/_all-skins.min.css')}}">
 		@yield('head')
 	</head>
-	<body class="hold-transition skin-blue sidebar-mini">
+	<body class="hold-transition skin-blue sidebar-collapse sidebar-mini">
 		<div class="wrapper">
 
 			<header class="main-header">

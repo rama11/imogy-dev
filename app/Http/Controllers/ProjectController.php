@@ -110,6 +110,7 @@ class ProjectController extends Controller
 				[
 					'project_name' => $req->Name,
 					'project_pid' => $req->PID,
+					'project_type' => $req->Type,
 					'project_customer' => $req->Customer,
 					'project_start' => $req->StartPeriod,
 					'project_periode' => $req->Period,

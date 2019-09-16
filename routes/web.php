@@ -147,6 +147,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('tisygy2', 'TicketingController@tisygy2');
 		// Route::get('tisygy', function(){
 			// echo "<h1 style='font-size:100px'>Mas Danang Nganteng</h1gController@createIdTicket');
+		Route::get('reserveIdTicket','TicketingController@createIdTicket');
 		Route::get('getEmailReciver', 'TicketingController@getEmailReciver');
 		Route::get('setNewTicket','TicketingController@setNewTicket');
 		Route::get('mailOpenTicket','TicketingController@mailOpenTicket');

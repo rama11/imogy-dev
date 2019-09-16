@@ -1188,7 +1188,7 @@
 <!-- bootstrap time picker -->
 <script src="plugins/timepicker/bootstrap-timepicker.min.js"></script>
 <!-- bootstrap datepicker -->
-<!-- <script src="plugins/datepicker/bootstrap-datepicker.js"></script> -->
+<script src="plugins/datepicker/bootstrap-datepicker.js"></script>
 <!-- Select2 -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script> -->
 <!-- DataTables -->

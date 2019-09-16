@@ -74,7 +74,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('/habsen', 'HelpdeskController2@absen');
 	Route::post('/htisygy', 'HelpdeskController2@add_atisygy');
 	Route::get('/downloadPDF/{id}','HelpdeskController2@download');
-	// Route::get('/schedule','HelpdeskController2@schedule');
+	Route::get('/schedule','HelpdeskController2@schedule');
 	Route::get('/changeAbsent/{id}','HelpdeskController2@changeAbsent');
 	// Admin Route
 	Route::get('/admin', 'AdminController@index');

@@ -183,7 +183,7 @@
 						<li class="" id="project">
 							<a href="{{ url('project/manage')}}">
 								<i class="fa fa-calendar"></i>
-								<span>Project Manage</span>
+								<span>ANGELA</span>
 							</a>
 						</li>
 					</ul>

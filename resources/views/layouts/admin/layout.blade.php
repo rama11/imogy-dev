@@ -192,6 +192,12 @@
 								<span>Set Absent Location</span>
 							</a>
 						</li>
+						<li class="" id="project">
+							<a href="{{ url('project/manage')}}">
+								<i class="fa fa-calendar"></i>
+								<span>ANGELA</span>
+							</a>
+						</li>
 					</ul>
 				</section>
 			</aside>

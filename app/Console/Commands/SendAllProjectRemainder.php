@@ -41,6 +41,9 @@ class SendAllProjectRemainder extends Command
 	public function handle()
 	{
 		//
+
+		syslog(LOG_NOTICE, "Checking project remainder");
+
 		$projectAll = DB::table('project__list')
 			->pluck('id')
 			->toArray();

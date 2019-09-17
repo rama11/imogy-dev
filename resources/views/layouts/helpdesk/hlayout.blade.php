@@ -142,11 +142,10 @@
 					<li class="dropdown user user-menu">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							@if(Auth::user()->foto == "0")
-							<img src="{{url('img/no-image.png')}}" class="user-image" alt="User Image">
+								<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
 							@else
-							<img src="{{url(Auth::user()->foto)}}" class="user-image" alt="User Image">
+								<img src="{{url(Auth::user()->foto)}}" class="img-circle" alt="User Image">
 							@endif
-							<span class="hidden-xs">{{Auth::user()->name}}</span>
 						</a>
 						<ul class="dropdown-menu">
 							<!-- User image -->

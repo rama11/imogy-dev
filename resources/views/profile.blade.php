@@ -37,6 +37,10 @@
 								<small> Helpdesk</small>
 							@elseif(Auth::user()->jabatan == 3)
 								<small> Engineer</small>
+							@elseif(Auth::user()->jabatan == 4)
+								<small> Project Cordinator</small>
+							@elseif(Auth::user()->jabatan == 5)
+								<small> Super User</small>	
 							@endif
 						</p>
 						<ul class="list-group list-group-unbordered">
@@ -89,7 +93,7 @@
 								<div class="row">
 									<div class="col-xs-12">
 										<h2 class="page-header">
-											<i class="fa fa-user"></i>{{Auth::user()->name}}
+											<i class="fa fa-user"></i> {{Auth::user()->name}}
 											<a href="#" class="pull-right btn-box-tool text-yellow" data-toggle="modal" data-target="#modal-password")" ><i class="fa fa-key"></i> Change Password</a>
 											<a href="#" class="pull-right btn-box-tool text-blue" data-toggle="modal" data-target="#modal-profile")" ><i class="fa fa-edit"></i> Edit Profile</a>
 

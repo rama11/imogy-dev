@@ -44,6 +44,10 @@
 	.time-label {
 		cursor: pointer;
 	}
+
+	tfoot {
+		display: table-header-group;
+	}
 </style>
 @endsection
 @section('content')
@@ -95,6 +99,16 @@
 									<th>Coordinator</th>
 								</tr>
 							</thead>
+							<tfoot>
+								<tr>
+									<th></th>
+									<th>Customer</th>
+									<th></th>
+									<th>Time to Due Date</th>
+									<th>Time to Due Date</th>
+									<th>Coordinator</th>
+								</tr>
+							</tfoot>
 						</table>
 					</div>
 				</div>
@@ -125,6 +139,13 @@
 								<div class="form-group">
 									<label>Project ID (PID)</label>
 									<input type="text" class="form-control" id="inputProjectPID" required>
+								</div>
+								<div class="form-group">
+									<label>Project Type</label>
+									<select class="form-control" id="inputProjectType">
+										<option value="Maintenance Service">MS - Maintenance Service</option>
+										<option value="After Sales">AS - After Sales</option>
+									</select>
 								</div>
 							</form>
 						</div>
@@ -169,6 +190,7 @@
 												<option value="3">3 Month</option>
 												<option value="4">4 Month</option>
 												<option value="6">6 Month</option>
+												<option value="12">12 Month</option>
 											</select>
 										</div>
 									</div>
@@ -224,16 +246,22 @@
 							<p>Please check whether it matches the data you input.</p>
 							<form role="form">
 								<div class="row">
-									<div class="col-md-6">
+									<div class="col-md-4">
 										<div class="form-group">
 											<label>Customer</label>
 											<input type="text" class="form-control" id="inputProjectCustomerCorrection" readonly>
 										</div>
 									</div>
-									<div class="col-md-6">
+									<div class="col-md-4">
 										<div class="form-group">
 											<label>PID</label>
 											<input type="text" class="form-control" id="inputProjectPIDCorrection" readonly>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>Type</label>
+											<input type="text" class="form-control" id="inputProjectTypeCorrection" readonly>
 										</div>
 									</div>
 								</div>
@@ -433,7 +461,7 @@
 			}
 		});
 
-		showProjectDetail(128);
+		// showProjectDetail(128);
 	});
 
 	function initFormInputProject(){
@@ -510,6 +538,7 @@
 		// Correction Customer
 		$("#inputProjectCustomerCorrection").val($("#inputProjectCustomer").select2('data')[0].text);
 		$("#inputProjectPIDCorrection").val($("#inputProjectPID").val());
+		$("#inputProjectTypeCorrection").val($("#inputProjectType").val());
 		$("#inputProjectNameCorrection").val($("#inputProjectName").val());
 
 		// Correction Periode Input
@@ -550,6 +579,7 @@
 				"Customer":$("#inputProjectCustomer").select2('data')[0].id,
 				"CustomerName":$("#inputProjectCustomer").select2('data')[0].text,
 				"PID":$("#inputProjectPIDCorrection").val(),
+				"Type":$("#inputProjectTypeCorrection").val(),
 				"Name":$("#inputProjectNameCorrection").val(),
 				"Duration":$("#inputProjectDuration").val(),
 				"Period":$("#inputProjectPeriod").val(),
@@ -595,6 +625,53 @@
 		$("#inputProjectPeriodResult2").html("");
 	}
 
+	function filterBinary(arr,max,min){
+		var len = arr.length
+		var up = -1
+		var down = len
+		var rrange = []
+		var mid = Math.floor(len/2)
+		var i = 0;
+		while (i < len){
+			if(arr[i] < max && arr[i] > min){
+				rrange.push(i)
+			}
+			i++;
+		}
+		return rrange;   
+	}
+
+	function filter_due_date_remain(startDate, endDate){
+		if(typeof startDate !== 'undefined'){
+			$.fn.dataTableExt.afnFiltering.length = 0;
+			filter_process(4, startDate, endDate);
+			$("#tableProjectManage").DataTable().draw(); 
+		} else {
+			$.fn.dataTableExt.afnFiltering.length = 0;
+			$("#tableProjectManage").DataTable().draw(); 
+		}
+	}
+
+	function filter_process (column, startDate, endDate) {
+		$.fn.dataTableExt.afnFiltering.push(
+			function( oSettings, aData, iDataIndex ) {
+				var rowDate = aData[column];
+				var start = startDate;
+				var end = endDate;
+				
+				if (start <= rowDate && rowDate <= end) {
+					return true;
+				} else if (rowDate >= start && end === '' && start !== ''){
+					return true;
+				} else if (rowDate <= end && start === '' && end !== ''){
+					return true;
+				} else {
+					return false;
+				}
+			}
+		);
+	};
+
 	function getAllProjectList(){
 		$("#tableProjectManage").DataTable({
 			"ajax":{
@@ -628,7 +705,7 @@
 				{ "data": "project_customer" },
 				{ "data": "project_name" },
 				{ "data": "project_start" , "orderData":[ 4 ] , "targets": [ 1 ]},
-				{ "data": "project_start2" , "targets": [ 4 ] , "visible": false , "searchable": false},
+				{ "data": "project_start2" , "targets": [ 4 ] , "visible": false , "searchable": true},
 				{ "data": "project_coordinator" },
 			],
 			"order": [[ 4, "asc" ]],
@@ -636,7 +713,50 @@
 			paging: false,
 			info:false,
 			scrollX: false,
-			order: [[1, 'asc']]
+			order: [[1, 'asc']],
+
+			initComplete: function () {
+				var duration_to_due_date = ["1 month","2 months","3 months","4 months","6 months"]
+				var duration_to_due_date_start = [-15,-30,-45,-60,-90]
+				var duration_to_due_date_end = [15,30,45,60,90]
+				this.api().columns().every( function () {
+					if(this.index() != 0 && this.index() != 2){
+						console.log('every colom data')
+						var column = this;
+						var select = $('<select class="form-control"><option value="">Show All</option></select>')
+							.appendTo( $(column.footer()).empty() )
+							.on( 'change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+									$(this).val()
+								);
+
+								column
+									.search( val ? '^'+val+'$' : '', true, false )
+									.draw();
+							} );
+
+						
+						column.data().unique().each( function ( d, j ) {
+							select.append( '<option value="' + d + '">' + d +'</option>' )
+						})
+					}
+				})
+				console.log()
+				var column = this.api().columns(3)
+				var column_next = this.api().columns(4)
+				var select = $('<select class="form-control"><option value="">Show All</option></select>').appendTo( $(column.footer()).empty() ).on( 'change', function () {
+					var val = $.fn.dataTable.util.escapeRegex(
+						$(this).val()
+					);
+					filter_due_date_remain(duration_to_due_date_start[val],duration_to_due_date_end[val])
+				})
+				
+				duration_to_due_date.forEach( function ( d, j ) {
+					select.append( '<option value="' + j + '">' + d +'</option>' )
+				})
+
+				console.log(duration_to_due_date)
+			}
 		})
 
 	}

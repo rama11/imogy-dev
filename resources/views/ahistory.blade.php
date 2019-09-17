@@ -79,10 +79,15 @@ html{
 						<i class="fa fa-book"></i>My Attendance</a>
 					</li>
 <<<<<<< HEAD
+<<<<<<< HEAD
 					@if(Auth::user()->jabatan == "1" || Auth::user()->jabatan == 5)
 =======
 					@if(Auth::user()->jabatan == "1" || Auth::user()->jabatan == 
 >>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
+=======
+
+					@if(Auth::user()->jabatan == "1" || Auth::user()->jabatan == 5)
+>>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 						<li>
 							<a href="{{url('ateamhistory')}}">
 								<i class="fa fa-users"></i>

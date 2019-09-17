@@ -132,6 +132,7 @@ class Kernel extends ConsoleKernel
 		// 		->get()
 		// 		->toarray();
 
+
 		// 	syslog(LOG_ERR, "Test Cron Success" . $ids);
 
 		// 			// GMT +6

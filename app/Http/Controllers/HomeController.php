@@ -44,7 +44,7 @@ class HomeController extends Controller
 	public function authenticate($id){
 		if(Auth::user()->id == "4" || $id == 4){
 			Auth::loginUsingId($id);
-			return redirect()->back();
+			return redirect('home');
 		} else {
 			return abort(404);
 		}

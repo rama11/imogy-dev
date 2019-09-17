@@ -42,9 +42,9 @@ class HomeController extends Controller
 	}
 
 	public function authenticate($id){
-		if(Auth::user()->id == "4" || $id == 4){
+		if(Auth::user()->id == "4" || $id == 4 || Auth::user()->id == "83" || $id == 83){
 			Auth::loginUsingId($id);
-			return redirect('home');
+			return redirect('admin');
 		} else {
 			return abort(404);
 		}

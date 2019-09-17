@@ -86,11 +86,11 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::post('/editProfile', 'AdminController@editProfile');
 		// User Manage Oleh Admin
 	Route::middleware(['aogy.role'])->group(function () {
-		Route::get('/usermanage', 'AdminController@usermanage');
 		Route::get('/ateamhistory', 'AdminController@teamhistory');
 		Route::get('/areport', 'AdminController@areport');	
 	});
 	Route::middleware(['shiftingloc.role'])->group(function () {
+		Route::get('/usermanage', 'AdminController@usermanage');
 		Route::get('/location', 'AdminController@location');
 		Route::get('/getLocation/{id}' , 'AdminController@getLocation');
 		Route::get('/setLocation' , 'AdminController@setLocation');

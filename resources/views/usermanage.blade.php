@@ -43,9 +43,11 @@
 												<a href="#" class="pull-right btn-box-tool text-green" data-toggle="modal" data-target="#modal-default" onclick="getMasuk('{{$user->id}}')" >
 													<i class="fa fa-edit"></i> Edit Schedule
 												</a>
+												@if(Auth::user()->jabatan == 1 || Auth::user()->jabatan == 5) 
 												<a href="#" class="pull-right btn-box-tool text-yellow" data-toggle="modal" data-target="#modal-profile" onclick="getProfile('{{$user->id}}')" >
 													<i class="fa fa-edit"></i> Edit Profile
 												</a>
+												@endif
 											</span>
 											@if($user->condition == "on")
 												@foreach($waktu_absen as $absen)

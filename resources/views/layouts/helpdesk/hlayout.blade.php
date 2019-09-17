@@ -174,6 +174,12 @@
 								<span>AOGY</span>
 							</a>
 						</li>
+						<li class="" id="usermanage">
+							<a href="{{ url('usermanage')}}">
+								<i class="fa fa-users"></i>
+								<span>Users Management</span>
+							</a>
+						</li>
 						<li class="" id="tisygy">
 							<a href="{{ url('tisygy')}}">
 								<i class="fa fa-paper-plane"></i>

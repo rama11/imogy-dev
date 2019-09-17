@@ -20,7 +20,9 @@
 					<ul class="nav nav-tabs">
 						@foreach($privileges as $privilege)
 						<li>
-							<a href="#{{$privilege->id}}" data-toggle="tab" aria-expanded="true">{{$privilege->privilege_name}}</a>
+							<a href="#{{$privilege->id}}" data-toggle="tab" aria-expanded="true">
+								{{$privilege->privilege_name}}
+							</a>
 						</li>
 						@endforeach
 					</ul>

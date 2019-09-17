@@ -135,53 +135,17 @@
 					</ul>
 				</section>
 			</aside>
-<<<<<<< HEAD
 			@yield('content')
 		</div>
 		
 		<script src="{{url('plugins/jQuery/jquery-3.1.1.min.js')}}"></script>
 		<script src="{{url('bootstrap/js/bootstrap.min.js')}}"></script>
 		<script src="{{url('dist/js/adminlte.min.js')}}"></script>
-=======
-
-			@yield('content')
-			
-		</div>
-		<script src="{{ url('plugins/jQuery/jquery-3.1.1.min.js')}}"></script>
-		<script src="{{ url('bootstrap/js/bootstrap.min.js')}}"></script>
-		<script src="{{ url('dist/js/adminlte.min.js')}}"></script>
-
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/locale/id.js"></script>
-
-		<script src="{{ url('plugins/morris/morris.min.js')}}"></script>
-		<script src="{{ url('plugins/sparkline/jquery.sparkline.min.js')}}"></script>
-		<script src="{{ url('plugins/jvectormap/jquery-jvectormap-1.2.2.min.js')}}"></script>
-		<script src="{{ url('plugins/jvectormap/jquery-jvectormap-world-mill-en.js')}}"></script>
-		<script src="{{ url('plugins/knob/jquery.knob.js')}}"></script>
-		<script src="{{ url('plugins/daterangepicker/daterangepicker.js')}}"></script>
-		<script src="{{ url('plugins/datepicker/bootstrap-datepicker.js')}}"></script>
-		<script src="{{ url('plugins/slimScroll/jquery.slimscroll.min.js')}}"></script>
-		<script src="{{ url('plugins/select2/select2.full.min.js')}}"></script>
-		<script src="{{ url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-		<script src="{{ url('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
-		<script src="{{ url('plugins/chartjs/Chart.min.js')}}"></script>
-		<script src="{{ url('plugins/fastclick/fastclick.js')}}"></script>
-		<script src="{{ url('dist/js/demo.js')}}"></script>
-		<script src="{{ url('js/jquery-ui.min.js')}}"></script>
-		<script src="{{ url('js/fullcalendar.min.js')}}"></script>
-
->>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 
 		<script type="text/javascript">
 			$(document).ready(function(){
 				var path = (document.URL).split("/");
-<<<<<<< HEAD
 				switch((document.URL).split("/")[(document.URL).split("/").length - 1]) {
-=======
-				switch(path[path.length - 1]) {
->>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 					case "admin":
 						$("#dashboard").addClass("active");
 						$("#absen").removeClass("active");
@@ -189,17 +153,10 @@
 						$("#usermanage").removeClass("active");
 						$("#schedule").removeClass("active");
 						$("#location").removeClass("active");
-<<<<<<< HEAD
 						$("#project").removeClass("active");
 						console.log("admin");
 						break;
 
-=======
-						$("#schedule#").removeClass("active");
-						$("#project").removeClass("active");
-						console.log("admin");
-						break;
->>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 					case "absen":
 						$("#dashboard").removeClass("active");
 						$("#absen").addClass("active");
@@ -207,17 +164,10 @@
 						$("#usermanage").removeClass("active");
 						$("#schedule").removeClass("active");
 						$("#location").removeClass("active");
-<<<<<<< HEAD
 						$("#project").removeClass("active");
 						console.log("absen");
 						break;
 
-=======
-						$("#schedule#").removeClass("active");
-						$("#project").removeClass("active");
-						console.log("absen");
-						break;
->>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 					case "ahistory":
 						$("#dashboard").removeClass("active");
 						$("#absen").addClass("active");
@@ -225,17 +175,10 @@
 						$("#usermanage").removeClass("active");
 						$("#schedule").removeClass("active");
 						$("#location").removeClass("active");
-<<<<<<< HEAD
 						$("#project").removeClass("active");
 						console.log("ahistory");
 						break;
 
-=======
-						$("#schedule#").removeClass("active");
-						$("#project").removeClass("active");
-						console.log("ahistory");
-						break;
->>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 					case "ateamhistory":
 						$("#dashboard").removeClass("active");
 						$("#absen").addClass("active");
@@ -243,17 +186,10 @@
 						$("#usermanage").removeClass("active");
 						$("#schedule").removeClass("active");
 						$("#location").removeClass("active");
-<<<<<<< HEAD
 						$("#project").removeClass("active");
 						console.log("ateamhistory");
 						break;
 
-=======
-						$("#schedule#").removeClass("active");
-						$("#project").removeClass("active");
-						console.log("ateamhistory");
-						break;
->>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 					case "areport":
 						$("#dashboard").removeClass("active");
 						$("#absen").addClass("active");
@@ -261,17 +197,10 @@
 						$("#usermanage").removeClass("active");
 						$("#schedule").removeClass("active");
 						$("#location").removeClass("active");
-<<<<<<< HEAD
 						$("#project").removeClass("active");
 						console.log("location");
 						break;
 
-=======
-						$("#schedule#").removeClass("active");
-						$("#project").removeClass("active");
-						console.log("location");
-						break;
->>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 					case "tisygy":
 						$("#dashboard").removeClass("active");
 						$("#absen").removeClass("active");
@@ -279,10 +208,6 @@
 						$("#usermanage").removeClass("active");
 						$("#schedule").removeClass("active");
 						$("#location").removeClass("active");
-<<<<<<< HEAD
-=======
-						$("#schedule#").removeClass("active");
->>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 						$("#project").removeClass("active");
 						console.log("tisygy");
 						break;
@@ -294,10 +219,6 @@
 						$("#usermanage").addClass("active");
 						$("#schedule").removeClass("active");
 						$("#location").removeClass("active");
-<<<<<<< HEAD
-=======
-						$("#schedule#").removeClass("active");
->>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 						$("#project").removeClass("active");
 						console.log("usermanage");
 						break;
@@ -309,17 +230,10 @@
 						$("#usermanage").removeClass("active");
 						$("#schedule").addClass("active");
 						$("#location").removeClass("active");
-<<<<<<< HEAD
 						$("#project").removeClass("active");
 						console.log("schedule");
 						break;
 
-=======
-						$("#schedule#").removeClass("active");
-						$("#project").removeClass("active");
-						console.log("schedule");
-						break;
->>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 					case "location":
 						$("#dashboard").removeClass("active");
 						$("#absen").removeClass("active");
@@ -327,38 +241,22 @@
 						$("#usermanage").removeClass("active");
 						$("#schedule").removeClass("active");
 						$("#location").addClass("active");
-<<<<<<< HEAD
 						$("#project").removeClass("active");
 						console.log("location");
 						break;
 
 					case "manage":
-=======
-						$("#schedule#").removeClass("active");
-						$("#project").removeClass("active");
-						console.log("location");
-						break;
-					case "schedule#":
->>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 						$("#dashboard").removeClass("active");
 						$("#absen").removeClass("active");
 						$("#tisygy").removeClass("active");
 						$("#usermanage").removeClass("active");
 						$("#schedule").removeClass("active");
 						$("#location").removeClass("active");
-<<<<<<< HEAD
 						$("#project").addClass("active");
 						console.log("location");
 						break;
 
 					case "project":
-=======
-						$("#schedule#").addClass("active");
-						$("#project").removeClass("active");
-						console.log("location");
-						break;
-					case "manage":
->>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 						$("#dashboard").removeClass("active");
 						$("#absen").removeClass("active");
 						$("#tisygy").removeClass("active");
@@ -367,22 +265,14 @@
 						$("#location").removeClass("active");
 						$("#project").addClass("active");
 						console.log("location");
-<<<<<<< HEAD
 						break;
 															
-=======
-						break;				
->>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 					default:
 						$("#dashboard").addClass("active");
 				};
 				// console.log(path[path.length - 1]);
 			});
 		</script>
-<<<<<<< HEAD
 		@yield('script')
-=======
-	@yield('script')
->>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 	</body>
 </html>

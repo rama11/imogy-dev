@@ -39,11 +39,5 @@ class UsersCondition extends Command
     {
         $condition = DB::table('users')
             ->update(['condition' => "off"]);
-        if($condition){
-            syslog(LOG_NOTICE,"Condition - " . $condition);
-        } else {
-            syslog(LOG_NOTICE,"Condition - " . $condition);
-        }
-            
     }
 }

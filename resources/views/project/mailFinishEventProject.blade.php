@@ -1,4 +1,6 @@
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
 <div style="color: #141414;font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;">
 	<p id="emailOpenHeader" style="margin: 0 0 10px;box-sizing: border-box;font-size: 14px;line-height: 1.42857143;color: #555;font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;font-weight: 400;">
 	</p>
@@ -113,6 +115,7 @@
 	</p>
 </div>
 =======
+>>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 <div style="color: #141414;font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;">
 	<p id="emailOpenHeader" style="margin: 0 0 10px;box-sizing: border-box;font-size: 14px;line-height: 1.42857143;color: #555;font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;font-weight: 400;">
 	</p>
@@ -226,4 +229,7 @@
 		----------------------------------------<br>
 	</p>
 </div>
+<<<<<<< HEAD
+=======
 >>>>>>> dbd2e0ccfdede0c3729dda4aaf0046ff8bf12d68
+>>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d

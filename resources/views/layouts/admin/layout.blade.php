@@ -195,7 +195,7 @@
 						<li class="" id="project">
 							<a href="{{ url('project/manage')}}">
 								<i class="fa fa-calendar"></i>
-								<span>ANGELA</span>
+								<span>WINDA</span>
 							</a>
 						</li>
 					</ul>

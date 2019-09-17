@@ -20,6 +20,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\TrustProxies::class,
         // \App\Http\Middleware\Debugging::class,
+        
     ];
 
     /**
@@ -58,7 +59,6 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-
         'aogy.role' => \App\Http\Middleware\AogyRole::class,
         'tisygy.role' => \App\Http\Middleware\TisygyRole::class,
         'project.role' => \App\Http\Middleware\ProjectRole::class,

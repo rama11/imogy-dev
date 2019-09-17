@@ -11,10 +11,64 @@
 		<link rel="stylesheet" href="{{ url('AdminLTE/dist/css/AdminLTE.min.css')}}">
 		<link rel="stylesheet" href="{{ url('dist/css/skins/_all-skins.min.css')}}">
 
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+	@yield('head')
+	<style type="text/css">
+		.switch {
+			position: relative;
+			display: inline-block;
+			width: 60px;
+			height: 34px;
+		}
+
+		.switch input {display:none;}
+
+		.slider {
+			position: absolute;
+			cursor: pointer;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: #ccc;
+			-webkit-transition: .4s;
+			transition: .4s;
+		}
+		.slider:before {
+			position: absolute;
+			content: "";
+			height: 26px;
+			width: 26px;
+			left: 4px;
+			bottom: 4px;
+			background-color: white;
+			-webkit-transition: .4s;
+			transition: .4s;
+		}
+
+		input:checked + .slider {
+			background-color: #2196F3;
+		}
+
+		input:focus + .slider {
+			box-shadow: 0 0 1px #2196F3;
+		}
+
+		input:checked + .slider:before {
+			-webkit-transform: translateX(26px);
+			-ms-transform: translateX(26px);
+			transform: translateX(26px);
+		}
+		/* Rounded sliders */
+		.slider.round {
+			border-radius: 34px;
+		}
+		.slider.round:before {
+			border-radius: 50%;
+		}
+	</style>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
 
 		<link rel="stylesheet" href="{{ url('plugins/morris/morris.css')}}">
 		<link rel="stylesheet" href="{{ url('plugins/jvectormap/jquery-jvectormap-1.2.2.css')}}">
@@ -207,6 +261,132 @@
 		<script src="{{ url('js/fullcalendar.min.js')}}"></script>
 
 
+<<<<<<< HEAD
+
+<script type="text/javascript">
+$(document).ready(function(){
+	var path = (document.URL).split("/");
+	switch(path[path.length - 1]) {
+		case "admin":
+			$("#dashboard").addClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("admin");
+			break;
+		case "absen":
+			$("#dashboard").removeClass("active");
+			$("#absen").addClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("absen");
+			break;
+			
+		case "ahistory":
+			$("#dashboard").removeClass("active");
+			$("#absen").addClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("ahistory");
+			break;
+		case "ateamhistory":
+			$("#dashboard").removeClass("active");
+			$("#absen").addClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("ateamhistory");
+			break;
+		case "areport":
+			$("#dashboard").removeClass("active");
+			$("#absen").addClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("location");
+			break;
+		case "tisygy":
+			$("#dashboard").removeClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").addClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("tisygy");
+			break;
+			
+		case "usermanage":
+			$("#dashboard").removeClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").addClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("usermanage");
+			break;
+		
+		case "schedule":
+			$("#dashboard").removeClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").addClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("schedule");
+			break;
+<<<<<<< HEAD
+
+=======
+>>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
+		case "location":
+			$("#dashboard").removeClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").addClass("active");
+			$("#schedule#").removeClass("active");
+			console.log("location");
+			break;
+<<<<<<< HEAD
+
+=======
+>>>>>>> 3e17c99e9af56c1738f5649055aacfffd23d3841
+		case "schedule#":
+			$("#dashboard").removeClass("active");
+			$("#absen").removeClass("active");
+			$("#tisygy").removeClass("active");
+			$("#usermanage").removeClass("active");
+			$("#schedule").removeClass("active");
+			$("#location").removeClass("active");
+			$("#schedule#").addClass("active");
+			console.log("location");
+			break;										
+		default:
+			$("#dashboard").addClass("active");
+	};
+	// console.log(path[path.length - 1]);
+});
+</script>
+@yield('script')
+</body>
+=======
 		<script type="text/javascript">
 			$(document).ready(function(){
 				var path = (document.URL).split("/");
@@ -341,4 +521,5 @@
 		</script>
 	@yield('script')
 	</body>
+>>>>>>> b0bb1b0d5d2ece26a6a6636a47f252c7f331fb4d
 </html>

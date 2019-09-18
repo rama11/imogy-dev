@@ -275,8 +275,33 @@ Custom Color Converter
 		// editProject(25);
 	});
 
+	var tempPeriods = []
+	var tempProjectID = ""
+	var tempProjectDuration = ""
 	var tempPeriodeChange = []
-	var tempStartPeriod = "";
+	var tempStartPeriod = ""
+	var tempStartPeriodChanged = false
+
+	$("#settingPeriodStart").bind("change",function(){
+		tempStartPeriod = [$("#settingPeriodStart").val(),tempProjectID]
+		// console.log($("#settingPeriodStart").val())
+		tempPeriods.forEach(function(period,index){
+			console.log(index)
+			var startPeriod = moment($("#settingPeriodStart").val(),'DD/MM/YYYY').add(1,'days').add(tempProjectDuration * (index ),'month')
+			var endPeriod = moment($("#settingPeriodStart").val(),'DD/MM/YYYY').add(tempProjectDuration * (index + 1),'month')
+			$('.startPeriod' + period.id).text(startPeriod.format('DD MMMM YYYY'));
+			$('.endPeriod' + period.id).text(endPeriod.format('DD MMMM YYYY'));
+			tempPeriodeChange.push({
+				"id_event":period.id,
+				"start_date":startPeriod.format('YYYY-MM-DD'),
+				"due_date":endPeriod.format('YYYY-MM-DD')
+			})
+			// console.log(moment($("#settingPeriodStart").val(),'DD/MM/YYYY').add(index,'days').format('DD MM YYYY'))
+		})
+
+		tempStartPeriodChanged = true
+		// tempPeriodeChange.slice(0,result.project_periode_duration)
+	});
 
 	function getAllProjectList(){
 		$("#tableProjectSetting").DataTable({
@@ -430,8 +455,16 @@ Custom Color Converter
 			},
 			success:function(result){
 				// console.log(id);
+				tempPeriods = []
+				tempPeriods = result[1]
 				periods = result[1]
 				result = result[0]
+				tempProjectID = ""
+				tempProjectID = result.id
+				tempProjectDuration = ""
+				tempProjectDuration = result.project_periode_duration
+				tempStartPeriodChanged = false
+
 				$(".table-period-schema tbody").html('')
 				$("#modalSettingPeriodTitle").html('<h4 class="modal-title">Period Setting for ' + result.project_name + '</h4><p>' + result.project_pid + '</p>');
 				$("#settingPeriodStart").val(moment(result.project_start).format("D MMMM YYYY"))
@@ -500,16 +533,6 @@ Custom Color Converter
 					autoclose: true
 				});
 
-				$("#settingPeriodStart").bind("change",function(){
-					tempStartPeriod = [$("#settingPeriodStart").val(),result.id]
-					// console.log($("#settingPeriodStart").val())
-					periods.forEach(function(period,index){
-						console.log(index)
-						$('.startPeriod' + period.id).text(period.start_date);
-						// console.log(moment($("#settingPeriodStart").val(),'DD/MM/YYYY').add(index,'days').format('DD MM YYYY'))
-					})
-				});
-
 				$("#modalSettingPeriod").modal('show');
 			}
 		});
@@ -521,25 +544,30 @@ Custom Color Converter
 			tempPeriodeChange[index].note = note
 		})
 		if(tempPeriodeChange.length != 0){
-			// $.ajax({
-			// 	type:"GET",
-			// 	url:"{{url('project/setting/setSettingPeriod')}}",
-			// 	data:{
-			// 		periods:tempPeriodeChange
-			// 	}
-			// });
-		}
-		if (tempStartPeriod != ""){
+			if(tempStartPeriodChanged == true){
+				var periods = tempPeriodeChange.slice(0,tempPeriodeChange.length/3)
+			} else {
+				var periods = tempPeriodeChange
+			}
 			$.ajax({
 				type:"GET",
-				url:"{{url('project/setting/setSettingPeriodStart')}}",
+				url:"{{url('project/setting/setSettingPeriod')}}",
 				data:{
-					start:tempStartPeriod
+					periods:periods
 				}
 			});
-			console.log(tempStartPeriod);
-			tempStartPeriod = ""
 		}
+		// if (tempStartPeriod != ""){
+		// 	$.ajax({
+		// 		type:"GET",
+		// 		url:"{{url('project/setting/setSettingPeriodStart')}}",
+		// 		data:{
+		// 			start:tempStartPeriod
+		// 		}
+		// 	});
+		// 	console.log(tempStartPeriod);
+		// 	tempStartPeriod = ""
+		// }
 		
 	}
 

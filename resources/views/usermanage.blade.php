@@ -99,6 +99,17 @@
 					<div class="modal-body">
 						<p id="nameMasuk"></p>
 						<div class="row">
+							<label for="shifting" class="col-md-3 control-label">Shifting</label>
+							<div class="col-md-9">
+								<div class="form-group">
+									<select name="shifting" class="form-control" id="shiftingEdit">
+										<option value="0">NON SHIFTING</option>
+										<option value="1">SHIFTING</option>
+									</select>                                    
+								</div>
+							</div>
+						</div>
+						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label>Before</label>
@@ -110,7 +121,7 @@
 								<input id="userNAME" type="hidden" name="name" value="">
 								<div class="form-group">
 									<label>After</label>
-									<select class="form-control" name="masuk">
+									<select class="form-control" name="masuk" id="afterEdit">
 										@foreach($presents_timing as $value)
 											<option value="{{$value->id}}">{{$value->name}}</option>
 										@endforeach
@@ -163,7 +174,7 @@
 								</select>                                    
 							</div>
 						</div>
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label for="shifting" class="col-md-3 control-label">Shifting</label>
 							<div class="col-md-9">
 								<select name="shifting" class="form-control">
@@ -172,7 +183,7 @@
 										<option value="1">SHIFTING</option>
 								</select>                                    
 							</div>
-						</div>
+						</div> -->
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
@@ -310,7 +321,12 @@
 				$("#nameMasuk").text("Change work hours for " + result[1]);
 				$("#beforeMasuk").attr("placeholder",result[2]);
 				$("#userID").val(result[0]);
-				$("#userID").val(result[0]);
+				$("#shiftingEdit option[value='" + result[3] + "']").attr("selected",true);
+				if(result[3] == 0){
+					$("#afterEdit").prop('disabled', false)
+				} else {
+					$("#afterEdit").prop('disabled', 'disabled')
+				}
 			},
 		});
 	};

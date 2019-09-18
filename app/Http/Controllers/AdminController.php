@@ -281,8 +281,14 @@ class AdminController extends Controller
 			}
 		}
 
-		$privileges = DB::table('privilege')
+		if(Auth::user()->jabatan != 5){
+			$privileges = DB::table('privilege')
+			->where('id','<>','5')
+			->get(); 
+		}else{
+			$privileges = DB::table('privilege')
 			->get();
+		}	
 
 		// echo "<pre>";
 		// print_r($users);
@@ -329,7 +335,7 @@ class AdminController extends Controller
 			->where('id',$users[0]->present_timing)
 			->value('name');
 
-		$result = [$users[0]->id,$users[0]->name,$result];
+		$result = [$users[0]->id,$users[0]->name,$result,$users[0]->shifting];
 
 		return $result;
 	}

@@ -675,4 +675,8 @@ class ProjectController extends Controller
 		}
 		return $req->period;
 	}
+
+	public function setSettingPeriodStart(Request $req){
+		return $req->start;
+	}
 }

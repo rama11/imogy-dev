@@ -59,7 +59,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('/hhistory', 'HelpdeskController2@hhistory');
 	Route::get('/hteamhistory', 'HelpdeskController2@hteamhistory');
 	// User Manage Oleh Helpdesk
-	Route::get('/getMasuk/{id}', 'HelpdeskController2@getMasuk');
+	// Route::get('/getMasuk/{id}', 'HelpdeskController2@getMasuk');
 	Route::get('/getProfile/{id}', 'HelpdeskController2@getProfile');
 	Route::get('/setMasuk', 'HelpdeskController2@setMasuk');
 	Route::get('/user', 'HelpdeskController2@user');
@@ -310,6 +310,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('project/setting/setSettingProject','ProjectController@setSettingProject');
 		Route::get('project/setting/getSettingPeriod','ProjectController@getSettingPeriod');
 		Route::get('project/setting/setSettingPeriod','ProjectController@setSettingPeriod');
+		Route::get('project/setting/setSettingPeriodStart','ProjectController@setSettingPeriodStart');
 
 	});
 });

@@ -1643,7 +1643,7 @@ class AdminController extends Controller
 		$users = DB::table('detail_users')
 			->join('users','users.id','=','detail_users.id_user')
 			->join('project','project.id','=','detail_users.on_project')
-			->select('users.id','users.name','project.project','detail_users.on_project')
+			->select('users.id','users.name','users.nickname','project.project','detail_users.on_project')
 			->get()
 			->toArray();
 
@@ -1726,7 +1726,7 @@ class AdminController extends Controller
 	}
 
 	public function crateSchedule (Request $req){
-		$user = DB::table('users')->where("name","LIKE","%" . $req->name)->first();
+		$user = DB::table('users')->where("nickname",$req->name)->first();
 		// echo "title : " . $req->title . "<br>";
 		// echo "start : " . $req->start . "<br>";
 		// echo "end : " . $req->end . "<br>";

@@ -15,7 +15,7 @@
 <div class="content-wrapper">
 	<section class="content-header">
 		<h1>
-			Setting
+			Archive
 			<small>Period, team member and others</small>
 		</h1>
 
@@ -502,12 +502,7 @@ Custom Color Converter
 
 				$("#settingPeriodStart").bind("change",function(){
 					tempStartPeriod = [$("#settingPeriodStart").val(),result.id]
-					// console.log($("#settingPeriodStart").val())
-					periods.forEach(function(period,index){
-						console.log(index)
-						$('.startPeriod' + period.id).text(period.start_date);
-						// console.log(moment($("#settingPeriodStart").val(),'DD/MM/YYYY').add(index,'days').format('DD MM YYYY'))
-					})
+					console.log($("#settingPeriodStart").val())
 				});
 
 				$("#modalSettingPeriod").modal('show');

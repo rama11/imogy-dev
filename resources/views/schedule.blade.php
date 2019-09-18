@@ -126,6 +126,7 @@
 						<p id="name"></p>
 						<div id="external-events">
 							<p id="name2"></p>
+							<input type="hidden" id="nickname">
 							<br>
 							<div style="display: none;" class="external-event bg-red project-1">Pagi <span class="pull-right">07:00 - 15:00</span></div>
 							<div style="display: none;" class="external-event bg-red project-2">Pagi <span class="pull-right">07:00 - 15:30</span></div>
@@ -267,7 +268,7 @@
 		});
 	};
 
-	function showDetail(name,idUser,idProject){
+	function showDetail(name,nickname,idUser,idProject){
 		$("#listName").fadeOut(function (){
 			// console.log(idUser);
 			
@@ -279,6 +280,7 @@
 			
 
 			$("#name2").text("for " + name);
+			$("#nickname").val(nickname);
 			$("#calendar").fullCalendar('removeEventSources');
 			$("#calendar").fullCalendar('addEventSource', '/getScheduleSelected?idUser=' + idUser + '&idProject=' + globalProject);
 			globalIdUser = idUser;
@@ -340,15 +342,17 @@
 
 			// retrieve the dropped element's stored Event Object
 			var originalEventObject = $(this).data('eventObject');
-			var name3 = $("#name2").text();
+			// var name3 = $("#name2").text();
+			var name3 = $("#nickname").val();
+			console.log(name3)
 			// name3.length;
 			// console.log(name3);
-			if(name3.indexOf(" ",name3.indexOf(" ") + 1) > 0){
-				name3 = name3.substr(name3.indexOf(" ") + 1,name3.length - name3.indexOf(" "));
-				name3 = name3.substr(name3.indexOf(" ")	,name3.length - name3.indexOf(" "));
-			} else {
-				name3 = " " + name3.substr(name3.indexOf(" ") + 1,name3.length - name3.indexOf(" "));
-			}
+			// if(name3.indexOf(" ",name3.indexOf(" ") + 1) > 0){
+			// 	name3 = name3.substr(name3.indexOf(" ") + 1,name3.length - name3.indexOf(" "));
+			// 	name3 = name3.substr(name3.indexOf(" ")	,name3.length - name3.indexOf(" "));
+			// } else {
+			// 	name3 = " " + name3.substr(name3.indexOf(" ") + 1,name3.length - name3.indexOf(" "));
+			// }
 			// console.log(name3);
 			// we need to copy it, so that multiple events don't have a reference to the same object
 			var copiedEventObject = $.extend({}, originalEventObject);
@@ -503,7 +507,7 @@
 					for (var i = 0; i < result.length; i++) {
 					// for (var i = 0; i < 1; i++) {
 						// // console.log(result[i].name);
-						var showDetail = "showDetail('" + result[i].name + "','" + result[i].id + "','" + result[i].on_project + "')";
+						var showDetail = "showDetail('" + result[i].name + "','" + result[i].nickname + "','" +result[i].id + "','" + result[i].on_project + "')";
 						append = append + '	<li class="' + result[i].on_project + '" style="display:none;padding-bottom:10px">';
 						append = append + '		<a onclick="' + showDetail + '">' + result[i].name;
 						append = append + '			<br>';

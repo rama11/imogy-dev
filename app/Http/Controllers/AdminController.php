@@ -335,7 +335,7 @@ class AdminController extends Controller
 			->where('id',$users[0]->present_timing)
 			->value('name');
 
-		$result = [$users[0]->id,$users[0]->name,$result,$users[0]->shifting];
+		$result = [$users[0]->id,$users[0]->name,$result,$users[0]->shifting,$users[0]->present_timing];
 
 		return $result;
 	}
@@ -351,9 +351,19 @@ class AdminController extends Controller
 
 	public function setMasuk(Request $request){
 
+		if(isset($request->masuk)){
+			DB::table('users')
+			->where('id','=',$request->id)
+			->update([
+				'present_timing' => $request->masuk,
+			]);
+		}
+
 		DB::table('users')
 			->where('id','=',$request->id)
-			->update(['present_timing' => $request->masuk]);
+			->update([
+				'shifting' => $request->shifting
+			]);
 
 		return redirect('usermanage')->with('status', $request->name);
 	}

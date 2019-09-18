@@ -61,7 +61,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	// User Manage Oleh Helpdesk
 	// Route::get('/getMasuk/{id}', 'HelpdeskController2@getMasuk');
 	Route::get('/getProfile/{id}', 'HelpdeskController2@getProfile');
-	Route::get('/setMasuk', 'HelpdeskController2@setMasuk');
+	// Route::get('/setMasuk', 'HelpdeskController2@setMasuk');
 	Route::get('/user', 'HelpdeskController2@user');
 	Route::get('/hhistory', 'HelpdeskController2@history');
 	Route::get('/hteamhistory', 'HelpdeskController2@teamhistory');

@@ -94,7 +94,7 @@
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">×</span>
 						</button>
-						<h4 class="modal-title">Edit Work Hours</h4>
+						<h4 class="modal-title">Edit Work Hours Or Shifing</h4>
 					</div>
 					<div class="modal-body">
 						<p id="nameMasuk"></p>
@@ -118,10 +118,9 @@
 							</div>
 							<div class="col-md-6">
 								<input id="userID" type="hidden" name="id" value="">
-								<input id="userNAME" type="hidden" name="name" value="">
 								<div class="form-group">
 									<label>After</label>
-									<select class="form-control" name="masuk" id="afterEdit">
+									<select name="masuk" class="form-control" id="afterEdit">
 										@foreach($presents_timing as $value)
 											<option value="{{$value->id}}">{{$value->name}}</option>
 										@endforeach
@@ -322,6 +321,7 @@
 				$("#beforeMasuk").attr("placeholder",result[2]);
 				$("#userID").val(result[0]);
 				$("#shiftingEdit option[value='" + result[3] + "']").attr("selected",true);
+				$("#afterEdit option[value='" + result[4] + "']").attr("selected",true);
 				if(result[3] == 0){
 					$("#afterEdit").prop('disabled', false)
 				} else {

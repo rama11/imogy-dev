@@ -303,8 +303,8 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('project/manage/getShortDetailProjectList','ProjectController@getShortDetailProjectList');
 		Route::post('project/manage/setUpdateEventProject','ProjectController@setUpdateEventProject');
 		
-		Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
-		
+		Route::get('project/archive','ProjectController@archive');
+
 		Route::get('project/setting','ProjectController@setting');
 		Route::get('project/setting/getSettingProject','ProjectController@getSettingProject');
 		Route::get('project/setting/setSettingProject','ProjectController@setSettingProject');
@@ -313,6 +313,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('project/setting/setSettingPeriodStart','ProjectController@setSettingPeriodStart');
 
 	});
+	Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 });
 ?>
 

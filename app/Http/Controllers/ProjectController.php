@@ -588,6 +588,10 @@ class ProjectController extends Controller
 		return null;
 	}
 
+	public function archive(){
+		return view('project.archive');
+	}
+
 	public function setting(){
 
 		return view('project.setting');

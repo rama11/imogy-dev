@@ -145,11 +145,20 @@ class AdminController extends Controller
 		if(Auth::user()->jabatan != 5){
 			$privileges = DB::table('privilege')
 			->where('id','<>','5')
+<<<<<<< HEAD
 			->get();	
+=======
+			->get(); 
+>>>>>>> b0f2f9d7fded7d59c5e519dfd1efd1ea5d619f32
 		}else{
 			$privileges = DB::table('privilege')
 			->get();
 		}
+<<<<<<< HEAD
+=======
+		
+
+>>>>>>> b0f2f9d7fded7d59c5e519dfd1efd1ea5d619f32
 
 		// $shifting = DB::table('users')
 
@@ -279,8 +288,14 @@ class AdminController extends Controller
 			}
 		}
 
-		$privileges = DB::table('privilege')
+		if(Auth::user()->jabatan != 5){
+			$privileges = DB::table('privilege')
+			->where('id','<>','5')
+			->get(); 
+		}else{
+			$privileges = DB::table('privilege')
 			->get();
+		}	
 
 		// echo "<pre>";
 		// print_r($users);
@@ -327,7 +342,7 @@ class AdminController extends Controller
 			->where('id',$users[0]->present_timing)
 			->value('name');
 
-		$result = [$users[0]->id,$users[0]->name,$result];
+		$result = [$users[0]->id,$users[0]->name,$result,$users[0]->shifting,$users[0]->present_timing];
 
 		return $result;
 	}
@@ -343,9 +358,19 @@ class AdminController extends Controller
 
 	public function setMasuk(Request $request){
 
+		if(isset($request->masuk)){
+			DB::table('users')
+			->where('id','=',$request->id)
+			->update([
+				'present_timing' => $request->masuk,
+			]);
+		}
+
 		DB::table('users')
 			->where('id','=',$request->id)
-			->update(['present_timing' => $request->masuk]);
+			->update([
+				'shifting' => $request->shifting
+			]);
 
 		return redirect('usermanage')->with('status', $request->name);
 	}

@@ -1,10 +1,11 @@
 @extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout'))))) 
 @section('head')
-<link rel="stylesheet" href="{{url('plugins/select2/select2.min.css')}}">
-<link rel="stylesheet" href="{{url('dist/css/AdminLTE.min.css')}}">
-<link rel="stylesheet" href="{{url('plugins/datatables/dataTables.bootstrap.css')}}">
+<link rel="stylesheet" href="{{ url('AdminLTE/plugins/timepicker/bootstrap-timepicker.min.css')}}">
+<link rel="stylesheet" href="{{ url('dist/css/AdminLTE.min.css')}}">
+<link rel="stylesheet" href="{{ url('plugins/select2/select2.min.css')}}">
+<link rel="stylesheet" href="{{ url('plugins/datatables/dataTables.bootstrap.css')}}">
+<link rel="stylesheet" href="{{ url('plugins/daterangepicker/daterangepicker.css')}}" />
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-<link rel="stylesheet" href="{{url('plugins/daterangepicker/daterangepicker.css')}}" />
 
 <style>
 	.dataTables_filter {display: none;}
@@ -179,7 +180,7 @@
 								<div class="col-md-4">
 									<div class="form-group">
 										<label>Project Start</label>
-										<input class="form-control" type="text" id="settingPeriodStart" readonly>
+										<input class="form-control" type="text" id="settingPeriodStart">
 									</div>
 								</div>
 								<div class="col-md-4">
@@ -226,6 +227,10 @@
 @endsection 
 
 @section('script')
+<!-- bootstrap-timepicker -->
+<script src="{{url('plugins/timepicker/bootstrap-timepicker.min.js')}}"></script>
+<!-- bootstrap-datepicker -->
+<script src="{{url('plugins/datepicker/bootstrap-datepicker.js')}}"></script>
 <!-- Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
 <!-- moment.js -->
@@ -238,6 +243,7 @@
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <!-- Date Range Picker -->
 <script src="{{url('plugins/daterangepicker/daterangepicker.js')}}"></script>
+
 Custom Color Converter
 <script src="{{url('js/hue-to-rgb.js')}}"></script>
 <script>
@@ -270,6 +276,7 @@ Custom Color Converter
 	});
 
 	var tempPeriodeChange = []
+	var tempStartPeriod = "";
 
 	function getAllProjectList(){
 		$("#tableProjectSetting").DataTable({
@@ -487,6 +494,17 @@ Custom Color Converter
 					});
 
 				})
+
+				$("#settingPeriodStart").datepicker({
+					format: 'dd/mm/yyyy',
+					autoclose: true
+				});
+
+				$("#settingPeriodStart").bind("change",function(){
+					tempStartPeriod = [$("#settingPeriodStart").val(),result.id]
+					console.log($("#settingPeriodStart").val())
+				});
+
 				$("#modalSettingPeriod").modal('show');
 			}
 		});
@@ -498,13 +516,24 @@ Custom Color Converter
 			tempPeriodeChange[index].note = note
 		})
 		if(tempPeriodeChange.length != 0){
+			// $.ajax({
+			// 	type:"GET",
+			// 	url:"{{url('project/setting/setSettingPeriod')}}",
+			// 	data:{
+			// 		periods:tempPeriodeChange
+			// 	}
+			// });
+		}
+		if (tempStartPeriod != ""){
 			$.ajax({
 				type:"GET",
-				url:"{{url('project/setting/setSettingPeriod')}}",
+				url:"{{url('project/setting/setSettingPeriodStart')}}",
 				data:{
-					periods:tempPeriodeChange
+					start:tempStartPeriod
 				}
 			});
+			console.log(tempStartPeriod);
+			tempStartPeriod = ""
 		}
 		
 	}

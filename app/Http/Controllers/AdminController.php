@@ -359,6 +359,10 @@ class AdminController extends Controller
 			]);
 		}
 
+		DB::table('detail_users')
+			->where('id_user','=',$request->id)
+			->delete();
+
 		DB::table('users')
 			->where('id','=',$request->id)
 			->update([
@@ -705,8 +709,8 @@ class AdminController extends Controller
 			$now = time();
 			// $now = time() - 3600;
 
-			if(Auth::user()->shifting == 0)
-			{
+			if(Auth::user()->shifting == 0){
+
 				echo "<b>Non-Shifting</b><br>";
 				$on_time = DB::table('present_timing')
 					->where('id',Auth::user()->present_timing)
@@ -780,6 +784,7 @@ class AdminController extends Controller
 					->insert([
 						'id' => NULL,
 						'id_user' => $id,
+						'id_shifting' => $getSchedule->id,
 						'hadir' => $masuk,
 						'jam' => date('H:i:s',time()),
 						'tanggal' => date('Y/m/d'),

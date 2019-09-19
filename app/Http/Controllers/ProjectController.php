@@ -14,6 +14,7 @@ use App\Jobs\QueueFinishPeriodProject;
 use App\Project;
 use App\ProjectMember;
 use App\ProjectEvent;
+use App\ProjectHistory;
 
 use Carbon\Carbon;
 use Mail;
@@ -584,8 +585,9 @@ class ProjectController extends Controller
 		}
 		
 
-
-		return null;
+		$result = ProjectHistory::orderBy('id','DESC')->first();
+		$result->project_name = ProjectHistory::orderBy('id','DESC')->first()->project->project_name;
+		return $result;
 	}
 
 	public function archive(){

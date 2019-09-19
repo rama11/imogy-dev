@@ -408,12 +408,27 @@
 
 <script src="{{url('js/hue-to-rgb.js')}}"></script>
 
+<script defer src="https://www.gstatic.com/firebasejs/6.1.1/firebase-app.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
+
 <script>
 	var append = "";
 	var member = [];
 	var memberNickname = [];
 
 	$(document).ready(function(){
+
+		var firebaseConfig = {
+			apiKey: "{{env('APIKEY')}}",
+			authDomain: "{{env('AUTHDOMAIN')}}",
+			databaseURL: "{{env('DATABASEURL')}}",
+			projectId: "{{env('PROJECTID')}}",
+			storageBucket: "{{env('STOREBUCKET')}}",
+			messagingSenderId: "{{env('MESSAGINGSENDERID')}}",
+			appId: "{{env('APPID')}}",
+		};
+		// Initialize Firebase
+		firebase.initializeApp(firebaseConfig);
 
 		$("#inputProjectStart").val("");
 		$("#inputProjectPeriod").val("");
@@ -833,6 +848,16 @@
 				append = append + '</li>';
 				$(append).insertBefore('.updateCollom' + id_event);
 				$("#tableProjectManage").DataTable().ajax.reload();
+
+				firebase.database().ref('project/' + result.id).set({
+					updater:result.updater,
+					project:result.project_name,
+					type:result.type,
+					time:result.time,
+					note:result.note,
+					project_event_id:result.project_event_id,
+				});
+
 			}
 		});
 	}

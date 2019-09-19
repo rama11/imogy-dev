@@ -77,16 +77,8 @@
 									</div>
 								</div>
 								<div class="box-body" style="">
-									<ul class="products-list product-list-in-box">
-										<li class="item">
-											<div class="product-info">
-												<a href="javascript:void(0)" class="product-title">Manage Service Router CC BAF Surabaya
-													<span class="label label-info pull-right">Update</span></a>
-														<span class="product-description">
-															[Rama] Laporan PM telah di Submit ke Pak. Budi
-														</span>
-											</div>
-										</li>
+									<ul class="products-list product-list-in-box" id="lastestUpdate">
+
 										<!-- /.item -->
 										<li class="item">
 											<div class="product-info">
@@ -248,9 +240,11 @@
 			</div>
 		</div>
 	</section>
-	<div id="alertPopUp" class="" style="margin-top: 100px;margin-right: 10px; position:fixed; top:0; right:0; width:300px;display: none;">
+	<div id="alertPopUp" class="alert alert-warning alert-dismissible" style="margin-top: 150px;margin-right: 10px; position:fixed; top:0; right:0; width:300px;display: none;">
 		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-		<h4></h4>
+		<h4>
+			<i class="icon fa fa-check"></i> Alert!
+		</h4>
 		<p></p>
 	</div>
 </div>
@@ -261,8 +255,42 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <!-- Chart.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+
+<script defer src="https://www.gstatic.com/firebasejs/6.1.1/firebase-app.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
+<!-- <script src="{{url('js/init-firebase.js')}}"></script> -->
+
 <script>
+	
+
 	$(document).ready(function(){
+
+		var firebaseConfig = {
+			apiKey: "{{env('APIKEY')}}",
+			authDomain: "{{env('AUTHDOMAIN')}}",
+			databaseURL: "{{env('DATABASEURL')}}",
+			projectId: "{{env('PROJECTID')}}",
+			storageBucket: "{{env('STOREBUCKET')}}",
+			messagingSenderId: "{{env('MESSAGINGSENDERID')}}",
+			appId: "{{env('APPID')}}",
+		};
+		// Initialize Firebase
+		firebase.initializeApp(firebaseConfig);
+
+		var ref = firebase.database().ref('project/').limitToLast(4);
+		ref.on('child_added', function(snapshot) {
+			console.log(snapshot.val());
+			var data = {
+				alert:"warning",
+				icon:"fa-check",
+				type:"Alert!",
+				note:snapshot.val().note,
+			}
+			alertPopUp(data)
+			updateLastest(snapshot.val())
+		});
+
+
 		var sourceData = [20,5,2,1,1];
 		var data = {
 			datasets: [{
@@ -307,7 +335,29 @@
 		$("#alertPopUp").addClass("alert alert-" + data.alert + " alert-dismissible");
 		$("#alertPopUp h4").html('<i class="icon fa ' + data.icon + '"></i>' + data.type);
 		$("#alertPopUp p").html(data.note);
-		$("#alertPopUp").show().delay(2000).fadeOut();
+		$("#alertPopUp").show().delay(4000).fadeOut();
+	}
+
+	function updateLastest(data){
+		if(data.type == "Update") {
+			var label = "info"
+		} else if(data.type == "Submit") {
+			var label = "warning"
+		} else if(data.type == "Finish") {
+			var label = "success"
+		}
+		var append = ""
+		+ "<li class='item'>"
+			+ "<div class='product-info'>"
+				+ "<a href='javascript:void(0)' class='product-title'>" + data.project
+					+ "<span class='label label-" + label + " pull-right'>" + data.type + "</span>"
+				+ "</a>"
+				+ "<span class='product-description'>"
+					+ "[" + data.updater + "] " + data.note
+				+ "</span>"
+			+ "</div>"
+		+ "</li>";
+		$("#lastestUpdate").append(append);
 	}
 </script>
 @endsection

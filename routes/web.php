@@ -55,7 +55,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('/hsycal', 'HelpdeskController2@hsycal');
 	Route::get('/htisygy', 'HelpdeskController2@htisygy');
 	Route::get('/hannouncement', 'HelpdeskController2@hannouncement');
-	Route::get('/husermanage', 'HelpdeskController2@husermanage');
+	// Route::get('/husermanage', 'HelpdeskController2@husermanage');
 	Route::get('/hhistory', 'HelpdeskController2@hhistory');
 	Route::get('/hteamhistory', 'HelpdeskController2@hteamhistory');
 	// User Manage Oleh Helpdesk
@@ -132,8 +132,12 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 
 	// Ticketing Route
 	// dgsdfgdfgsfg`
-	
-	
+	Route::middleware(['logphone.role'])->group(function () {
+	Route::get('/logphone','LogPhoneController@index');
+	Route::post('/addnew','LogPhoneController@addnew');
+	});
+
+
 	Route::get('/hash', 'AdminController@hash');
 	Route::get('getRecentTicket','AdminController@getRecentTicket');
 	Route::get('/testHollyday/{date}','AdminController@testHollyday');
@@ -314,6 +318,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 
 	});
 	Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+
 });
 ?>
 

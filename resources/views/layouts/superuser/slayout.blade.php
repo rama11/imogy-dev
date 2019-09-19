@@ -219,6 +219,12 @@
 								</li>
 							</ul>
 						</li>
+						<li class="activeable" id="logphone">
+							<a href="{{url ('logphone')}}">
+								<i class="fa fa-book"></i>
+								<span>Log Phone</span>
+							</a>
+						</li>
 					</ul>
 				</section>
 			</aside>

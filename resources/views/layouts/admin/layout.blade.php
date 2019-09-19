@@ -197,13 +197,7 @@
 								<i class="fa fa-calendar"></i>
 								<span>WINDA</span>
 							</a>
-						</li>
-						<li class="" id="logphone">
-							<a href="#">
-								<i class="fa fa-calendar"></i>
-								<span>Log Phone</span>
-							</a>
-						</li>
+						</li>						
 					</ul>
 				</section>
 			</aside>

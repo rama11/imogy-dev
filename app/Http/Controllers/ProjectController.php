@@ -581,13 +581,17 @@ class ProjectController extends Controller
 			dispatch(new QueueFinishPeriodProject($data));
 
 			// return new MailFinishEventProject($data);
-
+			$result = ProjectHistory::orderBy('id','DESC')->take(2)->get();
+			$result[0]->project_name = $result[0]->project->project_name;
+			$result[1]->project_name = $result[1]->project->project_name;
+			return $result;
+		} else {
+			$result = ProjectHistory::orderBy('id','DESC')->first();
+			$result->project_name = ProjectHistory::orderBy('id','DESC')->first()->project->project_name;
+			return $result;
 		}
 		
 
-		$result = ProjectHistory::orderBy('id','DESC')->first();
-		$result->project_name = ProjectHistory::orderBy('id','DESC')->first()->project->project_name;
-		return $result;
 	}
 
 	public function archive(){

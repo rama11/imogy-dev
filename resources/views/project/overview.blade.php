@@ -78,38 +78,6 @@
 								</div>
 								<div class="box-body" style="">
 									<ul class="products-list product-list-in-box" id="lastestUpdate">
-
-										<!-- /.item -->
-										<li class="item">
-											<div class="product-info">
-												<a href="javascript:void(0)" class="product-title">Pengadaan Perangkat Video Conference Perum Bulog Pusat
-													<span class="label label-warning pull-right">Pending</span></a>
-														<span class="product-description">
-															[Wisnu] PM di tolak karena ada kesalahan di pengtikan
-														</span>
-											</div>
-										</li>
-										<!-- /.item -->
-										<li class="item">
-											<div class="product-info">
-												<a href="javascript:void(0)" class="product-title">Pekerjaan Jasa Sewa Mesin CRM Tahun 2018
-													<span class="label label-danger pull-right">Open</span></a>
-														<span class="product-description">
-															[Wisnu] Open Project - Pekerjaan Jasa Sewa Mesin CRM Tahun 2018
-														</span>
-											</div>
-										</li>
-										<!-- /.item -->
-										<li class="item">
-											<div class="product-info">
-												<a href="javascript:void(0)" class="product-title">Sewa Router 2901 (86 Unit)
-													<span class="label label-success pull-right">Finish</span></a>
-														<span class="product-description">
-															[Atha] Finish Project - BA telah di submit ke Finance
-														</span>
-											</div>
-										</li>
-										<!-- /.item -->
 									</ul>
 								</div>
 								<div class="box-footer" style="">
@@ -279,14 +247,7 @@
 
 		var ref = firebase.database().ref('project/').limitToLast(4);
 		ref.on('child_added', function(snapshot) {
-			console.log(snapshot.val());
-			var data = {
-				alert:"warning",
-				icon:"fa-check",
-				type:"Alert!",
-				note:snapshot.val().note,
-			}
-			alertPopUp(data)
+			// console.log(snapshot.val());
 			updateLastest(snapshot.val())
 		});
 
@@ -340,17 +301,29 @@
 
 	function updateLastest(data){
 		if(data.type == "Update") {
-			var label = "info"
+			if(data.note == "Open New Period"){
+				var type = "Open"
+				var label = "danger"
+				var icon = "fa-exclamation"
+			} else {
+				var type = "Update"
+				var label = "info"
+				var icon = "fa-info-circle"
+			}
 		} else if(data.type == "Submit") {
+			var type = "Submit"
 			var label = "warning"
+			var icon = "fa-heart"
 		} else if(data.type == "Finish") {
+			var type = "Finish"
 			var label = "success"
+			var icon = "fa-flag-checkered"
 		}
 		var append = ""
 		+ "<li class='item'>"
 			+ "<div class='product-info'>"
 				+ "<a href='javascript:void(0)' class='product-title'>" + data.project
-					+ "<span class='label label-" + label + " pull-right'>" + data.type + "</span>"
+					+ "<span class='label label-" + label + " pull-right'>" + type + "</span>"
 				+ "</a>"
 				+ "<span class='product-description'>"
 					+ "[" + data.updater + "] " + data.note
@@ -358,6 +331,13 @@
 			+ "</div>"
 		+ "</li>";
 		$("#lastestUpdate").append(append);
+		var data = {
+			alert:label,
+			icon:icon,
+			type:type,
+			note:data.note,
+		}
+		alertPopUp(data)
 	}
 </script>
 @endsection

@@ -833,6 +833,26 @@
 					bg_color = "bg-gray";
 					classTimeline = "afterTime";
 					iconTimeline = "fa-check";
+
+					result.forEach(function(d,i){
+						firebase.database().ref('project/' + d.id).set({
+							updater:d.updater,
+							project:d.project_name,
+							type:d.type,
+							time:d.time,
+							note:d.note,
+							project_event_id:d.project_event_id,
+						});
+					})
+				} else {
+					firebase.database().ref('project/' + result.id).set({
+						updater:result.updater,
+						project:result.project_name,
+						type:result.type,
+						time:result.time,
+						note:result.note,
+						project_event_id:result.project_event_id,
+					});
 				}
 
 				var append = "";
@@ -849,14 +869,7 @@
 				$(append).insertBefore('.updateCollom' + id_event);
 				$("#tableProjectManage").DataTable().ajax.reload();
 
-				firebase.database().ref('project/' + result.id).set({
-					updater:result.updater,
-					project:result.project_name,
-					type:result.type,
-					time:result.time,
-					note:result.note,
-					project_event_id:result.project_event_id,
-				});
+				
 
 			}
 		});

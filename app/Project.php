@@ -62,7 +62,15 @@ class Project extends Model
 		);
 	}
 
+	public function last_event_project(){
+		return $this->hasOne('App\ProjectEvent','project_list_id','id')->orderBy('id','DESC');
+	}
+
 	public function event_project(){
+		return $this->hasMany('App\ProjectEvent','project_list_id','id');
+	}
+
+	public function latest_event_project(){
 		return $this->hasMany('App\ProjectEvent','project_list_id','id');
 	}
 
@@ -75,5 +83,16 @@ class Project extends Model
 			'id',
 			'id'
 		);
+	}
+
+	public function latest_history_project(){
+		return $this->hasManyThrough(
+			'App\ProjectHistory',
+			'App\ProjectEvent',
+			'project_list_id',
+			'project_event_id',
+			'id',
+			'id'
+		)->orderBy('time','DESC')->limit(1);
 	}
 }

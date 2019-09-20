@@ -835,7 +835,7 @@
 					iconTimeline = "fa-check";
 
 					result.forEach(function(d,i){
-						firebase.database().ref('project/' + d.id).set({
+						firebase.database().ref('project/project_history/' + d.id).set({
 							updater:d.updater,
 							project:d.project_name,
 							type:d.type,
@@ -845,7 +845,7 @@
 						});
 					})
 				} else {
-					firebase.database().ref('project/' + result.id).set({
+					firebase.database().ref('project/project_history/' + result.id).set({
 						updater:result.updater,
 						project:result.project_name,
 						type:result.type,

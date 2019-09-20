@@ -24,7 +24,7 @@
 
 					<div class="info-box-content">
 						<span class="info-box-text">Approaching End</span>
-						<span class="info-box-number">2<small> Project</small></span>
+						<span class="info-box-number approching_end">2<small> Project</small></span>
 					</div>
 				</div>
 			</div>
@@ -34,7 +34,7 @@
 
 					<div class="info-box-content">
 						<span class="info-box-text">Due this Mount</span>
-						<span class="info-box-number">5<small> Project</small></span>
+						<span class="info-box-number due_this_month">5<small> Project</small></span>
 					</div>
 				</div>
 			</div>
@@ -44,7 +44,7 @@
 
 					<div class="info-box-content">
 						<span class="info-box-text">Occurring Project</span>
-						<span class="info-box-number">5<small> Project</small></span>
+						<span class="info-box-number occurring_now">5<small> Project</small></span>
 					</div>
 				</div>
 			</div>
@@ -54,7 +54,7 @@
 
 					<div class="info-box-content">
 						<span class="info-box-text">Finish Project</span>
-						<span class="info-box-number">2<small> Project</small></span>
+						<span class="info-box-number finish_project">2<small> Project</small></span>
 					</div>
 				</div>
 			</div>
@@ -133,7 +133,7 @@
 										<th>Due Date</th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody id="resultChartTable">
 									<tr>
 										<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">297/SOMPO/PO 228/SIP/VI/2017</a></td>
 										<td>
@@ -216,6 +216,13 @@
 		<p></p>
 	</div>
 </div>
+<footer class="main-footer">
+	<div class="pull-right hidden-xs">
+		<b>Version</b> 2.4.0
+	</div>
+	<strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
+	reserved.
+</footer>
 @endsection 
 
 @section('script')
@@ -226,6 +233,8 @@
 
 <script defer src="https://www.gstatic.com/firebasejs/6.1.1/firebase-app.js"></script>
 <script defer src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
+<!-- HumanizeDuration.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-duration/3.20.1/humanize-duration.js"></script>
 <!-- <script src="{{url('js/init-firebase.js')}}"></script> -->
 
 <script>
@@ -245,51 +254,134 @@
 		// Initialize Firebase
 		firebase.initializeApp(firebaseConfig);
 
-		var ref = firebase.database().ref('project/').limitToLast(4);
+		var ref = firebase.database().ref('project/project_history/').limitToLast(4);
 		ref.on('child_added', function(snapshot) {
 			// console.log(snapshot.val());
 			updateLastest(snapshot.val())
 		});
 
 
-		var sourceData = [20,5,2,1,1];
-		var data = {
-			datasets: [{
-				data: sourceData,
-				backgroundColor: [
-					"#009432",
-					"#A3CB38",
-					"#FFC312",
-					"#F79F1F",
-					"#EA2027",
-				],
-				borderWidth :[ 0, 0, 0, 0, 0]
-			}],
-
-			// These labels appear in the legend and in the tooltips when hovering different arcs
-			labels: [
-				"Normal",
-				"Warning",
-				"Minor",
-				"Major",
-				"Critical",
-			]
-		};
-
-		var ctx = $("#precentageChart");
-		var precentageChart = new Chart(ctx, {
-			type: 'doughnut',
-			data: data,
-			options: {
-				animation:{
-					animateRotate : false,
-				},
-				legend: {
-					position:'right',
-				},
-			}
-		});
+		buildDashboard();
 	})
+
+	function buildDashboard(){
+
+		$.ajax({
+			type:"GET",
+			url:"{{url('project/getDashboardProject')}}",
+			success: function(result){
+				$(".approching_end").html(result.approching_end.count + '<small> Project</small>')
+				$(".due_this_month").html(result.due_this_month.count + '<small> Project</small>')
+				$(".occurring_now").html(result.occurring_now.count + '<small> Project</small>')
+				$(".finish_project").html(result.finish_project.count + '<small> Project</small>')
+				
+				// var sourceData = [20,5,2,1,1];
+				// console.log(result.chart_data.normal.count)
+				var sourceData = [
+					result.chart_data.normal.count,
+					result.chart_data.warning.count,
+					result.chart_data.minor.count,
+					result.chart_data.major.count,
+					result.chart_data.critical.count
+				]
+				var data = {
+					datasets: [{
+						data: sourceData,
+						backgroundColor: [
+							"#009432",
+							"#A3CB38",
+							"#FFC312",
+							"#F79F1F",
+							"#EA2027",
+						],
+						borderWidth :[ 0, 0, 0, 0, 0]
+					}],
+
+					// These labels appear in the legend and in the tooltips when hovering different arcs
+					labels: [
+						"Normal",
+						"Warning",
+						"Minor",
+						"Major",
+						"Critical",
+					]
+				};
+
+				var ctx = $("#precentageChart");
+				var precentageChart = new Chart(ctx, {
+					type: 'doughnut',
+					data: data,
+					options: {
+						animation:{
+							animateRotate : false,
+						},
+						legend: {
+							position:'right',
+						},
+						onClick: function(event,item){
+							$.ajax({
+								type:"GET",
+								url:"{{url('project/getProjectByUrgency')}}",
+								data:{
+									category:item[0]._model.label
+								},
+								success: function(result){
+									$("#resultChartTable").empty()
+									
+									var day_to_due_date = result.day_to_due_date
+									var append = ""
+									result[0].forEach(function(d,i){
+										console.log(d.latest_history_project.length)
+										if(d.latest_history_project.length != 0){
+											console.log(d.latest_history_project[0])
+											if(d.latest_history_project[0].type == "Update") {
+												if(d.latest_history_project[0].note == "Open New Period"){
+													var type = "Open"
+													var label = "danger"
+													var icon = "fa-exclamation"
+												} else {
+													var type = "Update"
+													var label = "info"
+													var icon = "fa-info-circle"
+												}
+											} else if(d.latest_history_project[0].type == "Submit") {
+												var type = "Submit"
+												var label = "warning"
+												var icon = "fa-heart"
+											} else if(d.latest_history_project[0].type == "Finish") {
+												var type = "Finish"
+												var label = "success"
+												var icon = "fa-flag-checkered"
+											}
+										} else {
+											var type = "N/A"
+											var label = "default"
+										} console.log(type + " " + label)
+
+										append = append +
+										'<tr>' +
+											'<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">' + d.project_pid + '</a></td>' +
+											'<td>' +
+												'<a href="#">[' + d.customer_project.name + ']</a>' +
+												'<br>' + d.project_name +
+											'</td>' +
+											'<td style="vertical-align:middle;"><span class="label label-' + label + '">' + type + '</span></td>' +
+											'<td style="vertical-align:middle;">' + humanizeDuration(moment.duration(day_to_due_date[i],'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, }) + '</td>' +
+										'</tr>';
+									})
+									$("#resultChartTable").append(append);
+									// console.log(result)
+								}
+							})
+							// console.log(item[0]._model.label)
+						}
+					},
+
+				});
+			}
+		})
+
+	}
 
 	function alertPopUp(data){
 		$("#alertPopUp").removeClass();

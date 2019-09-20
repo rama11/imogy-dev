@@ -225,6 +225,9 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	// Project Route
 	Route::middleware(['project.role'])->group(function () {
 		Route::get('project','ProjectController@index');
+		Route::get('project/getDashboardProject','ProjectController@getDashboard');
+		Route::get('project/getProjectByUrgency','ProjectController@getProjectByUrgency');
+
 		Route::get('project/manage','ProjectController@manage');
 		// Input Project
 		Route::get('project/manage/getCustomer','ProjectController@getCustomer');
@@ -232,7 +235,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::post('project/manage/setProjectList','ProjectController@setProjectList');
 		Route::get('project/manage/sendProjectListOpen','ProjectController@sendProjectListOpen');
 		Route::get('project/manage/testSendProjectListOpen','ProjectController@testSendProjectListOpen');
-		route::get('project/manage/previewFinishEventProject',function(){
+		Route::get('project/manage/previewFinishEventProject',function(){
 			$data = array(
 				"to" => array(
 					"agastya@sinergy.co.id",

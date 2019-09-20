@@ -37,6 +37,177 @@ class ProjectController extends Controller
 
 	}
 
+	public function getDashboard(){
+		$approching_end_count = 0;
+		$approching_end_detail = [];
+		$finish_projec_count = 0;
+		$finish_projec_detail = [];
+
+		$projects = Project::with('last_event_project')->get();
+		foreach ($projects as $project) {
+			if($project->last_event_project->status == "Active"){
+				$approching_end_count++;
+				array_push($approching_end_detail,$project->id);
+			} else if ($project->last_event_project->status == "Passed"){
+				$finish_projec_count++;
+				array_push($finish_projec_detail,$project->id);
+			}
+		}
+
+		$datas = ProjectEvent::select(DB::raw('DATEDIFF(due_date,"' . date('Y-m-d') . '") AS due_date'))->where('status','Active')->pluck('due_date');
+
+		$critical = 0;
+		$critical_detail = [];
+		$major = 0;
+		$major_detail = [];
+		$minor = 0;
+		$minor_detail = [];
+		$warning = 0;
+		$warning_detail = [];
+		$normal = 0;
+		$normal_detail = [];
+
+		foreach ($datas as $data){
+			if($data > 40){$critical++;array_push($critical_detail,$data);}
+			elseif($data > 30 && $data <= 40){$major++;array_push($major_detail,$data);}
+			elseif($data > 20 && $data <= 30){$minor++;array_push($minor_detail,$data);}
+			elseif($data > 10 && $data <= 20){$warning++;array_push($warning_detail,$data);}
+			elseif($data < 10){$normal++;array_push($normal_detail,$data);}
+		}
+
+		$result = collect([
+			"approching_end" => collect([
+				"count" => $approching_end_count,
+				"detail" => $approching_end_detail
+			]),
+			"due_this_month" => collect([
+				"count" => ProjectEvent::where('status','Active')->where('due_date','LIKE',date('Y-m-') . '%')->count(),
+				"detail" => ProjectEvent::where('status','Active')->where('due_date','LIKE',date('Y-m-') . '%')->pluck('project_list_id')
+			]),
+			"occurring_now" => collect([
+				"count" => ProjectEvent::where('status','Active')->count(),
+				"detail" => ProjectEvent::where('status','Active')->pluck('project_list_id')
+			]),
+			"finish_project" => collect([
+				"count" => $finish_projec_count,
+				"detail" => $finish_projec_detail
+			]),
+			"chart_data" => collect([
+				"normal" => collect(["count" => $normal,"detail"=> $normal_detail]),
+				"warning" => collect(["count" => $warning,"detail"=> $warning_detail]),
+				"minor" => collect(["count" => $minor,"detail"=> $minor_detail]),
+				"major" => collect(["count" => $major,"detail"=> $major_detail]),
+				"critical" => collect(["count" => $critical,"detail"=> $critical_detail]),
+			])
+		]);
+
+		return $result;
+	}
+
+	public function getProjectByUrgency(Request $req){
+		$datas = ProjectEvent::select(DB::raw('DATEDIFF(due_date,"' . date('Y-m-d') . '") AS due_date , project_list_id'))->where('status','Active')->orderBy('due_date','DESC')->get();
+
+		$critical = [];
+		$critical_detail = [];
+		$major = [];
+		$major_detail = [];
+		$minor = [];
+		$minor_detail = [];
+		$warning = [];
+		$warning_detail = [];
+		$normal = [];
+		$normal_detail = [];
+
+		foreach ($datas as $data){
+			if($data->due_date > 40){
+				array_push($critical, $data->due_date);
+				array_push($critical_detail,$data->project_list_id);
+			}
+			elseif($data->due_date > 30 && $data->due_date <= 40){
+				array_push($major, $data->due_date);
+				array_push($major_detail,$data->project_list_id);
+			}
+			elseif($data->due_date > 20 && $data->due_date <= 30){
+				array_push($minor, $data->due_date);
+				array_push($minor_detail,$data->project_list_id);
+			}
+			elseif($data->due_date > 10 && $data->due_date <= 20){
+				array_push($warning, $data->due_date);
+				array_push($warning_detail,$data->project_list_id);
+			}
+			elseif($data->due_date < 10){
+				array_push($normal, $data->due_date);
+				array_push($normal_detail,$data->project_list_id);
+			}
+		}
+
+		if ( $req->category == "Normal"){
+			$result = Project::with('customer_project')
+				->with('latest_history_project')
+				->with([
+					'latest_event_project' => function($q){
+						$q->where('status','Active');
+					}
+				])
+				->whereIn('id',$normal_detail)
+				->get();
+			// $result->day_to_due_date = $normal;
+			return collect([$result,"day_to_due_date" => $normal]);
+		}
+		else if ( $req->category == "Warning"){
+			$result = Project::with('customer_project')
+				->with('latest_history_project')
+				->with([
+					'latest_event_project' => function($q){
+						$q->where('status','Active');
+					}
+				])
+				->whereIn('id',$warning_detail)
+				->get();
+			// $result->day_to_due_date = $warning;
+			return collect([$result,"day_to_due_date" => $warning]);
+		}
+		else if ( $req->category == "Minor"){
+			$result = Project::with('customer_project')
+				->with('latest_history_project')
+				->with([
+					'latest_event_project' => function($q){
+						$q->where('status','Active');
+					}
+				])
+				->whereIn('id',$minor_detail)
+				->get();
+			// $result->day_to_due_date = $minor;
+			return collect([$result,"day_to_due_date" => $minor]);
+		}
+		else if ( $req->category == "Major"){
+			$result = Project::with('customer_project')
+				->with('latest_history_project')
+				->with([
+					'latest_event_project' => function($q){
+						$q->where('status','Active');
+					}
+				])
+				->whereIn('id',$major_detail)
+				->get();
+			// $result->day_to_due_date = $major;
+			return collect([$result,"day_to_due_date" => $major]);
+		}
+		else if ( $req->category == "Critical"){
+			$result = Project::with('customer_project')
+				->with('latest_history_project')
+				->with([
+					'latest_event_project' => function($q){
+						$q->where('status','Active');
+					}
+				])
+				->whereIn('id',$critical_detail)
+				->get();
+			// $result->day_to_due_date = $critical;
+			return collect([$result,"day_to_due_date" => $critical]);
+		}
+	}
+
 	public function manage(){
 
 		return view('project.manage');

@@ -64,5 +64,6 @@ class Kernel extends HttpKernel
         'project.role' => \App\Http\Middleware\ProjectRole::class,
         'shiftingloc.role' => \App\Http\Middleware\ShiftingLocRole::class,
         'preventbacklogout' => \App\Http\Middleware\PreventBackLogout::class,
+        'logphone.role' => \App\Http\Middleware\LogPhoneRole::class,
     ];
 }

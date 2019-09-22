@@ -27,6 +27,8 @@ Route::get('maps', function () {
 // Dibawah adalah route yang hanya bisa di pangil jika sudah terAuthentification (login)
 Auth::routes();
 Route::get('/authenticate/{id}','HomeController@authenticate');
+Route::get('getReportTicket/{client}/{month}','TicketingController@testReport');
+
 // Engginer Route
 // Route::get('/home', function(){
 	// echo "asdfasd";
@@ -173,8 +175,8 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('setAtm','TicketingController@setAtm');
 		Route::get('newAtm','TicketingController@newAtm');
 		Route::get('updateIdTicket','TicketingController@updateIdTicket');
-		Route::get('getReportTicket/{client}/{month}','TicketingController@testReport');
-	});
+		// Route::get('getReportTicket/{client}/{month}','TicketingController@testReport');
+});
 		
 
 		// Route::get('getReportTicket/{client}/{month}',function($client,$month){

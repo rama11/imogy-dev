@@ -11,6 +11,7 @@ use PHPMailer\PHPMailer;
 use PDF;
 use Dompdf\Dompdf;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -1532,6 +1533,7 @@ class TicketingController extends Controller
 			->setCellValue('Q4','ENGINEER');
 		
 		$value1 = $this->getPerformance3($client,$bulan . "/" . date("Y"));
+		return $value1;
 
 		foreach ($value1 as $key => $value) {
 			$spreadsheet->getActiveSheet()->getStyle('A' . (5 + $key))->applyFromArray($Colom_Header);
@@ -1784,9 +1786,9 @@ class TicketingController extends Controller
 		$spreadsheet->getActiveSheet()->getSheetView()->setZoomScale(98);
 
 		// Redirect output to a client’s web browser (Xlsx)
-		// header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		// header('Content-Disposition: attachment;filename="' . $title . '.xlsx"');
-		// header('Cache-Control: max-age=0');
+		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		header('Content-Disposition: attachment;filename="' . $title . '.xlsx"');
+		header('Cache-Control: max-age=0');
 		// // If you're serving to IE 9, then the following may be needed
 		// header('Cache-Control: max-age=1');
 
@@ -1801,7 +1803,7 @@ class TicketingController extends Controller
 		$name = 'Report ' . $client . ' - ' . $month . ' (' . date("Y-m-d H:i:s") . ').xlsx';
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
 		$writer->save($name);
-		return response()->download($name);
+		return respondse()->download($name);
 
 		// return $value1;
 

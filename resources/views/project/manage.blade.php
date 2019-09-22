@@ -834,7 +834,7 @@
 					classTimeline = "afterTime";
 					iconTimeline = "fa-check";
 
-					result.forEach(function(d,i){
+					result[0].forEach(function(d,i){
 						firebase.database().ref('project/project_history/' + d.id).set({
 							updater:d.updater,
 							project:d.project_name,
@@ -844,6 +844,12 @@
 							project_event_id:d.project_event_id,
 						});
 					})
+					firebase.database().ref('project/project_dashboard/').set({
+						approching_end:result[1].approching_end,
+						finish_project:result[1].finish_project,
+						occurring_now:result[1].occurring_now,
+						due_this_month:result[1].due_this_month,
+					});
 				} else {
 					firebase.database().ref('project/project_history/' + result.id).set({
 						updater:result.updater,

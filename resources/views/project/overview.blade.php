@@ -18,7 +18,7 @@
 	</section>
 	<section class="content">
 		<div class="row">
-			<div class="col-sm-3">
+			<div class="col-sm-3 col-xs-6">
 				<div class="info-box">
 					<span class="info-box-icon bg-red"><i class="fa fa-hourglass-half"></i></span>
 
@@ -28,7 +28,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-3">
+			<div class="col-sm-3 col-xs-6">
 				<div class="info-box">
 					<span class="info-box-icon bg-yellow"><i class="fa fa-calendar-times-o"></i></span>
 
@@ -38,7 +38,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-3">
+			<div class="col-sm-3 col-xs-6">
 				<div class="info-box">
 					<span class="info-box-icon bg-green"><i class="fa fa-clock-o"></i></span>
 
@@ -48,7 +48,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-3">
+			<div class="col-sm-3 col-xs-6">
 				<div class="info-box">
 					<span class="info-box-icon bg-blue"><i class="fa fa-flag-checkered"></i></span>
 
@@ -254,10 +254,15 @@
 		// Initialize Firebase
 		firebase.initializeApp(firebaseConfig);
 
-		var ref = firebase.database().ref('project/project_history/').limitToLast(4);
-		ref.on('child_added', function(snapshot) {
+		firebase.database().ref('project/project_history/').limitToLast(4).on('child_added', function(snapshot) {
 			// console.log(snapshot.val());
 			updateLastest(snapshot.val())
+		});
+
+		firebase.database().ref('project/project_dashboard/').on('value', function(snapshot) {
+			// console.log(snapshot.val());
+			
+			updateDashboard(snapshot.val())
 		});
 
 
@@ -430,6 +435,14 @@
 			note:data.note,
 		}
 		alertPopUp(data)
+	}
+
+	function updateDashboard(data){
+		// console.log(data)
+		$(".approching_end").html(data.approching_end + '<small> Project</small>')
+		$(".due_this_month").html(data.due_this_month + '<small> Project</small>')
+		$(".occurring_now").html(data.occurring_now + '<small> Project</small>')
+		$(".finish_project").html(data.finish_project + '<small> Project</small>')
 	}
 </script>
 @endsection

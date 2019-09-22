@@ -93,11 +93,26 @@ class ProjectController extends Controller
 				"detail" => $finish_projec_detail
 			]),
 			"chart_data" => collect([
-				"normal" => collect(["count" => $normal,"detail"=> $normal_detail]),
-				"warning" => collect(["count" => $warning,"detail"=> $warning_detail]),
-				"minor" => collect(["count" => $minor,"detail"=> $minor_detail]),
-				"major" => collect(["count" => $major,"detail"=> $major_detail]),
-				"critical" => collect(["count" => $critical,"detail"=> $critical_detail]),
+				"normal" => collect([
+					"count" => $normal,
+					"detail"=> $normal_detail
+				]),
+				"warning" => collect([
+					"count" => $warning,
+					"detail"=> $warning_detail
+				]),
+				"minor" => collect([
+					"count" => $minor,
+					"detail"=> $minor_detail
+				]),
+				"major" => collect([
+					"count" => $major,
+					"detail"=> $major_detail
+				]),
+				"critical" => collect([
+					"count" => $critical,
+					"detail"=> $critical_detail
+				]),
 			])
 		]);
 
@@ -755,7 +770,19 @@ class ProjectController extends Controller
 			$result = ProjectHistory::orderBy('id','DESC')->take(2)->get();
 			$result[0]->project_name = $result[0]->project->project_name;
 			$result[1]->project_name = $result[1]->project->project_name;
-			return $result;
+			$dashboardUpdateData = collect([
+				"approching_end" => $this->getDashboard()->all()['approching_end']->all()['count'],
+				"finish_project" => $this->getDashboard()->all()['finish_project']->all()['count'],
+				"occurring_now" => $this->getDashboard()->all()['occurring_now']->all()['count'],
+				"due_this_month" => $this->getDashboard()->all()['due_this_month']->all()['count']
+			]);
+			$dashboardUpdateData = collect([
+				"approching_end" => $this->getDashboard()->all()['approching_end']->all()['count'],
+				"finish_project" => $this->getDashboard()->all()['finish_project']->all()['count'],
+				"occurring_now" => $this->getDashboard()->all()['occurring_now']->all()['count'],
+				"due_this_month" => $this->getDashboard()->all()['due_this_month']->all()['count']
+			]);
+			return collect([$result,$dashboardUpdateData]);
 		} else {
 			$result = ProjectHistory::orderBy('id','DESC')->first();
 			$result->project_name = ProjectHistory::orderBy('id','DESC')->first()->project->project_name;

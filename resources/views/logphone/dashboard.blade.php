@@ -18,7 +18,7 @@
 		<section class="content">
 			<!-- Info boxes -->
 			<div class="row">
-				<div class="col-lg-3 col-md-4 col-sm-12 col-xs-4">
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-4">
 				<div class="small-box bg-yellow">
 					<div class="inner">
 					<h3>{{$data["allcalls"]}}</h3>
@@ -32,7 +32,7 @@
 					<!-- /.info-box -->
 				</div>
 				<!-- /.col -->
-				<div class="col-lg-3 col-md-4 col-sm-12 col-xs-4">
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-4">
 				<div class="small-box bg-red">
 					<div class="inner">
 						<h3>{{$data["rejectcalls"]}}</h3>
@@ -50,7 +50,7 @@
 				<!-- fix for small devices only -->
 				<div class="clearfix visible-sm-block"></div>
 
-				<div class="col-lg-3 col-md-4 col-sm-12 col-xs-4">
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-4">
 				<div class="small-box bg-green">
 					<div class="inner">
 						<h3>{{$data["answere"]}}</h3>

@@ -700,7 +700,7 @@
 					json.data.forEach(function(data,index){
 						var color = hsvToRgb(i * x,s,v)[0] + "," + hsvToRgb(i * x,s,v)[1] + "," + hsvToRgb(i * x,s,v)[2];
 						fontColor = "#333;";
-						if(data.project_start < 0){
+						if(data.project_start > 0){
 							data.project_start = "<span class='label' style='background-color:rgb(" + color + ");color:" + fontColor + "'> " + humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, }) + " ago </span>";
 						} else {
 							data.project_start = "<span class='label' style='background-color:rgb(" + color + ");color:" + fontColor + "'> in " + humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, }) + "</span>";
@@ -711,7 +711,7 @@
 				}
 			},
 			"columns": [
-				 {
+				{
 					"className": 'details-control',
 					"orderable": false,
 					"data": null,
@@ -719,16 +719,24 @@
 				},
 				{ "data": "project_customer" },
 				{ "data": "project_name" },
-				{ "data": "project_start" , "orderData":[ 4 ] , "targets": [ 1 ]},
-				{ "data": "project_start2" , "targets": [ 4 ] , "visible": false , "searchable": true},
+				{ 
+					"data": "project_start",
+					"orderData":[ 4 ],
+					"targets": [ 1 ]
+				},
+				{ 
+					"data": "project_start2",
+					"targets": [ 4 ] ,
+					"visible": false ,
+					"searchable": true
+				},
 				{ "data": "project_coordinator" },
 			],
-			"order": [[ 4, "asc" ]],
-			searching: true,
-			paging: false,
-			info:false,
-			scrollX: false,
-			order: [[1, 'asc']],
+			"order": [4, "DESC" ],
+			"searching": true,
+			"paging": false,
+			"info":false,
+			"scrollX": false,
 
 			initComplete: function () {
 				var duration_to_due_date = ["1 month","2 months","3 months","4 months","6 months"]
@@ -736,7 +744,7 @@
 				var duration_to_due_date_end = [15,30,45,60,90]
 				this.api().columns().every( function () {
 					if(this.index() != 0 && this.index() != 2){
-						console.log('every colom data')
+						// console.log('every colom data')
 						var column = this;
 						var select = $('<select class="form-control"><option value="">Show All</option></select>')
 							.appendTo( $(column.footer()).empty() )
@@ -756,7 +764,7 @@
 						})
 					}
 				})
-				console.log()
+				// console.log()
 				var column = this.api().columns(3)
 				var column_next = this.api().columns(4)
 				var select = $('<select class="form-control"><option value="">Show All</option></select>').appendTo( $(column.footer()).empty() ).on( 'change', function () {
@@ -770,7 +778,7 @@
 					select.append( '<option value="' + j + '">' + d +'</option>' )
 				})
 
-				console.log(duration_to_due_date)
+				// console.log(duration_to_due_date)
 			}
 		})
 
@@ -849,6 +857,13 @@
 						finish_project:result[1].finish_project,
 						occurring_now:result[1].occurring_now,
 						due_this_month:result[1].due_this_month,
+					});
+					firebase.database().ref('project/project_chart/').set({
+						normal:result[2].normal,
+						warning:result[2].warning,
+						minor:result[2].minor,
+						major:result[2].major,
+						critical:result[2].critical,
 					});
 				} else {
 					firebase.database().ref('project/project_history/' + result.id).set({
@@ -1005,15 +1020,18 @@
 
 	// DataTables child controll
 	function format( data , result ) {
+		if (result.due_date !== "N/A") {
+			result.due_date = moment(result.due_date).format("DD MMMM YYYY")
+		}
 		return '<div class="row">' +
 			'<div class="col-md-1">' +
 				'<button class="btn btn-primary" onclick="showProjectDetail(' + data.id + ')">Update</button>' +
 			'</div>' +
-			'<div class="col-md-2">' +
+			'<div class="col-md-3">' +
 				'<label>Occouring Event</label>' +
-				'<p> ' + result.event_now + '</p>' +
+				'<p> ' + result.event_now + ' [' + result.due_date + ']</p>' +
 			'</div>' +
-			'<div class="col-md-6">' +
+			'<div class="col-md-4">' +
 				'<label>Lastest Update</label>' +
 				'<p>' + result.lastest_update + '</p>' +
 			'</div>' +

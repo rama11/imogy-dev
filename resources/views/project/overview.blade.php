@@ -129,74 +129,11 @@
 									<tr>
 										<th>Project ID</th>
 										<th>Name</th>
-										<th>Lastest Act</th>
+										<th style="min-width: 90px;">Lastest Act</th>
 										<th>Due Date</th>
 									</tr>
 								</thead>
 								<tbody id="resultChartTable">
-									<tr>
-										<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">297/SOMPO/PO 228/SIP/VI/2017</a></td>
-										<td>
-											<a href="#">[PT. Sompo Insurance Indonesia]</a>
-											<br>Renewal UPS
-										</td>
-										<td style="vertical-align:middle;"><span class="label label-info">Update</span></td>
-										<td style="vertical-align:middle;">7 day ago</td>
-									</tr>
-									<tr>
-										<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">009/BANK RIAU/SPK 001/SIP/I/2018</a></td>
-										<td>
-											<a href="#">[PT. Bank Riau Kepri]</a>
-											<br>Pengadaan Perangkat WAN Optimizer Sangfor PT. Bank Riau Kepri
-										</td>
-										<td style="vertical-align:middle;"><span class="label label-warning">Pending</span></td>
-										<td style="vertical-align:middle;">7 day ago</td>
-									</tr>
-									<tr>
-										<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">076/BANK RIAU/SPK 063/SIP/VI/2018</a></td>
-										<td>
-											<a href="#">[PT. Bank Riau Kepri]</a>
-											<br>Pengadaan jasa Maintenance WAN Router PT. Bank Riau Kepri
-										</td>
-										<td style="vertical-align:middle;"><span class="label label-info">Update</span></td>
-										<td style="vertical-align:middle;">7 day ago</td>
-									</tr>
-									<tr>
-										<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">051/BANK RIAU/SPK 027/SIP/IV/2018</a></td>
-										<td>
-											<a href="#">[PT. Bank Riau Kepri]</a>
-											<br>Perpanjangan Lisensi Antivirus Palo Alto
-										</td>
-										<td style="vertical-align:middle;"><span class="label label-warning">Pending</span></td>
-										<td style="vertical-align:middle;">7 day ago</td>
-									</tr>
-									<tr>
-										<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">075/BANK RIAU/ADD SPK 059/SIP/V/2018</a></td>
-										<td>
-											<a href="#">[PT. Bank Riau Kepri]</a>
-											<br>Pengadaan Jasa Perpanjangan Lisensi Antivirus Trend Micro PT. Bank Riau Kepri
-										</td>
-										<td style="vertical-align:middle;"><span class="label label-info">Update</span></td>
-										<td style="vertical-align:middle;">7 day ago</td>
-									</tr>
-									<tr>
-										<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">343/BANK RIAU/SPK 128/SIP/XII/2018</a></td>
-										<td>
-											<a href="#">[PT. Bank Riau Kepri]</a>
-											<br>Renewal OP Manager For 520 Device PT. Bank Riau Kepri
-										</td>
-										<td style="vertical-align:middle;"><span class="label label-info">Update</span></td>
-										<td style="vertical-align:middle;">7 day ago</td>
-									</tr>
-									<tr>
-										<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">010/BANK RIAU/SPK 002/SIP/I/2018</a></td>
-										<td>
-											<a href="#">[PT. Bank Riau Kepri]</a>
-											<br>Pengadaan Perangkat Priveleged Access Manager PT. Bank Riau Kepri
-										</td>
-										<td style="vertical-align:middle;"><span class="label label-warning">Pending</span></td>
-										<td style="vertical-align:middle;">7 day ago</td>
-									</tr>
 								</tbody>
 							</table>
 						</div>
@@ -265,8 +202,15 @@
 			updateDashboard(snapshot.val())
 		});
 
+		firebase.database().ref('project/project_chart/').on('value', function(snapshot) {
+			// console.log(snapshot.val());
+			
+			updateChart(snapshot.val())
+		});
+
 
 		buildDashboard();
+		var precentageChart;
 	})
 
 	function buildDashboard(){
@@ -312,8 +256,7 @@
 					]
 				};
 
-				var ctx = $("#precentageChart");
-				var precentageChart = new Chart(ctx, {
+				precentageChart = new Chart($("#precentageChart"), {
 					type: 'doughnut',
 					data: data,
 					options: {
@@ -336,9 +279,7 @@
 									var day_to_due_date = result.day_to_due_date
 									var append = ""
 									result[0].forEach(function(d,i){
-										console.log(d.latest_history_project.length)
 										if(d.latest_history_project.length != 0){
-											console.log(d.latest_history_project[0])
 											if(d.latest_history_project[0].type == "Update") {
 												if(d.latest_history_project[0].note == "Open New Period"){
 													var type = "Open"
@@ -361,7 +302,7 @@
 										} else {
 											var type = "N/A"
 											var label = "default"
-										} console.log(type + " " + label)
+										} 
 
 										append = append +
 										'<tr>' +
@@ -375,10 +316,8 @@
 										'</tr>';
 									})
 									$("#resultChartTable").append(append);
-									// console.log(result)
 								}
 							})
-							// console.log(item[0]._model.label)
 						}
 					},
 
@@ -443,6 +382,20 @@
 		$(".due_this_month").html(data.due_this_month + '<small> Project</small>')
 		$(".occurring_now").html(data.occurring_now + '<small> Project</small>')
 		$(".finish_project").html(data.finish_project + '<small> Project</small>')
+	}
+
+	function updateChart(data){
+		var data_updated = [
+			data.normal,
+			data.warning,
+			data.minor,
+			data.major,
+			data.critical
+		]
+		data_updated.forEach(function(d,i){
+			precentageChart.data.datasets[0].data[i] = d
+		})
+		precentageChart.update()
 	}
 </script>
 @endsection

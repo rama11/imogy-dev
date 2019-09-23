@@ -54,7 +54,7 @@ class ProjectController extends Controller
 			}
 		}
 
-		$datas = ProjectEvent::select(DB::raw('DATEDIFF(due_date,"' . date('Y-m-d') . '") AS due_date'))->where('status','Active')->pluck('due_date');
+		$datas = ProjectEvent::select(DB::raw('DATEDIFF("' . date('Y-m-d') . '",due_date) AS due_date'))->where('status','Active')->orderBy('due_date','ASC')->pluck('due_date');
 
 		$critical = 0;
 		$critical_detail = [];
@@ -68,11 +68,22 @@ class ProjectController extends Controller
 		$normal_detail = [];
 
 		foreach ($datas as $data){
-			if($data > 40){$critical++;array_push($critical_detail,$data);}
-			elseif($data > 30 && $data <= 40){$major++;array_push($major_detail,$data);}
-			elseif($data > 20 && $data <= 30){$minor++;array_push($minor_detail,$data);}
-			elseif($data > 10 && $data <= 20){$warning++;array_push($warning_detail,$data);}
-			elseif($data < 10){$normal++;array_push($normal_detail,$data);}
+			if($data > 40){
+				$critical++;
+				array_push($critical_detail,$data);
+			} else if($data > 30 && $data <= 40){
+				$major++;
+				array_push($major_detail,$data);
+			} else if($data > 20 && $data <= 30){
+				$minor++;
+				array_push($minor_detail,$data);
+			} else if($data > 10 && $data <= 20){
+				$warning++;
+				array_push($warning_detail,$data);
+			} else if($data < 10){
+				$normal++;
+				array_push($normal_detail,$data);
+			}
 		}
 
 		$result = collect([
@@ -95,23 +106,23 @@ class ProjectController extends Controller
 			"chart_data" => collect([
 				"normal" => collect([
 					"count" => $normal,
-					"detail"=> $normal_detail
+					// "detail"=> $normal_detail
 				]),
 				"warning" => collect([
 					"count" => $warning,
-					"detail"=> $warning_detail
+					// "detail"=> $warning_detail
 				]),
 				"minor" => collect([
 					"count" => $minor,
-					"detail"=> $minor_detail
+					// "detail"=> $minor_detail
 				]),
 				"major" => collect([
 					"count" => $major,
-					"detail"=> $major_detail
+					// "detail"=> $major_detail
 				]),
 				"critical" => collect([
 					"count" => $critical,
-					"detail"=> $critical_detail
+					// "detail"=> $critical_detail
 				]),
 			])
 		]);
@@ -120,7 +131,7 @@ class ProjectController extends Controller
 	}
 
 	public function getProjectByUrgency(Request $req){
-		$datas = ProjectEvent::select(DB::raw('DATEDIFF(due_date,"' . date('Y-m-d') . '") AS due_date , project_list_id'))->where('status','Active')->orderBy('due_date','DESC')->get();
+		$datas = ProjectEvent::select(DB::raw('DATEDIFF("' . date('Y-m-d') . '",due_date) AS due_date , project_list_id'))->where('status','Active')->orderBy('due_date','DESC')->get();
 
 		$critical = [];
 		$critical_detail = [];
@@ -602,8 +613,8 @@ class ProjectController extends Controller
 					"project__list.project_name",
 					"project__list.project_pid",
 					DB::raw("project__customer.name as project_customer"),
-					DB::raw("IFNULL ( DATEDIFF(project_event.due_date,'" . date('Y-m-d') . "'),0 )as project_start"),
-					DB::raw("IFNULL ( DATEDIFF(project_event.due_date,'" . date('Y-m-d') . "'),0 )as project_start2"),
+					DB::raw("IFNULL ( DATEDIFF('" . date('Y-m-d') . "',project_event.due_date),0 )as project_start"),
+					DB::raw("IFNULL ( DATEDIFF('" . date('Y-m-d') . "',project_event.due_date),0 )as project_start2"),
 					"project__list.project_periode",
 					"project__list.project_periode_duration",
 					// "project__list.project_coordinator",
@@ -617,7 +628,7 @@ class ProjectController extends Controller
 				'project_event.project_list_id',
 				'=',
 				'project__list.id','left')
-			->orderBy('project_start','ASC')
+			->orderBy('project_start','DESC')
 			->join('project__customer','project__list.project_customer','=','project__customer.id')
 			->join('project__member as leader','project__list.project_leader','=','leader.id','left outer')
 			->join('project__member as coordinator','project__list.project_coordinator','=','coordinator.id','left outer')
@@ -655,7 +666,13 @@ class ProjectController extends Controller
 
 	public function getShortDetailProjectList(Request $req){
 		$event = DB::table('project__event')
-			->select('project__event.due_date','project__event.id','project__event.name','project__list.project_pid')
+			->select(
+				'project__event.due_date',
+				DB::raw('DATEDIFF("' . date('Y-m-d') . '",project__event.due_date) AS due_date_remaind'),
+				'project__event.id',
+				'project__event.name',
+				'project__list.project_pid'
+			)
 			->join('project__list','project__list.id','=','project__event.project_list_id')
 			->where('project__event.project_list_id',$req->id_project)
 			->where('project__event.status','Active')
@@ -667,17 +684,19 @@ class ProjectController extends Controller
 				->orderBy('id','DESC')
 				->first();
 
-
-
 			if(isset($history->note)){
 				return array(
 					'project_id' => $event->project_pid,
+					'due_date' => $event->due_date,
+					'due_date_remaind' => $event->due_date_remaind,
 					'lastest_update' => $history->note,
 					'event_now' => $event->name,
 				);
 			} else {
 				return array(
 					'project_id' => $event->project_pid,
+					'due_date' => $event->due_date,
+					'due_date_remaind' => $event->due_date_remaind,
 					'lastest_update' => "N/A",
 					'event_now' => $event->name,
 				);
@@ -685,6 +704,8 @@ class ProjectController extends Controller
 		} else {
 			return array(
 				'project_id' => "N/A",
+				'due_date' => "N/A",
+				'due_date_remaind' => "N/A",
 				'lastest_update' => "N/A",
 				'event_now' => "Project Close",
 			);
@@ -770,19 +791,22 @@ class ProjectController extends Controller
 			$result = ProjectHistory::orderBy('id','DESC')->take(2)->get();
 			$result[0]->project_name = $result[0]->project->project_name;
 			$result[1]->project_name = $result[1]->project->project_name;
+			$dashboardUpdateData = $this->getDashboard()->all();
 			$dashboardUpdateData = collect([
-				"approching_end" => $this->getDashboard()->all()['approching_end']->all()['count'],
-				"finish_project" => $this->getDashboard()->all()['finish_project']->all()['count'],
-				"occurring_now" => $this->getDashboard()->all()['occurring_now']->all()['count'],
-				"due_this_month" => $this->getDashboard()->all()['due_this_month']->all()['count']
+				"approching_end" => $dashboardUpdateData['approching_end']->all()['count'],
+				"finish_project" => $dashboardUpdateData['finish_project']->all()['count'],
+				"occurring_now" => $dashboardUpdateData['occurring_now']->all()['count'],
+				"due_this_month" => $dashboardUpdateData['due_this_month']->all()['count']
 			]);
-			$dashboardUpdateData = collect([
-				"approching_end" => $this->getDashboard()->all()['approching_end']->all()['count'],
-				"finish_project" => $this->getDashboard()->all()['finish_project']->all()['count'],
-				"occurring_now" => $this->getDashboard()->all()['occurring_now']->all()['count'],
-				"due_this_month" => $this->getDashboard()->all()['due_this_month']->all()['count']
+			$dashboardUpdateChart = $this->getDashboard()->all()["chart_data"]->all();
+			$dashboardUpdateChart = collect([
+				"normal" => $dashboardUpdateChart["normal"]->all()['count'],
+				"warning" => $dashboardUpdateChart["warning"]->all()['count'],
+				"minor" => $dashboardUpdateChart["minor"]->all()['count'],
+				"major" => $dashboardUpdateChart["major"]->all()['count'],
+				"critical" => $dashboardUpdateChart["critical"]->all()['count']
 			]);
-			return collect([$result,$dashboardUpdateData]);
+			return collect([$result,$dashboardUpdateData,$dashboardUpdateChart]);
 		} else {
 			$result = ProjectHistory::orderBy('id','DESC')->first();
 			$result->project_name = ProjectHistory::orderBy('id','DESC')->first()->project->project_name;

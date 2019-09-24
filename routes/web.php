@@ -89,8 +89,17 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::post('/editProfile', 'AdminController@editProfile');
 		// User Manage Oleh Admin
 	Route::middleware(['aogy.role'])->group(function () {
-		Route::get('/ateamhistory', 'AdminController@teamhistory');
-		Route::get('/areport', 'AdminController@areport');	
+		Route::get('/precense/myhistory', 'AdminController@myHistory');
+		Route::get('/precense/myhistory/detail', 'AdminController@myHistoryDetail');
+
+		Route::get('/precense/teamhistory', 'AdminController@teamHistory');
+		Route::get('/precense/teamhistory/getUserHistory/{id}', 'AdminController@getUserHistory');
+		Route::get('/precense/teamhistory/getIndifidualHistory/{id}','AdminController@getIndifidualHistory');
+
+		Route::get('/precense/reporting', 'AdminController@precenseReporting');
+		Route::get('/precense/reporting/getUserToReport','AdminController@getUserToReport');
+		Route::get('/precense/reporting/getReportPrecenseAll','AdminController@getReportPrecenseAll');
+		Route::get('/precense/reporting/getReportPrecensePerUser','AdminController@getReportPrecensePerUser');
 	});
 	Route::middleware(['shiftingloc.role'])->group(function () {
 		Route::get('/usermanage', 'AdminController@usermanage');
@@ -111,11 +120,9 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('/getProfile/{id}', 'AdminController@getProfile');
 	Route::get('/setMasuk', 'AdminController@setMasuk');
 	Route::get('/user', 'AdminController@user');
-	Route::get('/ahistory', 'AdminController@history');
+	// Route::get('/ahistory', 'AdminController@history');
 	Route::get('/ahistory2', 'AdminController@historydet');
-	Route::get('/auserhistory/{id}', 'AdminController@auserhistory');
 	Route::get('/getReport','AdminController@getReport');
-	Route::get('/getReportPerUser','AdminController@getReportPerUser');
 	// Location Controll oleh Admin
 	
 	Route::get('/absen', 'AdminController@absen');
@@ -125,7 +132,6 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('/createPresenceLocation', 'AdminController@createPresenceLocation');
 	Route::get('/asycal', 'AdminController@asycal');
 	
-	Route::get('/downloadPDF/{id}','AdminController@download');
 	Route::get('/changeAbsent/{id}','AdminController@changeAbsent');
 	Route::post('/changePasswords','AdminController@changePassword');
 	Route::get('/matikan', 'AdminController@matikan');

@@ -109,12 +109,12 @@
 </style>
 <div class="content-wrapper">
 	<section class="content-header" >
-		<img src="img/labelaogy.png" width="120" height="40">
+		<img src="{{ url('/img/labelaogy.png')}}" width="120" height="40">
 		<ol class="breadcrumb" style="font-size: 15px;">
-			<li><a href="{{url('ahistory')}}"><i class="fa fa-book"></i>My Absent History</a></li>
+			<li><a href="{{url('precense/myhistory')}}"><i class="fa fa-book"></i>My Absent History</a></li>
 			@if(Auth::user()->jabatan == "1" || Auth::user()->jabatan == "5")
-				<li><a href="{{url('ateamhistory')}}"><i class="fa fa-users"></i>My Team Attendance</a></li>
-				<li><a href="{{url('areport')}}"><i class="fa fa-users"></i>Reporting</a></li>
+				<li><a href="{{url('precense/teamhistory')}}"><i class="fa fa-users"></i>My Team Attendance</a></li>
+				<li><a href="{{url('precense/reporting')}}"><i class="fa fa-users"></i>Reporting</a></li>
 			@endif
 		</ol>
 	</section>

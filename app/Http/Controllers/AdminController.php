@@ -931,7 +931,7 @@ class AdminController extends Controller
 		return view('announcement');
 	}
 
-	public function historydet(){
+	public function myHistoryDetail(){
 
 		$id = Auth::user()->id;
 		
@@ -1029,11 +1029,11 @@ class AdminController extends Controller
 				$attendance = 100 - $absen
 			];
 		
-			return view('ahistory2',compact('datadet','datas2','kehadiran','persen','count','absen'));
+			return view('precense.myHistoryDetail',compact('datadet','datas2','kehadiran','persen','count','absen'));
 
 	}
 
-	public function history(){
+	public function myHistory(){
 		// echo "asdfas";
 		$id = Auth::user()->id;
 		$tanggal = date('Y') . "-" . date('m') . "%";
@@ -1141,10 +1141,10 @@ class AdminController extends Controller
 		// print_r($persen);
 		// print_r($count);
 		// echo'</pre>';
-		return view('ahistory',compact('datas','datas2','kehadiran','persen','count','absen'));
+		return view('precense.myHistory',compact('datas','datas2','kehadiran','persen','count','absen'));
 	}
 
-	public function teamhistory(){
+	public function teamHistory(){
 		// echo "asdfas";
 		$id = Auth::user()->id;
 		$datas = DB::table('waktu_absen')
@@ -1400,10 +1400,10 @@ class AdminController extends Controller
 		// print_r($users);
 		// print_r($datas2);
 		// echo "</pre>";
-		return view('admin.teamhistory',compact('datas','datas2','var','status','late','injury','ontime','count','absen','attendance','absenToday','ids','problem'));
+		return view('precense.teamHistory',compact('datas','datas2','var','status','late','injury','ontime','count','absen','attendance','absenToday','ids','problem'));
 	}
 
-	public function auserhistory ($id,$start = 0,$end = 0){
+	public function getUserHistory ($id,$start = 0,$end = 0){
 	
 		if($start == 0 && $end == 0){
 			$datas = DB::table('waktu_absen')
@@ -1547,7 +1547,7 @@ class AdminController extends Controller
 		return $data;
 	}
 
-	function download($id){
+	function getIndifidualHistory($id){
 
 		$datas = DB::table('waktu_absen')
 			->where('id_user','=',$id)
@@ -1912,13 +1912,15 @@ class AdminController extends Controller
 		}
 	}
 
-	public function areport(){
-		
-
-		return view('areport');
+	public function precenseReporting(){
+		return view('precense.reporting');
 	}
 
-	public function getReport(Request $req){
+	public function getUserToReport(){
+		return DB::table('users')->select('users.nickname','privilege.privilege_name','users.id as value')->join('privilege','users.jabatan','=','privilege.id')->get()->groupBy('privilege_name')->toArray();
+	}
+
+	public function getReportPrecenseAll(Request $req){
 		// echo "<pre>";
 		// echo $req->start . "<br>";
 		// echo $req->end;
@@ -1927,63 +1929,13 @@ class AdminController extends Controller
 		$query = DB::table('waktu_absen')
 			->where('tanggal','>=',$req->start)
 			->where('tanggal','<=',$req->end)
-
-			// ->orWhere('id_user','=',47)
-			// ->orWhere('id_user','=',77)
-			// ->orWhere('id_user','=',80)
-			// ->orWhere('id_user','=',78)
-			// ->orWhere('id_user','=',41)
-			// ->orWhere('id_user','=',46)
-			// ->orWhere('id_user','=',75)
-			// ->orWhere('id_user','=',79)
-
-			// ->orWhere('id_user','=',40)
-			// ->orWhere('id_user','=',31)
-			// ->orWhere('id_user','=',33)
-			// ->orWhere('id_user','=',34)
-			// ->orWhere('id_user','=',36)
-			// ->orWhere('id_user','=',45)
-
-			// ->orWhere('id_user','=',4)
-			// ->orWhere('id_user','=',6)
-			// ->orWhere('id_user','=',7)
-			// ->orWhere('id_user','=',26)
-			// ->orWhere('id_user','=',27)
-			// ->orWhere('id_user','=',28)
-			// ->orWhere('id_user','=',23)
-			// ->orWhere('id_user','=',81)
-
+			->orWhereIn('id_user',$req->selectedUser)
 			->get()
 			->toArray();
 
 		$users = DB::table('users')
 			->select('id','name','team')
-
-			// ->orWhere('id','=',47)
-			// ->orWhere('id','=',77)
-			// ->orWhere('id','=',80)
-			// ->orWhere('id','=',78)
-			// ->orWhere('id','=',41)
-			// ->orWhere('id','=',46)
-			// ->orWhere('id','=',75)
-			// ->orWhere('id','=',79)
-
-			// ->orWhere('id','=',40)
-			// ->orWhere('id','=',31)
-			// ->orWhere('id','=',33)
-			// ->orWhere('id','=',34)
-			// ->orWhere('id','=',36)
-			// ->orWhere('id','=',45)
-
-			// ->orWhere('id','=',4)
-			// ->orWhere('id','=',6)
-			// ->orWhere('id','=',7)
-			// ->orWhere('id','=',26)
-			// ->orWhere('id','=',27)
-			// ->orWhere('id','=',28)
-			// ->orWhere('id','=',23)
-			// ->orWhere('id','=',81)
-			
+			->orWhereIn('id',$req->selectedUser)
 			->orderBy('location')
 			->get()
 			->toArray();
@@ -2054,34 +2006,50 @@ class AdminController extends Controller
 			$var[$stat]["id"] = $IDUser[$key];
 		}
 
+		// return $var;
+
+		foreach ($IDUser as $key => $value) {
+			$details [] = $this->getUserHistory($value,$req->start,$req->end);
+			foreach ($details as $detail) {
+				if($detail[6] != NULL){
+					foreach($detail[6] as $detail2){
+						$detail2->hari = date("l", strtotime($detail2->tanggal));
+					}
+				} 
+			}
+		}
+		for ($i = 0; $i < sizeof($var); $i++){
+			// echo $i . "<br>";
+			$var[$details[$i][5]]['absen'] = collect($details[$i][6])->where('late','Absen')->count();
+			$var[$details[$i][5]]['all'] = $var[$details[$i][5]]['all'] + collect($details[$i][6])->where('late','Absen')->count();
+			// print_r(collect($details[$i][6])->where('late','Absen')->count());
+			// print_r($var[$details[$i][5]]);
+			// $summary[3] = $summary[3] + collect($details[$i][6])->where('late','Absen')->count();
+			$details[$i][0][3] = collect($details[$i][6])->where('late','Absen')->count();
+		}
+
 		if($req->pdf){
 			$summary[0] = 0; $summary[1] = 0; $summary[2] = 0; $summary[3] = 0; $summary[4] = 0;
 			foreach ($var as $key => $val) {
 				$summary[0] = $summary[0] + $val['ontime'];
 				$summary[1] = $summary[1] + $val['injury'];
 				$summary[2] = $summary[2] + $val['late'];
-				$summary[3] = $summary[3] + $val['absen'];
+				// $summary[3] = $summary[3] + $val['absen'];
 			}
-			$summary[4] = $summary[0] + $summary[1] + $summary[2];
 			$data['start'] = $req->startDate;
 			$data['end'] = $req->endDate;
 
-			foreach ($IDUser as $key => $value) {
-				$details [] = $this->auserhistory($value,$req->start,$req->end);
-				foreach ($details as $detail) {
-					if($detail[6] != NULL){
-						foreach($detail[6] as $detail2){
-							$detail2->hari = date("l", strtotime($detail2->tanggal));
-						}
-					} 
-				}
+			for ($i = 0; $i < sizeof($var); $i++){
+				$summary[3] = $summary[3] + collect($details[$i][6])->where('late','Absen')->count();
 			}
-			
-
-			$tittle = 'Attandance Report ' . $req->startDate . ' to ' . $req->endDate;
-			$pdf = PDF::loadView('pdf2',compact('var','summary','data','details','tittle'));
-			return $pdf->stream($tittle ."Report " . $data['start'] . " to " . $data['end'] . " .pdf");
+			$summary[4] = $summary[0] + $summary[1] + $summary[2];
+	
+			$tittle = 'Attandance Report All Member [' . $req->startDate . ' to ' . $req->endDate . "]";
+			$pdf = PDF::loadView('precense.getAllReportPDF',compact('var','summary','data','details','tittle'));
+			return $pdf->stream($tittle . ".pdf");
+			// return $summary;
 			// return $details;
+			// return $var;
 
 		// 	$tittle = 'My Attendence';
 		// $pdf = PDF::loadView('pdf', compact('datas','kehadiran','count','name','absen'));
@@ -2100,7 +2068,7 @@ class AdminController extends Controller
 		}
 	}
 
-	public function getReportPerUser(Request $req){
+	public function getReportPrecensePerUser(Request $req){
 		// echo "<pre>";
 		// echo $req->start . "<br>";
 		// echo $req->end;
@@ -2186,6 +2154,26 @@ class AdminController extends Controller
 			$var[$stat]["id"] = $IDUser[$key];
 		}
 
+		foreach ($IDUser as $key => $value) {
+			$details [] = $this->getUserHistory($value,$req->start,$req->end);
+			foreach ($details as $detail) {
+				if($detail[6] != NULL){
+					foreach($detail[6] as $detail2){
+						$detail2->hari = date("l", strtotime($detail2->tanggal));
+					}
+				} 
+			}
+		}
+		for ($i = 0; $i < sizeof($var); $i++){
+			// echo $i . "<br>";
+			$var[$details[$i][5]]['absen'] = collect($details[$i][6])->where('late','Absen')->count();
+			$var[$details[$i][5]]['all'] = $var[$details[$i][5]]['all'] + collect($details[$i][6])->where('late','Absen')->count();
+			// print_r(collect($details[$i][6])->where('late','Absen')->count());
+			// print_r($var[$details[$i][5]]);
+			// $summary[3] = $summary[3] + collect($details[$i][6])->where('late','Absen')->count();
+			$details[$i][0][3] = collect($details[$i][6])->where('late','Absen')->count();
+		}
+
 		if($req->pdf){
 			$summary[0] = 0; $summary[1] = 0; $summary[2] = 0; $summary[3] = 0; $summary[4] = 0;
 			foreach ($var as $key => $val) {
@@ -2198,23 +2186,17 @@ class AdminController extends Controller
 			$data['start'] = $req->startDate;
 			$data['end'] = $req->endDate;
 
-			foreach ($IDUser as $key => $value) {
-				$details [] = $this->auserhistory($value,$req->start,$req->end);
-				foreach ($details as $detail) {
-					if($detail[6] != NULL){
-						foreach($detail[6] as $detail2){
-							$detail2->hari = date("l", strtotime($detail2->tanggal));
-						}
-					} 
-				}
+			for ($i = 0; $i < sizeof($var); $i++){
+				$summary[3] = $summary[3] + collect($details[$i][6])->where('late','Absen')->count();
 			}
+			$summary[4] = $summary[0] + $summary[1] + $summary[2];
 			
 			$users = DB::table('users')->where('id','=',$req->id_user)->value('name');
 			// echo $users;
 			// echo $users;
 			// echo $start;
 			$tittle = 'Attandance Report For - ' . $users . ' [' . $req->startDate . ' to ' . $req->endDate . ']';
-			$pdf2 = PDF::loadView('pdfReportAbsenPerUser',compact('var','summary','data','details','users','tittle'));
+			$pdf2 = PDF::loadView('precense.getReportPerUserPDF',compact('var','summary','data','details','users','tittle'));
 			// return $pdf2->stream("Report " . $data['start'] . " to " . $data['end'] . " .pdf");
 			return $pdf2->stream($tittle . ".pdf");
 		} else {

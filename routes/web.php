@@ -28,6 +28,7 @@ Route::get('maps', function () {
 Auth::routes();
 Route::get('/authenticate/{id}','HomeController@authenticate');
 Route::get('getReportTicket/{client}/{month}','TicketingController@testReport');
+Route::get('firebase','TestController@firebase');
 
 // Engginer Route
 // Route::get('/home', function(){

@@ -8,6 +8,11 @@ use DB;
 use Log;
 use Auth;
 
+use Kreait\Firebase;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\ServiceAccount;
+use Kreait\Firebase\Database;
+
 class TestController extends Controller
 {
 
@@ -724,6 +729,29 @@ class TestController extends Controller
 			echo "End Chunk <br>";
 		});
 		echo 'Total memory usage : '. (memory_get_usage() - $begin);
+	}
+
+	public function firebase(){
+		$serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firebase-key.json');
+		$firebase = (new Factory)
+			->withServiceAccount($serviceAccount)
+			->withDatabaseUri('https://test-project-64a66.firebaseio.com/')
+			->create();
+
+		$database = $firebase->getDatabase();
+		$newPost = $database
+			->getReference('blog/posts')
+			->push([
+				'title' => 'Post title',
+				'body' => 'This should probably be longer.'
+			]);
+		//$newPost->getKey(); // => -KVr5eu8gcTv7_AHb-3-
+		//$newPost->getUri(); // => https://my-project.firebaseio.com/blog/posts/-KVr5eu8gcTv7_AHb-3-
+		//$newPost->getChild('title')->set('Changed post title');
+		//$newPost->getValue(); // Fetches the data from the realtime database
+		//$newPost->remove();
+		echo"<pre>";
+		print_r($newPost->getvalue());
 	}
 
 }

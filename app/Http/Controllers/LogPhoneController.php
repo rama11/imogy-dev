@@ -16,14 +16,14 @@ class LogPhoneController extends Controller
 
 	public function index (){
 
-		$logphone = DB::table('log_phone')
+		$logphone = DB::table('log_phone__detail')
 			->get();
 			
-		$answere = DB::table('log_phone')
+		$answere = DB::table('log_phone__detail')
 			->where('details','=','0')
 			->count();
 	
-		$rejectcalls = DB::table('log_phone')
+		$rejectcalls = DB::table('log_phone__detail')
 			->where('details','=','1')
 			->count();    
 
@@ -61,7 +61,7 @@ class LogPhoneController extends Controller
 			->limit(10)
 			->get();
 
-		foreach ($ as $key => $value) {
+		foreach ($data as $key => $value) {
 			# code...
 		}
 

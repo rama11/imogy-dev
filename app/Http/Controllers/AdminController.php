@@ -2052,8 +2052,8 @@ class AdminController extends Controller
 			// return $var;
 
 		// 	$tittle = 'My Attendence';
-		// $pdf = PDF::loadView('pdf', compact('datas','kehadiran','count','name','absen'));
-		// return $pdf->stream($tittle .".pdf");
+		$pdf = PDF::loadView('pdf', compact('datas','kehadiran','count','name','absen'));
+		return $pdf->stream($tittle .".pdf");
 			
 			// return view('pdf2',compact('var','summary','data','details','tittle'));
 			// return view('pdf4',compact('var','summary','data','details'));

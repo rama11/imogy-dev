@@ -29,6 +29,8 @@ Auth::routes();
 Route::get('/authenticate/{id}','HomeController@authenticate');
 Route::get('getReportTicket/{client}/{month}','TicketingController@testReport');
 Route::get('firebase','TestController@firebase');
+Route::get('administration','AdministrationController@index');
+
 
 // Engginer Route
 // Route::get('/home', function(){
@@ -144,6 +146,8 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::middleware(['logphone.role'])->group(function () {
 	Route::get('/logphone','LogPhoneController@index');
 	Route::post('/addnew','LogPhoneController@addnew');
+	Route::get('/logphone/getLastestCall','LogPhoneController@getLastestCall');
+
 	});
 
 
@@ -183,7 +187,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('newAtm','TicketingController@newAtm');
 		Route::get('updateIdTicket','TicketingController@updateIdTicket');
 		// Route::get('getReportTicket/{client}/{month}','TicketingController@testReport');
-});
+	});
 		
 
 		// Route::get('getReportTicket/{client}/{month}',function($client,$month){
@@ -248,7 +252,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::post('project/manage/setProjectList','ProjectController@setProjectList');
 		Route::get('project/manage/sendProjectListOpen','ProjectController@sendProjectListOpen');
 		Route::get('project/manage/testSendProjectListOpen','ProjectController@testSendProjectListOpen');
-		Route::get('project/manage/previewFinishEventProject',function(){
+		Route::get('project/manage/previewFinishEventProject', function(){
 			$data = array(
 				"to" => array(
 					"agastya@sinergy.co.id",
@@ -329,6 +333,8 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('project/setting/setSettingPeriodStart','ProjectController@setSettingPeriodStart');
 
 	});
+
+
 	Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
 });

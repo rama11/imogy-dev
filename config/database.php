@@ -78,6 +78,21 @@ return [
             'prefix' => '',
         ],
 
+        'mysql_asterisk' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST_ASTERISK', '127.0.0.1'),
+            'port' => env('DB_PORT_ASTERISK', '3306'),
+            'database' => env('DB_DATABASE_ASTERISK', 'forge'),
+            'username' => env('DB_USERNAME_ASTERISK', 'forge'),
+            'password' => env('DB_PASSWORD_ASTERISK', ''),
+            'unix_socket' => env('DB_SOCKET_ASTERISK', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
     ],
 
     /*

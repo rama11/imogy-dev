@@ -32,3 +32,5 @@ public/.well-known/
 # Ignore Other
 sftp-config.json.backup
 
+# Ignore Firebase-key
+app/Http/Controllers/firebase-key.json

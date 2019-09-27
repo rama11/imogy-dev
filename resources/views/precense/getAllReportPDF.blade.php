@@ -179,21 +179,20 @@
 					</tbody>
 				</table>
 				<table>
-					<tbody>
 					<thead>
-			<tr>
-				<th colspan="3" style="text-align: center;">
-					#
-				</th>
-				
+						<tr>
+							<th colspan="3" style="text-align: center;">
+								#
+							</th>
 
-				<th style="width: 50px; text-align: center;" >Ontime</th>
-				<th style="width: 50px; text-align: center;" >Tolerance</th>
-				<th style="width: 50px; text-align: center;" >Late</th>
-				<th style="width: 50px; text-align: center;" >Absent</th>
-				<th style="width: 50px; text-align: center;" >Attend</th>
-			</tr>
-		</thead>
+							<th style="width: 50px; text-align: center;" >Ontime</th>
+							<th style="width: 50px; text-align: center;" >Tolerance</th>
+							<th style="width: 50px; text-align: center;" >Late</th>
+							<th style="width: 50px; text-align: center;" >Absent</th>
+							<th style="width: 50px; text-align: center;" >Attend</th>
+						</tr>
+					</thead>
+					<tbody>
 						<tr>
 							<th colspan="3" style="text-align: center;">
 								Summary

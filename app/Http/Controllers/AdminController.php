@@ -1917,7 +1917,13 @@ class AdminController extends Controller
 	}
 
 	public function getUserToReport(){
-		return DB::table('users')->select('users.nickname','privilege.privilege_name','users.id as value')->join('privilege','users.jabatan','=','privilege.id')->get()->groupBy('privilege_name')->toArray();
+		return DB::table('users')
+			->select('users.nickname','privilege.privilege_name','users.id as value')
+			->whereNotIn('users.id',[3,32,35,74,76,82,83,84])
+			->join('privilege','users.jabatan','=','privilege.id')
+			->get()
+			->groupBy('privilege_name')
+			->toArray();
 	}
 
 	public function getReportPrecenseAll(Request $req){
@@ -1956,28 +1962,28 @@ class AdminController extends Controller
 				->where('tanggal','>=',$req->start)
 				->where('tanggal','<=',$req->end)
 				->get()
-				->toarray();
+				->count();
 			$late = DB::table('waktu_absen')
 				->where('id_user','=',$IDUser[$key])
 				->where('tanggal','>=',$req->start)
 				->where('tanggal','<=',$req->end)
 				->where('late','=',"late")
 				->get()
-				->toarray();
+				->count();
 			$ontime = DB::table('waktu_absen')
 				->where('id_user','=',$IDUser[$key])
 				->where('tanggal','>=',$req->start)
 				->where('tanggal','<=',$req->end)
 				->where('late','=',"on-time")
 				->get()
-				->toarray();
+				->count();
 			$injury = DB::table('waktu_absen')
 				->where('id_user','=',$IDUser[$key])
 				->where('tanggal','>=',$req->start)
 				->where('tanggal','<=',$req->end)
 				->where('late','=',"injury-time")
 				->get()
-				->toarray();
+				->count();
 			$absen = DB::table('waktu_absen')
 				->where('id_user','=',$IDUser[$key])
 				->where('tanggal','>=',$req->start)
@@ -1986,7 +1992,7 @@ class AdminController extends Controller
 				->where('late','<>',"late")
 				->where('late','<>',"on-time")
 				->get()
-				->toarray();
+				->count();
 
 			$where =  DB::table('users')
 				->join('location','users.location','=','location.id')
@@ -1996,12 +2002,12 @@ class AdminController extends Controller
 				->toarray();
 
 
-			$var[$stat]["all"] = sizeof($all);
-			$var[$stat]["all"] = sizeof($late) + sizeof($ontime) + sizeof($injury);
-			$var[$stat]["late"] = sizeof($late);
-			$var[$stat]["ontime"] = sizeof($ontime);
-			$var[$stat]["injury"] = sizeof($injury);
-			$var[$stat]["absen"] = sizeof($absen);
+			$var[$stat]["all"] = $all;
+			$var[$stat]["all"] = $late + $ontime + $injury;
+			$var[$stat]["late"] = $late;
+			$var[$stat]["ontime"] = $ontime;
+			$var[$stat]["injury"] = $injury;
+			$var[$stat]["absen"] = $absen;
 			$var[$stat]["where"] = $where[0]->name;
 			$var[$stat]["id"] = $IDUser[$key];
 		}
@@ -2047,6 +2053,7 @@ class AdminController extends Controller
 			$tittle = 'Attandance Report All Member [' . $req->startDate . ' to ' . $req->endDate . "]";
 			$pdf = PDF::loadView('precense.getAllReportPDF',compact('var','summary','data','details','tittle'));
 			return $pdf->stream($tittle . ".pdf");
+			// return view('precense.getAllReportPDF',compact('var','summary','data','details','tittle'));
 			// return $summary;
 			// return $details;
 			// return $var;

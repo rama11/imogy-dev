@@ -71,7 +71,7 @@
 					<div class="box">
 						<div class="box-header">
 							<h3 class="box-title">Call History</h3>
-							<a href="#" class="pull-right btn-box-tool text-green pull-right" data-toggle="modal" data-target="#modal-addlog"><i class="fa fa-plus"></i> Add New Log</a>
+							<!-- <a href="#" class="pull-right btn-box-tool text-green pull-right" data-toggle="modal" data-target="#modal-addlog"><i class="fa fa-plus"></i> Add New Log</a> -->
 							<div class="box-tools">
 								<div class="input-group input-group-sm" style="width: 150px;">
 
@@ -125,8 +125,9 @@
 	<!-- /.content-wrapper -->
 	<div class="modal fade in" id="modal-addlog"  tabindex="-1" role="dialog">
 		<div class="modal-dialog">
-			<form method="POST" action="{{url ('addnew')}}">
+			<form method="POST" action="{{url ('/logphone/setNewLog')}}">
 				{!! csrf_field() !!}
+				<input type="hidden" name="id_detail_history" id="inputIdDetailHistory">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -136,7 +137,7 @@
 					</div>
 					<div class="modal-body">
 						<div class="row">
-							<label for="answered" class="col-md-3 control-label">Answered</label>
+							<label for="answered" class="col-md-3 control-label">Answered by</label>
 							<div class="col-md-9">
 								<div class="form-group">
 								<input type="text" class="form-control" name="answered" value="{{Auth::user()->name}}" required autofocus>                                     
@@ -144,25 +145,25 @@
 							</div>
 						</div>
 						<div class="row">
-							<label for="date-time" class="col-md-3 control-label">Date Time</label>
-							<div class="col-md-4">
+							<label for="date-time" class="col-md-3 control-label">Time Answerd</label>
+							<div class="col-md-9">
 								<div class="input-group">
 									<div class="input-group-addon">
 										<i class="fa fa-clock-o"></i>
 									</div>
-									<input type="text" class="form-control timepicker" id="inputReport1">
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="input-group date">
-									<div class="input-group-addon">
-										<i class="fa fa-calendar"></i>
-									</div>
-									<input type="text" class="form-control pull-right" id="inputReport2">
+									<input type="text" class="form-control timepicker" name="date" id="inputTimeAnswed">
 								</div>
 							</div>
 						</div>
 						<br>
+						<div class="row">
+							<label for="involved" class="col-md-3 control-label">Caller</label>
+							<div class="col-md-9">
+								<div class="form-group">
+								<input type="text" class="form-control" name="caller" value="" required autofocus>                                     
+								</div>
+							</div>
+						</div>
 						<div class="row">
 							<label for="discussion" class="col-md-3 control-label">Discussion</label>
 							<div class="col-md-9">
@@ -207,7 +208,41 @@
 <script src="plugins/timepicker/bootstrap-timepicker.min.js"></script>
 
 <script type="text/javascript">
-    $("#inputReport1").timepicker({
+	function check_log(argument) {
+		if($("#modal-addlog").is(':visible') == false){
+			$.ajax({
+				type:"GET",
+				url:"{{url('/logphone/getLastestCall')}}",
+				success: function (result){
+					// console.log(result)
+					// console.log(result.length)
+					if(result.length !== 1) {
+						$("#inputTimeAnswed").val(moment(result.history.eventtime,"YYYY-MM-DD HH:mm:ss").format('D MMMM YYYY - HH:mm'))
+						$("#inputIdDetailHistory").val(result.id)
+						$("#modal-addlog").show()
+					}
+				}
+			})
+		}
+	}
+
+	function repeatEvery(func, interval) {
+		var now = new Date(),
+			delay = interval - now % interval;
+
+		function start() {
+			func();
+			setInterval(func, interval);
+		}
+
+		setTimeout(start, delay);
+	}
+
+	repeatEvery(check_log, 60000);
+
+	// setInterval(check_log,60000)
+
+	$("#inputReport1").timepicker({
 		showInputs: false,
 		minuteStep: 1,
 		maxHours: 24,

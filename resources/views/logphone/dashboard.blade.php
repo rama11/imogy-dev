@@ -80,37 +80,17 @@
 						</div>
 						<!-- /.box-header -->
 						<div class="box-body table-responsive no-padding">
-							<table class="table table-hover">
-							<thead>
-								<tr>
-									<th>ID</th>
-									<th>Answered</th>
-									<th>Date - Time</th>
-									<th>Discussion</th>
-									<th>Involved</th>
-									<th>Details</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php $no = 1 ;?>
-								@foreach($logphone as $log)
-								<tr>
-									<td>{{$no}}</td>
-									<td>{{$log->answered}}</td>
-									<td>{{$log->date}}</td>
-									<td>{{$log->discussion}}</td>
-									<td>{{$log->involved}}</td>
-									<td>
-										@if($log->details == "0")
-										<span class="label label-success">Call in</span>
-										@elseif($log->details == "1")
-										<span class="label label-danger">Call out</span>
-										@endif
-									</td>
-								</tr>
-								<?php $no++;?>
-								@endforeach
-							</tbody>
+							<table class="table table-hover" id="tableLogPhone">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Answered</th>
+										<th>Date - Time</th>
+										<th>Discussion</th>
+										<th>Involved</th>
+										<th>Details</th>
+									</tr>
+								</thead>
 							</table>
 						</div>
 						<!-- /.box-body -->
@@ -208,7 +188,7 @@
 <script src="plugins/timepicker/bootstrap-timepicker.min.js"></script>
 
 <script type="text/javascript">
-	function check_log(argument) {
+	function check_log() {
 		if($("#modal-addlog").is(':visible') == false){
 			$.ajax({
 				type:"GET",
@@ -253,6 +233,21 @@
 	$('#inputReport2').datepicker({
 		autoclose: true,
 		dateFormat: 'd M, y',
+	});
+
+	$("#tableLogPhone").DataTable({
+		"ajax":{
+			"type":"GET",
+			"url":"{{url('logphone/getAllLogPhone')}}",
+		},
+		"columns": [
+			{ "data" : "id" },
+			{ "data" : "answered" },
+			{ "data" : "date" },
+			{ "data" : "discussion" },
+			{ "data" : "involved" },
+			{ "data" : "details" },
+		],
 	});
 </script>            
 @endsection

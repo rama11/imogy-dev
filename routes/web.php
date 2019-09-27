@@ -145,6 +145,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	// dgsdfgdfgsfg`
 	Route::middleware(['logphone.role'])->group(function () {
 	Route::get('/logphone','LogPhoneController@index');
+	Route::get('logphone/getAllLogPhone','LogPhoneController@getAllLogPhone');
 	Route::post('/logphone/setNewLog','LogPhoneController@setNewLog');
 	Route::get('/logphone/getLastestCall','LogPhoneController@getLastestCall');
 

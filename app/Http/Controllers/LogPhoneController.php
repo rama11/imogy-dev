@@ -21,6 +21,7 @@ class LogPhoneController extends Controller
 
 		$logphone = DB::table('log_phone__detail')
 			->orderBy('id','DESC')
+			->take(50)
 			->get();
 			
 		$answere = DB::table('log_phone__detail')
@@ -42,6 +43,10 @@ class LogPhoneController extends Controller
 		$logphone = $logphone->toArray();
 
 		return view('logphone.dashboard',compact('logphone','data','answere','rejectcalls','allcalls'));
+	}
+
+	public function getAllLogPhone(){
+		return array("data" => LogPhoneDetail::take(50)->get());
 	}
 
 	public function setNewLog(Request $req){

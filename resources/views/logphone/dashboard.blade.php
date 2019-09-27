@@ -71,7 +71,7 @@
 					<div class="box">
 						<div class="box-header">
 							<h3 class="box-title">Call History</h3>
-							<!-- <a href="#" class="pull-right btn-box-tool text-green pull-right" data-toggle="modal" data-target="#modal-addlog"><i class="fa fa-plus"></i> Add New Log</a> -->
+							<a href="#" class="pull-right btn-box-tool text-green pull-right" data-toggle="modal" data-target="#modal-addlog"><i class="fa fa-plus"></i> Add New Log</a>
 							<div class="box-tools">
 								<div class="input-group input-group-sm" style="width: 150px;">
 
@@ -248,6 +248,7 @@
 			{ "data" : "involved" },
 			{ "data" : "details" },
 		],
+		"order": [0, "DESC" ],
 	});
 </script>            
 @endsection

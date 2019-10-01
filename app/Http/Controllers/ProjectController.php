@@ -131,107 +131,37 @@ class ProjectController extends Controller
 	}
 
 	public function getProjectByUrgency(Request $req){
-		$datas = ProjectEvent::select(DB::raw('DATEDIFF("' . date('Y-m-d') . '",due_date) AS due_date , project_list_id'))->where('status','Active')->orderBy('due_date','DESC')->get();
+		$datas = ProjectEvent::
+			select(
+				DB::raw('
+					project_list_id,
+					DATEDIFF("2019-10-01", `due_date`) AS `remain_days`,
+					( CASE 
+							WHEN DATEDIFF("2019-10-01", `due_date`) >= 40 THEN "Critical" 
+							WHEN DATEDIFF("2019-10-01", `due_date`) >= 30 THEN "Major" 
+							WHEN DATEDIFF("2019-10-01", `due_date`) >= 20 THEN "Minor" 
+							WHEN DATEDIFF("2019-10-01", `due_date`) >= 10 THEN "Warning" 
+							ELSE "Normal"
+						END
+					) AS `urgency`
+				'))
+			->where('status','Active')
+			->orderBy('remain_days','ASC')
+			->get()
+			->where('urgency',$req->category);
 
-		$critical = [];
-		$critical_detail = [];
-		$major = [];
-		$major_detail = [];
-		$minor = [];
-		$minor_detail = [];
-		$warning = [];
-		$warning_detail = [];
-		$normal = [];
-		$normal_detail = [];
+		$result = Project::with('customer_project')
+			->with('latest_history_project')
+			->with([
+				'latest_event_project' => function($q){
+					$q->where('status','Active');
+				}
+			])
+			->whereIn('id',$datas->pluck('project_list_id'))
+			->get();
 
-		foreach ($datas as $data){
-			if($data->due_date > 40){
-				array_push($critical, $data->due_date);
-				array_push($critical_detail,$data->project_list_id);
-			}
-			elseif($data->due_date > 30 && $data->due_date <= 40){
-				array_push($major, $data->due_date);
-				array_push($major_detail,$data->project_list_id);
-			}
-			elseif($data->due_date > 20 && $data->due_date <= 30){
-				array_push($minor, $data->due_date);
-				array_push($minor_detail,$data->project_list_id);
-			}
-			elseif($data->due_date > 10 && $data->due_date <= 20){
-				array_push($warning, $data->due_date);
-				array_push($warning_detail,$data->project_list_id);
-			}
-			elseif($data->due_date < 10){
-				array_push($normal, $data->due_date);
-				array_push($normal_detail,$data->project_list_id);
-			}
-		}
 
-		if ( $req->category == "Normal"){
-			$result = Project::with('customer_project')
-				->with('latest_history_project')
-				->with([
-					'latest_event_project' => function($q){
-						$q->where('status','Active');
-					}
-				])
-				->whereIn('id',$normal_detail)
-				->get();
-			// $result->day_to_due_date = $normal;
-			return collect([$result,"day_to_due_date" => $normal]);
-		}
-		else if ( $req->category == "Warning"){
-			$result = Project::with('customer_project')
-				->with('latest_history_project')
-				->with([
-					'latest_event_project' => function($q){
-						$q->where('status','Active');
-					}
-				])
-				->whereIn('id',$warning_detail)
-				->get();
-			// $result->day_to_due_date = $warning;
-			return collect([$result,"day_to_due_date" => $warning]);
-		}
-		else if ( $req->category == "Minor"){
-			$result = Project::with('customer_project')
-				->with('latest_history_project')
-				->with([
-					'latest_event_project' => function($q){
-						$q->where('status','Active');
-					}
-				])
-				->whereIn('id',$minor_detail)
-				->get();
-			// $result->day_to_due_date = $minor;
-			return collect([$result,"day_to_due_date" => $minor]);
-		}
-		else if ( $req->category == "Major"){
-			$result = Project::with('customer_project')
-				->with('latest_history_project')
-				->with([
-					'latest_event_project' => function($q){
-						$q->where('status','Active');
-					}
-				])
-				->whereIn('id',$major_detail)
-				->get();
-			// $result->day_to_due_date = $major;
-			return collect([$result,"day_to_due_date" => $major]);
-		}
-		else if ( $req->category == "Critical"){
-			$result = Project::with('customer_project')
-				->with('latest_history_project')
-				->with([
-					'latest_event_project' => function($q){
-						$q->where('status','Active');
-					}
-				])
-				->whereIn('id',$critical_detail)
-				->get();
-			// $result->day_to_due_date = $critical;
-			return collect([$result,"day_to_due_date" => $critical]);
-		}
+		return collect([$result,"day_to_due_date" => $datas->pluck('remain_days')]);
 	}
 
 	public function manage(){

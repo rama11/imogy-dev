@@ -7,13 +7,20 @@
 		<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 		
 		<link href="{{url('img/imoicon.png')}}" rel="icon" type="image/x-icon">
+		
 		<link rel="stylesheet" href="{{ url('bootstrap/css/bootstrap.min.css')}}">
-		<link rel="stylesheet" href="{{ url('AdminLTE/dist/css/AdminLTE.min.css')}}">
-		<link rel="stylesheet" href="{{ url('dist/css/skins/_all-skins.min.css')}}">
 
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+
+		<link rel="stylesheet" href="{{url('plugins/daterangepicker/daterangepicker.css')}}">
+		<link rel="stylesheet" href="{{url('plugins/datepicker/datepicker3.css')}}">
+		<link rel="stylesheet" href="{{url('plugins/iCheck/all.css')}}">
+		<link rel="stylesheet" href="{{url('plugins/timepicker/bootstrap-timepicker.min.css')}}">
+
+		<link rel="stylesheet" href="{{ url('dist/css/AdminLTE.min.css')}}">
+		<link rel="stylesheet" href="{{ url('dist/css/skins/_all-skins.min.css')}}">
+
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
 		<link rel="stylesheet" href="{{ url('plugins/morris/morris.css')}}">
@@ -234,18 +241,19 @@
 		</div>
 		<script src="{{ url('plugins/jQuery/jquery-3.1.1.min.js')}}"></script>
 		<script src="{{ url('bootstrap/js/bootstrap.min.js')}}"></script>
-		<script src="{{ url('dist/js/adminlte.min.js')}}"></script>
 
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script> -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/locale/id.js"></script>
+		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/locale/id.js"></script> -->
 
+		<script src="{{ url('plugins/daterangepicker/daterangepicker.js')}}"></script>
+		<script src="{{ url('plugins/timepicker/bootstrap-timepicker.min.js')}}"></script>
+		
 		<script src="{{ url('plugins/morris/morris.min.js')}}"></script>
 		<script src="{{ url('plugins/sparkline/jquery.sparkline.min.js')}}"></script>
 		<script src="{{ url('plugins/jvectormap/jquery-jvectormap-1.2.2.min.js')}}"></script>
 		<script src="{{ url('plugins/jvectormap/jquery-jvectormap-world-mill-en.js')}}"></script>
 		<script src="{{ url('plugins/knob/jquery.knob.js')}}"></script>
-		<script src="{{ url('plugins/daterangepicker/daterangepicker.js')}}"></script>
 		<script src="{{ url('plugins/datepicker/bootstrap-datepicker.js')}}"></script>
 		<script src="{{ url('plugins/slimScroll/jquery.slimscroll.min.js')}}"></script>
 		<script src="{{ url('plugins/select2/select2.full.min.js')}}"></script>
@@ -253,9 +261,11 @@
 		<script src="{{ url('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
 		<script src="{{ url('plugins/chartjs/Chart.min.js')}}"></script>
 		<script src="{{ url('plugins/fastclick/fastclick.js')}}"></script>
-		<script src="{{ url('dist/js/demo.js')}}"></script>
 		<script src="{{ url('js/jquery-ui.min.js')}}"></script>
 		<script src="{{ url('js/fullcalendar.min.js')}}"></script>
+
+		<script src="{{ url('dist/js/adminlte.min.js')}}"></script>
+		<script src="{{ url('dist/js/demo.js')}}"></script>
 
 		<script type="text/javascript">
 			$(".activeable").has('a[href="' + document.location + '"]').addClass('active')

@@ -46,11 +46,11 @@ class LogPhoneController extends Controller
 	}
 
 	public function getAllLogPhone(){
-		return array("data" => LogPhoneDetail::take(50)->get());
+		return array("data" => LogPhoneDetail::take(50)->orderBy('id','DESC')->get());
 	}
 
 	public function setNewLog(Request $req){
-		$editedDate = Carbon::parse(str_replace(' -','',$req->date));
+		$editedDate = Carbon::parse($req->date1 . " " . $req->date2);
 
 		$detail = new LogPhoneDetail;
 		$detail->answered = $req->answered;
@@ -61,18 +61,13 @@ class LogPhoneController extends Controller
 		$detail->details = $req->details;
 		$detail->save();
 
-		$data = LogPhoneDetailHistory::find($req->id_detail_history);
-		$data->updated = 1;
-		$data->id_detail = $detail->id;
-		$data->save();
-		// DB::table('log_phone__detail')
-		// 	->insert([
-		// 		'answered'   => $req->answered,
-		// 		'date'       => Carbon::Parse($req->date)->format("Y-m-d h:i:s"),
-		// 		'discussion' => $req->discussion,
-		// 		'involved'   => $req->involved,
-		// 		'details'    => $req->details,
-		// 	]);
+		if(isset($req->id_detail_history)){
+			$data = LogPhoneDetailHistory::find($req->id_detail_history);
+			$data->updated = 1;
+			$data->id_detail = $detail->id;
+			$data->save();
+		}
+		
 		return redirect('/logphone')->with('status', "success.");    
 		// return $data;
 	}

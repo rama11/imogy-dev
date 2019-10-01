@@ -81,7 +81,7 @@
 								<input type="text" id="searchBar" class="form-control pull-right" placeholder="Search">
 
 								<div class="input-group-btn">
-									<button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+									<button id="clearFilter" class="btn btn-default"><i class="fa fa-close "></i></button>
 								</div>
 							</div>
 						</div>
@@ -443,6 +443,10 @@
 			console.log($(this).val());
 		})
 
+		$("#clearFilter").click(function(){
+			$("#tableProjectManage").DataTable().search('').draw();
+		})
+
 		//Date picker for Input Project
 		$('#inputProjectStart').datepicker({
 			autoclose: true,
@@ -701,9 +705,9 @@
 						var color = hsvToRgb(i * x,s,v)[0] + "," + hsvToRgb(i * x,s,v)[1] + "," + hsvToRgb(i * x,s,v)[2];
 						fontColor = "#333;";
 						if(data.project_start > 0){
-							data.project_start = "<span class='label' style='background-color:rgb(" + color + ");color:" + fontColor + "'> " + humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, }) + " ago </span>";
+							data.project_start = "<span class='label' style='background-color:rgb(" + color + ");color:" + fontColor + "'> + " + humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, }) + " </span>";
 						} else {
-							data.project_start = "<span class='label' style='background-color:rgb(" + color + ");color:" + fontColor + "'> in " + humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, }) + "</span>";
+							data.project_start = "<span class='label' style='background-color:rgb(" + color + ");color:" + fontColor + "'> - " + humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, }) + "</span>";
 						}
 						x++;
 					});
@@ -731,6 +735,11 @@
 					"searchable": true
 				},
 				{ "data": "project_coordinator" },
+				{ 
+					"data": "project_pid",
+					"visible": false ,
+					"searchable": true
+				},
 			],
 			"order": [4, "DESC" ],
 			"searching": true,
@@ -779,7 +788,18 @@
 				})
 
 				// console.log(duration_to_due_date)
-			}
+			},
+			"oSearch" : {
+				"sSearch" : "{{$search}}"
+			},
+			"buttons": [
+				{
+					"text": 'Reload',
+					action: function ( e, dt, node, config ) {
+						dt.ajax.reload();
+					}
+				}
+			]
 		})
 
 	}

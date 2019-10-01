@@ -146,9 +146,10 @@ class ProjectController extends Controller
 					) AS `urgency`
 				'))
 			->where('status','Active')
-			->orderBy('remain_days','ASC')
 			->get()
-			->where('urgency',$req->category);
+			->where('urgency',$req->category)
+			->sortByDesc('project_list_id');
+		
 
 		$result = Project::with('customer_project')
 			->with('latest_history_project')
@@ -158,15 +159,20 @@ class ProjectController extends Controller
 				}
 			])
 			->whereIn('id',$datas->pluck('project_list_id'))
-			->get();
+			->orderBy('id','DESC')
+			->get()
+			->all();
 
-
-		return collect([$result,"day_to_due_date" => $datas->pluck('remain_days')]);
+		return collect(["data" => $result,"day_to_due_date" => $datas->pluck('remain_days')]);
 	}
 
-	public function manage(){
-
-		return view('project.manage');
+	public function manage(Request $req){
+		if(isset($req->keyword)){
+			$search = $req->keyword;
+		} else {
+			$search = "";
+		}
+		return view('project.manage',compact('search'));
 
 	}
 

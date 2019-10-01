@@ -275,10 +275,9 @@
 								},
 								success: function(result){
 									$("#resultChartTable").empty()
-									
 									var day_to_due_date = result.day_to_due_date
 									var append = ""
-									result[0].forEach(function(d,i){
+									result["data"].forEach(function(d,i){
 										if(d.latest_history_project.length != 0){
 											if(d.latest_history_project[0].type == "Update") {
 												if(d.latest_history_project[0].note == "Open New Period"){
@@ -306,9 +305,9 @@
 
 										append = append +
 										'<tr>' +
-											'<td style="vertical-align:middle;"><a href="pages/examples/invoice.html">' + d.project_pid + '</a></td>' +
+											'<td style="vertical-align:middle;"><a href="project/manage?keyword=' + d.project_pid + '">' + d.project_pid + '</a></td>' +
 											'<td>' +
-												'<a href="#">[' + d.customer_project.name + ']</a>' +
+												'<a href="project/manage?keyword=' + d.customer_project.name + '">[' + d.customer_project.name + ']</a>' +
 												'<br>' + d.project_name +
 											'</td>' +
 											'<td style="vertical-align:middle;"><span class="label label-' + label + '">' + type + '</span></td>' +

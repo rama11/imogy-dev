@@ -325,6 +325,8 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::post('project/manage/setUpdateEventProject','ProjectController@setUpdateEventProject');
 		
 		Route::get('project/archive','ProjectController@archive');
+		Route::get('project/archive/getArchiveProjectList','ProjectController@getArchiveProjectList');
+		
 
 		Route::get('project/setting','ProjectController@setting');
 		Route::get('project/setting/getSettingProject','ProjectController@getSettingProject');

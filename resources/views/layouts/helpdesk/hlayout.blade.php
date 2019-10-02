@@ -219,6 +219,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/locale/id.js"></script>
 
+		<script src="{{ url('plugins/timepicker/bootstrap-timepicker.min.js')}}"></script>
 		<script src="{{ url('plugins/morris/morris.min.js')}}"></script>
 		<script src="{{ url('plugins/sparkline/jquery.sparkline.min.js')}}"></script>
 		<script src="{{ url('plugins/jvectormap/jquery-jvectormap-1.2.2.min.js')}}"></script>

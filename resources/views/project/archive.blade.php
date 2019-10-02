@@ -282,7 +282,7 @@ Custom Color Converter
 		$("#tableProjectSetting").DataTable({
 			"ajax":{
 				"type":"GET",
-				"url":"{{url('project/manage/getAllProjectList')}}",
+				"url":"{{url('project/manage/getArchiveProjectList')}}",
 				"dataSrc": function (json){
 					var i = 120 / (json.data.length - 1);
 					var x = 0;

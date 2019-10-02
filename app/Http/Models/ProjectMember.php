@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,7 +19,7 @@ class ProjectMember extends Model
 	];
 
 	public function project(){
-		return $this->belongsTo('App\Project','id','project_list_id');
+		return $this->belongsTo('App\Http\Models\Project','id','project_list_id');
 	}
 
 	public function detail_member(){

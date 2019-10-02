@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,10 +24,10 @@ class ProjectEvent extends Model
 	];
 
 	public function project(){
-		return $this->belongsTo('App\Project','project_list_id','id');
+		return $this->belongsTo('App\Http\Models\Project','project_list_id','id');
 	}
 
 	public function history_event(){
-		return $this->hasMany('App\ProjectHistory','project_event_id','id');
+		return $this->hasMany('App\Http\Models\ProjectHistory','project_event_id','id');
 	}
 }

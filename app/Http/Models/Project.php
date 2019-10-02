@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,25 +25,25 @@ class Project extends Model
 	];
 
 	public function member_project(){
-		return $this->hasMany('App\ProjectMember','project_list_id','id');
+		return $this->hasMany('App\Http\Models\ProjectMember','project_list_id','id');
 	}
 
 	public function member_project_detail(){
 		return $this
-			->hasMany('App\ProjectMember','project_list_id','id')
+			->hasMany('App\Http\Models\ProjectMember','project_list_id','id')
 			->join('project__member','project__team_member.user_id','=','project__member.id')
 			->join('users','users.id','=','project__member.user_id');
 	}
 
 	public function customer_project(){
-		return $this->hasOne('App\ProjectCustomer','id','project_customer');
+		return $this->hasOne('App\Http\Models\ProjectCustomer','id','project_customer');
 	}
 
 	public function coordinator_project(){
-		// return $this->hasOne('App\ProjectEachMember','id','project_coordinator');
+		// return $this->hasOne('App\Http\Models\ProjectEachMember','id','project_coordinator');
 		return $this->hasManyThrough(
 			'App\User',
-			'App\ProjectEachMember',
+			'App\Http\Models\ProjectEachMember',
 			'id',
 			'id',
 			'project_coordinator',
@@ -54,7 +54,7 @@ class Project extends Model
 	public function leader_project(){
 		return $this->hasManyThrough(
 			'App\User',
-			'App\ProjectEachMember',
+			'App\Http\Models\ProjectEachMember',
 			'id',
 			'id',
 			'project_leader',
@@ -63,21 +63,21 @@ class Project extends Model
 	}
 
 	public function last_event_project(){
-		return $this->hasOne('App\ProjectEvent','project_list_id','id')->orderBy('id','DESC');
+		return $this->hasOne('App\Http\Models\ProjectEvent','project_list_id','id')->orderBy('id','DESC');
 	}
 
 	public function event_project(){
-		return $this->hasMany('App\ProjectEvent','project_list_id','id');
+		return $this->hasMany('App\Http\Models\ProjectEvent','project_list_id','id');
 	}
 
 	public function latest_event_project(){
-		return $this->hasMany('App\ProjectEvent','project_list_id','id');
+		return $this->hasMany('App\Http\Models\ProjectEvent','project_list_id','id');
 	}
 
 	public function history_project(){
 		return $this->hasManyThrough(
-			'App\ProjectHistory',
-			'App\ProjectEvent',
+			'App\Http\Models\ProjectHistory',
+			'App\Http\Models\ProjectEvent',
 			'project_list_id',
 			'project_event_id',
 			'id',
@@ -87,8 +87,8 @@ class Project extends Model
 
 	public function latest_history_project(){
 		return $this->hasManyThrough(
-			'App\ProjectHistory',
-			'App\ProjectEvent',
+			'App\Http\Models\ProjectHistory',
+			'App\Http\Models\ProjectEvent',
 			'project_list_id',
 			'project_event_id',
 			'id',

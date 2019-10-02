@@ -11,10 +11,10 @@ use App\Jobs\QueueEmail;
 use App\Jobs\QueueEmailRemainder;
 use App\Jobs\QueueFinishPeriodProject;
 
-use App\Project;
-use App\ProjectMember;
-use App\ProjectEvent;
-use App\ProjectHistory;
+use App\Http\Models\Project;
+use App\Http\Models\ProjectMember;
+use App\Http\Models\ProjectEvent;
+use App\Http\Models\ProjectHistory;
 
 use Carbon\Carbon;
 use Mail;

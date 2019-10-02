@@ -268,7 +268,7 @@
 		<script src="{{ url('dist/js/demo.js')}}"></script>
 
 		<script type="text/javascript">
-			$(".activeable").has('a[href="' + document.location + '"]').addClass('active')
+			$(".activeable").has('a[href="' + location.protocol + '//' + location.host + location.pathname + '"]').addClass('active')
 		</script>
 	@yield('script')
 	</body>

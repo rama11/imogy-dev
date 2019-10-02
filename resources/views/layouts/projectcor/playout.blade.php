@@ -258,7 +258,7 @@
 		<script src="{{ url('js/fullcalendar.min.js')}}"></script>
 
 		<script type="text/javascript">
-			$(".activeable").has('a[href="' + document.location + '"]').addClass('active')
+			$(".activeable").has('a[href="' + location.protocol + '//' + location.host + location.pathname + '"]').addClass('active')
 		</script>
 	@yield('script')
 	</body>

@@ -43,6 +43,11 @@ class ProjectController extends Controller
 	}
 
 	public function getDashboard(){
+		return $this->getProjectCalculation();
+		// return $this->setFirebaseUpdateFeed();
+	}
+
+	public function getProjectCalculation(){
 		$approching_end_count = 0;
 		$approching_end_detail = [];
 		$finish_projec_count = 0;
@@ -92,22 +97,28 @@ class ProjectController extends Controller
 		$result = collect([
 			"approching_end" => collect([
 				"count" => $approching_end_count,
-				"detail" => $approching_end_detail
+				// "detail" => $approching_end_detail
 			]),
 			"due_this_month" => collect([
 				"count" => ProjectEvent::where('status','Active')->where('due_date','LIKE',date('Y-m-') . '%')->count(),
-				"detail" => ProjectEvent::where('status','Active')->where('due_date','LIKE',date('Y-m-') . '%')->pluck('project_list_id')
+				// "detail" => ProjectEvent::where('status','Active')->where('due_date','LIKE',date('Y-m-') . '%')->pluck('project_list_id')
 			]),
 			"occurring_now" => collect([
 				"count" => ProjectEvent::where('status','Active')->count(),
-				"detail" => ProjectEvent::where('status','Active')->pluck('project_list_id')
+				// "detail" => ProjectEvent::where('status','Active')->pluck('project_list_id')
 			]),
 			"finish_project" => collect([
 				"count" => $finish_projec_count,
-				"detail" => $finish_projec_detail
+				// "detail" => $finish_projec_detail
 			]),
 			"chart_data" => $datas
 		]);
+
+		return $result;
+	}
+
+	public function setFirebaseUpdateFeed(){
+		$data = $this->getProjectCalculation();
 
 		$serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firebase-key.json');
 		$firebase = (new Factory)
@@ -117,17 +128,24 @@ class ProjectController extends Controller
 
 		$database = $firebase->getDatabase();
 
-		$newPost = $database
+		$updateChart = $database
 			->getReference('/project/project_chart')
 			->set([
-				"normal" => $datas["Normal"],
-				"warning" => $datas["Warning"],
-				"minor" => $datas["Minor"],
-				"major" => $datas["Major"],
-				"critical" => $datas["Critical"]
+				"normal" => $data["chart_data"]->all()["Normal"],
+				"warning" => $data["chart_data"]->all()["Warning"],
+				"minor" => $data["chart_data"]->all()["Minor"],
+				"major" => $data["chart_data"]->all()["Major"],
+				"critical" => $data["chart_data"]->all()["Critical"]
 			]);
 
-		return $result;
+		$updateDashboard = $database
+			->getReference('/project/project_dashboard')
+			->set([
+				"approching_end" => $data["approching_end"]->all()["count"],
+				"finish_project" => $data["finish_project"]->all()["count"],
+				"occurring_now" => $data["occurring_now"]->all()["count"],
+				"due_this_month" => $data["due_this_month"]->all()["count"],
+			]);
 	}
 
 	public function getProjectByUrgency(Request $req){
@@ -650,40 +668,75 @@ class ProjectController extends Controller
 			);
 		}
 
-
 	}
 
 	public function setUpdateEventProject(Request $req){
-		DB::table('project__event_history')
-			->insert(
-				[
-					'project_event_id' => $req->id,
-					'time' => $req->time,
-					'note' => $req->note,
-					'type' => $req->type,
-					'updater' => Auth::user()->nickname,
-				]
-			);
-		
+		$firstUpdate = new ProjectHistory();
+
+		$firstUpdate->fill([
+			'project_event_id' => $req->id,
+			'time' => $req->time,
+			'note' => $req->note,
+			'type' => $req->type,
+			'updater' => Auth::user()->nickname
+		]);
+
+		$firstUpdate->save();
+
+		$serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firebase-key.json');
+		$firebase = (new Factory)
+			->withServiceAccount($serviceAccount)
+			->withDatabaseUri('https://test-project-64a66.firebaseio.com/')
+			->create();
+
+		$database = $firebase->getDatabase();
+
+		$updateEventPassed = ProjectEvent::find($req->id);
 		if($req->type == "Finish"){
-			DB::table('project__event')
-				->where('id',$req->id)
-				->update([
-					'status' => 'Passed',
-					'finish_date' => $req->time,
+			
+			$updateEventPassed->fill([
+				'status' => 'Passed',
+				'finish_date' => $req->time,
+			]);
+
+			$updateEventPassed->save();
+
+			$updateEventActive = ProjectEvent::find($req->id + 1);
+			$updateEventActive->status = 'Active';
+			$updateEventActive->save();
+
+			$secondUpdate = new ProjectHistory();
+
+			$secondUpdate->fill([
+				'project_event_id' => $req->id + 1,
+				'time' => $req->time,
+				'note' => 'Open New Period',
+				'type' => 'Update',
+				'updater' => Auth::user()->nickname
+			]);
+
+			$secondUpdate->save();
+
+			$firstUpdateFirebase = $database
+				->getReference('/project/project_history/' . $firstUpdate->id)
+				->set([
+					"updater" => $firstUpdate->update,
+					"project" => $updateEventPassed->load('project')->project->project_name,
+					"type" => $firstUpdate->type,
+					"time" => $firstUpdate->time,
+					"note" => $firstUpdate->note,
+					"project_event_id" => $firstUpdate->project_event_id
 				]);
 
-			DB::table('project__event')
-				->where('id',$req->id + 1)
-				->update(['status'=> 'Active']);
-
-			DB::table('project__event_history')
-				->insert([
-					'project_event_id' => $req->id + 1,
-					'time' => $req->time,
-					'note' => 'Open New Period',
-					'type' => 'Update',
-					'updater' => Auth::user()->nickname,
+			$secondUpdateFirebase = $database
+				->getReference('/project/project_history/' . $secondUpdate->id)
+				->set([
+					"updater" => $secondUpdate->update,
+					"project" => $updateEventActive->load('project')->project->project_name,
+					"type" => $secondUpdate->type,
+					"time" => $secondUpdate->time,
+					"note" => $secondUpdate->note,
+					"project_event_id" => $secondUpdate->project_event_id
 				]);
 
 			$projectDetail = Project::find(ProjectEvent::find($req->id)->project_list_id);
@@ -721,30 +774,24 @@ class ProjectController extends Controller
 				"finish_note" => $projectDetail->history_project->where('project_event_id',$req->id)->sortByDesc('time')->first()->note,
 				"finish_updater" => $projectDetail->history_project->where('project_event_id',$req->id)->sortByDesc('time')->first()->updater,
 				"finish_time" => $projectDetail->history_project->where('project_event_id',$req->id)->sortByDesc('time')->first()->time,
-
 			);
 
 			dispatch(new QueueFinishPeriodProject($data));
-
-			// return new MailFinishEventProject($data);
-			$result = ProjectHistory::orderBy('id','DESC')->take(2)->get();
-			$result[0]->project_name = $result[0]->project->project_name;
-			$result[1]->project_name = $result[1]->project->project_name;
-			$dashboardUpdateData = $this->getDashboard()->all();
-			$dashboardUpdateData = collect([
-				"approching_end" => $dashboardUpdateData['approching_end']->all()['count'],
-				"finish_project" => $dashboardUpdateData['finish_project']->all()['count'],
-				"occurring_now" => $dashboardUpdateData['occurring_now']->all()['count'],
-				"due_this_month" => $dashboardUpdateData['due_this_month']->all()['count']
-			]);
 			
-			return collect([$result,$dashboardUpdateData]);
 		} else {
-			$result = ProjectHistory::orderBy('id','DESC')->first();
-			$result->project_name = ProjectHistory::orderBy('id','DESC')->first()->project->project_name;
-			return $result;
+			$firstUpdateFirebase = $database
+				->getReference('/project/project_history/' . $firstUpdate->id)
+				->set([
+					"updater" => $firstUpdate->update,
+					"project" => $updateEventPassed->load('project')->project->project_name,
+					"type" => $firstUpdate->type,
+					"time" => $firstUpdate->time,
+					"note" => $firstUpdate->note,
+					"project_event_id" => $firstUpdate->project_event_id
+				]);
 		}
-		
+
+		$this->setFirebaseUpdateFeed();	
 
 	}
 

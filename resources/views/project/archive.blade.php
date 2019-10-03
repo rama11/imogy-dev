@@ -44,7 +44,7 @@
 									<!-- <th></th> -->
 									<th>Customer</th>
 									<th>Name Project</th>
-									<th>Time to Due Date</th>
+									<th>Finish Date</th>
 									<th>Time to Due Date</th>
 									<th>Coordinator</th>
 									<th style="width: 75px;"></th>
@@ -282,19 +282,16 @@ Custom Color Converter
 		$("#tableProjectSetting").DataTable({
 			"ajax":{
 				"type":"GET",
-				"url":"{{url('project/manage/getArchiveProjectList')}}",
+				"url":"{{url('project/archive/getArchiveProjectList')}}",
 				"dataSrc": function (json){
-					var i = 120 / (json.data.length - 1);
 					var x = 0;
-					var v = 95;
-					var s = 90;
 					json.data.forEach(function(data,index){
-						var color = hsvToRgb(i * x,s,v)[0] + "," + hsvToRgb(i * x,s,v)[1] + "," + hsvToRgb(i * x,s,v)[2];
+						var color = "#d2d6de";
 						fontColor = "#333;";
 						if(data.project_start < 0){
-							data.project_start = "<span class='label' style='background-color:rgb(" + color + ");color:" + fontColor + "'> " + humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, }) + " ago </span>";
+							data.project_start = "<span class='label' style='background-color:" + color + ";color:" + fontColor + "'> + " + humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, }) + "</span>";
 						} else {
-							data.project_start = "<span class='label' style='background-color:rgb(" + color + ");color:" + fontColor + "'> in " + humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, }) + "</span>";
+							data.project_start = "<span class='label' style='background-color:" + color + ";color:" + fontColor + "'> - " + humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, }) + "</span>";
 						}
 						x++;
 					});

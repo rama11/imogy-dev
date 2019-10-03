@@ -21,7 +21,8 @@ class Project extends Model
 		'project_periode',
 		'project_periode_duration',
 		'project_coordinator',
-		'project_leader'
+		'project_leader',
+		'project_status'
 	];
 
 	public function member_project(){
@@ -93,6 +94,6 @@ class Project extends Model
 			'project_event_id',
 			'id',
 			'id'
-		)->orderBy('time','DESC')->limit(1);
+		)->orderBy('project__event_history.id','DESC')->limit(1);
 	}
 }

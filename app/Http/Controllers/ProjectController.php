@@ -97,19 +97,19 @@ class ProjectController extends Controller
 		$result = collect([
 			"approching_end" => collect([
 				"count" => $approching_end_count,
-				// "detail" => $approching_end_detail
+				"detail" => $approching_end_detail
 			]),
 			"due_this_month" => collect([
 				"count" => ProjectEvent::where('status','Active')->where('due_date','LIKE',date('Y-m-') . '%')->count(),
-				// "detail" => ProjectEvent::where('status','Active')->where('due_date','LIKE',date('Y-m-') . '%')->pluck('project_list_id')
+				"detail" => ProjectEvent::where('status','Active')->where('due_date','LIKE',date('Y-m-') . '%')->pluck('project_list_id')
 			]),
 			"occurring_now" => collect([
 				"count" => ProjectEvent::where('status','Active')->count(),
-				// "detail" => ProjectEvent::where('status','Active')->pluck('project_list_id')
+				"detail" => ProjectEvent::where('status','Active')->pluck('project_list_id')
 			]),
 			"finish_project" => collect([
 				"count" => $finish_projec_count,
-				// "detail" => $finish_projec_detail
+				"detail" => $finish_projec_detail
 			]),
 			"chart_data" => $datas
 		]);
@@ -192,7 +192,14 @@ class ProjectController extends Controller
 		} else {
 			$search = "";
 		}
-		return view('project.manage',compact('search'));
+
+		if(isset($req->classification)){
+			$linkGetData = '/project/manage/getSelectedProjectList?classification=' . $req->classification;
+		} else {
+			$linkGetData = "/project/manage/getAllProjectList";
+		}
+
+		return view('project.manage',compact('search','linkGetData'));
 
 	}
 
@@ -586,6 +593,41 @@ class ProjectController extends Controller
 				'project__list.id','left')
 			->orderBy('project_start','DESC')
 			->where('project__list.project_status','=',$condition)
+			->join('project__customer','project__list.project_customer','=','project__customer.id')
+			->join('project__member as leader','project__list.project_leader','=','leader.id','left outer')
+			->join('project__member as coordinator','project__list.project_coordinator','=','coordinator.id','left outer')
+			->get()
+		));
+	}
+
+	public function getSelectedProjectList(Request $req){
+		$sourceID = $this->getProjectCalculation();
+		$sourceID = $sourceID[$req->classification]->all()["detail"];
+		// return $sourceID;
+		return json_encode(array('data' => DB::table('project__list')
+			->select(
+					"project__list.id",
+					"project__list.project_name",
+					"project__list.project_pid",
+					DB::raw("project__customer.name as project_customer"),
+					DB::raw("IFNULL ( DATEDIFF('" . date('Y-m-d') . "',project_event.due_date),0 )as project_start"),
+					DB::raw("IFNULL ( DATEDIFF('" . date('Y-m-d') . "',project_event.due_date),0 )as project_start2"),
+					"project__list.project_periode",
+					"project__list.project_periode_duration",
+					// "project__list.project_coordinator",
+					"project__list.project_leader",
+					DB::raw("leader.nickname as project_leader"),
+					DB::raw("coordinator.nickname as project_coordinator")
+				)
+			// ->where('project__event.status','Active')
+			->join(
+				DB::raw('(select * from project__event where project__event.status = "Active") AS project_event'),
+				'project_event.project_list_id',
+				'=',
+				'project__list.id','left')
+			->orderBy('project_start','DESC')
+			->where('project__list.project_status','=','Running')
+			->whereIn('project__list.id',$sourceID)
 			->join('project__customer','project__list.project_customer','=','project__customer.id')
 			->join('project__member as leader','project__list.project_leader','=','leader.id','left outer')
 			->join('project__member as coordinator','project__list.project_coordinator','=','coordinator.id','left outer')

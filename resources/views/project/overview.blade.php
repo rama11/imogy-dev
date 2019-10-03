@@ -179,6 +179,9 @@
 
 	$(document).ready(function(){
 
+		var precentageChart;
+		buildDashboard();
+
 		var firebaseConfig = {
 			apiKey: "{{env('APIKEY')}}",
 			authDomain: "{{env('AUTHDOMAIN')}}",
@@ -203,14 +206,10 @@
 		});
 
 		firebase.database().ref('project/project_chart/').on('value', function(snapshot) {
-			// console.log(snapshot.val());
+			console.log(snapshot.val());
 			
 			updateChart(snapshot.val())
 		});
-
-
-		buildDashboard();
-		var precentageChart;
 	})
 
 	function buildDashboard(){
@@ -225,13 +224,13 @@
 				$(".finish_project").html(result.finish_project.count + '<small> Project</small>')
 				
 				// var sourceData = [20,5,2,1,1];
-				// console.log(result.chart_data.normal.count)
+				// console.log(result.chart_data.Normal)
 				var sourceData = [
-					result.chart_data.normal.count,
-					result.chart_data.warning.count,
-					result.chart_data.minor.count,
-					result.chart_data.major.count,
-					result.chart_data.critical.count
+					result.chart_data.Normal,
+					result.chart_data.Warning,
+					result.chart_data.Minor,
+					result.chart_data.Major,
+					result.chart_data.Critical
 				]
 				var data = {
 					datasets: [{
@@ -278,9 +277,9 @@
 									var day_to_due_date = result.day_to_due_date
 									var append = ""
 									result["data"].forEach(function(d,i){
-										if(d.latest_history_project.length != 0){
-											if(d.latest_history_project[0].type == "Update") {
-												if(d.latest_history_project[0].note == "Open New Period"){
+										if(d.latest_history_project_status != 0){
+											if(d.latest_history_project_status == "Update") {
+												if(d.latest_history_project_note == "Open New Period"){
 													var type = "Open"
 													var label = "danger"
 													var icon = "fa-exclamation"
@@ -289,11 +288,11 @@
 													var label = "info"
 													var icon = "fa-info-circle"
 												}
-											} else if(d.latest_history_project[0].type == "Submit") {
+											} else if(d.latest_history_project_status == "Submit") {
 												var type = "Submit"
 												var label = "warning"
 												var icon = "fa-heart"
-											} else if(d.latest_history_project[0].type == "Finish") {
+											} else if(d.latest_history_project_status == "Finish") {
 												var type = "Finish"
 												var label = "success"
 												var icon = "fa-flag-checkered"

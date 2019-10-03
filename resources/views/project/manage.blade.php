@@ -878,13 +878,6 @@
 						occurring_now:result[1].occurring_now,
 						due_this_month:result[1].due_this_month,
 					});
-					firebase.database().ref('project/project_chart/').set({
-						normal:result[2].normal,
-						warning:result[2].warning,
-						minor:result[2].minor,
-						major:result[2].major,
-						critical:result[2].critical,
-					});
 				} else {
 					firebase.database().ref('project/project_history/' + result.id).set({
 						updater:result.updater,

@@ -20,41 +20,41 @@
 		<div class="row">
 			<div class="col-sm-3 col-xs-6">
 				<div class="info-box">
-					<span class="info-box-icon bg-red"><i class="fa fa-hourglass-half"></i></span>
+					<a href="{{url('/project/manage?classification=approching_end')}}"><span class="info-box-icon bg-red"><i class="fa fa-hourglass-half"></i></span></a>
 
 					<div class="info-box-content">
 						<span class="info-box-text">Approaching End</span>
-						<span class="info-box-number approching_end">2<small> Project</small></span>
+						<span class="info-box-number approching_end"><small> Project</small></span>
 					</div>
 				</div>
 			</div>
 			<div class="col-sm-3 col-xs-6">
 				<div class="info-box">
-					<span class="info-box-icon bg-yellow"><i class="fa fa-calendar-times-o"></i></span>
+					<a href="{{url('/project/manage?classification=due_this_month')}}"><span class="info-box-icon bg-yellow"><i class="fa fa-calendar-times-o"></i></span></a>
 
 					<div class="info-box-content">
 						<span class="info-box-text">Due this Mount</span>
-						<span class="info-box-number due_this_month">5<small> Project</small></span>
+						<span class="info-box-number due_this_month"><small> Project</small></span>
 					</div>
 				</div>
 			</div>
 			<div class="col-sm-3 col-xs-6">
 				<div class="info-box">
-					<span class="info-box-icon bg-green"><i class="fa fa-clock-o"></i></span>
+					<a href="{{url('/project/manage?classification=occurring_now')}}"><span class="info-box-icon bg-green"><i class="fa fa-clock-o"></i></span></a>
 
 					<div class="info-box-content">
 						<span class="info-box-text">Occurring Project</span>
-						<span class="info-box-number occurring_now">5<small> Project</small></span>
+						<span class="info-box-number occurring_now"><small> Project</small></span>
 					</div>
 				</div>
 			</div>
 			<div class="col-sm-3 col-xs-6">
 				<div class="info-box">
-					<span class="info-box-icon bg-blue"><i class="fa fa-flag-checkered"></i></span>
+					<a href="{{url('/project/archive')}}"><span class="info-box-icon bg-blue"><i class="fa fa-flag-checkered"></i></span></a>
 
 					<div class="info-box-content">
 						<span class="info-box-text">Finish Project</span>
-						<span class="info-box-number finish_project">2<small> Project</small></span>
+						<span class="info-box-number finish_project"><small> Project</small></span>
 					</div>
 				</div>
 			</div>

@@ -77,11 +77,12 @@
 						<h3 class="box-title">All Project</h3>
 
 						<div class="box-tools">
-							<div class="input-group input-group-sm" style="width: 150px;">
+							<div class="input-group input-group-sm" style="width: 200px;">
 								<input type="text" id="searchBar" class="form-control pull-right" placeholder="Search">
 
 								<div class="input-group-btn">
-									<button id="clearFilter" class="btn btn-default"><i class="fa fa-close "></i></button>
+									<button id="clearFilter" class="btn btn-default"><i class="fa fa-close"></i></button>
+									<button id="refreshFilter" class="btn btn-default"><i class="fa fa-refresh"></i></button>
 								</div>
 							</div>
 						</div>
@@ -435,7 +436,6 @@
 		$("#inputProjectDuration").val("");
 
 		getAllProjectList();
-
 		// initFormInputProject();
 
 		$('#searchBar').keyup(function(){
@@ -445,6 +445,10 @@
 
 		$("#clearFilter").click(function(){
 			$("#tableProjectManage").DataTable().search('').draw();
+		})
+
+		$("#refreshFilter").click(function(){
+			$("#tableProjectManage").DataTable().ajax.url('/project/manage/getAllProjectList').load();
 		})
 
 		//Date picker for Input Project
@@ -695,7 +699,7 @@
 		$("#tableProjectManage").DataTable({
 			"ajax":{
 				"type":"GET",
-				"url":"{{url('project/manage/getAllProjectList')}}",
+				"url":"{{url($linkGetData)}}",
 				"dataSrc": function (json){
 					var i = 120 / (json.data.length - 1);
 					var x = 0;

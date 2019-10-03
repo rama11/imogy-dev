@@ -320,6 +320,8 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		});
 		// Get Project
 		Route::get('project/manage/getAllProjectList','ProjectController@getAllProjectList');
+		Route::get('project/manage/getSelectedProjectList','ProjectController@getSelectedProjectList');
+		
 		Route::get('project/manage/getDetailProjectList','ProjectController@getDetailProjectList');
 		Route::get('project/manage/getShortDetailProjectList','ProjectController@getShortDetailProjectList');
 		Route::post('project/manage/setUpdateEventProject','ProjectController@setUpdateEventProject');

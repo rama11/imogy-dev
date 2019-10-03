@@ -16,6 +16,11 @@ use App\Http\Models\ProjectMember;
 use App\Http\Models\ProjectEvent;
 use App\Http\Models\ProjectHistory;
 
+use Kreait\Firebase;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\ServiceAccount;
+use Kreait\Firebase\Database;
+
 use Carbon\Carbon;
 use Mail;
 use Auth;
@@ -54,37 +59,35 @@ class ProjectController extends Controller
 			}
 		}
 
-		$datas = ProjectEvent::select(DB::raw('DATEDIFF("' . date('Y-m-d') . '",due_date) AS due_date'))->where('status','Active')->orderBy('due_date','ASC')->pluck('due_date');
+		$datas = ProjectEvent::
+			select(
+				DB::raw('
+					project_list_id,
+					DATEDIFF("2019-10-01", `due_date`) AS `remain_days`,
+					( CASE 
+							WHEN DATEDIFF("2019-10-01", `due_date`) >= 40 THEN "Critical" 
+							WHEN DATEDIFF("2019-10-01", `due_date`) >= 30 THEN "Major" 
+							WHEN DATEDIFF("2019-10-01", `due_date`) >= 20 THEN "Minor" 
+							WHEN DATEDIFF("2019-10-01", `due_date`) >= 10 THEN "Warning" 
+							ELSE "Normal"
+						END
+					) AS `urgency`
+				'))
+			->where('status','Active')
+			->get()
+			->sortByDesc('project_list_id')
+			->groupBy('urgency');
 
-		$critical = 0;
-		$critical_detail = [];
-		$major = 0;
-		$major_detail = [];
-		$minor = 0;
-		$minor_detail = [];
-		$warning = 0;
-		$warning_detail = [];
-		$normal = 0;
-		$normal_detail = [];
+		$datas = $datas->map(function($item, $key){
+			return collect($item)->count();
+		});
 
-		foreach ($datas as $data){
-			if($data > 40){
-				$critical++;
-				array_push($critical_detail,$data);
-			} else if($data > 30 && $data <= 40){
-				$major++;
-				array_push($major_detail,$data);
-			} else if($data > 20 && $data <= 30){
-				$minor++;
-				array_push($minor_detail,$data);
-			} else if($data > 10 && $data <= 20){
-				$warning++;
-				array_push($warning_detail,$data);
-			} else if($data < 10){
-				$normal++;
-				array_push($normal_detail,$data);
-			}
-		}
+		$datas = (
+			!$datas->has('Critical') ? $datas->put('Critical',0) : (
+				!$datas->has('Major') ? $datas->put('Major',0) : (
+					!$datas->has('Minor') ? $datas->put('Minor',0) : (
+						!$datas->has('Warning') ? $datas->put('Warning',0) : (
+							$datas->put('Normal',0) )))));
 
 		$result = collect([
 			"approching_end" => collect([
@@ -103,29 +106,26 @@ class ProjectController extends Controller
 				"count" => $finish_projec_count,
 				"detail" => $finish_projec_detail
 			]),
-			"chart_data" => collect([
-				"normal" => collect([
-					"count" => $normal,
-					// "detail"=> $normal_detail
-				]),
-				"warning" => collect([
-					"count" => $warning,
-					// "detail"=> $warning_detail
-				]),
-				"minor" => collect([
-					"count" => $minor,
-					// "detail"=> $minor_detail
-				]),
-				"major" => collect([
-					"count" => $major,
-					// "detail"=> $major_detail
-				]),
-				"critical" => collect([
-					"count" => $critical,
-					// "detail"=> $critical_detail
-				]),
-			])
+			"chart_data" => $datas
 		]);
+
+		$serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firebase-key.json');
+		$firebase = (new Factory)
+			->withServiceAccount($serviceAccount)
+			->withDatabaseUri('https://test-project-64a66.firebaseio.com/')
+			->create();
+
+		$database = $firebase->getDatabase();
+
+		$newPost = $database
+			->getReference('/project/project_chart')
+			->set([
+				"normal" => $datas["Normal"],
+				"warning" => $datas["Warning"],
+				"minor" => $datas["Minor"],
+				"major" => $datas["Major"],
+				"critical" => $datas["Critical"]
+			]);
 
 		return $result;
 	}
@@ -149,19 +149,21 @@ class ProjectController extends Controller
 			->get()
 			->where('urgency',$req->category)
 			->sortByDesc('project_list_id');
-		
 
-		$result = Project::with('customer_project')
-			->with('latest_history_project')
-			->with([
+		$result = Project::with([
+				'customer_project',
 				'latest_event_project' => function($q){
 					$q->where('status','Active');
 				}
 			])
-			->whereIn('id',$datas->pluck('project_list_id'))
-			->orderBy('id','DESC')
-			->get()
-			->all();
+			->whereIn('project__list.id',$datas->pluck('project_list_id'))
+			->get();
+
+		$result->map(function($item,$key){
+			$temp = Project::with('latest_history_project')->find($item->id)->latest_history_project->first();
+			$item->latest_history_project_status = $temp->type;
+			$item->latest_history_project_note = $temp->note;
+		});
 
 		return collect(["data" => $result,"day_to_due_date" => $datas->pluck('remain_days')]);
 	}
@@ -542,7 +544,7 @@ class ProjectController extends Controller
 		// return view('project.mailOpenProject');
 	}
 
-	public function getAllProjectList(){
+	public function getAllProjectList($condition = "Running"){
 		return json_encode(array('data' => DB::table('project__list')
 			->select(
 					"project__list.id",
@@ -565,6 +567,7 @@ class ProjectController extends Controller
 				'=',
 				'project__list.id','left')
 			->orderBy('project_start','DESC')
+			->where('project__list.project_status','=',$condition)
 			->join('project__customer','project__list.project_customer','=','project__customer.id')
 			->join('project__member as leader','project__list.project_leader','=','leader.id','left outer')
 			->join('project__member as coordinator','project__list.project_coordinator','=','coordinator.id','left outer')
@@ -734,15 +737,8 @@ class ProjectController extends Controller
 				"occurring_now" => $dashboardUpdateData['occurring_now']->all()['count'],
 				"due_this_month" => $dashboardUpdateData['due_this_month']->all()['count']
 			]);
-			$dashboardUpdateChart = $this->getDashboard()->all()["chart_data"]->all();
-			$dashboardUpdateChart = collect([
-				"normal" => $dashboardUpdateChart["normal"]->all()['count'],
-				"warning" => $dashboardUpdateChart["warning"]->all()['count'],
-				"minor" => $dashboardUpdateChart["minor"]->all()['count'],
-				"major" => $dashboardUpdateChart["major"]->all()['count'],
-				"critical" => $dashboardUpdateChart["critical"]->all()['count']
-			]);
-			return collect([$result,$dashboardUpdateData,$dashboardUpdateChart]);
+			
+			return collect([$result,$dashboardUpdateData]);
 		} else {
 			$result = ProjectHistory::orderBy('id','DESC')->first();
 			$result->project_name = ProjectHistory::orderBy('id','DESC')->first()->project->project_name;
@@ -754,6 +750,10 @@ class ProjectController extends Controller
 
 	public function archive(){
 		return view('project.archive');
+	}
+
+	public function getArchiveProjectList(){
+		return $this->getAllProjectList("Close");
 	}
 
 	public function setting(){

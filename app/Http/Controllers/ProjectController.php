@@ -629,7 +629,7 @@ class ProjectController extends Controller
 		$sourceID = $this->getProjectCalculation();
 		$sourceID = $sourceID[$req->classification]->all()["detail"];
 		// return $sourceID;
-		return json_encode(array('data' => DB::table('project__list')
+		return array('data' => DB::table('project__list')
 			->select(
 					"project__list.id",
 					"project__list.project_name",
@@ -657,7 +657,7 @@ class ProjectController extends Controller
 			->join('project__member as leader','project__list.project_leader','=','leader.id','left outer')
 			->join('project__member as coordinator','project__list.project_coordinator','=','coordinator.id','left outer')
 			->get()
-		));
+		);
 	}
 
 	public function getDetailProjectList(Request $req){
@@ -787,7 +787,7 @@ class ProjectController extends Controller
 			$firstUpdateFirebase = $database
 				->getReference('/project/project_history/' . $firstUpdate->id)
 				->set([
-					"updater" => $firstUpdate->update,
+					"updater" => $firstUpdate->updater,
 					"project" => $updateEventPassed->load('project')->project->project_name,
 					"type" => $firstUpdate->type,
 					"time" => $firstUpdate->time,

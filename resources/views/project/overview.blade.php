@@ -163,16 +163,12 @@
 @endsection 
 
 @section('script')
-<!-- moment.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-<!-- Chart.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
 
 <script defer src="https://www.gstatic.com/firebasejs/6.1.1/firebase-app.js"></script>
 <script defer src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
-<!-- HumanizeDuration.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-duration/3.20.1/humanize-duration.js"></script>
-<!-- <script src="{{url('js/init-firebase.js')}}"></script> -->
 
 <script>
 	
@@ -194,22 +190,7 @@
 		// Initialize Firebase
 		firebase.initializeApp(firebaseConfig);
 
-		firebase.database().ref('project/project_history/').limitToLast(4).on('child_added', function(snapshot) {
-			// console.log(snapshot.val());
-			updateLastest(snapshot.val())
-		});
-
-		firebase.database().ref('project/project_dashboard/').on('value', function(snapshot) {
-			// console.log(snapshot.val());
-			
-			updateDashboard(snapshot.val())
-		});
-
-		firebase.database().ref('project/project_chart/').on('value', function(snapshot) {
-			console.log(snapshot.val());
-			
-			updateChart(snapshot.val())
-		});
+		
 	})
 
 	function buildDashboard(){
@@ -319,6 +300,22 @@
 						}
 					},
 
+				});
+			},
+			complete: function(){
+				firebase.database().ref('project/project_history/').limitToLast(4).on('child_added', function(snapshot) {
+					// console.log(snapshot.val());
+					updateLastest(snapshot.val())
+				});
+
+				firebase.database().ref('project/project_dashboard/').on('value', function(snapshot) {
+					// console.log(snapshot.val());
+					updateDashboard(snapshot.val())
+				});
+
+				firebase.database().ref('project/project_chart/').on('value', function(snapshot) {
+					// console.log(snapshot.val());
+					updateChart(snapshot.val())
 				});
 			}
 		})

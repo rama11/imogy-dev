@@ -38,13 +38,13 @@
 						</div>
 					</div>
 					<div class="box-body table-responsive no-padding">
-						<table id="tableProjectSetting" class="table table-hover">
+						<table id="tableProjectArchive" class="table table-hover">
 							<thead>
 								<tr>
 									<!-- <th></th> -->
 									<th>Customer</th>
 									<th>Name Project</th>
-									<th>Finish Date</th>
+									<th>Finish</th>
 									<th>Time to Due Date</th>
 									<th>Coordinator</th>
 									<th style="width: 75px;"></th>
@@ -279,21 +279,17 @@ Custom Color Converter
 	var tempStartPeriod = "";
 
 	function getAllProjectList(){
-		$("#tableProjectSetting").DataTable({
+		$("#tableProjectArchive").DataTable({
 			"ajax":{
 				"type":"GET",
 				"url":"{{url('project/archive/getArchiveProjectList')}}",
 				"dataSrc": function (json){
 					var x = 0;
 					json.data.forEach(function(data,index){
+						// console.log(data)
 						var color = "#d2d6de";
 						fontColor = "#333;";
-						if(data.project_start < 0){
-							data.project_start = "<span class='label' style='background-color:" + color + ";color:" + fontColor + "'> + " + humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, }) + "</span>";
-						} else {
-							data.project_start = "<span class='label' style='background-color:" + color + ";color:" + fontColor + "'> - " + humanizeDuration(moment.duration(data.project_start,'days').asMilliseconds(),{ units: ['y','mo','d'], round: true, }) + "</span>";
-						}
-						x++;
+						data.project_finish_date = "<span class='label' style='background-color:" + color + ";color:" + fontColor + "'> " + moment(data.project_finish_time,"YYYY-MM-DD hh:mm:ss").format('D MMMM YYYY') + " </span>";
 					});
 					return json.data;
 				}
@@ -301,8 +297,8 @@ Custom Color Converter
 			"columns": [
 				{ "data" : "project_customer" },
 				{ "data" : "project_name" },
-				{ "data" : "project_start" , "orderData":[ 3 ] , "targets": [ 1 ]},
-				{ "data" : "project_start2" , "targets": [ 3 ] , "visible": false , "searchable": false},
+				{ "data" : "project_finish_date" , "orderData":[ 3 ] , "targets": [ 1 ]},
+				{ "data" : "project_finish_time" , "targets": [ 3 ] , "visible": false , "searchable": false},
 				{ "data" : "project_coordinator" },
 				{ 
 					"data": null,

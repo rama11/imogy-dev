@@ -571,7 +571,23 @@ class ProjectController extends Controller
 	}
 
 	public function getAllProjectList($condition = "Running"){
-		return json_encode(array('data' => DB::table('project__list')
+		// $result = Project::where('project_status', $condition)
+		// 	->get();
+
+		// $result->map(function($item,$key){
+		// 	$item->project_customer = $item->customer_project->name;
+		// 	$item->project_finish_time = $item->last_event_project->finish_date;
+		// 	$item->project_coordinator = $item->coordinator_project->first()['nickname'];
+		// 	$item->project_leader = $item->leader_project->first()['nickname'];
+
+		// 	return $item;
+		// });
+
+		// return array(
+		// 	'data' => $result
+		// );
+
+		$result = DB::table('project__list')
 			->select(
 					"project__list.id",
 					"project__list.project_name",
@@ -597,8 +613,16 @@ class ProjectController extends Controller
 			->join('project__customer','project__list.project_customer','=','project__customer.id')
 			->join('project__member as leader','project__list.project_leader','=','leader.id','left outer')
 			->join('project__member as coordinator','project__list.project_coordinator','=','coordinator.id','left outer')
-			->get()
-		));
+			->get();
+
+		if($condition == "Close"){
+			$result->map(function($item,$key){
+				$item->project_finish_time = Project::find($item->id)->last_event_project->finish_date;
+				return $item;
+			});
+		}
+
+		return array('data' => $result);
 	}
 
 	public function getSelectedProjectList(Request $req){

@@ -43,32 +43,30 @@ class ProjectController extends Controller
 	}
 
 	public function getDashboard(){
+		$this->setFirebaseUpdateFeed();
 		return $this->getProjectCalculation();
-		// return $this->setFirebaseUpdateFeed();
 	}
 
 	public function getProjectCalculation(){
-		$approching_end_count = 0;
-		$approching_end_detail = [];
-		$finish_projec_count = 0;
-		$finish_projec_detail = [];
 
-		$projects = Project::with('last_event_project')->get();
-		foreach ($projects as $project) {
-			if($project->last_event_project->status == "Active"){
-				$approching_end_count++;
-				array_push($approching_end_detail,$project->id);
-			} else if ($project->last_event_project->status == "Passed"){
-				$finish_projec_count++;
-				array_push($finish_projec_detail,$project->id);
-			}
-		}
+		$projectsRunning = Project::with('last_event_project')->where('project_status','Running')->get();
+		$projectsRunning->map(function($item,$key){
+			return $item->event_status = $item->last_event_project->status;
+		});
+		$projectsRunning = $projectsRunning->where('event_status','Active');
 
-		$datas = ProjectEvent::
-			select(
+		$projectsClose = Project::with('last_event_project')
+			->where('project_status','Close')
+			->get();
+
+		$urgencyData = ProjectEvent::
+			whereHas('project',function($q){
+				$q->where('project_status','Running');
+			})
+			->select(
 				DB::raw('
 					project_list_id,
-					DATEDIFF("2019-10-01", `due_date`) AS `remain_days`,
+					DATEDIFF("' . date("Y-m-d") . '", `due_date`) AS `remain_days`,
 					( CASE 
 							WHEN DATEDIFF("2019-10-01", `due_date`) >= 40 THEN "Critical" 
 							WHEN DATEDIFF("2019-10-01", `due_date`) >= 30 THEN "Major" 
@@ -83,35 +81,37 @@ class ProjectController extends Controller
 			->sortByDesc('project_list_id')
 			->groupBy('urgency');
 
-		$datas = $datas->map(function($item, $key){
+		$summarise = $urgencyData->map(function($item, $key){
 			return collect($item)->count();
 		});
 
-		$datas = (
-			!$datas->has('Critical') ? $datas->put('Critical',0) : (
-				!$datas->has('Major') ? $datas->put('Major',0) : (
-					!$datas->has('Minor') ? $datas->put('Minor',0) : (
-						!$datas->has('Warning') ? $datas->put('Warning',0) : (
-							$datas->put('Normal',0) )))));
+		$summarise = (
+			!$summarise->has('Critical') ? $summarise->put('Critical',0) : (
+				!$summarise->has('Major') ? $summarise->put('Major',0) : (
+					!$summarise->has('Minor') ? $summarise->put('Minor',0) : (
+						!$summarise->has('Warning') ? $summarise->put('Warning',0) : (
+							$summarise->put('Normal',0) )))));
+
+		$projectOccurring = Project::where('project_status','Running');
 
 		$result = collect([
 			"approching_end" => collect([
-				"count" => $approching_end_count,
-				"detail" => $approching_end_detail
+				"count" => $projectsRunning->count(),
+				"detail" => $projectsRunning->pluck('id')
 			]),
 			"due_this_month" => collect([
 				"count" => ProjectEvent::where('status','Active')->where('due_date','LIKE',date('Y-m-') . '%')->count(),
 				"detail" => ProjectEvent::where('status','Active')->where('due_date','LIKE',date('Y-m-') . '%')->pluck('project_list_id')
 			]),
 			"occurring_now" => collect([
-				"count" => ProjectEvent::where('status','Active')->count(),
-				"detail" => ProjectEvent::where('status','Active')->pluck('project_list_id')
+				"count" => $projectOccurring->count(),
+				"detail" => $projectOccurring->pluck('id')
 			]),
 			"finish_project" => collect([
-				"count" => $finish_projec_count,
-				"detail" => $finish_projec_detail
+				"count" => $projectsClose->count(),
+				"detail" => $projectsClose->pluck('id')
 			]),
-			"chart_data" => $datas
+			"chart_data" => $summarise
 		]);
 
 		return $result;
@@ -175,6 +175,7 @@ class ProjectController extends Controller
 				}
 			])
 			->whereIn('project__list.id',$datas->pluck('project_list_id'))
+			->where('project_status','Running')
 			->get();
 
 		$result->map(function($item,$key){

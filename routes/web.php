@@ -11,18 +11,19 @@
 */
 // Route yang di panggil pertama sendiri atau sebelum login
 Route::get('/', function () {
-    return view('welcome2');
+	return view('welcome2');
 });
+
 // Route::get('/', function(){ 
 //     return Redirect::to('https://sinergy-dev.xyz', 301); 
 // });
 // Route::get('{any}', function() {
-    // return Redirect::to('https://sinergy-dev.xyz', 301); 
+	// return Redirect::to('https://sinergy-dev.xyz', 301); 
    // return redirect('https://targetdomain.com');
 // })->where('any', '.*');
 // Route::get('/test_cron','AdminController@test_cron');
 Route::get('maps', function () {
-    // return view('maps');
+	// return view('maps');
 });
 // Dibawah adalah route yang hanya bisa di pangil jika sudah terAuthentification (login)
 Auth::routes();

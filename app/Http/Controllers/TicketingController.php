@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use DB;
 use Auth;
 use Mail;
+use Response;
 use App\Mail\TicketMail;
 use PHPMailer\PHPMailer;
 use PDF;
@@ -1800,10 +1801,11 @@ class TicketingController extends Controller
 		
 
 
-		$name = 'Report ' . $client . ' - ' . $month . ' (' . date("Y-m-d H:i:s") . ').xlsx';
+		$name = 'Report_' . $client . '_-_' . $month . '_(' . date("Y-m-d") . ').xlsx';
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
 		$writer->save($name);
-		return response()->download($name);
+		return redirect($_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER['HTTP_HOST'] . "/download.php?nameFile=" . $name);
+		// return response()->download($name);
 
 		// return $value1;
 

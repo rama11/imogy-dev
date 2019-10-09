@@ -8,7 +8,7 @@ $files1 = scandir($dir);
 // echo "<pre>";
 // print_r($files1);
 // echo "</pre>";
-$nameFile = "Report_BJBR_-_Sep_(2019-10-08).xlsx";
+// $nameFile = "Report_BJBR_-_Sep_(2019-10-08).xlsx";
 $nameFile = $_GET['nameFile'];
 $attachment_location = $_SERVER["DOCUMENT_ROOT"] . "/" . $nameFile;
 if (file_exists($attachment_location)) {

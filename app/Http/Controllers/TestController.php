@@ -13,6 +13,8 @@ use Kreait\Firebase\Factory;
 use Kreait\Firebase\ServiceAccount;
 use Kreait\Firebase\Database;
 
+use App\Http\Models\Ticketing;
+
 class TestController extends Controller
 {
 
@@ -629,7 +631,9 @@ class TestController extends Controller
 	}
 
 	public function testFunction($parm){
+		
 		return $parm;
+
 	}
 
 	public function testDBRaw(){
@@ -753,6 +757,119 @@ class TestController extends Controller
 		// //$newPost->remove();
 		// echo"<pre>";
 		// print_r($newPost->getvalue());
+	}
+
+	// public function testModelTicketing(){
+	// 	$start = microtime(true);
+		
+	// 	$result = Ticketing::has('activity_ticket')
+	// 		->with('lastest_activity_ticket')
+	// 		->orderBy('id','DESC')	
+	// 		// ->limit(10)
+	// 		->get();
+
+	// 	$result->map(function($item,$key){
+	// 		return $item->lastest_activity_ticket_status = $item->lastest_activity_ticket->activity;
+	// 	});
+
+	// 	$result = $result->groupBy('lastest_activity_ticket_status');
+
+	// 	$count = collect();
+	// 	foreach ($result as $key => $value) {
+	// 		$count->push($value->count());
+	// 	}
+
+	// 	// return Ticketing::
+	// 	// 	->orderBy('id','DESC')
+	// 	// 	->find(7179);
+	// 		// ->limit(100)
+	// 		// ->get();
+	// 	// return $result;
+	// 	// return collect([$result,$count]);
+	// 	$time_elapsed_secs = microtime(true) - $start;
+	// 	return $time_elapsed_secs;
+
+	// }
+
+	public function testModelTicketing(){
+		$start = microtime(true);
+		
+		$result2 = DB::table('ticketing__activity')
+			->select('activity',DB::raw("count(*) as count"))
+			->whereIn('id',function ($query) {
+					$query->select(DB::raw("MAX(id) AS activity"))
+						->from('ticketing__activity')
+						->groupBy('id_ticket');
+				})
+			->groupBy('activity')
+			->get();
+		
+		$all = 0;
+		foreach ($result2 as $key => $value) {
+			$all = $all + $value->count;
+		}
+		$result2->push(["activity" => "ALL", "count" => $all]);
+		$result2 = $result2->keyBy('activity');
+
+
+		// return $result2;
+
+		$get_client = DB::table('ticketing__client')
+			->select('id','client_name','client_acronym')
+			->get();
+		$get_client->pluck('client_acronym');
+		// return $get_client;
+
+		$count_ticket_by_client = DB::table('ticketing__id')
+			->selectRaw('`ticketing__client`.`client_acronym`, COUNT(*) AS ticket_count')
+			->groupBy('ticketing__id.id_client')
+			->join('ticketing__client','ticketing__client.id','=','ticketing__id.id_client')
+			->get();
+
+		// return $count_ticket_by_client;
+
+		
+
+		// $count_client = DB::table('ticketing__id')
+		// 	->select(DB::raw('id_client,COUNT(*)'))
+		// 	->groupBy("id_client")
+		// 	->get();
+
+		$needed = DB::table('ticketing__activity')
+			->select('ticketing__detail.id', 'ticketing__detail.id_ticket', 'ticketing__detail.id_atm', 'ticketing__detail.location', 'ticketing__activity.operator', 'ticketing__activity.date','ticketing__detail.severity')
+			->join('ticketing__detail','ticketing__detail.id_ticket','=','ticketing__activity.id_ticket')
+			->whereIn('ticketing__activity.id', function ($query){
+					$query->selectRaw("MAX(`ticketing__activity`.`id`) AS `activity`")
+						->from('ticketing__activity')
+						->groupBy('id_ticket');
+				})
+			->where('activity','<>','CLOSE')
+			->where('activity','<>','CANCEL')
+			->orderBy('ticketing__detail.severity','ASC')
+			->get();
+
+		// return $needed;
+
+
+		$severity_count = DB::table('ticketing__detail')
+			->select('ticketing__severity.name',DB::raw('COUNT(*) as count'))
+			->join('ticketing__severity','ticketing__severity.id','=','ticketing__detail.severity')
+			->where('ticketing__detail.severity','<>',0)
+			->groupBy('ticketing__detail.severity')
+			->get()
+			->keyBy('name');
+
+		$time_elapsed_secs = microtime(true) - $start;
+		// return $time_elapsed_secs;
+
+		// return array($count,$client,$count_ticket,$needed,$severity_count);
+		return collect([
+			"counter_condition" => $result2,
+			"counter_severity" => $severity_count,
+			"occurring_ticket" => $needed,
+			$get_client,
+			$count_ticket_by_client,
+		]);
 	}
 
 }

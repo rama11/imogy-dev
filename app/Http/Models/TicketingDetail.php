@@ -32,4 +32,14 @@ class TicketingDetail extends Model
 	public function id_detail(){
 		return $this->hasOne('App\Http\Models\Ticketing','id_ticket','id_ticket');
 	}
+
+	public function first_activity_ticket(){
+		return $this->hasOne('App\Http\Models\TicketingActivity','id_ticket','id_ticket')
+			->orderBy('id','ASC');
+	}
+
+	public function lastest_activity_ticket(){
+		return $this->hasOne('App\Http\Models\TicketingActivity','id_ticket','id_ticket')
+			->orderBy('id','DESC');
+	}
 }

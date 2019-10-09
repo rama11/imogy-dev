@@ -139,7 +139,7 @@
 														<th>ID</th>
 														<th>ATM*</th>
 														<th>Location</th>
-														<th>Open</th>
+														<th>Last Update</th>
 														<th>Severity</th>
 														<th>Operator</th>
 													</tr>
@@ -1263,30 +1263,31 @@
 				client:"all"
 			},
 			success:function(result){
-				// console.log(result);
-				$("#countOpen").text(result[0][0]);
-				$("#countProgress").text(result[0][1]);
-				$("#countPending").text(result[0][2]);
-				$("#countClose").text(result[0][3]);
-				$("#countCancel").text(result[0][4]); 
-				$("#countAll").text(result[0][5]);
 
-				$("#countCritical").text(result[4][0]['count']);
-				$("#countMajor").text(result[4][1]['count']);
-				$("#countModerate").text(result[4][2]['count']);
-				$("#countMinor").text(result[4][3]['count']);
+				console.log(result);
+				$("#countOpen").text(result.counter_condition.OPEN);
+				$("#countProgress").text(result.counter_condition.PROGRESS);
+				$("#countPending").text(result.counter_condition.PENDING);
+				$("#countClose").text(result.counter_condition.CLOSE);
+				$("#countCancel").text(result.counter_condition.CANCEL); 
+				$("#countAll").text(result.counter_condition.ALL);
+
+				$("#countCritical").text(result.counter_severity.Critical);
+				$("#countMajor").text(result.counter_severity.Major);
+				$("#countModerate").text(result.counter_severity.Moderate);
+				$("#countMinor").text(result.counter_severity.Minor);
 
 				var append = "";
-				$.each(result[1],function(key,value){
-					var dummy = "getPerformance('" + value + "')";
-					append = append + '<button class="btn btn-default" onclick=' + dummy + '>' + value + '</button> ';
+				$.each(result.customer_list,function(key,value){
+					var temp = "getPerformance('" + value + "')";
+					append = append + '<button class="btn btn-default" onclick=' + temp + '>' + value + '</button> ';
 				});
 
 				$("#clientList").html(append);
 
 				var append = '';
 				$("#importanTable").empty(append);
-				$.each(result[3],function(key,value){
+				$.each(result.occurring_ticket,function(key,value){
 					append = append + '<tr onclick=goTo("'+ value.id_ticket + '") >';
 						append = append + '<td>' + value.id_ticket + '</td>';
 						append = append + '<td>' + value.id_atm + '</td>';
@@ -1302,7 +1303,6 @@
 							append = append + '<td><span class="label label-success">Minor</span></td>';
 						append = append + '<td>' + value.operator + '</td>';
 					append = append + '</tr>';
-					return key < 9;
 				});
 				
 				$("#importanTable").append(append);
@@ -1310,45 +1310,27 @@
 				var config = {
 					type: 'doughnut',
 					data: {
-						labels: result[1],
+						labels: result.chart_data.label,
 						datasets: [{
-							data: result[2],
+							data: result.chart_data.data,
 							backgroundColor: [
-							  "#2ecc71",
-							  "#e67e22",
-							  "#c0392b",
-							  "#3498db",
-							  "#8e44ad",
-							  "#34495e",
-							  "#1abc9c",
-							  "#7f8c8d",
-							  "#2ecc71",
-							  "#e67e22",
-							  "#c0392b",
-							  "#3498db",
-							  "#8e44ad",
-							  "#34495e",
-							  "#1abc9c",
-							  "#7f8c8d"
+							"#EA2027",
+							"#EE5A24",
+							"#F79F1F",
+							"#FFC312",
+							"#C4E538",
+							"#A3CB38",
+							"#009432",
+							"#006266",
+							"#1B1464",
+							"#0652DD",
+							"#1289A7",
+							"#12CBC4",
+							"#FDA7DF",
+							"#D980FA",
+							"#9980FA",
+							"#5758BB"
 							],
-							hoverBackgroundColor: [
-							  "#40d47e",
-							  "#e98b39",
-							  "#d14233",
-							  "#4aa3df",
-							  "#9b50ba",
-							  "#3d566e",
-							  "#1dd2af",
-							  "#8c9899",
-							  "#40d47e",
-							  "#e98b39",
-							  "#d14233",
-							  "#4aa3df",
-							  "#9b50ba",
-							  "#3d566e",
-							  "#1dd2af",
-							  "#8c9899"
-							]
 						}]
 					},
 					options: {
@@ -1401,9 +1383,9 @@
 				var ctx = document.getElementById("pieChart").getContext("2d");
 				window.myDoughnut = new Chart(ctx, config);
 
-				// if("{{Auth::user()->id}}" == 4){
-				// 	$("#management").click();
-				// }
+				if("{{Auth::user()->id}}" == 4){
+					$("#management").click();
+				}
 
 			}
 		});

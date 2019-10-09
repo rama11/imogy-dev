@@ -89,9 +89,7 @@ class TicketingController extends Controller
 	}
 
 	public function getDashboard(Request $request){
-		$result = DB::table('ticketing__id')
-			->join('ticketing__detail','ticketing__detail.id_ticket','=','ticketing__id.id_ticket')
-			->get();
+		$start = microtime(true);
 		
 		$result2 = DB::table('ticketing__activity')
 			->select('activity',DB::raw("count(*) as count"))
@@ -101,96 +99,76 @@ class TicketingController extends Controller
 						->groupBy('id_ticket');
 				})
 			->groupBy('activity')
-			->get();
+			->get()->keyBy('activity');
 
-		if(!strpos($result2,"OPEN")){
-			// $result2[] = (object)["activity"=>"OPEN","count"=>0];
-		}
-		if(!strpos($result,"PENDING")){
-			// $result2[] = (object)["activity"=>"PENDING","count"=>0];
-		}
-		
-		$count = [0,0,0,0,0,0];
-
+		$all = 0;
 		foreach ($result2 as $key => $value) {
-			if($value->activity == "OPEN"){
-				$count[0] = $value->count;
-			} else if ($value->activity == "ON PROGRESS") {
-				$count[1] = $value->count;
-			} else if ($value->activity == "PENDING") {
-				$count[2] = $value->count;
-			} else if ($value->activity == "CLOSE") {
-				$count[3] = $value->count;
-			} else if ($value->activity == "CANCEL") {
-				$count[4] = $value->count;
-			}
+			$all = $all + $value->count;
 		}
-		$count[5] = $count[0] + $count[1] + $count[2] + $count[3] + $count[4];
+
+		$result2 = $result2->map(function($item, $key){
+			return $item->count;
+		});
+
+		$result2->put("ALL",$all);
+		$result2->put("PROGRESS",$result2["ON PROGRESS"]);
+		$result2->forget("ON PROGRESS");
+		// return $result2;
 
 		$get_client = DB::table('ticketing__client')
 			->select('id','client_name','client_acronym')
+			->pluck('client_acronym');
+		// return $get_client;
+
+		$count_ticket_by_client = DB::table('ticketing__id')
+			->selectRaw('`ticketing__client`.`client_acronym`, COUNT(*) AS ticket_count')
+			->groupBy('ticketing__id.id_client')
+			->join('ticketing__client','ticketing__client.id','=','ticketing__id.id_client')
+			->orderBy('ticket_count','DESC')
 			->get();
+		// return $count_ticket_by_client;
 
-		// $count_client = DB::table('ticketing__id')
-		// 	->select(DB::raw('id_client,COUNT(*)'))
-		// 	->groupBy("id_client")
-		// 	->get();
-
-		$needed = DB::table('ticketing__detail')
-			->select('ticketing__detail.severity','ticketing__detail.id_ticket','ticketing__detail.id_atm','ticketing__detail.location','aaa.operator','aaaa.date')
-			->join(DB::raw("(SELECT `ticketing__activity`.`operator`,`ticketing__activity`.`id_ticket`
-							FROM `ticketing__activity`
-							JOIN (
-								SELECT MAX(id) AS activity 
-								FROM `ticketing__activity` 
-								GROUP by `id_ticket`
-							) AS aa
-							ON `ticketing__activity`.`id` = aa.`activity`
-							WHERE `ticketing__activity`.`activity` <> 'CLOSE' and `ticketing__activity`.`activity` <> 'CANCEL'
-						) AS aaa"),"ticketing__detail.id_ticket","=","aaa.id_ticket")
-			->join(DB::raw("(SELECT `ticketing__activity`.`date`,`ticketing__activity`.`id_ticket`
-							FROM `ticketing__activity`
-							JOIN (
-								SELECT MIN(id) AS activity 
-								FROM `ticketing__activity` 
-								GROUP by `id_ticket`
-							) AS aa
-							ON `ticketing__activity`.`id` = aa.`activity`
-							WHERE `ticketing__activity`.`activity` <> 'CLOSE' and `ticketing__activity`.`activity` <> 'CANCEL'
-						) AS aaaa"),"ticketing__detail.id_ticket","=","aaaa.id_ticket")
-			->where('ticketing__detail.severity','<>',0)
+		$needed = DB::table('ticketing__activity')
+			->select('ticketing__detail.id', 'ticketing__detail.id_ticket', 'ticketing__detail.id_atm', 'ticketing__detail.location', 'ticketing__activity.operator', 'ticketing__activity.date','ticketing__detail.severity')
+			->join('ticketing__detail','ticketing__detail.id_ticket','=','ticketing__activity.id_ticket')
+			->whereIn('ticketing__activity.id', function ($query){
+					$query->selectRaw("MAX(`ticketing__activity`.`id`) AS `activity`")
+						->from('ticketing__activity')
+						->groupBy('id_ticket');
+				})
+			->where('activity','<>','CLOSE')
+			->where('activity','<>','CANCEL')
 			->orderBy('ticketing__detail.severity','ASC')
+			->limit(10)
 			->get();
+		// return $needed;
 
 		$severity_count = DB::table('ticketing__detail')
-			->select('ticketing__detail.severity',DB::raw('COUNT(*) as count'))
-			->join(DB::raw("(SELECT `ticketing__activity`.`operator`,`ticketing__activity`.`id_ticket`
-							FROM `ticketing__activity`
-							JOIN (
-								SELECT MAX(id) AS activity 
-								FROM `ticketing__activity` 
-								GROUP by `id_ticket`
-							) AS aa
-							ON `ticketing__activity`.`id` = aa.`activity`
-						) AS aaa"),"ticketing__detail.id_ticket","=","aaa.id_ticket")
+			->select('ticketing__severity.name',DB::raw('COUNT(*) as count'))
+			->join('ticketing__severity','ticketing__severity.id','=','ticketing__detail.severity')
 			->where('ticketing__detail.severity','<>',0)
 			->groupBy('ticketing__detail.severity')
-			->get();
+			->get()
+			->keyBy('name');
 
-		$client = [];
-		$count_ticket = [];
-		foreach ($get_client as $value) {
-			$client[] = $value->client_acronym;
-			$temp = 0;
-			foreach ($result as $value2) {
-				if($value2->id_client == $value->id){
-					$temp++;
-				}
-			}
-			$count_ticket[] = $temp;
-		}
+		$severity_count = $severity_count->map(function($item, $key){
+			return $item->count;
+		});
 
-		return array($count,$client,$count_ticket,$needed,$severity_count);
+		// $time_elapsed_secs = microtime(true) - $start;
+		// return $time_elapsed_secs;
+
+		return collect([
+			"counter_condition" => $result2,
+			"counter_severity" => $severity_count,
+			"occurring_ticket" => $needed,
+			"customer_list" => $get_client,
+			"chart_data" => [
+				"label" => $count_ticket_by_client->pluck('client_acronym'),
+				"data" => $count_ticket_by_client->pluck('ticket_count')
+			]
+		]);
+
 	}
 
 	public function count_query(){

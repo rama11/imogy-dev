@@ -18,6 +18,9 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
+use App\Http\Models\Ticketing;
+use App\Http\Models\TicketingDetail;
+
 class TicketingController extends Controller
 {
 
@@ -57,8 +60,8 @@ class TicketingController extends Controller
 		// echo str_replace(';', '<br>',$clients[1]->open_cc);
 		// echo "<br>";
 		// echo $clients[1]->open_cc;
-
-		return view('tisygy',compact('clients','atms'));
+		$sidebar_collapse = true;
+		return view('tisygy',compact('clients','atms','sidebar_collapse'));
 	}
 
 	public function tisygy2(){
@@ -734,48 +737,62 @@ class TicketingController extends Controller
 	}
 
 	public function getPerformance($id = 0){
-		if($id == 0){
-			$result = DB::table('ticketing__id')
-				->orderBy('ticketing__id.id','DESC')
-				->join('ticketing__detail','ticketing__detail.id_ticket','=','ticketing__id.id_ticket')
-				->take(50)
-				->get();
-		} else {
-			$result = DB::table('ticketing__id')
-				->where('ticketing__id.id','=',$id)
-				->join('ticketing__detail','ticketing__detail.id_ticket','=','ticketing__id.id_ticket')
-				->take(100)
-				->get();
-		}
+		$start = microtime(true);
+		
+		// if($id == 0){
+		// 	$result = DB::table('ticketing__id')
+		// 		->orderBy('ticketing__id.id','DESC')
+		// 		->join('ticketing__detail','ticketing__detail.id_ticket','=','ticketing__id.id_ticket')
+		// 		->take(50)
+		// 		->get();
+		// } else {
+		// 	$result = DB::table('ticketing__id')
+		// 		->where('ticketing__id.id','=',$id)
+		// 		->join('ticketing__detail','ticketing__detail.id_ticket','=','ticketing__id.id_ticket')
+		// 		->take(100)
+		// 		->get();
+		// }
 
-		foreach ($result as $key => $value) {
-			// echo $value->id . "<br>";
+		// foreach ($result as $key => $value) {
+		// 	$value->open = DB::table('ticketing__activity')
+		// 		->where('id_ticket','=',$value->id_ticket)
+		// 		->where('activity','=','OPEN')
+		// 		->value('date');
 
-			$value->open = DB::table('ticketing__activity')
-				->where('id_ticket','=',$value->id_ticket)
-				->where('activity','=','OPEN')
-				->value('date');
+		// 	$value->id_open = DB::table('ticketing__id')
+		// 		->where('id_ticket','=',$value->id_ticket)
+		// 		->value('id');
 
-			$value->id_open = DB::table('ticketing__id')
-				->where('id_ticket','=',$value->id_ticket)
-				->value('id');
+		// 	$value->last_status = array(
+		// 	DB::table('ticketing__activity')
+		// 		->where('id_ticket','=',$value->id_ticket)
+		// 		->orderBy('id','DESC')
+		// 		->value('activity'),
+		// 	DB::table('ticketing__activity')
+		// 		->where('id_ticket','=',$value->id_ticket)
+		// 		->orderBy('date','DESC')
+		// 		->value('date')
+		// 	);
 
-			$value->last_status = array(
-			DB::table('ticketing__activity')
-				->where('id_ticket','=',$value->id_ticket)
-				->orderBy('id','DESC')
-				->value('activity'),
-			DB::table('ticketing__activity')
-				->where('id_ticket','=',$value->id_ticket)
-				->orderBy('date','DESC')
-				->value('date')
-			);
+		// 	$value->operator = DB::table('ticketing__activity')
+		// 		->where('id_ticket','=',$value->id_ticket)
+		// 		->orderBy('id','DESC')
+		// 		->value('operator');
+		// }
 
-			$value->operator = DB::table('ticketing__activity')
-				->where('id_ticket','=',$value->id_ticket)
-				->orderBy('id','DESC')
-				->value('operator');
-		}
+		
+
+		$result = TicketingDetail::with([
+				'first_activity_ticket:id_ticket,date',
+				'lastest_activity_ticket',
+				'id_detail:id_ticket,id',
+			])
+			->limit(50)
+			->orderBy('id','DESC')
+			->get();
+
+		$time_elapsed_secs = microtime(true) - $start;
+		return $time_elapsed_secs;
 
 		return $result;
 			

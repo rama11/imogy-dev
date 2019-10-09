@@ -44,7 +44,9 @@
 			<div class="col-md-12">
 				<div class="nav-tabs-custom">
 					<ul class="nav nav-tabs" id="myTab">
-						<li class="active"><a href="#tab_1" data-toggle="tab" onclick="getDashboard()">Dashboard</a></li>
+						<li class="active">
+							<a href="#tab_1" data-toggle="tab" onclick="getDashboard()">Dashboard</a>
+						</li>
 						<li>
 							<a href="#tab_2" data-toggle="tab" id="createparam" onclick="getCreateParameter()">Create</a>
 						</li>
@@ -459,14 +461,11 @@
 								</div>
 							</div>
 						</div>
+						
 						<div class="tab-pane table-responsive no-padding" id="tab_3">
-							<div id="clientList">
-								
-							</div>
+							<div id="clientList"></div>
 							<hr>
-							<br>
-							<table class="table table-bordered table-striped" id="tablePerformace">
-							</table>
+							<table class="table table-bordered table-striped" id="tablePerformace"></table>
 
 							<div class="modal fade" id="modal-ticket">
 								<div class="modal-dialog">
@@ -925,7 +924,6 @@
 									<!-- /.modal-dialog -->
 								</div>
 							</div>
-							<!-- /.modal -->
 
 						</div>
 						
@@ -1160,20 +1158,11 @@
 						</div>
 						<!-- /.tab-pane -->
 					</div>
-					<!-- /.tab-content -->
 				</div>
-				<!-- nav-tabs-custom -->
 			</div>
-			<!-- /.col -->
 		</div>
-		<!-- /.row -->
-
-		<!-- END CUSTOM TABS -->
-
 	</section>
-	<!-- /.content -->
 </div>
-<!-- /.content-wrapper -->
 <footer class="main-footer">
 	<div class="pull-right hidden-xs">
 		<b>Version</b> 2.4.0
@@ -1589,7 +1578,7 @@
 			}
 		});
 	});
-	$(".sidebar-toggle").click();
+	// $(".sidebar-toggle").click();
 	//Timepicker
 	$(".timepicker").timepicker({
 		showInputs: false,

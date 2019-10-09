@@ -83,7 +83,11 @@
 			}
 		</style>
 	</head>
+	@if(isset($sidebar_collapse))
+	<body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
+	@else
 	<body class="hold-transition skin-blue sidebar-mini">
+	@endif
 		<div class="wrapper">
 
 			<header class="main-header">

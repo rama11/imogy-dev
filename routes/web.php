@@ -172,7 +172,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('mailOpenTicket','TicketingController@mailOpenTicket');
 		// Route::get('getPerformance','TicketingController@getPerformance');
 		// Route::get('getPerformance2','TicketingController@getPerformance2');
-		Route::get('getTicket','TicketingController@getTicket');
+		// Route::get('getTicket','TicketingController@getTicket');
 		Route::get('updateTicket','TicketingController@updateTicket');
 		Route::get('closeTicket','TicketingController@closeTicket');
 		Route::post('attachmentCloseTicket','TicketingController@attachmentCloseTicket');
@@ -184,7 +184,6 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('getAtm','TicketingController@getAtm');
 		Route::get('getDetailAtm/{id}','TicketingController@getDetailAtm');
 		Route::get('getDetailAtm2/{id}','TicketingController@getDetailAtm2');
-		Route::get('getDashboard','TicketingController@getDashboard');
 		Route::get('setAtm','TicketingController@setAtm');
 		Route::get('newAtm','TicketingController@newAtm');
 		Route::get('updateIdTicket','TicketingController@updateIdTicket');
@@ -232,9 +231,13 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	// 	echo sprintf("iki adalah sebuah format %02d", $date);
 	// });
 //Auth::routes();
-	Route::get('getPerformance2','TicketingController@getPerformance2');
+	Route::get('tisygy/getDashboard','TicketingController@getDashboard');
+	Route::get('tisygy/getPerformanceAll','TicketingController@getPerformanceAll');
+	Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
+	Route::get('tisygy/getPerformanceByTicket','TicketingController@getPerformanceByTicket');
+
 	Route::get('getPerformanceBySeverity','TicketingController@getPerformanceBySeverity');
-	Route::get('getPerformanceByClient','TicketingController@getPerformanceByClient');
+	// Route::get('getPerformanceByClient','TicketingController@getPerformanceByClient');
 	
 	Route::get('getPerformance','TicketingController@getPerformance');
 	// Route::get('getDashboard','TicketingController@getDashboard');

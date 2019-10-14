@@ -20,6 +20,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 use App\Http\Models\Ticketing;
 use App\Http\Models\TicketingDetail;
+use App\Http\Models\TicketingActivity;
 
 class TicketingController extends Controller
 {
@@ -843,46 +844,33 @@ class TicketingController extends Controller
 		return $result;
 	}
 
-	public function updateTicket(Request $req){
-		// echo $req->engineer . "<br>";
-		// echo $req->ticket_number_3party . "<br>";
+	public function setUpdateTicket(Request $req){
+		$detailTicketUpdate = TicketingDetail::where('id_ticket',$req->id_ticket)
+			->first();
 
-		$result = DB::table('ticketing__detail')
-			->where('id_ticket','=',$req->id_ticket)
-			->update([
-				"engineer" => $req->engineer,
-				"ticket_number_3party" => $req->ticket_number_3party,
-			]);
+		$detailTicketUpdate->engineer = $req->engineer;
+		$detailTicketUpdate->ticket_number_3party = $req->ticket_number_3party;
 
+		$detailTicketUpdate->save();
 
-		$update = DB::table('ticketing__activity')
-			->insert([
-				"id_ticket" => $req->id_ticket,
-				"date" => date("Y-m-d H:i:s.000000"),
-				"activity" => "ON PROGRESS",
-				"operator" => Auth::user()->nickname,
-				"note" => $req->note
-			]);
-			// ->get();
+		$activityTicketUpdate = new TicketingActivity();
+		$activityTicketUpdate->id_ticket = $req->id_ticket;
+		$activityTicketUpdate->date = date("Y-m-d H:i:s.000000");
+		$activityTicketUpdate->activity = "ON PROGRESS";
+		$activityTicketUpdate->operator = Auth::user()->nickname;
+		$activityTicketUpdate->note = $req->note;
 
-		$result = DB::table('ticketing__detail')
-			->where('id_ticket','=',$req->id_ticket)
-			// ->update([
-			// 	"engineer" => $req->engineer,
-			// 	"ticket_number_3party" => $req->ticket_number_3party,
-			// ]);
-			->get();
+		$activityTicketUpdate->save();
 
-		$result = DB::table('ticketing__id')
-			->where('ticketing__id.id_ticket','=',$req->id_ticket)
-			->join('ticketing__client','ticketing__client.id','=','ticketing__id.id_client')
-			->value('ticketing__client.client_acronym');
+		$clientAcronymFilter = Ticketing::with('client_ticket')
+			->where('id_ticket',$req->id_ticket)
+			->first()
+			->client_ticket
+			->client_acronym;
 
-		return $result;
-
-		// echo "<pre>";
-		// print_r($result);
-		// echo "</pre>";
+		$activityTicketUpdate->client_acronym_filter = $clientAcronymFilter;
+		
+		return $activityTicketUpdate;
 	}
 
 	public function closeTicket(Request $request){

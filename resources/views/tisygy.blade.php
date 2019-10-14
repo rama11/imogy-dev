@@ -27,6 +27,13 @@
 			margin: 0 auto;
 			pointer-events: all;
 		}
+
+		.table > tbody > tr > td {
+			vertical-align: middle;
+		}
+
+		.dataTables_filter {display: none;}
+		
 		body { padding-right: 0 !important }
 	</style>
 @endsection
@@ -51,7 +58,7 @@
 							<a href="#tab_2" data-toggle="tab" id="createparam" onclick="getCreateParameter()">Create</a>
 						</li>
 						<li>
-							<a href="#tab_3" data-toggle="tab" id="performance" onclick="getPerformance()">Performance</a>
+							<a href="#tab_3" data-toggle="tab" id="performance" onclick="getPerformanceAll()">Performance</a>
 						</li>
 						<li>
 							<a href="#tab_6" data-toggle="tab">Setting</a>
@@ -461,20 +468,56 @@
 								</div>
 							</div>
 						</div>
-						
+
 						<div class="tab-pane table-responsive no-padding" id="tab_3">
-							<div id="clientList"></div>
-							<hr>
-							<table class="table table-bordered table-striped" id="tablePerformace"></table>
+							<div class="row">
+								<div class="col-md-10">
+									<b>Filter by Client : </b>
+									<div id="clientList"></div>
+								</div>
+								<div class="col-md-2">
+									<b class="pull-right">Search Anyting</b>
+									<input type="text" id="searchBar" class="form-control pull-right" placeholder="Search">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<table class="table table-bordered table-striped" id="tablePerformace">
+										<thead>
+											<th style="width: 120px;text-align:center;vertical-align: middle;">ID Ticket</th>
+											<th style="width: 100px;text-align:center;vertical-align: middle;">ID ATM*</th>
+											<th style="width: 100px;text-align:center;vertical-align: middle;">Ticket Number</th>
+											<th style="width: 100px;text-align:center;vertical-align: middle;">Open</th>
+											<th style="vertical-align: middle;">Problem</th>
+											<th style="text-align: center;vertical-align: middle;">PIC</th>
+											<th style="width: 100px;vertical-align: middle;">Location</th>
+											<th style="text-align: center;vertical-align: middle;">Status</th>
+											<th style="text-align: center;vertical-align: middle;">Operator</th>
+											<th style="text-align: center;vertical-align: middle;">Action</th>
+										</thead>
+										<tfoot>
+											<th style="width: 120px;text-align:center;vertical-align: middle;">ID Ticket</th>
+											<th style="width: 100px;text-align:center;vertical-align: middle;">ID ATM*</th>
+											<th style="width: 100px;text-align:center;vertical-align: middle;">Ticket Number</th>
+											<th style="width: 100px;text-align:center;vertical-align: middle;">Open</th>
+											<th style="vertical-align: middle;">Problem</th>
+											<th style="text-align: center;vertical-align: middle;">PIC</th>
+											<th style="width: 100px;vertical-align: middle;">Location</th>
+											<th style="text-align: center;vertical-align: middle;">Status</th>
+											<th style="text-align: center;vertical-align: middle;">Operator</th>
+											<th style="text-align: center;vertical-align: middle;">Action</th>
+										</tfoot>
+									</table>
+								</div>
+							</div>
 
 							<div class="modal fade" id="modal-ticket">
 								<div class="modal-dialog">
 									<div class="modal-content">
 										<div class="modal-header">
 											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-												<span aria-hidden="true">&times;</span></button>
-											
-											<h4 class="modal-title" id="modal-ticket-title">Ticket ID </h4>
+												<span aria-hidden="true" style="margin-left: 5px;">×</span>
+											</button>
 											<div class="modal-tools pull-right" style="text-align: right";>
 												<div>
 													<span class="label label-default" id="ticketSeverity" style="font-size: 15px;"></span>
@@ -484,7 +527,10 @@
 													<span class="label label-default" id="ticketStatus"></span>
 												</div>
 											</div>
-											<span id="ticketOperator"></span>
+											<div>
+												<h4 class="modal-title" id="modal-ticket-title">Ticket ID </h4>
+												<span id="ticketOperator"></span>
+											</div>
 										</div>
 										<div class="modal-body">
 											<form role="form">
@@ -1191,6 +1237,15 @@
 <script src="../../plugins/input-mask/jquery.inputmask.extensions.js"></script>
 <script>
 
+	$(document).ready(function(){
+		getDashboard();
+
+		$('#searchBar').keyup(function(){
+			$("#tablePerformace").DataTable().search($(this).val()).draw();
+			console.log($(this).val());
+		})
+	})
+
 	$("#manageID").change(function(){
 		// console.log(this.value);
 		$("#manageIDTicket").val(this.value);
@@ -1241,19 +1296,15 @@
 		ctx.save();
 	}
 
-	getDashboard();
 	$("[data-mask]").inputmask();
 
 	function getDashboard(){
 		$.ajax({
 			type:"GET",
-			url:"getDashboard",
-			data:{
-				client:"all"
-			},
+			url:"{{url('tisygy/getDashboard')}}",
 			success:function(result){
 
-				console.log(result);
+				// console.log(result);
 				$("#countOpen").text(result.counter_condition.OPEN);
 				$("#countProgress").text(result.counter_condition.PROGRESS);
 				$("#countPending").text(result.counter_condition.PENDING);
@@ -1267,9 +1318,9 @@
 				$("#countMinor").text(result.counter_severity.Minor);
 
 				var append = "";
-				$.each(result.customer_list,function(key,value){
-					var temp = "getPerformance('" + value + "')";
-					append = append + '<button class="btn btn-default" onclick=' + temp + '>' + value + '</button> ';
+				$.each(result.chart_data.label,function(key,value){
+					var onclickFunction = "getPerformanceByClient('" + value + "')";
+					append = append + '<button class="btn btn-flat btn-default buttonFilter' + value+ '" onclick=' + onclickFunction + '>' + value + '</button> ';
 				});
 
 				$("#clientList").html(append);
@@ -1903,79 +1954,129 @@
 
 	var dataTicket = [];
 
-	function getPerformance(client = ""){
-		
-		if(client != ""){
-			addRows(client)
-		} else {
-			$("#tablePerformace").empty();
-			$("#myInput2").val("");
-			$("#myInput").val("");
-			var heading = "";
-			heading = heading + '<thead>';
-				heading = heading + '<tr>';
-					heading = heading + '<th style="text-align:center;vertical-align: middle;">ID Ticket</th>';
-					heading = heading + '<th style="text-align:center;width: 100px;vertical-align: middle;">ID ATM*</th>';
-					heading = heading + '<th style="text-align:center;width: 100px;vertical-align: middle;">Ticket Number</th>';
-					// heading = heading + '<th style="width: 100px">Number Tiket</th>';
-					heading = heading + '<th style="text-align:center;width: 100px;vertical-align: middle;">Open</th>';
-					heading = heading + '<th style="vertical-align: middle;">Problem</th>';
-					heading = heading + '<th style="text-align: center;vertical-align: middle;">PIC</th>';
-					heading = heading + '<th style="width: 100px;vertical-align: middle;">Location</th>';
-					heading = heading + '<th style="text-align: center;vertical-align: middle;">Status</th>';
-					heading = heading + '<th style="text-align: center;vertical-align: middle;">Operator</th>';
-					heading = heading + '<th style="width: 40px;vertical-align: middle;">Action</th>';
-				heading = heading + '</tr>';
-			heading = heading + '</thead>';
-			heading = heading + '<tbody>';
-
-			$("#tablePerformace").append(heading);
-			
-			var url = "getPerformance2?client=all";
-			$.ajax({
+	function getPerformanceAll(){
+		$("#tablePerformace").DataTable({
+			ajax:{
 				type:"GET",
-				url:url,
-				success:function(result){
-					var body = "";
-
-					$.each(result, function(key,value){
-						body = body + '<tr>';
-							if((value.id_ticket).indexOf('/') == 3){
-								body = body + '<td style="width: 150px;vertical-align: middle;">0' + value.id_ticket + '</td>';
-							} else {
-								body = body + '<td style="width: 150px;vertical-align: middle;">' + value.id_ticket + '</td>';
-							}
-							body = body + '<td style="text-align:center; vertical-align: middle;">' + value.id_atm + '</td>';
-							body = body + '<td style="text-align:center; vertical-align: middle;">' + value.ticket_number_3party + '</td>';
-							// body = body + '<td style="width: 100px; vertical-align: middle;">51705282    </td>';
-							body = body + '<td style="width: 40px; vertical-align: middle;" class="text-center">' + moment(value.open).format('dddd, D MMMM YYYY HH:mm') + '</td>';
-							body = body + '<td style="vertical-align: middle;">' + value.problem + '</td>';
-							body = body + '<td style="width: 100px; vertical-align: middle;">' + value.pic + ' - ' + value.contact_pic + '</td>';
-							body = body + '<td style="width: 100px; vertical-align: middle;">' + value.location + '</td>';
-							if(value.last_status[0] == "OPEN"){
-								body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><span class="label label-danger">' + value.last_status[0] + '</span></td>';
-							} else if(value.last_status[0] == "ON PROGRESS") {
-								body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><span class="label label-info">' + value.last_status[0] + '</span></td>';
-							} else if(value.last_status[0] == "PENDING") {
-								body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><span class="label label-warning">' + value.last_status[0] + '</span></td>';
-							} else if(value.last_status[0] == "CLOSE") {
-								body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><span class="label label-success">' + value.last_status[0] + '</span></td>';
-							} else if(value.last_status[0] == "CANCEL") {
-								body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><span class="label label-success" style="background-color:#555299 !important;">' + value.last_status[0] + '</span></td>';
-							}
-							body = body + '<td style="width: 40px; text-align: center; vertical-align: middle;">' + value.operator + '</td>';
-							body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><button class="btn btn-default" onclick="showTicket(' + value.id_open + ')">Detail</button></td>';
-						body = body + '</tr>';
-					});
-
-					$("#tablePerformace").append(body);
-					$("#tablePerformace").append('</tbody>');
-					
-					$("#tablePerformace").DataTable();
-
+				url:"{{url('tisygy/getPerformanceAll')}}",
+				dataSrc: function (json){
+					json.data.forEach(function(data,idex){
+						data.open_time = moment(data.first_activity_ticket.date,'YYYY-MM-DD, HH:mm:ss').format('dddd, D MMMM YYYY HH:mm')
+						data.pic = data.pic + ' - ' + data.contact_pic
+						if(data.lastest_activity_ticket.activity == "OPEN"){
+							data.lastest_status_numerical = 1
+							data.lastest_status = '<span class="label label-danger">' + data.lastest_activity_ticket.activity + '</span>'
+						} else if(data.lastest_activity_ticket.activity == "ON PROGRESS") {
+							data.lastest_status_numerical = 2
+							data.lastest_status = '<span class="label label-info">' + data.lastest_activity_ticket.activity + '</span>'
+						} else if(data.lastest_activity_ticket.activity == "PENDING") {
+							data.lastest_status_numerical = 3
+							data.lastest_status = '<span class="label label-warning">' + data.lastest_activity_ticket.activity + '</span>'
+						} else if(data.lastest_activity_ticket.activity == "CANCEL") {
+							data.lastest_status_numerical = 4
+							data.lastest_status = '<span class="label bg-purple">' + data.lastest_activity_ticket.activity + '</span>'
+						} else if(data.lastest_activity_ticket.activity == "CLOSE") {
+							data.lastest_status_numerical = 5
+							data.lastest_status = '<span class="label label-success">' + data.lastest_activity_ticket.activity + '</span>'
+						} 
+						data.lastest_operator = data.lastest_activity_ticket.operator
+						data.action = '<button class="btn btn-default btn-flat btn-sm" onclick="showTicket(' + data.id_detail.id + ')">Detail</button>'
+					})
+					return json.data
+				}
+			},
+			columns:[
+				{ data:'id_ticket' },
+				{ 	
+					data:'id_atm',
+					className:'text-center'
 				},
-			});
-		}
+				{
+					data:'ticket_number_3party',
+					className:'text-center'
+				},
+				{ 
+					data:'open_time',
+					className:'text-center'
+				},
+				{ data:'problem' },
+				{ 
+					data:'pic',
+					className:'text-center'
+				},
+				{ data:'location' },
+				{ 
+					data:'lastest_status',
+					className:'text-center',
+					orderData:[ 10 ],
+				},
+				{ 
+					data:'lastest_operator',
+					className:'text-center'
+				},
+				{
+					data:'action',
+					className:'text-center',
+					orderable: false,
+					searchable: true
+				},
+				{ 
+					data: "lastest_status_numerical",
+					targets: [ 7 ] ,
+					visible: false ,
+					searchable: true
+				},
+			],
+			// order: [[10, "DESC" ]],
+			autoWidth:false,
+			lengthChange: false,
+			searching:true,
+			initComplete: function () {
+				var condition_available = ["OPEN","ON PROGRESS","PENDING","CANCEL","CLOSE"]
+				this.api().columns().every( function () {
+					if(this.index() == 8){
+						// console.log('every colom data')
+						var column = this;
+						var select = $('<select class="form-control"><option value="">Show All</option></select>')
+							.appendTo( $(column.footer()).empty() )
+							.on( 'change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+									$(this).val()
+								);
+								column.search( val ? '^'+val+'$' : '', true, false ).draw();
+							} );
+
+						
+						column.data().unique().each( function ( d, j ) {
+							select.append( '<option value="' + d + '">' + d +'</option>' )
+						})
+					} else if (this.index() == 7){
+						var column = this;
+						var select = $('<select class="form-control"><option value="">Show All</option></select>')
+							.appendTo( $(column.footer()).empty() )
+							.on( 'change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+									$(this).val()
+								);
+								// console.log(val);
+								column.search( val ? val : '', true, false ).draw();
+							} );
+
+						condition_available.forEach( function ( d, j ) {
+							select.append( '<option value="' + d + '">' + d +'</option>' )
+						})
+					}
+				})
+			},
+		})
+	}
+
+	function getPerformanceByClient(client){
+		// console.log(client)
+		$('#clientList').find(".buttonFilter" + client).removeClass('btn-default').addClass('btn-primary')
+		$('#clientList').find(":not(.buttonFilter" + client + ")").removeClass('btn-primary').addClass('btn-default')
+		$("#tablePerformace").DataTable().clear().draw();
+		$("#tablePerformace").DataTable().ajax.url("{{url('tisygy/getPerformanceByClient?client=')}}" + client).load();
 	}
 
 	// $('#myTab a').click(function (e) {
@@ -2185,73 +2286,65 @@
 	function showTicket(id){
 		$.ajax({
 			type:"GET",
-			url:"getTicket",
+			url:"{{url('tisygy/getPerformanceByTicket')}}",
 			data:{
-				id:id,
+				idTicket:id,
 			},
 			success: function(result){
-				$("#updateButton").attr("onclick","updateTicket('" + result[0].id_ticket + "')");
-				$("#cancelButton").attr("onclick","cancelTicket('" + result[0].id_ticket + "')");
-				$("#pendingButton").attr("onclick","pendingTicket('" + result[0].id_ticket + "')");
-				$("#closeButton").attr("onclick","closeTicket('" + result[0].id_ticket + "')");
+				$("#updateButton").attr("onclick","updateTicket('" + result.id_ticket + "')");
+				$("#cancelButton").attr("onclick","cancelTicket('" + result.id_ticket + "')");
+				$("#pendingButton").attr("onclick","pendingTicket('" + result.id_ticket + "')");
+				$("#closeButton").attr("onclick","closeTicket('" + result.id_ticket + "')");
 
-				// $("#ticketStatus").attr("onclick","modalStatus('" + result[0].id_ticket + "')");
+				// $("#ticketStatus").attr("onclick","modalStatus('" + result.id_ticket + "')");
 				
 				$('#modal-ticket').modal('toggle');
-				$('#ticketID').val(result[0].id_ticket);
-				$("#modal-ticket-title").html("Ticket ID <b>" + result[0].id_ticket + "</b>");
-				$("#ticketOpen").text(moment(result[0].last_status[1]).format('D MMMM YYYY (HH:mm)'));
-				$("#ticketIDATM").val(result[0].id_atm);
-				$("#ticketStatus").text(result[0].last_status[0]);
+				$('#ticketID').val(result.id_ticket);
+				$("#modal-ticket-title").html("Ticket ID <b>" + result.id_ticket + "</b>");
+				$("#ticketOpen").text(moment(result.lastest_activity_ticket.date).format('D MMMM YYYY (HH:mm)'));
+				$("#ticketIDATM").val(result.id_atm);
+				$("#ticketStatus").text(result.lastest_activity_ticket.activity);
 				$("#ticketStatus").attr('style','');
 
-				if(result[0].severity == 1){
-					$("#ticketSeverity").text("Critical");
-					$("#ticketSeverity").attr('class','label label-danger');
-					$(".holderCloseSeverity").text(result[0].severity + " (Critical)");
-					$(".holderPendingSeverity").text(result[0].severity + " (Critical)");
-					$(".holderCancelSeverity").text(result[0].severity + " (Critical)");
-				} else if(result[0].severity == 2){
-					$("#ticketSeverity").text("Major");
-					$("#ticketSeverity").attr('class','label label-warning');
-					$(".holderCloseSeverity").text(result[0].severity + " (Major)");
-					$(".holderPendingSeverity").text(result[0].severity + " (Major)");
-					$(".holderCancelSeverity").text(result[0].severity + " (Major)");
-				} else if(result[0].severity == 3){
-					$("#ticketSeverity").text("Moderate");
-					$("#ticketSeverity").attr('class','label label-info');
-					$(".holderCloseSeverity").text(result[0].severity + " (Moderate)");
-					$(".holderPendingSeverity").text(result[0].severity + " (Moderate)");
-					$(".holderCancelSeverity").text(result[0].severity + " (Moderate)");
-				} else if(result[0].severity == 4){
-					$("#ticketSeverity").text("Minor");
-					$("#ticketSeverity").attr('class','label label-success');
-					$(".holderCloseSeverity").text(result[0].severity + " (Minor)");
-					$(".holderPendingSeverity").text(result[0].severity + " (Minor)");
-					$(".holderCancelSeverity").text(result[0].severity + " (Minor)");
+				var severityType = "", severityClass = ""
+				if(result.severity == 1){
+					severityType = "Critical"
+					severityClass = "label label-danger"
+				} else if(result.severity == 2){
+					severityType = "Major"
+					severityClass = "label label-warning"
+				} else if(result.severity == 3){
+					severityType = "Moderate"
+					severityClass = "label label-info"
+				} else if(result.severity == 4){
+					severityType = "Minor"
+					severityClass = "label label-success"
 				} else {
-					$("#ticketSeverity").text("N/A");
-					$("#ticketSeverity").attr('class','label label-default');
-					$(".holderCloseSeverity").text("(N/A)");
-					$(".holderPendingSeverity").text("(N/A)");
-					$(".holderCancelSeverity").text("(N/A)");
+					severityType = "N/A"
+					severityClass = "label label-default"
 				}
+
+				$("#ticketSeverity").text(severityType);
+				$("#ticketSeverity").attr('class',severityClass);
+				$(".holderCloseSeverity").text(result.severity + " (" + severityType + ")");
+				$(".holderPendingSeverity").text(result.severity + " (" + severityType + ")");
+				$(".holderCancelSeverity").text(result.severity + " (" + severityType + ")");
 
 				$("#ticketNoteHolder").show();
 
 				$("#ticketCouter").hide();
 				$("#ticketRoute").hide();
 
-				if(result[0].last_status[0] == "OPEN"){
+				if(result.lastest_activity_ticket.activity == "OPEN"){
 					$("#ticketStatus").attr('class','label label-danger');
 					$("#pendingButton").prop('disabled',true);
 					$("#closeButton").prop('disabled',true);
 					$("#updateButton").prop('disabled',false);
-				} else if(result[0].last_status[0] == "PENDING") {
+				} else if(result.lastest_activity_ticket.activity == "PENDING") {
 					$("#ticketStatus").attr('class','label label-warning');
 					$("#pendingButton").prop('disabled',false);
 					$("#closeButton").prop('disabled',false);
-				} else if(result[0].last_status[0] == "CLOSE"){
+				} else if(result.lastest_activity_ticket.activity == "CLOSE"){
 					$("#ticketStatus").attr('class','label label-success');
 					$("#pendingButton").prop('disabled',true);
 					$("#closeButton").prop('disabled',true);
@@ -2260,16 +2353,16 @@
 					$("#ticketNoteHolder").hide();
 					$("#ticketCouter").show();
 					$("#ticketRoute").show();
-					$("#ticketCouterTxt").val(result[2].counter_measure);
-					$("#ticketRouteTxt").val(result[2].root_couse);
+					$("#ticketCouterTxt").val(result.resolve.counter_measure);
+					$("#ticketRouteTxt").val(result.resolve.root_couse);
 
-				} else if(result[0].last_status[0] == "ON PROGRESS"){
+				} else if(result.lastest_activity_ticket.activity == "ON PROGRESS"){
 					$("#ticketStatus").attr('class','label label-info');
 					$("#updateButton").prop('disabled',false);
 					$("#closeButton").prop('disabled',false);
 					$("#cancelButton").prop('disabled',false);
 					$("#pendingButton").prop('disabled',false);
-				} else if(result[0].last_status[0] == "CANCEL"){
+				} else if(result.lastest_activity_ticket.activity == "CANCEL"){
 					$("#ticketStatus").attr('class','label label-purple');
 					$("#ticketStatus").attr('style','background-color: #555299 !important;');
 					$("#ticketNoteHolder").hide();
@@ -2280,48 +2373,46 @@
 					$("#cancelButton").prop('disabled',true);
 				}
 
-				$("#ticketSerial").val(result[0].serial_device);
-				$("#ticketProblem").val(result[0].problem);
-				$("#ticketPIC").val(result[0].pic + ' - ' + result[0].contact_pic);
-				$("#ticketLocation").val(result[0].location);
-				$("#ticketOperator").html(" by: <b>" + result[0].operator + "</b>");
-				// $("#ticketNote").val(result[0].note);
+				$("#ticketSerial").val(result.serial_device);
+				$("#ticketProblem").val(result.problem);
+				$("#ticketPIC").val(result.pic + ' - ' + result.contact_pic);
+				$("#ticketLocation").val(result.location);
+				$("#ticketOperator").html(" latest by: <b>" + result.lastest_activity_ticket.operator + "</b>");
+				// $("#ticketNote").val(result.note);
 				$("#ticketNote").val("");
 
-				console.log(result[0].engineer);
+				// console.log(result.engineer);
 
-				$("#ticketEngineer").val(result[0].engineer);
+				$("#ticketEngineer").val(result.engineer);
 			
-				$("#ticketNumber").val(result[0].ticket_number_3party);
+				$("#ticketNumber").val(result.ticket_number_3party);
 				
 
 				$("#ticketActivity").empty();
-				$.each(result[1],function(key,value){
+				$.each(result.all_activity_ticket,function(key,value){
 					$("#ticketActivity").append('<li>' + moment(value.date).format("MMMM DD (HH:mm)") + ' [' + value.operator + '] - ' + value.note + '</li>');
 				});
 
-				if(result[0].reporting_time != "Invalid date"){
-					$("#ticketActivity").append('<li>Reporting time : ' + moment(result[0].reporting_time).format("MMMM DD (HH:mm)") + ' </li>');
+				if(result.reporting_time != "Invalid date"){
+					$("#ticketActivity").append('<li>Reporting time : ' + moment(result.reporting_time).format("MMMM DD (HH:mm)") + ' </li>');
 				} else {
-					$("#ticketActivity").append('<li>Reporting time : ' + result[0].reporting_time + '</li>');
+					$("#ticketActivity").append('<li>Reporting time : ' + result.reporting_time + '</li>');
 				}
 
-				$(".holderCloseID").text(result[0].id_ticket);
-				$(".holderCloseRefrence").text(result[0].refrence);
-				$(".holderClosePIC").text(result[0].pic);
-				$(".holderCloseContact").text(result[0].contact_pic);
-				$(".holderCloseLocation").text(result[0].location);
-				$(".holderCloseProblem").text(result[0].problem);
-				$(".holderCloseSerial").text(result[0].serial_device);
+				$(".holderCloseID").text(result.id_ticket);
+				$(".holderCloseRefrence").text(result.refrence);
+				$(".holderClosePIC").text(result.pic);
+				$(".holderCloseContact").text(result.contact_pic);
+				$(".holderCloseLocation").text(result.location);
+				$(".holderCloseProblem").text(result.problem);
+				$(".holderCloseSerial").text(result.serial_device);
 				
-				$(".holderCloseIDATM").text(result[0].id_atm);
+				$(".holderCloseIDATM").text(result.id_atm);
 
 				$(".holderCloseNote").text("");
-				$(".holderCloseEngineer").text(result[0].engineer);
+				$(".holderCloseEngineer").text(result.engineer);
 
-
-				var waktu = moment((result[0].open), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
-				
+				var waktu = moment((result.open), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
 
 				$(".holderCloseDate").text(waktu);
 				
@@ -2329,24 +2420,24 @@
 				$(".holderCloseStatus").html("<b>CLOSE</b>");
 				$(".holderNumberTicket").text($("#ticketNumber").val());
 
-					// $("#ticketNumber").val(result[0].ticket_number_3party);
+					// $("#ticketNumber").val(result.ticket_number_3party);
 
-				$(".holderPendingID").text(result[0].id_ticket);
-				$(".holderPendingRefrence").text(result[0].refrence);
-				$(".holderPendingPIC").text(result[0].pic);
-				$(".holderPendingContact").text(result[0].contact_pic);
-				$(".holderPendingLocation").text(result[0].location);
-				$(".holderPendingProblem").text(result[0].problem);
-				$(".holderPendingSerial").text(result[0].serial_device);
+				$(".holderPendingID").text(result.id_ticket);
+				$(".holderPendingRefrence").text(result.refrence);
+				$(".holderPendingPIC").text(result.pic);
+				$(".holderPendingContact").text(result.contact_pic);
+				$(".holderPendingLocation").text(result.location);
+				$(".holderPendingProblem").text(result.problem);
+				$(".holderPendingSerial").text(result.serial_device);
 				
 
-				$(".holderPendingIDATM").text(result[0].id_atm);
+				$(".holderPendingIDATM").text(result.id_atm);
 
 				$(".holderPendingNote").text("");
-				$(".holderPendingEngineer").text(result[0].engineer);
+				$(".holderPendingEngineer").text(result.engineer);
 
 
-				var waktu = moment((result[0].open), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
+				var waktu = moment((result.open), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
 				
 
 				$(".holderPendingDate").text(waktu);
@@ -2355,21 +2446,21 @@
 				$(".holderPendingStatus").html("<b>PENDING</b>");
 				$(".holderNumberTicket").text($("#ticketNumber").val());
 
-				$(".holderCancelID").text(result[0].id_ticket);
-				$(".holderCancelRefrence").text(result[0].refrence);
-				$(".holderCancelPIC").text(result[0].pic);
-				$(".holderCancelContact").text(result[0].contact_pic);
-				$(".holderCancelLocation").text(result[0].location);
-				$(".holderCancelProblem").text(result[0].problem);
-				$(".holderCancelSerial").text(result[0].serial_device);
+				$(".holderCancelID").text(result.id_ticket);
+				$(".holderCancelRefrence").text(result.refrence);
+				$(".holderCancelPIC").text(result.pic);
+				$(".holderCancelContact").text(result.contact_pic);
+				$(".holderCancelLocation").text(result.location);
+				$(".holderCancelProblem").text(result.problem);
+				$(".holderCancelSerial").text(result.serial_device);
 				
 
-				$(".holderCancelIDATM").text(result[0].id_atm);
+				$(".holderCancelIDATM").text(result.id_atm);
 
 				$(".holderCancelNote").text("");
-				$(".holderCancelEngineer").text(result[0].engineer);
+				$(".holderCancelEngineer").text(result.engineer);
 
-				var waktu = moment((result[0].open), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
+				var waktu = moment((result.open), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
 				
 
 				$(".holderCancelDate").text(waktu);

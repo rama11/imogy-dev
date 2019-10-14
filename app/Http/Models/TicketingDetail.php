@@ -42,4 +42,13 @@ class TicketingDetail extends Model
 		return $this->hasOne('App\Http\Models\TicketingActivity','id_ticket','id_ticket')
 			->orderBy('id','DESC');
 	}
+
+	public function all_activity_ticket(){
+		return $this->hasMany('App\Http\Models\TicketingActivity','id_ticket','id_ticket')
+			->orderBy('id','DESC');
+	}
+
+	public function resolve(){
+		return $this->hasOne('App\Http\Models\TicketingResolve','id_ticket','id_ticket');
+	}
 }

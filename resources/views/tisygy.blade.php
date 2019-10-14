@@ -471,13 +471,24 @@
 
 						<div class="tab-pane table-responsive no-padding" id="tab_3">
 							<div class="row">
-								<div class="col-md-10">
+								<div class="col-md-9">
 									<b>Filter by Client : </b>
 									<div id="clientList"></div>
 								</div>
-								<div class="col-md-2">
+								<div class="col-md-3">
 									<b class="pull-right">Search Anyting</b>
-									<input type="text" id="searchBar" class="form-control pull-right" placeholder="Search">
+									<div class="input-group pull-right">
+										<input id="searchBar" type="text" class="form-control">
+										<span class="input-group-btn">
+											<button id="clearFilterTable" type="button" class="btn btn-default btn-flat">
+												<i class="fa fa-fw fa-remove"></i>
+											</button>
+											<button id="reloadTable" type="button" class="btn btn-default btn-flat">
+												<i class="fa fa-fw fa-refresh"></i>
+											</button>
+										</span>
+									</div>
+									<!-- <input type="text" id="searchBar" class="form-control pull-right" placeholder="Search"> -->
 								</div>
 							</div>
 							<div class="row">
@@ -1242,8 +1253,17 @@
 
 		$('#searchBar').keyup(function(){
 			$("#tablePerformace").DataTable().search($(this).val()).draw();
-			console.log($(this).val());
 		})
+
+		$('#clearFilterTable').click(function(){
+			$('#searchBar').val('')
+			$('#tablePerformace').DataTable().search('').draw();
+		});
+
+		$('#reloadTable').click(function(){
+			$(".buttonFilter").removeClass('btn-primary').addClass('btn-default')
+			$("#tablePerformace").DataTable().ajax.url('tisygy/getPerformanceAll').load();
+		});
 	})
 
 	$("#manageID").change(function(){
@@ -1316,11 +1336,10 @@
 				$("#countMajor").text(result.counter_severity.Major);
 				$("#countModerate").text(result.counter_severity.Moderate);
 				$("#countMinor").text(result.counter_severity.Minor);
-
-				var append = "";
+				var append = ""
 				$.each(result.chart_data.label,function(key,value){
 					var onclickFunction = "getPerformanceByClient('" + value + "')";
-					append = append + '<button class="btn btn-flat btn-default buttonFilter' + value+ '" onclick=' + onclickFunction + '>' + value + '</button> ';
+					append = append + '<button class="btn btn-flat btn-default buttonFilter buttonFilter' + value+ '" onclick=' + onclickFunction + '>' + value + '</button> ';
 				});
 
 				$("#clientList").html(append);

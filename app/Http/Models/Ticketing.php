@@ -31,4 +31,8 @@ class Ticketing extends Model
 		return $this->hasOne('App\Http\Models\TicketingActivity','id_ticket','id_ticket')
 			->orderBy('id','DESC');
 	}
+
+	public function client_ticket(){
+		return $this->hasOne('App\Http\Models\TicketingClient','id','id_client');
+	}
 }

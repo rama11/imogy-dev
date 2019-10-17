@@ -859,10 +859,10 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-success" id="closeButton">Close</button>
-					<button type="button" class="btn btn-warning" id="pendingButton">Pending</button>
-					<button type="button" class="btn bg-purple" id="cancelButton" >Cancel</button>
-					<button type="button" class="btn btn-primary" id="updateButton">Update</button>
+					<button type="button" class="btn btn-flat btn-success" id="closeButton">Close</button>
+					<button type="button" class="btn btn-flat btn-warning" id="pendingButton">Pending</button>
+					<button type="button" class="btn btn-flat bg-purple" id="cancelButton" >Cancel</button>
+					<button type="button" class="btn btn-flat btn-primary" id="updateButton">Update</button>
 				</div>
 			</div>
 		</div>
@@ -925,7 +925,7 @@
 					</div>
 					<div class="modal-footer">
 						<!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->
-						<button type="button" class="btn btn-success " id="saveCloseButton">Close</button>
+						<button type="button" class="btn btn-flat btn-success " onclick="prepareCloseEmail()">Close</button>
 					</div>
 				</div>
 				<!-- /.modal-content -->
@@ -975,7 +975,7 @@
 							<div class="form-group">
 								<div class="col-sm-12">
 									<div contenteditable="true" class="form-control" style="height: 600px;overflow: auto;" id="bodyCloseMail">
-										@include('mailCloseTicket')
+										
 									</div>
 								</div>
 							</div>
@@ -997,7 +997,7 @@
 								<input type="file" name="attachment" id="emailCloseAttachment">
 							</div> -->
 						<!-- </form> -->
-						<i class="btn btn-primary" onclick="sendCloseTicketBtn(1)"><i class="fa fa-envelope-o"></i> Send</i>
+						<i class="btn btn-flat btn-primary" onclick="sendCloseEmail()"><i class="fa fa-envelope-o"></i> Send</i>
 						<!-- <button type="button" class="btn btn-success " id="saveCloseButton">Close</button> -->
 					</div>
 				</div>
@@ -1026,7 +1026,7 @@
 						</form>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-warning " onclick="preparePendingEmail()">Pending</button>
+						<button type="button" class="btn btn-flat btn-warning " onclick="preparePendingEmail()">Pending</button>
 					</div>
 				</div>
 			</div>
@@ -1088,7 +1088,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<i class="btn btn-primary" onclick="sendPendingEmail()"><i class="fa fa-envelope-o"></i> Send</i>
+						<i class="btn btn-flat btn-primary" onclick="sendPendingEmail()"><i class="fa fa-envelope-o"></i> Send</i>
 					</div>
 				</div>
 			</div>
@@ -1114,7 +1114,7 @@
 						</form>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default " onclick="prepareCancelEmail()">Cancel</button>
+						<button type="button" class="btn btn-flat btn-default " onclick="prepareCancelEmail()">Cancel</button>
 					</div>
 				</div>
 			</div>
@@ -1167,7 +1167,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<i class="btn btn-primary" onclick="sendCancelEmail()"><i class="fa fa-envelope-o"></i> Send</i>
+						<i class="btn btn-flat btn-primary" onclick="sendCancelEmail()"><i class="fa fa-envelope-o"></i> Send</i>
 					</div>
 				</div>
 			</div>
@@ -1238,6 +1238,10 @@
 			buttonsStyling: false,
 		})
 
+		$('#dateClose').datepicker({
+			autoclose: true,
+			format: 'dd/mm/yyyy'
+		});
 
 	})
 
@@ -1685,10 +1689,7 @@
 		showSeconds:true,
 	});
 
-	$('#dateClose').datepicker({
-		autoclose: true,
-	});
-
+	
 	$("#saveCloseButton").on("click",{id_ticket:$('#ticketID').val()},function(event){
 			if($("#saveCloseRoute").val() == "" && $("#saveCloseCouter").val() == ""){
 				alert('You must fill root cause and counter measure!');
@@ -1753,6 +1754,115 @@
 			}
 		}
 	);
+
+	function prepareCloseEmail() {
+		if($("#saveCloseRoute").val() == "" && $("#saveCloseCouter").val() == ""){
+			swalWithCustomClass.fire(
+				'Error',
+				'You must fill root cause and counter measure!',
+				'error'
+			)
+		} else if($("#saveCloseCouter").val() == ""){
+			swalWithCustomClass.fire(
+				'Error',
+				'You must fill counter measure!',
+				'error'
+			)
+		} else if($("#saveCloseRoute").val() == ""){
+			swalWithCustomClass.fire(
+				'Error',
+				'You must fill root cause!',
+				'error'
+			)
+		} else if($("#timeClose").val() == ""){
+			swalWithCustomClass.fire(
+				'Error',
+				'You must fill time!',
+				'error'
+			)
+		} else if($("#dateClose").val() == ""){
+			swalWithCustomClass.fire(
+				'Error',
+				'You must fill date!',
+				'error'
+			)
+		} else {
+			swalWithCustomClass.fire({
+				title: 'Are you sure?',
+				text: "Are you sure to close this ticket?",
+				type: 'warning',
+				showCancelButton: true,
+			}).then((result) => {
+				if (result.value) {
+					$.ajax({
+						url:"{{url('tisygy/mail/getCloseMailTemplate')}}",
+						type:"GET",
+						success: function (result){
+							$("#bodyCloseMail").html(result);
+						}
+					})
+
+					$.ajax({
+						url:"{{url('tisygy/mail/getEmailData')}}",
+						type:"GET",
+						data:{
+							id_ticket:$('#ticketID').val()
+						},
+						success: function (result){
+							// Holder Close
+
+							$(".holderCloseID").text(result.ticket_data.id_ticket);
+							$(".holderCloseRefrence").text(result.ticket_data.refrence);
+							$(".holderClosePIC").text(result.ticket_data.pic);
+							$(".holderCloseContact").text(result.ticket_data.contact_pic);
+							$(".holderCloseLocation").text(result.ticket_data.location);
+							$(".holderCloseProblem").text(result.ticket_data.problem);
+							$(".holderCloseSerial").text(result.ticket_data.serial_device);
+							$(".holderCloseSeverity").text(result.ticket_data.severity_detail.id + " (" + result.ticket_data.severity_detail.name + ")")
+							
+							$(".holderCloseIDATM").text(result.ticket_data.id_atm);
+
+							$(".holderCloseNote").text("");
+							$(".holderCloseEngineer").text(result.ticket_data.engineer);
+
+							var waktu = moment((result.ticket_data.first_activity_ticket.date), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
+
+							$(".holderCloseDate").text(waktu);
+
+							$(".holderCloseStatus").html("<b>CLOSE</b>");
+							$(".holderNumberTicket").text($("#ticketNumber").val());
+
+							// Email Reciver
+							$('.emailMultiSelector ').remove()
+							$("#emailCloseTo").val(result.ticket_reciver.close_to)
+							$("#emailCloseTo").emailinput({ onlyValidValue: true, delim: ';' });
+							$("#emailCloseCc").val(result.ticket_reciver.close_cc)
+							$("#emailCloseCc").emailinput({ onlyValidValue: true, delim: ';' });
+
+							$("#emailCloseSubject").val("Close Tiket " + $(".holderCloseLocation").text() + " [" + $(".holderCloseProblem").text() +"]");
+							$("#emailCloseHeader").html("Dear <b>" + result.ticket_reciver.close_dear + "</b><br>Berikut terlampir Close Tiket untuk Problem <b>" + $(".holderCloseLocation").text() + "</b> : ");
+							$(".holderCloseCustomer").text(result.ticket_reciver.client_name);
+
+							if(result.ticket_reciver.client_acronym  == "BJBR" || result.ticket_reciver.client_acronym  == "BSBB" || result.ticket_reciver.client_acronym  == "BRKR"){
+								$(".holderCloseIDATM2").show();
+								$(".holderNumberTicket2").show();
+							} else {
+								$(".holderCloseIDATM2").hide();
+								$(".holderNumberTicket2").hide();
+							}
+
+							$(".holderCloseCounter").text($("#saveCloseCouter").val());
+							$(".holderCloseRoot").text($("#saveCloseRoute").val());
+							$(".holderCloseWaktu").html("<b>" + moment($("#dateClose").val(),'DD/MM/YYYY').format("DD MMMM YYYY") + " " + moment($("#timeClose").val(),'HH:mm:ss').format("(HH:mm)") + "</b>");
+						},
+						complete: function(){
+							$("#modal-next-close").modal('toggle');
+						}
+					})
+				}
+			})
+		}
+	}
 
 	function preparePendingEmail(){
 		if($("#saveReasonPending").val() == ""){
@@ -1918,42 +2028,27 @@
 		}
 	}
 
-	function closeTicket(id){
-		console.log(id)
-		$('#modal-close').modal('toggle');
-	}
-
-	function sendCloseTicketBtn(id){
-		var body = $("#bodyCloseMail").html();
-
-		var finish_time = moment($("#timeClose").val() + " " + $("#dateClose").val()).format("YYYY-MM-DD HH:mm:ss.000000");
-
-		$.ajax({
-			type:"GET",
-			url:"closeTicket",
-			data:{
+	function sendCloseEmail(){
+		var typeAlert = 'warning'
+		var typeActivity = 'Close'
+		var typeAjax = "GET"
+		var urlAjax = "{{url('tisygy/mail/sendEmailClose')}}"
+		var dataAjax = {
 				id_ticket:$('#ticketID').val(),
 				root_cause:$("#saveCloseRoute").val(),
 				couter_measure:$("#saveCloseCouter").val(),
-				finish:finish_time,
-				body:body,
+				finish:moment($("#dateClose").val(),'DD/MM/YYYY').format("YYYY-MM-DD") + " " + moment($("#timeClose").val(),'HH:mm:ss').format("HH:mm:ss.000000"),
+				body:$("#bodyCloseMail").html(),
 				subject: $("#emailCloseSubject").val(),
 				to: $("#emailCloseTo").val(),
 				cc: $("#emailCloseCc").val(),
-				attachment: $("#emailCloseAttachment").val()
-			},
-			success: function (result){
-				alert('Close email has been sent');
-				$("#modal-close").modal('toggle');
-				$("#modal-next-close").modal('toggle');
-				$("#modal-ticket").modal('toggle');
-				// $("#performance").click();
-				addRows(result);
-			},
-		});
-		if($("#emailCloseAttachment").val() != ""){
-			$("#formClose").submit();
-		}
+			}
+
+		swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,function(){
+			$("#modal-next-close").modal('toggle');
+			$("#modal-close").modal('toggle');
+			$("#modal-ticket").modal('toggle');
+		})
 	}
 
 	function sendPendingEmail(){
@@ -1975,7 +2070,6 @@
 			$("#modal-pending").modal('toggle');
 			$("#modal-ticket").modal('toggle');
 		})
-
 	}
 
 	function sendCancelEmail(id){
@@ -2000,22 +2094,20 @@
 		})
 	}
 
+	function closeTicket(id){
+		$("#saveCloseRoute").val('')
+		$("#saveCloseCouter").val('')
+		$('#modal-close').modal('toggle');
+	}
+
 	function pendingTicket(id){
 		$("#saveReasonPending").val('')
 		$('#modal-pending').modal('toggle');
 	}
 
-	function savePending(id){
-
-	}
-
 	function cancelTicket(id){
 		$('#saveReasonCancel').val('')
 		$('#modal-cancel').modal('toggle');
-	}
-
-	function saveCancel(id){
-
 	}
 
 	function updateTicket(id){
@@ -2501,27 +2593,7 @@
 					$("#cancelButton").prop('disabled',true);
 				}
 
-				// Holder Close
-
-				$(".holderCloseID").text(result.id_ticket);
-				$(".holderCloseRefrence").text(result.refrence);
-				$(".holderClosePIC").text(result.pic);
-				$(".holderCloseContact").text(result.contact_pic);
-				$(".holderCloseLocation").text(result.location);
-				$(".holderCloseProblem").text(result.problem);
-				$(".holderCloseSerial").text(result.serial_device);
 				
-				$(".holderCloseIDATM").text(result.id_atm);
-
-				$(".holderCloseNote").text("");
-				$(".holderCloseEngineer").text(result.engineer);
-
-				var waktu = moment((result.open), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
-
-				$(".holderCloseDate").text(waktu);
-
-				$(".holderCloseStatus").html("<b>CLOSE</b>");
-				$(".holderNumberTicket").text($("#ticketNumber").val());
 
 				
 

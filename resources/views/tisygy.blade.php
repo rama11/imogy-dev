@@ -75,6 +75,9 @@
 				<li>
 					<a href="#tab_4" data-toggle="tab">Setting</a>
 				</li>
+				<li>
+					<a href="#tab_5" data-toggle="tab">Reporting</a>
+				</li>
 			</ul>
 
 			<div class="tab-content">
@@ -242,6 +245,7 @@
 						</section>
 					</div>
 				</div>
+				
 				<div class="tab-pane" id="tab_2">
 					<i class="btn btn-info" id="createIdTicket" onclick="reserveIdTicket()">Reserve ID Ticket</i>
 					<div class="row" id="makeTicket">
@@ -497,12 +501,11 @@
 									</button>
 								</span>
 							</div>
-							<!-- <input type="text" id="searchBar" class="form-control pull-right" placeholder="Search"> -->
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<table class="table table-bordered table-striped" id="tablePerformace">
+							<table class="table table-bordered table-striped" id="tablePerformance">
 								<thead>
 									<th style="width: 120px;text-align:center;vertical-align: middle;">ID Ticket</th>
 									<th style="width: 100px;text-align:center;vertical-align: middle;">ID ATM*</th>
@@ -530,9 +533,6 @@
 							</table>
 						</div>
 					</div>
-
-					
-
 				</div>
 				
 				<div class="tab-pane table-responsive no-padding" id="tab_4">
@@ -762,9 +762,10 @@
 						</div>
 						<!-- /.modal-dialog -->
 					</div>
-					<!-- /.modal -->
 				</div>
-				<!-- /.tab-pane -->
+
+				<div class="tab-pane" id="tab_5">
+				</div>
 			</div>
 		</div>
 	</section>
@@ -1216,17 +1217,17 @@
 		getDashboard();
 
 		$('#searchBar').keyup(function(){
-			$("#tablePerformace").DataTable().search($(this).val()).draw();
+			$("#tablePerformance").DataTable().search($(this).val()).draw();
 		})
 
 		$('#clearFilterTable').click(function(){
 			$('#searchBar').val('')
-			$('#tablePerformace').DataTable().search('').draw();
+			$('#tablePerformance').DataTable().search('').draw();
 		});
 
 		$('#reloadTable').click(function(){
 			$(".buttonFilter").removeClass('btn-primary').addClass('btn-default')
-			$("#tablePerformace").DataTable().ajax.url('tisygy/getPerformanceAll').load();
+			$("#tablePerformance").DataTable().ajax.url('tisygy/getPerformanceAll').load();
 		});
 
 		swalWithCustomClass = Swal.mixin({
@@ -1635,7 +1636,7 @@
 		var input, filter, table, tr, td, i;
 		input = document.getElementById("myInput");
 		filter = input.value.toUpperCase();
-		table = document.getElementById("tablePerformace");
+		table = document.getElementById("tablePerformance");
 		tr = table.getElementsByTagName("tr");
 		for (i = 0; i < tr.length; i++) {
 			td = tr[i].getElementsByTagName("td")[0];
@@ -1653,7 +1654,7 @@
 		var input, filter, table, tr, td, i;
 		input = document.getElementById("myInput2");
 		filter = input.value.toUpperCase();
-		table = document.getElementById("tablePerformace");
+		table = document.getElementById("tablePerformance");
 		tr = table.getElementsByTagName("tr");
 		for (i = 0; i < tr.length; i++) {
 			td = tr[i].getElementsByTagName("td")[1];
@@ -2152,128 +2153,133 @@
 	var dataTicket = [];
 
 	function getPerformanceAll(){
-		$("#tablePerformace").DataTable({
-			ajax:{
-				type:"GET",
-				url:"{{url('tisygy/getPerformanceAll')}}",
-				dataSrc: function (json){
-					json.data.forEach(function(data,idex){
-						data.open_time = moment(data.first_activity_ticket.date,'YYYY-MM-DD, HH:mm:ss').format('dddd, D MMMM YYYY HH:mm')
-						data.pic = data.pic + ' - ' + data.contact_pic
-						if(data.lastest_activity_ticket.activity == "OPEN"){
-							data.lastest_status_numerical = 1
-							data.lastest_status = '<span class="label label-danger">' + data.lastest_activity_ticket.activity + '</span>'
-						} else if(data.lastest_activity_ticket.activity == "ON PROGRESS") {
-							data.lastest_status_numerical = 2
-							data.lastest_status = '<span class="label label-info">' + data.lastest_activity_ticket.activity + '</span>'
-						} else if(data.lastest_activity_ticket.activity == "PENDING") {
-							data.lastest_status_numerical = 3
-							data.lastest_status = '<span class="label label-warning">' + data.lastest_activity_ticket.activity + '</span>'
-						} else if(data.lastest_activity_ticket.activity == "CANCEL") {
-							data.lastest_status_numerical = 4
-							data.lastest_status = '<span class="label bg-purple">' + data.lastest_activity_ticket.activity + '</span>'
-						} else if(data.lastest_activity_ticket.activity == "CLOSE") {
-							data.lastest_status_numerical = 5
-							data.lastest_status = '<span class="label label-success">' + data.lastest_activity_ticket.activity + '</span>'
-						} 
-						data.lastest_operator = data.lastest_activity_ticket.operator
-						data.action = '<button class="btn btn-default btn-flat btn-sm" onclick="showTicket(' + data.id_detail.id + ')">Detail</button>'
-					})
-					return json.data
-				}
-			},
-			columns:[
-				{ data:'id_ticket' },
-				{ 	
-					data:'id_atm',
-					className:'text-center'
-				},
-				{
-					data:'ticket_number_3party',
-					className:'text-center'
-				},
-				{ 
-					data:'open_time',
-					className:'text-center'
-				},
-				{ data:'problem' },
-				{ 
-					data:'pic',
-					className:'text-center'
-				},
-				{ data:'location' },
-				{ 
-					data:'lastest_status',
-					className:'text-center',
-					orderData:[ 10 ],
-				},
-				{ 
-					data:'lastest_operator',
-					className:'text-center'
-				},
-				{
-					data:'action',
-					className:'text-center',
-					orderable: false,
-					searchable: true
-				},
-				{ 
-					data: "lastest_status_numerical",
-					targets: [ 7 ] ,
-					visible: false ,
-					searchable: true
-				},
-			],
-			// order: [[10, "DESC" ]],
-			autoWidth:false,
-			lengthChange: false,
-			searching:true,
-			initComplete: function () {
-				var condition_available = ["OPEN","ON PROGRESS","PENDING","CANCEL","CLOSE"]
-				this.api().columns().every( function () {
-					if(this.index() == 8){
-						// console.log('every colom data')
-						var column = this;
-						var select = $('<select class="form-control"><option value="">Show All</option></select>')
-							.appendTo( $(column.footer()).empty() )
-							.on( 'change', function () {
-								var val = $.fn.dataTable.util.escapeRegex(
-									$(this).val()
-								);
-								column.search( val ? '^'+val+'$' : '', true, false ).draw();
-							} );
-
-						
-						column.data().unique().each( function ( d, j ) {
-							select.append( '<option value="' + d + '">' + d +'</option>' )
+		if($.fn.dataTable.isDataTable("#tablePerformance")){
+			$(".buttonFilter").removeClass('btn-primary').addClass('btn-default')
+			$("#tablePerformance").DataTable().ajax.url('tisygy/getPerformanceAll').load();
+		} else {
+			$("#tablePerformance").DataTable({
+				ajax:{
+					type:"GET",
+					url:"{{url('tisygy/getPerformanceAll')}}",
+					dataSrc: function (json){
+						json.data.forEach(function(data,idex){
+							data.open_time = moment(data.first_activity_ticket.date,'YYYY-MM-DD, HH:mm:ss').format('dddd, D MMMM YYYY HH:mm')
+							data.pic = data.pic + ' - ' + data.contact_pic
+							if(data.lastest_activity_ticket.activity == "OPEN"){
+								data.lastest_status_numerical = 1
+								data.lastest_status = '<span class="label label-danger">' + data.lastest_activity_ticket.activity + '</span>'
+							} else if(data.lastest_activity_ticket.activity == "ON PROGRESS") {
+								data.lastest_status_numerical = 2
+								data.lastest_status = '<span class="label label-info">' + data.lastest_activity_ticket.activity + '</span>'
+							} else if(data.lastest_activity_ticket.activity == "PENDING") {
+								data.lastest_status_numerical = 3
+								data.lastest_status = '<span class="label label-warning">' + data.lastest_activity_ticket.activity + '</span>'
+							} else if(data.lastest_activity_ticket.activity == "CANCEL") {
+								data.lastest_status_numerical = 4
+								data.lastest_status = '<span class="label bg-purple">' + data.lastest_activity_ticket.activity + '</span>'
+							} else if(data.lastest_activity_ticket.activity == "CLOSE") {
+								data.lastest_status_numerical = 5
+								data.lastest_status = '<span class="label label-success">' + data.lastest_activity_ticket.activity + '</span>'
+							} 
+							data.lastest_operator = data.lastest_activity_ticket.operator
+							data.action = '<button class="btn btn-default btn-flat btn-sm" onclick="showTicket(' + data.id_detail.id + ')">Detail</button>'
 						})
-					} else if (this.index() == 7){
-						var column = this;
-						var select = $('<select class="form-control"><option value="">Show All</option></select>')
-							.appendTo( $(column.footer()).empty() )
-							.on( 'change', function () {
-								var val = $.fn.dataTable.util.escapeRegex(
-									$(this).val()
-								);
-								// console.log(val);
-								column.search( val ? val : '', true, false ).draw();
-							} );
-
-						condition_available.forEach( function ( d, j ) {
-							select.append( '<option value="' + d + '">' + d +'</option>' )
-						})
+						return json.data
 					}
-				})
-			},
-		})
+				},
+				columns:[
+					{ data:'id_ticket' },
+					{ 	
+						data:'id_atm',
+						className:'text-center'
+					},
+					{
+						data:'ticket_number_3party',
+						className:'text-center'
+					},
+					{ 
+						data:'open_time',
+						className:'text-center'
+					},
+					{ data:'problem' },
+					{ 
+						data:'pic',
+						className:'text-center'
+					},
+					{ data:'location' },
+					{ 
+						data:'lastest_status',
+						className:'text-center',
+						orderData:[ 10 ],
+					},
+					{ 
+						data:'lastest_operator',
+						className:'text-center'
+					},
+					{
+						data:'action',
+						className:'text-center',
+						orderable: false,
+						searchable: true
+					},
+					{ 
+						data: "lastest_status_numerical",
+						targets: [ 7 ] ,
+						visible: false ,
+						searchable: true
+					},
+				],
+				// order: [[10, "DESC" ]],
+				autoWidth:false,
+				lengthChange: false,
+				searching:true,
+				initComplete: function () {
+					var condition_available = ["OPEN","ON PROGRESS","PENDING","CANCEL","CLOSE"]
+					this.api().columns().every( function () {
+						if(this.index() == 8){
+							// console.log('every colom data')
+							var column = this;
+							var select = $('<select class="form-control"><option value="">Show All</option></select>')
+								.appendTo( $(column.footer()).empty() )
+								.on( 'change', function () {
+									var val = $.fn.dataTable.util.escapeRegex(
+										$(this).val()
+									);
+									column.search( val ? '^'+val+'$' : '', true, false ).draw();
+								} );
+
+							
+							column.data().unique().each( function ( d, j ) {
+								select.append( '<option value="' + d + '">' + d +'</option>' )
+							})
+						} else if (this.index() == 7){
+							var column = this;
+							var select = $('<select class="form-control"><option value="">Show All</option></select>')
+								.appendTo( $(column.footer()).empty() )
+								.on( 'change', function () {
+									var val = $.fn.dataTable.util.escapeRegex(
+										$(this).val()
+									);
+									// console.log(val);
+									column.search( val ? val : '', true, false ).draw();
+								} );
+
+							condition_available.forEach( function ( d, j ) {
+								select.append( '<option value="' + d + '">' + d +'</option>' )
+							})
+						}
+					})
+				},
+			})
+
+		}
 	}
 
 	function getPerformanceByClient(client){
-		// console.log(client)
 		$('#clientList').find(".buttonFilter" + client).removeClass('btn-default').addClass('btn-primary')
 		$('#clientList').find(":not(.buttonFilter" + client + ")").removeClass('btn-primary').addClass('btn-default')
-		$("#tablePerformace").DataTable().clear().draw();
-		$("#tablePerformace").DataTable().ajax.url("{{url('tisygy/getPerformanceByClient?client=')}}" + client).load();
+		$("#tablePerformance").DataTable().clear().draw();
+		$("#tablePerformance").DataTable().ajax.url("{{url('tisygy/getPerformanceByClient?client=')}}" + client).load();
 	}
 
 	// $('#myTab a').click(function (e) {
@@ -2295,7 +2301,7 @@
 			beforeSend:function(){
 				// var url = "getPerformance2?client=all";
 				if (severityFirst == 1) {
-					$("#tablePerformace").empty();
+					$("#tablePerformance").empty();
 					$("#myInput2").val("");
 					$("#myInput").val("");
 					var heading = "";
@@ -2316,7 +2322,7 @@
 					heading = heading + '</thead>';
 					heading = heading + '<tbody>';
 
-					$("#tablePerformace").append(heading);
+					$("#tablePerformance").append(heading);
 				}
 			},
 			success:function(result){
@@ -2351,10 +2357,10 @@
 						body = body + '</tr>';
 					});
 
-					$("#tablePerformace").append(body);
-					$("#tablePerformace").append('</tbody>');
+					$("#tablePerformance").append(body);
+					$("#tablePerformance").append('</tbody>');
 					
-					$("#tablePerformace").DataTable();
+					$("#tablePerformance").DataTable();
 				} else {
 					$.each(result, function(key,value){
 						if((value.id_ticket).indexOf('/') == 3){
@@ -2397,9 +2403,9 @@
 				if(severityFirst == 1){
 					severityFirst = 0;
 				} else {
-					$("#tablePerformace").DataTable().clear().draw();
+					$("#tablePerformance").DataTable().clear().draw();
 					$.each(dataTicket, function(key,value){
-						$("#tablePerformace").DataTable().row.add([
+						$("#tablePerformance").DataTable().row.add([
 							value[0],
 							value[1],
 							value[2],
@@ -2420,7 +2426,7 @@
 	function addRows(client){
 		var url = "getPerformance2?client=" + client;
 					
-		$("#tablePerformace").DataTable().clear().draw();
+		$("#tablePerformance").DataTable().clear().draw();
 		dataTicket = [];
 		$.ajax({
 			type:"GET",
@@ -2463,7 +2469,7 @@
 			},
 			complete: function(){
 				$.each(dataTicket, function(key,value){
-					$("#tablePerformace").DataTable().row.add([
+					$("#tablePerformance").DataTable().row.add([
 						value[0],
 						value[1],
 						value[2],

@@ -236,8 +236,12 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
 	Route::get('tisygy/getPerformanceByTicket','TicketingController@getPerformanceByTicket');
 	Route::get('tisygy/setUpdateTicket','TicketingController@setUpdateTicket');
-	
+
 	Route::get('tisygy/mail/getEmailData','TicketingController@getEmailData');
+	
+	Route::get('tisygy/mail/getCloseMailTemplate','TicketingController@getCloseMailTemplate');
+	Route::get('tisygy/mail/sendEmailClose','TicketingController@sendEmailClose');
+
 	Route::get('tisygy/mail/getCancelMailTemplate','TicketingController@getCancelMailTemplate');
 	Route::get('tisygy/mail/sendEmailCancel','TicketingController@sendEmailCancel');
 

@@ -82,10 +82,6 @@
 			<th style=" border:1px solid #fff; padding: 3px; width:120px;color: #fff;background-color: #337ab7;text-align: left;"" class="bg-primary">Waktu</th>
 			<td style=" border:1px solid; padding: 3px; text-align: center; background-color: #008d4c; border-top: none; color:#FFFFFF;" class="holderCloseWaktu text-center bg-green-active" ></td>
 		</tr>
-		<tr>
-			<th style=" border:1px solid #fff; padding: 3px; width:120px;color: #fff;background-color: #337ab7;text-align: left;"" class="bg-primary">Note</th>
-			<td style=" border:1px solid; padding: 3px;" class="holderCloseNote"></td>
-		</tr>
 	</table>
 	<br>
 	<p>

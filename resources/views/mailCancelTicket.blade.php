@@ -75,15 +75,15 @@
 			<td  style=" border:1px solid; padding: 3px;" class="holderCancelDate"></td>
 		</tr>
 		<tr>
-			<th style=" border:1px solid #fff;  padding: 3px;width:120px;color: #fff;background-color: #337ab7;text-align: left;"" class="bg-warning">Status</th>
-			<td style=" border:1px solid; padding: 3px; text-align: center; background-color: #555299;border-bottom: none;color:#FFFFFF;" class="holderCancelStatus text-center bg-purple-active"></td>
+			<th style=" border:1px solid #fff;  padding: 3px;width:120px;color: #fff;background-color: #337ab7;text-align: left;" class="bg-warning">Status</th>
+			<td rowspan=2 style=" border:1px solid; padding: 3px; text-align: center; background-color: #555299;border-bottom: none;color:#FFFFFF;" class="holderCancelStatus text-center bg-purple-active"></td>
 		</tr>
 		<tr>
-			<th style=" border:1px solid #fff; padding: 3px; width:120px;color: #fff;background-color: #337ab7;text-align: left;"" class="bg-warning">Waktu</th>
-			<td style=" border:1px solid; padding: 3px; text-align: center; background-color: #555299; border-top: none; color:#FFFFFF;" class="holderCancelWaktu text-center bg-purple-active" ></td>
+			<th style=" border:1px solid #fff; padding: 3px; width:120px;color: #fff;background-color: #337ab7;text-align: left;" class="bg-warning">Waktu</th>
+			<!-- <td style=" border:1px solid; padding: 3px; text-align: center; background-color: #555299; border-top: none; color:#FFFFFF;" class="holderCancelWaktu text-center bg-purple-active" ></td> -->
 		</tr>
 		<tr>
-			<th style=" border:1px solid #fff; padding: 3px; width:120px;color: #fff;background-color: #337ab7;text-align: left;"" class="bg-primary">Note</th>
+			<th style=" border:1px solid #fff; padding: 3px; width:120px;color: #fff;background-color: #337ab7;text-align: left;" class="bg-primary">Note</th>
 			<td style=" border:1px solid; padding: 3px;" class="holderCancelNote"></td>
 		</tr>
 	</table>

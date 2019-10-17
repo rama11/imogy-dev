@@ -177,7 +177,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('closeTicket','TicketingController@closeTicket');
 		Route::post('attachmentCloseTicket','TicketingController@attachmentCloseTicket');
 		Route::get('pendingTicket','TicketingController@pendingTicket');
-		Route::get('cancelTicket','TicketingController@cancelTicket');
+		// Route::get('cancelTicket','TicketingController@cancelTicket');
 		Route::get('mailCloseTicket','TicketingController@mailCloseTicket');	
 		Route::get('getSettingClient' , 'TicketingController@getSettingClient');
 		Route::post('setSettingClient' , 'TicketingController@setSettingClient');
@@ -236,7 +236,16 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
 	Route::get('tisygy/getPerformanceByTicket','TicketingController@getPerformanceByTicket');
 	Route::get('tisygy/setUpdateTicket','TicketingController@setUpdateTicket');
+	
+	Route::get('tisygy/mail/getEmailData','TicketingController@getEmailData');
+	Route::get('tisygy/mail/getCancelMailTemplate','TicketingController@getCancelMailTemplate');
+	Route::get('tisygy/mail/sendEmailCancel','TicketingController@sendEmailCancel');
 
+	Route::get('tisygy/mail/getPendingMailTemplate','TicketingController@getPendingMailTemplate');
+	Route::get('tisygy/mail/sendEmailPending','TicketingController@sendEmailPending');
+
+	
+	Route::get('tisygy/mail/getReciver', 'TicketingController@getEmailReciver');
 
 	Route::get('getPerformanceBySeverity','TicketingController@getPerformanceBySeverity');
 	// Route::get('getPerformanceByClient','TicketingController@getPerformanceByClient');

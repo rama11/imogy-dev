@@ -209,6 +209,37 @@ class TicketingController extends Controller
 		return $result;
 	}
 
+	public function getCancelMailTemplate(Request $req){
+		return view('mailCancelTicket');
+	}
+
+	public function getPendingMailTemplate(Request $req){
+		return view('mailPendingTicket');
+	}
+
+	public function getEmailData(Request $req){
+		$idTicket = $req->id_ticket;
+		$ticket_data = TicketingDetail::whereHas('id_detail', function($query) use ($idTicket){
+				$query->where('id','=',$idTicket);
+			})
+			->with([
+				'lastest_activity_ticket:id_ticket,date,activity,operator',
+				'resolve',
+				'first_activity_ticket',
+				'severity_detail:id,name'
+			])
+			->first();
+
+		$ticket_reciver = Ticketing::where('id',$idTicket)
+			->first()
+			->client_ticket;
+
+		return collect([
+			"ticket_data" => $ticket_data,
+			"ticket_reciver" => $ticket_reciver
+		]);
+	}
+
 
 	public function getCreateParameter(){
 		
@@ -771,6 +802,7 @@ class TicketingController extends Controller
 	}
 
 	public function getPerformanceAll(){
+		// sleep(5);
 		$occurring_ticket = DB::table('ticketing__activity')
 			->select('id_ticket','activity')
 			->whereIn('id',function ($query) {
@@ -1094,7 +1126,7 @@ class TicketingController extends Controller
 		
 	}
 
-	public function cancelTicket(Request $request){
+	public function makeMailer($to, $cc, $subject, $body){
 		$mail = new PHPMailer\PHPMailer(true);
 
 		// Yandex Configuration
@@ -1126,29 +1158,13 @@ class TicketingController extends Controller
 			$mail->Password = $mail_pass;
 			$mail->SMTPSecure = $mail_auth;
 			$mail->SetFrom($mail_from, $mail_name);
+
+			$mail->Subject = $subject;
+			$mail->MsgHTML($body);
+
+			$to = explode(";", $to);
+			$cc = explode(";", $cc);
 			
-			$mail->Subject = $request->subject;
-			$mail->MsgHTML($request->body);
-
-			$to = explode(";", $request->to);
-			$cc = explode(";", $request->cc);
-			
-			foreach ($to as $key => $value) {
-				if($to[$key] != NULL)
-					$to[$key] = trim($value," ");
-				// echo trim($value," ") . "<br>";
-			}
-
-			foreach ($cc as $key => $value) {
-				if($cc[$key] != "")
-					$cc[$key] = trim($value," ");
-				// echo trim($value," ") . "<br>";
-			}
-
-
-			$to = array_slice($to,0,sizeof($to) - 1);
-			$cc = array_slice($cc,0,sizeof($cc) - 1);
-
 			for($i = 0;$i < sizeof($to);$i++){
 				$mail->addAddress($to[$i]);
 			}
@@ -1156,25 +1172,8 @@ class TicketingController extends Controller
 			for($i = 0;$i < sizeof($cc);$i++){
 				$mail->addCC($cc[$i]);
 			}
-
-			$mail->send();
-
-			$update = DB::table('ticketing__activity')
-			->insert([
-				"id_ticket" => $request->id_ticket,
-				"date" => date("Y-m-d H:i:s.000000"),
-				"activity" => "CANCEL",
-				"operator" => Auth::user()->nickname,
-				"note" => "Cancel Ticket - " . $request->note_cancel
-			]);
-
-			$result = DB::table('ticketing__id')
-				->where('ticketing__id.id_ticket','=',$request->id_ticket)
-				->join('ticketing__client','ticketing__client.id','=','ticketing__id.id_client')
-				->value('ticketing__client.client_acronym');
-
-
-			return $result;
+			
+			return $mail;
 
 		} catch (phpmailerException $e) {
 			DB::table('email_error')
@@ -1190,9 +1189,58 @@ class TicketingController extends Controller
 		} catch (Exception $e) {
 			dd($e);
 		}
-
-		
 	}
+
+	public function sendEmailCancel(Request $request){
+		$mail = $this->makeMailer($request->to,$request->cc,$request->subject,$request->body);
+
+		$mail->send();
+
+		$activityTicketUpdate = new TicketingActivity();
+		$activityTicketUpdate->id_ticket = $request->id_ticket;
+		$activityTicketUpdate->date = date("Y-m-d H:i:s.000000");
+		$activityTicketUpdate->activity = "CANCEL";
+		$activityTicketUpdate->operator = Auth::user()->nickname;
+		$activityTicketUpdate->note = "Cancel Ticket - " . $request->note_cancel;
+
+		$activityTicketUpdate->save();
+
+		$clientAcronymFilter = Ticketing::with('client_ticket')
+			->where('id_ticket',$request->id_ticket)
+			->first()
+			->client_ticket
+			->client_acronym;
+
+		$activityTicketUpdate->client_acronym_filter = $clientAcronymFilter;
+		
+		return $activityTicketUpdate;
+	}
+
+	public function sendEmailPending(Request $request){
+		$mail = $this->makeMailer($request->to,$request->cc,$request->subject,$request->body);
+
+		$mail->send();
+
+		$activityTicketUpdate = new TicketingActivity();
+		$activityTicketUpdate->id_ticket = $request->id_ticket;
+		$activityTicketUpdate->date = date("Y-m-d H:i:s.000000");
+		$activityTicketUpdate->activity = "PENDING";
+		$activityTicketUpdate->operator = Auth::user()->nickname;
+		$activityTicketUpdate->note = "Panding Ticket - " . $request->note_pending;
+
+		$activityTicketUpdate->save();
+
+		$clientAcronymFilter = Ticketing::with('client_ticket')
+			->where('id_ticket',$request->id_ticket)
+			->first()
+			->client_ticket
+			->client_acronym;
+
+		$activityTicketUpdate->client_acronym_filter = $clientAcronymFilter;
+		
+		return $activityTicketUpdate;
+	}
+
 	public function mailCloseTicket(Request $request){
 		
 	}

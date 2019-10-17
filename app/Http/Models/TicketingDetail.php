@@ -51,4 +51,8 @@ class TicketingDetail extends Model
 	public function resolve(){
 		return $this->hasOne('App\Http\Models\TicketingResolve','id_ticket','id_ticket');
 	}
+
+	public function severity_detail(){
+		return $this->hasOne('App\Http\Models\TicketingSeverity','id','severity');
+	}
 }

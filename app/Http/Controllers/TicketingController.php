@@ -21,6 +21,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use App\Http\Models\Ticketing;
 use App\Http\Models\TicketingDetail;
 use App\Http\Models\TicketingActivity;
+use App\Http\Models\TicketingResolve;
 
 class TicketingController extends Controller
 {
@@ -209,12 +210,18 @@ class TicketingController extends Controller
 		return $result;
 	}
 
-	public function getCancelMailTemplate(Request $req){
-		return view('mailCancelTicket');
+
+
+	public function getCloseMailTemplate(Request $req){
+		return view('mailCloseTicket');
 	}
 
 	public function getPendingMailTemplate(Request $req){
 		return view('mailPendingTicket');
+	}
+	
+	public function getCancelMailTemplate(Request $req){
+		return view('mailCancelTicket');
 	}
 
 	public function getEmailData(Request $req){
@@ -1189,6 +1196,39 @@ class TicketingController extends Controller
 		} catch (Exception $e) {
 			dd($e);
 		}
+	}
+
+	public function sendEmailClose(Request $request){
+		$mail = $this->makeMailer($request->to,$request->cc,$request->subject,$request->body);
+
+		$mail->send();
+
+		$activityTicketUpdate = new TicketingActivity();
+		$activityTicketUpdate->id_ticket = $request->id_ticket;
+		$activityTicketUpdate->date = $request->finish;
+		$activityTicketUpdate->activity = "CLOSE";
+		$activityTicketUpdate->operator = Auth::user()->nickname;
+		$activityTicketUpdate->note = "CLOSE";
+
+		$activityTicketUpdate->save();
+
+		$resolveTicket = new TicketingResolve();
+		$resolveTicket->id_ticket = $request->id_ticket;
+		$resolveTicket->root_couse = $request->root_cause;
+		$resolveTicket->counter_measure = $request->couter_measure;
+		$resolveTicket->finish = date("Y-m-d H:i:s.000000");
+
+		$resolveTicket->save();
+
+		$clientAcronymFilter = Ticketing::with('client_ticket')
+			->where('id_ticket',$request->id_ticket)
+			->first()
+			->client_ticket
+			->client_acronym;
+
+		$activityTicketUpdate->client_acronym_filter = $clientAcronymFilter;
+		
+		return $activityTicketUpdate;
 	}
 
 	public function sendEmailCancel(Request $request){

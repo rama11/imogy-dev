@@ -166,10 +166,10 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('tisygy2', 'TicketingController@tisygy2');
 		// Route::get('tisygy', function(){
 			// echo "<h1 style='font-size:100px'>Mas Danang Nganteng</h1gController@createIdTicket');
-		Route::get('reserveIdTicket','TicketingController@createIdTicket');
+		// Route::get('reserveIdTicket','TicketingController@createIdTicket');
 		Route::get('getEmailReciver', 'TicketingController@getEmailReciver');
-		Route::get('setNewTicket','TicketingController@setNewTicket');
-		Route::get('mailOpenTicket','TicketingController@mailOpenTicket');
+		// Route::get('setNewTicket','TicketingController@setNewTicket');
+		// Route::get('mailOpenTicket','TicketingController@mailOpenTicket');
 		// Route::get('getPerformance','TicketingController@getPerformance');
 		// Route::get('getPerformance2','TicketingController@getPerformance2');
 		// Route::get('getTicket','TicketingController@getTicket');
@@ -181,12 +181,11 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('mailCloseTicket','TicketingController@mailCloseTicket');	
 		Route::get('getSettingClient' , 'TicketingController@getSettingClient');
 		Route::post('setSettingClient' , 'TicketingController@setSettingClient');
-		Route::get('getAtm','TicketingController@getAtm');
+		
 		Route::get('getDetailAtm/{id}','TicketingController@getDetailAtm');
 		Route::get('getDetailAtm2/{id}','TicketingController@getDetailAtm2');
 		Route::get('setAtm','TicketingController@setAtm');
 		Route::get('newAtm','TicketingController@newAtm');
-		Route::get('updateIdTicket','TicketingController@updateIdTicket');
 		// Route::get('getReportTicket/{client}/{month}','TicketingController@testReport');
 	});
 		
@@ -235,9 +234,21 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('tisygy/getPerformanceAll','TicketingController@getPerformanceAll');
 	Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
 	Route::get('tisygy/getPerformanceByTicket','TicketingController@getPerformanceByTicket');
+	
 	Route::get('tisygy/setUpdateTicket','TicketingController@setUpdateTicket');
-
+	
+	Route::get('tisygy/create/getAtmId','TicketingController@getAtmId');
+	Route::get('tisygy/create/getAtmDetail','TicketingController@getAtmDetail');
+	Route::get('tisygy/create/getReserveIdTicket','TicketingController@getReserveIdTicket');
+	Route::get('tisygy/create/setReserveIdTicket','TicketingController@setReserveIdTicket');
+	Route::get('tisygy/create/putReserveIdTicket','TicketingController@putReserveIdTicket');
+	// Route::get('tisygy/create/getEmailReciver', 'TicketingController@getEmailReciver');
+	
 	Route::get('tisygy/mail/getEmailData','TicketingController@getEmailData');
+
+	Route::get('tisygy/create/setNewTicket', 'TicketingController@setNewTicket');
+	Route::get('tisygy/mail/getOpenMailTemplate','TicketingController@getOpenMailTemplate');
+	Route::get('tisygy/mail/sendEmailOpen','TicketingController@sendEmailOpen');
 	
 	Route::get('tisygy/mail/getCloseMailTemplate','TicketingController@getCloseMailTemplate');
 	Route::get('tisygy/mail/sendEmailClose','TicketingController@sendEmailClose');

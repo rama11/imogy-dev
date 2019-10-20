@@ -22,6 +22,8 @@ use App\Http\Models\Ticketing;
 use App\Http\Models\TicketingDetail;
 use App\Http\Models\TicketingActivity;
 use App\Http\Models\TicketingResolve;
+use App\Http\Models\TicketingClient;
+use App\Http\Models\TicketingATM;
 
 class TicketingController extends Controller
 {
@@ -210,41 +212,48 @@ class TicketingController extends Controller
 		return $result;
 	}
 
+	public function getOpenMailTemplate(){
+		return view('mailOpenTicket');
+	}
 
-
-	public function getCloseMailTemplate(Request $req){
+	public function getCloseMailTemplate(){
 		return view('mailCloseTicket');
 	}
 
-	public function getPendingMailTemplate(Request $req){
+	public function getPendingMailTemplate(){
 		return view('mailPendingTicket');
 	}
 	
-	public function getCancelMailTemplate(Request $req){
+	public function getCancelMailTemplate(){
 		return view('mailCancelTicket');
 	}
 
 	public function getEmailData(Request $req){
-		$idTicket = $req->id_ticket;
-		$ticket_data = TicketingDetail::whereHas('id_detail', function($query) use ($idTicket){
-				$query->where('id','=',$idTicket);
-			})
-			->with([
-				'lastest_activity_ticket:id_ticket,date,activity,operator',
-				'resolve',
-				'first_activity_ticket',
-				'severity_detail:id,name'
-			])
-			->first();
+		if(isset($req->client)){
+			return $result = TicketingClient::where('client_acronym',$req->client)
+				->first();
+		} else {
+			$idTicket = $req->id_ticket;
+			$ticket_data = TicketingDetail::whereHas('id_detail', function($query) use ($idTicket){
+					$query->where('id','=',$idTicket);
+				})
+				->with([
+					'lastest_activity_ticket:id_ticket,date,activity,operator',
+					'resolve',
+					'first_activity_ticket',
+					'severity_detail:id,name'
+				])
+				->first();
 
-		$ticket_reciver = Ticketing::where('id',$idTicket)
-			->first()
-			->client_ticket;
+			$ticket_reciver = Ticketing::where('id',$idTicket)
+				->first()
+				->client_ticket;
 
-		return collect([
-			"ticket_data" => $ticket_data,
-			"ticket_reciver" => $ticket_reciver
-		]);
+			return collect([
+				"ticket_data" => $ticket_data,
+				"ticket_reciver" => $ticket_reciver
+			]);
+		}
 	}
 
 
@@ -281,35 +290,50 @@ class TicketingController extends Controller
 		return array($client,$severity_id,$severity_name,$severity_description);
 	}
 
-	public function createIdTicket(){
-
-		// DB::table('ticketing__id')
-		// 	->insert(['id' => NULL]);
-
-		$id = DB::table('ticketing__id')
-			->orderBy('id','DESC')
-			// ->get()
-			->value('id');
-			
-		return $id + 1;
+	public function getReserveIdTicket(){
+		return Ticketing::orderBy('id','DESC')->first()->id + 1;
 	}
 
-	public function updateIdTicket(Request $req){
-		
-		$req->id_client = DB::table('ticketing__client')
-			->where('client_acronym','=',$req->id_client)
-			->value('id');
+	public function setReserveIdTicket(Request $req){
+		// $req->id_client = DB::table('ticketing__client')
+		// 	->where('client_acronym','=',$req->id_client)
+		// 	->value('id');
 
-		DB::table('ticketing__id')
-			->insert([
-				'id' => $req->id,
-				'id_ticket' => $req->id_ticket,
-				'id_client' => $req->id_client,
-				'operator' => $req->operator,
-			]);
-			// ->where('id','=',$req->id)
-			// ->update(['id_ticket' => $req->id_ticket, 'id_client' => $id_client]);
-		
+		$newTicketId = new Ticketing();
+		$newTicketId->id = $req->id;
+		$newTicketId->id_ticket = $req->id_ticket;
+		$newTicketId->id_client = TicketingClient::where('client_acronym',$req->acronym_client)->value('id');
+		$newTicketId->operator = Auth::user()->nickname;
+
+		$newTicketId->save();
+
+		// DB::table('ticketing__id')
+		// 	->insert([
+		// 		'id' => $req->id,
+		// 		'id_ticket' => $req->id_ticket,
+		// 		'id_client' => TicketingClient::where('client_acronym',$req->acronym_client)->value('id'),
+		// 		'operator' => Auth::user()->nickname,
+		// 	]);
+	}
+
+	public function putReserveIdTicket(Request $req){
+		// $req->id_client = DB::table('ticketing__client')
+		// 	->where('client_acronym','=',$req->id_client)
+		// 	->value('id');
+
+		$updateTicketId = Ticketing::where('id_ticket',$req->id_ticket_before)->first();
+		$updateTicketId->id_ticket = $req->id_ticket_after;
+		$updateTicketId->id_client = TicketingClient::where('client_acronym',$req->acronym_client)->value('id');
+
+		$updateTicketId->save();
+
+		// DB::table('ticketing__id')
+		// 	->insert([
+		// 		'id' => $req->id,
+		// 		'id_ticket' => $req->id_ticket,
+		// 		'id_client' => TicketingClient::where('client_acronym',$req->acronym_client)->value('id'),
+		// 		'operator' => Auth::user()->nickname,
+		// 	]);
 	}
 
 	public function setNewTicket(Request $req){
@@ -317,32 +341,35 @@ class TicketingController extends Controller
 			->where('client_acronym','=',$req->client)
 			->value('id');
 
-
 		date_default_timezone_set("Asia/Jakarta");
 
-		DB::table('ticketing__detail')
-			->insert([
-				"id_ticket" => $req->id_ticket,
-				"id_atm" => $req->id_atm,
-				"refrence" => $req->refrence,
-				"pic" => $req->pic,
-				"contact_pic" => $req->contact_pic,
-				"location" => $req->location,
-				"problem" => $req->problem,
-				"serial_device" => $req->serial_device,
-				"note" => $req->note,
-				"reporting_time" => $req->report,
-				"severity" => substr($req->severity,0,1)
-			]);
 
-		DB::table('ticketing__activity')
-			->insert([
-				"id_ticket" => $req->id_ticket,
-				"date" => date("Y-m-d H:i:s.000000"),
-				"activity" => "OPEN",
-				"operator" => Auth::user()->nickname,
-				"note" => "Open Ticket"
-			]);
+
+		// DB::table('ticketing__detail')
+		// 	->insert([
+		// 		"id_ticket" => $req->id_ticket,
+		// 		"id_atm" => $req->id_atm,
+		// 		"refrence" => $req->refrence,
+		// 		"pic" => $req->pic,
+		// 		"contact_pic" => $req->contact_pic,
+		// 		"location" => $req->location,
+		// 		"problem" => $req->problem,
+		// 		"serial_device" => $req->serial_device,
+		// 		"note" => $req->note,
+		// 		"reporting_time" => $req->report,
+		// 		"severity" => substr($req->severity,0,1)
+		// 	]);
+
+		
+
+		// DB::table('ticketing__activity')
+		// 	->insert([
+		// 		"id_ticket" => $req->id_ticket,
+		// 		"date" => date("Y-m-d H:i:s.000000"),
+		// 		"activity" => "OPEN",
+		// 		"operator" => Auth::user()->nickname,
+		// 		"note" => "Open Ticket"
+		// 	]);
 
 		// "2018-03-15 12:20:13.000000"
 		// "2018-03-08 10:24:42.000000"
@@ -363,14 +390,49 @@ class TicketingController extends Controller
 				->toArray();
 
 		} else {
-			$result = DB::table('ticketing__client')
-				->where('client_acronym','=',$req->client)
-				->get()
-				->toArray();
-				// ->first();
+			$result = TicketingClient::where('client_acronym',$req->client)
+				->first();
 		}
 		return $result;
 
+	}
+
+	public function sendEmailOpen(Request $request){
+		$mail = $this->makeMailer($request->to,$request->cc,$request->subject,$request->body);
+
+		// $mail->send();
+
+		$detailTicketOpen = new TicketingDetail();
+		$detailTicketOpen->id_ticket = $request->id_ticket;
+		$detailTicketOpen->id_atm = $request->id_atm;
+		$detailTicketOpen->refrence = $request->refrence;
+		$detailTicketOpen->pic = $request->pic;
+		$detailTicketOpen->contact_pic = $request->contact_pic;
+		$detailTicketOpen->location = $request->location;
+		$detailTicketOpen->problem = $request->problem;
+		$detailTicketOpen->serial_device = $request->serial_device;
+		$detailTicketOpen->note = $request->note;
+		$detailTicketOpen->reporting_time = $request->report;
+		$detailTicketOpen->severity = substr($request->severity,0,1);
+
+		$detailTicketOpen->save();
+
+		$activityTicketOpen = new TicketingActivity();
+		$activityTicketOpen->id_ticket = $request->id_ticket;
+		$activityTicketOpen->date = date("Y-m-d H:i:s.000000");
+		$activityTicketOpen->activity = "OPEN";
+		$activityTicketOpen->operator = Auth::user()->nickname;
+		$activityTicketOpen->note = "Open Ticket";
+
+		$activityTicketOpen->save();
+
+		$clientAcronymFilter = Ticketing::with('client_ticket')
+			->where('id_ticket',$request->id_ticket)
+			->first()
+			->client_ticket
+			->client_acronym;
+		$activityTicketOpen->client_acronym_filter = $clientAcronymFilter;
+		return $activityTicketOpen;
 	}
 
 	public function mailOpenTicket(Request $request){
@@ -611,63 +673,118 @@ class TicketingController extends Controller
 	}
 
 	public function getPerformanceBySeverity(Request $req){
+		$start = microtime(true);
 
-		$result = DB::table('ticketing__detail')
-			->select(
-					'ticketing__detail.id',
-					'ticketing__detail.id_ticket',
-					'ticketing__id.id_client',
-					'aaa.operator',
-					'ticketing__detail.refrence',
-					'ticketing__detail.pic',
-					'ticketing__detail.contact_pic',
-					'ticketing__detail.location',
-					'ticketing__detail.problem',
-					'ticketing__detail.serial_device',
-					'ticketing__detail.id_atm',
-					'aaa.note',
-					'ticketing__detail.engineer',
-					'ticketing__detail.ticket_number_3party',
-					'ticketing__detail.reporting_time',
-					'ticketing__detail.severity',
-					DB::raw('aaaa.`date` AS "open"'),
-					DB::raw('ticketing__id.`id` AS "id_open"')
-					// 'ticketing__detail.severity',
-				)
-			->join('ticketing__id','ticketing__detail.id_ticket','=','ticketing__id.id_ticket')
-			->join(DB::raw("(SELECT `ticketing__activity`.`operator`,`ticketing__activity`.`id_ticket`,`ticketing__activity`.`note`
-							FROM `ticketing__activity`
-							JOIN (
-								SELECT MAX(id) AS activity 
-								FROM `ticketing__activity` 
-								GROUP by `id_ticket`
-							) AS aa
-							ON `ticketing__activity`.`id` = aa.`activity`
-						) AS aaa"),"ticketing__detail.id_ticket","=","aaa.id_ticket")
-			->join(DB::raw("(SELECT `ticketing__activity`.`operator`,`ticketing__activity`.`id_ticket`,`ticketing__activity`.`date`
-							FROM `ticketing__activity`
-							JOIN (
-								SELECT MIN(id) AS activity 
-								FROM `ticketing__activity` 
-								GROUP by `id_ticket`
-							) AS bb
-							ON `ticketing__activity`.`id` = bb.`activity`
-						) AS aaaa"),"ticketing__detail.id_ticket","=","aaaa.id_ticket")
-			->where('ticketing__detail.severity','=',$req->severity)
+		// $result = DB::table('ticketing__detail')
+		// 	->select(
+		// 			'ticketing__detail.id',
+		// 			'ticketing__detail.id_ticket',
+		// 			'ticketing__id.id_client',
+		// 			'aaa.operator',
+		// 			'ticketing__detail.refrence',
+		// 			'ticketing__detail.pic',
+		// 			'ticketing__detail.contact_pic',
+		// 			'ticketing__detail.location',
+		// 			'ticketing__detail.problem',
+		// 			'ticketing__detail.serial_device',
+		// 			'ticketing__detail.id_atm',
+		// 			'aaa.note',
+		// 			'ticketing__detail.engineer',
+		// 			'ticketing__detail.ticket_number_3party',
+		// 			'ticketing__detail.reporting_time',
+		// 			'ticketing__detail.severity',
+		// 			DB::raw('aaaa.`date` AS "open"'),
+		// 			DB::raw('ticketing__id.`id` AS "id_open"')
+		// 			// 'ticketing__detail.severity',
+		// 		)
+		// 	->join('ticketing__id','ticketing__detail.id_ticket','=','ticketing__id.id_ticket')
+		// 	->join(DB::raw("(SELECT `ticketing__activity`.`operator`,`ticketing__activity`.`id_ticket`,`ticketing__activity`.`note`
+		// 					FROM `ticketing__activity`
+		// 					JOIN (
+		// 						SELECT MAX(id) AS activity 
+		// 						FROM `ticketing__activity` 
+		// 						GROUP by `id_ticket`
+		// 					) AS aa
+		// 					ON `ticketing__activity`.`id` = aa.`activity`
+		// 				) AS aaa"),"ticketing__detail.id_ticket","=","aaa.id_ticket")
+		// 	->join(DB::raw("(SELECT `ticketing__activity`.`operator`,`ticketing__activity`.`id_ticket`,`ticketing__activity`.`date`
+		// 					FROM `ticketing__activity`
+		// 					JOIN (
+		// 						SELECT MIN(id) AS activity 
+		// 						FROM `ticketing__activity` 
+		// 						GROUP by `id_ticket`
+		// 					) AS bb
+		// 					ON `ticketing__activity`.`id` = bb.`activity`
+		// 				) AS aaaa"),"ticketing__detail.id_ticket","=","aaaa.id_ticket")
+		// 	->where('ticketing__detail.severity','=',$req->severity)
+		// 	->get();
+
+		// 	foreach ($result as $key => $value) {
+		// 		$value->last_status = array(
+		// 		DB::table('ticketing__activity')
+		// 			->where('id_ticket','=',$value->id_ticket)
+		// 			->orderBy('id','DESC')
+		// 			->value('activity'),
+		// 		DB::table('ticketing__activity')
+		// 			->where('id_ticket','=',$value->id_ticket)
+		// 			->orderBy('date','DESC')
+		// 			->value('date')
+		// 		);
+		// 	}
+
+		// $req->severity
+
+		$occurring_ticket = DB::table('ticketing__activity')
+			->select('ticketing__activity.id_ticket','ticketing__activity.activity','ticketing__id.id_client')
+			->whereIn('ticketing__activity.id',function ($query) {
+				$query->select(DB::raw("MAX(id) AS activity"))
+					->from('ticketing__activity')
+					->groupBy('id_ticket');
+				})
+			->join('ticketing__id','ticketing__id.id_ticket','=','ticketing__activity.id_ticket')
+			->where('ticketing__activity.activity','<>','CANCEL')
+			->where('ticketing__activity.activity','<>','CLOSE')
+			// ->where('ticketing__id.id_client','=',2)
 			->get();
 
-			foreach ($result as $key => $value) {
-				$value->last_status = array(
-				DB::table('ticketing__activity')
-					->where('id_ticket','=',$value->id_ticket)
-					->orderBy('id','DESC')
-					->value('activity'),
-				DB::table('ticketing__activity')
-					->where('id_ticket','=',$value->id_ticket)
-					->orderBy('date','DESC')
-					->value('date')
-				);
-			}
+		$occurring_ticket_result = TicketingDetail::with([
+				'first_activity_ticket:id_ticket,date,operator',
+				'lastest_activity_ticket',
+				'id_detail:id_ticket,id',
+			])
+			->whereIn('id_ticket',$occurring_ticket->pluck('id_ticket'))
+			->where('severity',$req->severity)
+			->orderBy('id','DESC')
+			->get();
+
+		$finish_ticket = DB::table('ticketing__activity')
+			->select('ticketing__activity.id_ticket','ticketing__activity.activity')
+			->whereIn('ticketing__activity.id',function ($query) {
+				$query->select(DB::raw("MAX(`id`) AS `activity`"))
+					->from('ticketing__activity')
+					->groupBy('id_ticket');
+				})
+			// ->whereRaw('`ticketing__activity`.`id_ticket` LIKE "%/' . $client_acronym . '/%"')
+			->whereRaw('(`ticketing__activity`.`activity` = "CANCEL" OR `ticketing__activity`.`activity` = "CLOSE")')
+			->orderBy('ticketing__activity.id','DESC')
+			->take(100 - $occurring_ticket_result->count())
+			->get()
+			->pluck('id_ticket');
+
+		$finish_ticket_result = TicketingDetail::with([
+				'first_activity_ticket:id_ticket,date,operator',
+				'lastest_activity_ticket',
+				'id_detail:id_ticket,id',
+			])
+			->whereIn('id_ticket',$finish_ticket)
+			->where('severity',$req->severity)
+			->orderBy('id','DESC')
+			->get();
+
+		$result = $occurring_ticket_result->merge($finish_ticket_result);
+
+		// $time_elapsed_secs = microtime(true) - $start;
+		// return $time_elapsed_secs;
 
 		return $result;
 	}
@@ -1376,23 +1493,16 @@ class TicketingController extends Controller
 	}
 
 
-	public function getAtm(Request $request){
-		$get_client = DB::table('ticketing__client')
-			->where('client_acronym','=',$request->acronym)
-			->value('id');
+	public function getAtmId(Request $request){
+		$result = TicketingClient::with('client_atm')
+			->where('client_acronym','BJBR')
+			->first();
 
-		$result = DB::table('ticketing__atm')
-			->where('owner','=',$get_client)
-			->select('atm_id')
-			->get();
-			// ->toArray();
+		return $result->client_atm->pluck('atm_id');
+	}
 
-		$final = array();
-		foreach ($result as $value) {
-			$final[] = $value->atm_id;
-		}
-
-		return $final;
+	public function getAtmDetail(Request $request){
+		return TicketingATM::where('atm_id',$request->id_atm)->first();
 	}
 
 	public function getDetailAtm($id_atm){

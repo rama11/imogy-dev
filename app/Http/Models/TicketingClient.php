@@ -25,4 +25,8 @@ class TicketingClient extends Model
 		'situation'
 	];
 
+	public function client_atm(){
+		return $this->hasMany('App\Http\Models\TicketingATM','owner','id');
+	}
+
 }

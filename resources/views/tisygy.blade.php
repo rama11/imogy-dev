@@ -7,7 +7,8 @@
 	<link rel="stylesheet" href="{{ url('css/email.multiple.css') }}">
 	<link rel="stylesheet" href="{{ url('css/taginput.css') }}">
 	<link rel="stylesheet" href="{{ url('css/jquery.emailinput.min.css') }}">
-
+	<link rel="stylesheet" href="{{url('plugins/select2/select2.min.css')}}">
+	<link rel="stylesheet" href="{{url('dist/css/AdminLTE.min.css')}}">
 
 	<style type="text/css">
 		.table2 > tbody > tr > th, .table2 > tbody > tr > td {
@@ -47,6 +48,10 @@
 		.label {
 			border-radius: 0px !important;
 		}
+
+		.has-error .select2-selection {
+			border-color: rgb(185, 74, 72) !important;
+		}
 		
 		body { padding-right: 0 !important }
 	</style>
@@ -67,7 +72,7 @@
 					<a href="#tab_1" data-toggle="tab" onclick="getDashboard()">Dashboard</a>
 				</li>
 				<li>
-					<a href="#tab_2" data-toggle="tab" id="createparam" onclick="getCreateParameter()">Create</a>
+					<a href="#tab_2" data-toggle="tab" id="createparam" onclick="makeNewTicket()">Create</a>
 				</li>
 				<li>
 					<a href="#tab_3" data-toggle="tab" id="performance" onclick="getPerformanceAll()">Performance</a>
@@ -247,11 +252,10 @@
 				</div>
 				
 				<div class="tab-pane" id="tab_2">
-					<i class="btn btn-info" id="createIdTicket" onclick="reserveIdTicket()">Reserve ID Ticket</i>
-					<div class="row" id="makeTicket">
+					<i class="btn btn-flat btn-info" id="createIdTicket" onclick="reserveIdTicket()">Reserve ID Ticket</i>
+					<div class="row" id="formNewTicket">
 						<div class="col-md-8">
-							<form class="form-horizontal" action="{{url('/atisygy')}}" method="post">
-								<input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
+							<form class="form-horizontal">
 								<input type="hidden" id="inputID">
 								<div class="form-group" id="nomorDiv" style="display: none;">
 									<label for="inputNomor" class="col-sm-2 control-label" >Nomor Ticket</label>
@@ -259,7 +263,7 @@
 										<input type="text" class="form-control" id="inputticket" value="" readonly>
 									</div>
 								</div>
-								<div class="form-group" id="clinetDiv" style="display: none;">
+								<div class="form-group" id="clientDiv" style="display: none;">
 									<label class="col-sm-2 control-label">Client</label>
 									<div class="col-sm-4">
 										<select class="form-control" id="inputClient">
@@ -273,21 +277,32 @@
 										</select>
 									</div>
 								</div>
+
 								<hr id="hrLine" style="display: none">
-								<div class="form-group" id="refrenceDIV" style="display: none;">
+								<div class="form-group" id="refrenceDiv" style="display: none;">
 									<label for="inputDescription" class="col-sm-2 control-label">Refrence</label>
 									<div class="col-sm-10">
 										<input type="text" class="form-control" id="inputRefrence" placeholder=""></div>
 								</div>
+								<!-- <div class="form-group has-error">
+									<label class="control-label" for="inputError"><i class="fa fa-times-circle-o"></i> Input with
+										error</label>
+									<input type="text" class="form-control" id="inputError" placeholder="Enter ...">
+									
+								</div> -->
 								<div class="form-group" id="picDiv" style="display: none;">
-									<label for="inputDescription" class="col-sm-2 control-label">PIC</label>
+									<label for="inputDescription" class="col-sm-2 control-label">PIC*</label>
 									<div class="col-sm-10">
-										<input type="text" class="form-control" id="inputPIC" placeholder="" required></div>
+										<input type="text" class="form-control" id="inputPIC" placeholder="" required>
+										<span class="help-block" style="margin-bottom: 0px; display: none;">Person In Charge must be fill!</span>
+									</div>
 								</div>
 								<div class="form-group" id="contactDiv" style="display: none;">
-									<label for="inputDescription" class="col-sm-2 control-label">Contact PIC</label>
+									<label for="inputDescription" class="col-sm-2 control-label">Contact PIC*</label>
 									<div class="col-sm-10">
-										<input type="text" class="form-control" id="inputContact" placeholder="" required></div>
+										<input type="text" class="form-control" id="inputContact" placeholder="" required>
+										<span class="help-block" style="margin-bottom: 0px; display: none;">Contact PIC must be fill!</span>
+									</div>
 								</div>
 								<div class="form-group" id="categoryDiv" style="display: none;">
 									<label for="inputCreator" class="col-sm-2 control-label">Category</label>
@@ -310,47 +325,53 @@
 									</div>
 								</div>
 								<div class="form-group" id="problemDiv" style="display: none;">
-									<label for="inputEmail" class="col-sm-2 control-label">Problem</label>
+									<label for="inputEmail" class="col-sm-2 control-label">Problem*</label>
 									<div class="col-sm-10">
-										<input type="text" class="form-control" id="inputProblem" placeholder="" required></div>
+										<input type="text" class="form-control" id="inputProblem" placeholder="" required>
+										<span class="help-block" style="margin-bottom: 0px; display: none;">Problem must be fill!</span>
+									</div>
 								</div>
 								<div class="form-group" id="inputATMid" style="display: none;">
-									<label for="inputEmail" class="col-sm-2 control-label">ID ATM</label>
+									<label for="inputEmail" class="col-sm-2 control-label">ID ATM*</label>
 									<div class="col-sm-10">
-										<select class="form-control select2" id="inputATM" style="width: 100%" required>
-											
-										</select>
+										<select class="form-control select2" id="inputATM" style="width: 100%" required></select>
+										<span class="help-block" style="margin-bottom: 0px; display: none;">ATM must be select!</span>
 									</div>
 								</div>
 								<div class="form-group" id="locationDiv" style="display: none;">
-									<label for="inputEmail" class="col-sm-2 control-label">Location</label>
+									<label for="inputEmail" class="col-sm-2 control-label">Location*</label>
 									<div class="col-sm-10">
-										<input type="text" class="form-control" id="inputLocation" placeholder="" required></div>
+										<input type="text" class="form-control" id="inputLocation" placeholder="" required>
+										<span class="help-block" style="margin-bottom: 0px; display: none;">Location Must be fill!</span>
+									</div>
 								</div>
 								<div class="form-group" id="serialDiv" style="display: none;">
 									<label for="inputEmail" class="col-sm-2 control-label">Serial Number</label>
 									<div class="col-sm-10">
-										<input type="text" class="form-control" id="inputSerial" placeholder=""></div>
+										<input type="text" class="form-control" id="inputSerial" placeholder="">
+									</div>
 								</div>
+
 								<hr id="hrLine2" style="display: none">
 								<div class="form-group" id="reportDiv" style="display: none;">
-									<label for="inputEmail" class="col-sm-2 control-label">Report Time</label>
-									<div class="col-sm-5">
+									<label for="inputEmail" class="col-sm-2 control-label">Report Time*</label>
+									<div class="col-sm-5 firstReport">
 										<div class="input-group">
-											<input type="text" class="form-control timepicker" id="inputReport1">
-
+											<input type="text" class="form-control" id="inputReportingTime" placeholder="ex. 01:11:00">
 											<div class="input-group-addon">
 												<i class="fa fa-clock-o"></i>
 											</div>
 										</div>
+										<span class="help-block" style="margin-bottom: 0px; display: none;">Time must be set!</span>
 									</div>
-									<div class="col-sm-5">
+									<div class="col-sm-5 secondReport">
 										<div class="input-group date">
 											<div class="input-group-addon">
 												<i class="fa fa-calendar"></i>
 											</div>
-											<input type="text" class="form-control pull-right" id="inputReport2">
+											<input type="text" class="form-control pull-right" id="inputReportingDate">
 										</div>
+										<span class="help-block" style="margin-bottom: 0px; display: none;">Date must be set!</span>
 										<!-- <input type="text" class="form-control" id="inputReport" placeholder=""> -->
 									</div>
 								</div>
@@ -366,7 +387,7 @@
 										<input type="text" class="form-control" id="inputNote" placeholder=""></div>
 								</div>
 							</form>
-							<i class="btn btn-info pull-right" id="createTicket"  style="display: none;" onclick="createTicket()">Create Ticket</i>
+							<i class="btn btn-flat btn-info pull-right" id="createTicket"  style="display: none;" onclick="createTicket()">Create Ticket</i>
 						</div>
 
 						<div class="col-md-4" id="tableTicket" style="display: none;">
@@ -462,7 +483,7 @@
 								<div class="form-group">
 									<div class="col-sm-12">
 										<div contenteditable="true" class="form-control" style="height: 600px;overflow: auto;" id="bodyOpenMail">
-											@include('mailOpenTicket')
+											
 										</div>
 									</div>
 								</div>
@@ -473,7 +494,7 @@
 												<i class="fa fa-paperclip"></i> Attachment
 												<input type="file" name="attachment" id="emailOpenAttachment">
 											</div> -->
-											<button class="btn btn-primary" onclick="sendOpenTicketBtn()"><i class="fa fa-envelope-o"></i> Send</button>
+											<button class="btn btn-primary" onclick="sendOpenEmail()"><i class="fa fa-envelope-o"></i> Send</button>
 										</div>
 									</div>
 								</div>
@@ -1244,11 +1265,25 @@
 			format: 'dd/mm/yyyy'
 		});
 
+
+		$("#inputReportingTime").val(moment().format('HH:mm:ss'))
+
+		// $("#inputReportingTime").timepicker({
+		// 	showInputs: false,
+		// 	minuteStep: 1,
+		// 	maxHours: 24,
+		// 	showMeridian: false,
+		// 	showSeconds:true,
+		// });
+
+		$('#inputReportingDate').datepicker({
+			autoclose: true,
+			format: 'dd/mm/yyyy'
+		});
+
 	})
 
 	function swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,callback){
-		
-
 		swalWithCustomClass.fire({
 			title: 'Are you sure?',
 			text: "Make sure there is nothing wrong to send this " + typeActivity + " ticket!",
@@ -1276,8 +1311,8 @@
 					})
 
 					$.ajax({
-						url: urlAjax,
 						type: typeAjax,
+						url: urlAjax,
 						data: dataAjax,
 						success: function(resultAjax){
 							Swal.hideLoading()
@@ -1287,6 +1322,7 @@
 								type: 'success',
 								confirmButtonText: 'Reload',
 							}).then((result) => {
+								// console.log(resultAjax)
 								callback()
 								getPerformanceByClient(resultAjax.client_acronym_filter)
 							})
@@ -1481,29 +1517,131 @@
 		});
 	}
 
-	function getCreateParameter(){
-		$.ajax({
-			type:"GET",
-			url:"getCreateParameter",
-			success: function (result){
-				var append = "";
-				var append2 = "<option selected='selected'>Chose the client</option> ";
-				var append3 = "<option selected='selected' val='None'>Chose the severity</option> ";
+	function clearFormNewTicket(){
+		$("#inputRefrence").val('');
+		$("#inputPIC").val('');
+		$("#inputContact").val('');
+		$("#inputCategory").val('');
+		$("#inputProblem").val('');
+		if ($('#inputATM').hasClass("select2-hidden-accessible")) {
+			$("#inputATM").select2('destroy');
+		}
+		$("#inputATM").empty()
+		$("#inputLocation").val('');
+		$("#inputSerial").val('');
+		// $("#inputReportingTime").val('');
+		$("#inputReportingTime").val(moment().format('HH:mm:ss'))
+		$("#inputReportingDate").val('');
+		$("#inputDate").val('');
+		$("#inputNote").val('');
 
-				$.each(result[0],function(key,value){
-					var dummy = "getPerformance('" + value + "')";
-					append = append + '<button class="btn btn-default" onclick=' + dummy + '>' + value + '</button> ';
-					append2 = append2 + "<option value='" + value + "'>" + value + "</option>";
+		$("#hrLine").show();
+		$("#hrLine2").show();
+
+		$("#nomorDiv").hide()
+		$("#clientDiv").hide()
+		$("#refrenceDiv").hide()
+		$("#picDiv").hide()
+		$("#contactDiv").hide()
+		$("#categoryDiv").hide()
+		$("#problemDiv").hide()
+		$("#inputATMid").hide()
+		$("#locationDiv").hide()
+		$("#serialDiv").hide()
+		$("#reportDiv").hide()
+		$("#dateDiv").hide()
+		$("#noteDiv").hide()
+		$("#createTicket").hide()
+
+		$("#holderID").text('');
+		$("#holderRefrence").text('');
+		$("#holderCustomer").text('');
+		$("#holderPIC").text('');
+		$("#holderContact").text('');
+		$("#holderProblem").text('');
+		$("#holderLocation").text('');
+		$("#holderEngineer").text('');
+		$("#holderDate").text('');
+		$("#holderSerial").text('');
+		$("#holderSeverity").text('');
+		// $("#holderRoot").text($("#inputticket").val();
+		$("#holderNote").text('');
+		$("#holderStatus").html('');
+		$("#holderWaktu").html('');
+		$("#holderIDATM2").hide();
+		$("#holderIDATM").text('');
+		
+		$("#tableTicket").hide();
+
+		$('.emailMultiSelector').remove()
+		$("#emailOpenTo").val('')
+		$("#emailOpenCc").val('')
+		$("#emailOpenSubject").val('')
+		$("#bodyOpenMail").empty()
+		$("#sendTicket").hide()
+
+		$("#formNewTicket").hide();
+		$("#createIdTicket").show();
+	}
+
+	function makeNewTicket(){
+		if(firstTimeTicket !== 0){
+			swalWithCustomClass.fire({
+				title: 'Are you sure?',
+				text: "This information of create ticket will be reset!",
+				type: 'warning',
+				showCancelButton: true,
+			}).then((result) => {
+				firstTimeTicket = 0
+				clearFormNewTicket()
+				$.ajax({
+					type:"GET",
+					url:"getCreateParameter",
+					success: function (result){
+						var append = "";
+						var append2 = "<option selected='selected'>Chose the client</option> ";
+						var append3 = "<option selected='selected' val='None'>Chose the severity</option> ";
+
+						$.each(result[0],function(key,value){
+							var dummy = "getPerformance('" + value + "')";
+							append = append + '<button class="btn btn-default" onclick=' + dummy + '>' + value + '</button> ';
+							append2 = append2 + "<option value='" + value + "'>" + value + "</option>";
+						});
+
+						$.each(result[2],function(key,value){
+							append3 = append3 + "<option value='" + result[1][key] + " (" + value + ")'>" + value + " (" + result[3][key] +")</option>";
+						});
+
+						$("#inputClient").html(append2);
+						$("#inputSeverity").html(append3);
+					},
 				});
+			})
+		} else {
+			$.ajax({
+				type:"GET",
+				url:"getCreateParameter",
+				success: function (result){
+					var append = "";
+					var append2 = "<option selected='selected'>Chose the client</option> ";
+					var append3 = "<option selected='selected' val='None'>Chose the severity</option> ";
 
-				$.each(result[2],function(key,value){
-					append3 = append3 + "<option value='" + result[1][key] + " (" + value + ")'>" + value + " (" + result[3][key] +")</option>";
-				});
+					$.each(result[0],function(key,value){
+						var dummy = "getPerformance('" + value + "')";
+						append = append + '<button class="btn btn-default" onclick=' + dummy + '>' + value + '</button> ';
+						append2 = append2 + "<option value='" + value + "'>" + value + "</option>";
+					});
 
-				$("#inputClient").html(append2);
-				$("#inputSeverity").html(append3);
-			},
-		});
+					$.each(result[2],function(key,value){
+						append3 = append3 + "<option value='" + result[1][key] + " (" + value + ")'>" + value + " (" + result[3][key] +")</option>";
+					});
+
+					$("#inputClient").html(append2);
+					$("#inputSeverity").html(append3);
+				},
+			});
+		}
+		
 	}
 
 	$('#atmTable').DataTable({
@@ -1515,17 +1653,9 @@
 		"autoWidth": false
 	});
 
-	$("#inputReport1").timepicker({
-		showInputs: false,
-		minuteStep: 1,
-		maxHours: 24,
-		showMeridian: false,
-		showSeconds:true,
-	});
+	
 
-	$('#inputReport2').datepicker({
-		autoclose: true,
-	});
+	
 
 	function newAtm(){
 		$.ajax({
@@ -1604,33 +1734,33 @@
 		$("#addAtm").show();
 	}
 
-	$("#inputATM").select2({
-		minimumInputLength: 2,
-		selectOnClose: true,
-		tags: [],
-		ajax: {
-			url: 'getAtm',
-			dataType: 'json',
-			type: "GET",
-			quietMillis: 50,
-			data: function (term) {
-				return {
-					term: term
-				};
-			},
-			results: function (data) {
-				return {
-					results: $.map(data, function (item) {
-						return {
-							text: item.completeName,
-							slug: item.slug,
-							id: item.id
-						}
-					})
-				};
-			}
-		}
-	});
+	// $("#inputATM").select2({
+	// 	minimumInputLength: 2,
+	// 	selectOnClose: true,
+	// 	tags: [],
+	// 	ajax: {
+	// 		url: 'getAtm',
+	// 		dataType: 'json',
+	// 		type: "GET",
+	// 		quietMillis: 50,
+	// 		data: function (term) {
+	// 			return {
+	// 				term: term
+	// 			};
+	// 		},
+	// 		results: function (data) {
+	// 			return {
+	// 				results: $.map(data, function (item) {
+	// 					return {
+	// 						text: item.completeName,
+	// 						slug: item.slug,
+	// 						id: item.id
+	// 					}
+	// 				})
+	// 			};
+	// 		}
+	// 	}
+	// });
 
 	function myFunction() {
 		var input, filter, table, tr, td, i;
@@ -1669,16 +1799,22 @@
 	}
 
 	$("#inputATM").change(function(){
-		$.ajax({
-			type:"GET",
-			url:"getDetailAtm2/" + this.value,
-			success: function(result){
-				// console.log(result[0].serial_number);
-				// result[0].location
-				$("#inputLocation").val(result[0].location);
-				$("#inputSerial").val(result[0].serial_number);
-			}
-		});
+		if(this.value === "Select One"){
+			$("#inputLocation").val("");
+			$("#inputSerial").val("");
+		} else {
+			$.ajax({
+				type:"GET",
+				url:"{{url('tisygy/create/getAtmDetail')}}",
+				data:{
+					id_atm:this.value
+				},
+				success: function(result){
+					$("#inputLocation").val(result.location);
+					$("#inputSerial").val(result.serial_number);
+				}
+			});
+		}
 	});
 	// $(".sidebar-toggle").click();
 	//Timepicker
@@ -2139,6 +2275,12 @@
 						$("#ticketActivity").prepend('<li>' + moment(result.date).format("DD MMMM - HH:mm") + ' [' + result.operator + '] - ' + result.note + '</li>');
 						$("#ticketNote").val("")
 						getPerformanceByClient(result.client_acronym_filter)
+						$("#ticketStatus").attr('class','label label-info');
+						$("#ticketStatus").text('ON PROGRESS')
+						$("#updateButton").prop('disabled',false);
+						$("#closeButton").prop('disabled',false);
+						$("#cancelButton").prop('disabled',false);
+						$("#pendingButton").prop('disabled',false);
 						swalWithCustomClass.fire(
 							'Success',
 							'Update Completed!',
@@ -2675,220 +2817,226 @@
 		height: '250px'
 	});
 
-	function sendOpenTicketBtn(){
-		if(confirm("Are you sure to send this ticket?")){
-			console.log("Yes");
-			var body = $("#bodyOpenMail").html();
-			
-			$.ajax({
-				type:"GET",
-				url:"mailOpenTicket",
-				data:{
-					body:body,
-					subject: $("#emailOpenSubject").val(),
-					to: $("#emailOpenTo").val(),
-					cc: $("#emailOpenCc").val(),
-					attachment: $("#emailOpenAttachment").val()
-				},
-				success: function(result){
-					console.log("success");
-					alert('Email Has Been Sent!');
-					$("#performance").click();
-					// window.location('/tisygy');
-				},
-			});
+	function sendOpenEmail(){
 
-		}
+		var typeAlert = 'warning'
+		var typeActivity = 'Open'
+		var typeAjax = "GET"
+		var urlAjax = "{{url('tisygy/mail/sendEmailOpen')}}"
+		var dataAjax = {
+				body:$("#bodyOpenMail").html(),
+				subject: $("#emailOpenSubject").val(),
+				to: $("#emailOpenTo").val(),
+				cc: $("#emailOpenCc").val(),
+				attachment: $("#emailOpenAttachment").val(),
+				id_ticket:$("#inputticket").val(),
+
+				id:$("#inputID").val(),
+				client:$("#inputClient").val(),
+
+				id_atm:$("#inputATM").val(),
+				refrence:$("#inputRefrence").val(),
+				pic:$("#inputPIC").val(),
+				contact_pic:$("#inputContact").val(),
+				location:$("#inputLocation").val(),
+				problem:$("#inputProblem").val(),
+				serial_device:$("#inputSerial").val(),
+				note:$("#inputNote").val(),
+				report:moment($("#inputReportingDate").val(),'DD/MM/YYYY').format("YYYY-MM-DD") + " " + moment($("#inputReportingTime").val(),'HH:mm:ss').format("HH:mm:ss.000000"),
+				severity:$("#inputSeverity").val()
+			}
+
+		swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,function(){
+			$("#performance").click();
+			// $("#modal-cancel").modal('toggle');
+			// $("#modal-next-cancel").modal('toggle');
+			// $("#modal-ticket").modal('toggle');
+		})
+
+		// if(confirm("Are you sure to send this ticket?")){
+		// 	console.log("Yes");
+		// 	var body = $("#bodyOpenMail").html();
+			
+		// 	$.ajax({
+		// 		type:"GET",
+		// 		url:"mailOpenTicket",
+		// 		data:{
+		// 			body:body,
+		// 			subject: $("#emailOpenSubject").val(),
+		// 			to: $("#emailOpenTo").val(),
+		// 			cc: $("#emailOpenCc").val(),
+		// 			attachment: $("#emailOpenAttachment").val()
+		// 		},
+		// 		success: function(result){
+		// 			console.log("success");
+		// 			alert('Email Has Been Sent!');
+		// 			$("#performance").click();
+		// 			// window.location('/tisygy');
+		// 		},
+		// 	});
+
+		// }
 	}
 
 	function reserveIdTicket() {
 		if("{Auth::check()}"){
-			if("{{Auth::user()->id}}" == 4){
-				$("#inputticket").val('0000');
-				$("#inputID").val('0000');
-				$("#nomorDiv").show();
-				$("#inputDate").val(moment().format("DD-MMM-YY HH:mm"));
-				$("#clinetDiv").show();
-				$("#createIdTicket").hide();
-			} else {
-				$.ajax({
-					type:"GET",
-					url:"reserveIdTicket",
-					success: function(result){
-						$("#inputticket").val(result);
-						$("#inputID").val(result);
-						$("#nomorDiv").show();
-						$("#inputDate").val(moment().format("DD-MMM-YY HH:mm"));
-						$("#clinetDiv").show();
-						$("#createIdTicket").hide();
-					},
-				});
-			}
+			$.ajax({
+				type:"GET",
+				url:"{{url('tisygy/create/getReserveIdTicket')}}",
+				success: function(result){
+					$("#inputticket").val(result);
+					$("#inputID").val(result);
+					$("#inputDate").val(moment().format("DD-MMM-YY HH:mm"));
+					
+					$("#nomorDiv").show();
+					$("#clientDiv").show();
+					$("#formNewTicket").show();
+
+					$("#createIdTicket").hide();
+				},
+			});
 		} else {
 			window.location('/login');
 		}
 	}
 
-	
-
 	function createEmailBody(){
 		$("#sendTicket").show();
-		$("#makeTicket").hide();
+		$("#formNewTicket").hide();
 		
 		$.ajax({
+			url:"{{url('tisygy/mail/getOpenMailTemplate')}}",
 			type:"GET",
-			url:"getEmailReciver",
-			data:{
-				client:$("#inputClient").val()
-			},
-			success: function(result){
-				$("#emailOpenTo").val(result[0].open_to);
-				$("#emailOpenCc").val(result[0].open_cc);
-				$("#emailOpenSubject").val("Open Tiket " + $("#inputLocation").val() + " [" + $("#inputProblem").val() +"]");
-				$("#emailOpenHeader").html("Dear <b>" + result[0].open_dear + "</b><br>Berikut terlampir Open Tiket untuk Problem <b>" + $("#inputLocation").val() + "</b> : ");
-				$(".holderCustomer").text(result[0].client_name);
+			success: function (result){
+				$("#bodyOpenMail").html(result);
+				$.ajax({
+					type:"GET",
+					url:"{{url('tisygy/mail/getEmailData')}}",
+					data:{
+						client:$("#inputClient").val()
+					},
+					success: function(result){
+						$('.emailMultiSelector').remove()
+						$("#emailOpenTo").val(result.open_to)
+						$("#emailOpenTo").emailinput({ onlyValidValue: true, delim: ';' });
+						$("#emailOpenCc").val(result.open_cc)
+						$("#emailOpenCc").emailinput({ onlyValidValue: true, delim: ';' });
+						
+						$("#emailOpenSubject").val("Open Tiket " + $("#inputLocation").val() + " [" + $("#inputProblem").val() +"]");
+						$("#emailOpenHeader").html("Dear <b>" + result.open_dear + "</b><br>Berikut terlampir Open Tiket untuk Problem <b>" + $("#inputLocation").val() + "</b> : ");
+						$(".holderCustomer").text(result.client_name);
+					}
+				});
+
+				if(!$("#inputATM").val()){
+					$("#inputATM").val(" - ");
+				} else {
+					$(".holderIDATM2").show();
+					$(".holderIDATM").text($("#inputATM").val());
+				}
+
+				if(!$("#inputSerial").val()){
+					$("#inputSerial").val(" - ");
+				}
+
+				if(!$("#inputRefrence").val()){
+					$("#inputRefrence").val(" - ");
+				}
+
+				if(!$("#inputNote").val()){
+					$("#inputNote").val(" - ");
+				}
+				
+				$("#locationProblem").text($("#inputLocation").val());
+
+				var waktu = moment(($("#inputDate").val()), "DD-MMM-YY HH:mm").format("D MMMM YYYY");
+				var waktu2 = moment(($("#inputDate").val()), "DD-MMM-YY HH:mm").format("HH:mm");
+
+				$(".holderID").text($("#inputticket").val());
+				
+				$(".holderRefrence").text($("#inputRefrence").val());
+				$(".holderPIC").text($("#inputPIC").val());
+				$(".holderContact").text($("#inputContact").val());
+				$(".holderLocation").text($("#inputLocation").val());
+				$(".holderProblem").text($("#inputProblem").val());
+				$(".holderSerial").text($("#inputSerial").val());
+				$(".holderSeverity").text($("#inputSeverity").val());
+				$(".holderNote").text($("#inputNote").val());
+				
+				$(".holderEngineer").text($("#inputEngineer").val());
+				$(".holderDate").text(waktu);
+
+				$(".holderStatus").html("<b>OPEN</b>");
+				$(".holderWaktu").html("<b>" + waktu2 + "</b>");
 			}
-		});
-
-		if(!$("#inputATM").val()){
-			$("#inputATM").val(" - ");
-		} else {
-			$(".holderIDATM2").show();
-			$(".holderIDATM").text($("#inputATM").val());
-		}
-
-		if(!$("#inputSerial").val()){
-			$("#inputSerial").val(" - ");
-		}
-
-		if(!$("#inputRefrence").val()){
-			$("#inputRefrence").val(" - ");
-		}
-
-		if(!$("#inputNote").val()){
-			$("#inputNote").val(" - ");
-		}
-		
-		$("#locationProblem").text($("#inputLocation").val());
-
-		var waktu = moment(($("#inputDate").val()), "DD-MMM-YY HH:mm").format("D MMMM YYYY");
-		var waktu2 = moment(($("#inputDate").val()), "DD-MMM-YY HH:mm").format("HH:mm");
-
-		$(".holderID").text($("#inputticket").val());
-		
-
-		
-		$(".holderRefrence").text($("#inputRefrence").val());
-		$(".holderPIC").text($("#inputPIC").val());
-		$(".holderContact").text($("#inputContact").val());
-		$(".holderLocation").text($("#inputLocation").val());
-		$(".holderProblem").text($("#inputProblem").val());
-		$(".holderSerial").text($("#inputSerial").val());
-		$(".holderSeverity").text($("#inputSeverity").val());
-		$(".holderNote").text($("#inputNote").val());
-		
-		$(".holderEngineer").text($("#inputEngineer").val());
-		$(".holderDate").text(waktu);
-		// .("#holderCounter").text($("#inputticket").val();
-		// .("#holderRoot").text($("#inputticket").val();
-
-		$(".holderStatus").html("<b>OPEN</b>");
-		$(".holderWaktu").html("<b>" + waktu2 + "</b>");
-
-		report = moment($("#inputReport1").val() + " " + $("#inputReport2").val()).format("YYYY-MM-DD HH:mm:ss.000000");
-		// report = moment("13:56:30 03/27/2018").format("YYYY-MM-DD HH:mm:ss.000000");
-
-		if("{{Auth::user()->id}}" == 4){
-			$.ajax({
-				type:"GET",
-				url:"setNewTicket",
-				data:{
-					id:$("#inputID").val(),
-					id_ticket:$("#inputticket").val(),
-					client:$("#inputClient").val(),
-
-					id_atm:$("#inputATM").val(),
-					refrence:$("#inputRefrence").val(),
-					pic:$("#inputPIC").val(),
-					contact_pic:$("#inputContact").val(),
-					location:$("#inputLocation").val(),
-					problem:$("#inputProblem").val(),
-					serial_device:$("#inputSerial").val(),
-					note:$("#inputNote").val(),
-					report:report,
-					severity:$("#inputSeverity").val()
-				},
-			});
-		} else {
-			$.ajax({
-				type:"GET",
-				url:"setNewTicket",
-				data:{
-					id:$("#inputID").val(),
-					id_ticket:$("#inputticket").val(),
-					client:$("#inputClient").val(),
-
-					id_atm:$("#inputATM").val(),
-					refrence:$("#inputRefrence").val(),
-					pic:$("#inputPIC").val(),
-					contact_pic:$("#inputContact").val(),
-					location:$("#inputLocation").val(),
-					problem:$("#inputProblem").val(),
-					serial_device:$("#inputSerial").val(),
-					note:$("#inputNote").val(),
-					report:report,
-					severity:$("#inputSeverity").val()
-				},
-			});
-		}
-
+		})
 	}
 
-	$("#inputPIC").change(function(){
-		if($(this).val() == ""){
-			$(this).closest('.form-group').addClass('has-error')
-		} else {
-			$(this).closest('.form-group').removeClass('has-error')
-		}
-	});
+	// $("#inputPIC").change(function(){
+	// 	if($(this).val() == ""){
+	// 		$(this).closest('.form-group').addClass('has-error')
+	// 	} else {
+	// 		$(this).closest('.form-group').removeClass('has-error')
+	// 	}
+	// });
 
-	$("#inputContact").change(function(){
-		if($(this).val() == ""){
-			$(this).closest('.form-group').addClass('has-error')
-		} else {
-			$(this).closest('.form-group').removeClass('has-error')
-		}
-	});
-	$("#inputProblem").change(function(){
-		if($(this).val() == ""){
-			$(this).closest('.form-group').addClass('has-error')
-		} else {
-			$(this).closest('.form-group').removeClass('has-error')
-		}
-	});
-	$("#inputLocation").change(function(){
-		if($(this).val() == ""){
-			$(this).closest('.form-group').addClass('has-error')
-		} else {
-			$(this).closest('.form-group').removeClass('has-error')
-		}
-	});
+	// $("#inputContact").change(function(){
+	// 	if($(this).val() == ""){
+	// 		$(this).closest('.form-group').addClass('has-error')
+	// 	} else {
+	// 		$(this).closest('.form-group').removeClass('has-error')
+	// 	}
+	// });
+	// $("#inputProblem").change(function(){
+	// 	if($(this).val() == ""){
+	// 		$(this).closest('.form-group').addClass('has-error')
+	// 	} else {
+	// 		$(this).closest('.form-group').removeClass('has-error')
+	// 	}
+	// });
+	// $("#inputLocation").change(function(){
+	// 	if($(this).val() == ""){
+	// 		$(this).closest('.form-group').addClass('has-error')
+	// 	} else {
+	// 		$(this).closest('.form-group').removeClass('has-error')
+	// 	}
+	// });
 
 	function createTicket(){
-
+		$(".help-block").hide()
 		if($("#inputPIC").val() == "" ){
-			alert('You must set PIC');
+			$("#picDiv").addClass('has-error')
+			$("#picDiv .col-sm-10 .help-block").show()
 		} else if($("#inputContact").val() == "" ){
-			alert('You must set Contact PIC');
+			$("#contactDiv").addClass('has-error')
+			$("#contactDiv .col-sm-10 .help-block").show()
 		} else if($("#inputProblem").val() == "" ){
-			alert('You must set Problem');
+			$("#problemDiv").addClass('has-error')
+			$("#problemDiv .col-sm-10 .help-block").show()
+		} else if($("#inputATMid").is(':visible') && $("#inputATM").val() === "Select One"){
+			$("#inputATMid").addClass('has-error')
+			$("#inputATMid .col-sm-10 .help-block").show()
 		} else if($("#inputLocation").val() == "" ){
-			alert('You must set Location');
+			$("#locationDiv").addClass('has-error')
+			$("#locationDiv .col-sm-10 .help-block").show()
+		} else if($("#inputReportingTime").val() == "" ){
+			$("#reportDiv").addClass('has-error')
+			$("#reportDiv .col-sm-5.firstReport .help-block").show()
+
+			$("#inputReportingDate").css("border-color",'#d2d6de')
+			$("#reportDiv .col-sm-5.secondReport .input-group .input-group-addon").css("border-color",'#d2d6de')
+			$("#reportDiv .col-sm-5.secondReport .input-group .input-group-addon i").css("color",'#555')
+		} else if($("#inputReportingDate").val() == "" ){
+			$("#reportDiv").addClass('has-error')
+			$("#reportDiv .col-sm-5.secondReport .help-block").show()
+
+			$("#inputReportingTime").css("border-color",'#d2d6de')
+			$("#reportDiv .col-sm-5.firstReport .input-group .input-group-addon").css("border-color",'#d2d6de')
+			$("#reportDiv .col-sm-5.firstReport .input-group .input-group-addon i").css("color",'#555')
 		} else {
+			$(".has-error").removeClass('has-error')
 			var waktu = moment(($("#inputDate").val()), "DD-MMM-YY HH:mm").format("D MMMM YYYY");
 			var waktu2 = moment(($("#inputDate").val()), "DD-MMM-YY HH:mm").format("HH:mm");
-
-			console.log(waktu);
 
 			$("#tableTicket").show();
 			$("#holderID").text($("#inputticket").val());
@@ -2923,21 +3071,26 @@
 		if($("#inputClient").val() == "BJBR" || $("#inputClient").val() == "BSBB" || $("#inputClient").val() == "BRKR"){
 			$.ajax({
 				type:"GET",
-				url:"getAtm",
+				url:"{{url('tisygy/create/getAtmId')}}",
 				data:{
 					acronym:$("#inputClient").val(),
 				},
 				success: function(result){
-					console.log(result);
 					$("#inputATMid").show();
 					$("#categoryDiv").show();
-					$("#inputATM").select2('destroy');
+					if ($('#inputATM').hasClass("select2-hidden-accessible")) {
+						$("#inputATM").select2('destroy');
+					}
+					result.unshift('Select One')
+					// console.log(result);
 					$("#inputATM").select2({
 						data:result
 					});
+					$("#locationDiv .col-sm-2").text('Location')
 				}
 			});
 		} else {
+			$("#locationDiv .col-sm-2").text('Location*')
 			$("#inputATM").val("");
 			$("#inputSerial").val("");
 			$("#inputLocation").val("");
@@ -2945,39 +3098,38 @@
 		}
 	}
 
-	var perawan = 0;
+	var firstTimeTicket = 0;
 
 	$("#inputClient").change(function(){
-		if(perawan == 0){
-			$("#inputticket").val($("#inputticket").val() + "/" + this.value + moment().format("/MMM/YYYY"));
-		} else {
-			var str = $("#inputticket").val();
-			str = str.substr(0,str.indexOf('/')+0);
-			$("#inputticket").val(str + "/" + this.value + moment().format("/MMM/YYYY"));
-		}
-
-		if("{{Auth::user()->id}}" == 4){
-			var idDummy = 1;
+		var acronym_client = this.value;
+		if(firstTimeTicket == 0){
 			$.ajax({
 				type:"GET",
-				url:"updateIdTicketasdfa",
+				url:"{{url('tisygy/create/setReserveIdTicket')}}",
 				data:{
-					id:idDummy,
-					id_ticket:$("#inputticket").val(),
-					id_client:this.value,
+					id_ticket:$("#inputticket").val() + "/" + acronym_client + moment().format("/MMM/YYYY"),
+					acronym_client:acronym_client,
 					operator:"{{Auth::user()->nickname}}",
+				},
+				success: function(result){
+					$("#inputticket").val($("#inputticket").val() + "/" + acronym_client + moment().format("/MMM/YYYY"));
 				}
 			});
 		} else {
-			var idDummy = null;
+			var temp = $("#inputticket").val().split('/')
+			temp[1] = acronym_client
+			var changeResult = temp.join('/')
+
 			$.ajax({
 				type:"GET",
-				url:"updateIdTicket",
+				url:"{{url('tisygy/create/putReserveIdTicket')}}",
 				data:{
-					id:idDummy,
-					id_ticket:$("#inputticket").val(),
-					id_client:this.value,
-					operator:"{{Auth::user()->nickname}}",
+					id_ticket_before:$("#inputticket").val(),
+					id_ticket_after:changeResult,
+					acronym_client:acronym_client,
+				},
+				success: function(result){
+					$("#inputticket").val(changeResult);
 				}
 			});
 		}
@@ -2987,15 +3139,14 @@
 			getBankAtm();
 		}
 
-		perawan = 1;
-		// console.log(perawan);
+		firstTimeTicket = 1;
 	});
 
 
 	$("#inputSeverity").change(function(){
 		$("#hrLine").show();
 		$("#hrLine2").show();
-		$("#refrenceDIV").show();
+		$("#refrenceDiv").show();
 		$("#picDiv").show();
 		$("#contactDiv").show();
 		$("#problemDiv").show();

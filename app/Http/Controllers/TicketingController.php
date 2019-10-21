@@ -1492,6 +1492,18 @@ class TicketingController extends Controller
 		}
 	}
 
+	public function getAllAtmSetting(){
+		return array('data' => TicketingATM::join('ticketing__client','ticketing__atm.owner','=','ticketing__client.id')
+			->select(
+				'ticketing__atm.id',
+				DB::raw('`ticketing__client`.`client_acronym` AS `owner`'),
+				'ticketing__atm.atm_id',
+				'ticketing__atm.serial_number',
+				'ticketing__atm.location'
+			)
+			->get());
+	}
+
 
 	public function getAtmId(Request $request){
 		$result = TicketingClient::with('client_atm')

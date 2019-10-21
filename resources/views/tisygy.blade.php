@@ -68,13 +68,13 @@
 	<section class="content">
 		<div class="nav-tabs-custom">
 			<ul class="nav nav-tabs" id="myTab">
-				<li>
+				<li class="active">
 					<a href="#tab_1" data-toggle="tab" onclick="getDashboard()">Dashboard</a>
 				</li>
 				<li>
 					<a href="#tab_2" data-toggle="tab" id="createparam" onclick="makeNewTicket()">Create</a>
 				</li>
-				<li class="active">
+				<li>
 					<a href="#tab_3" data-toggle="tab" id="performance" onclick="getPerformanceAll()">Performance</a>
 				</li>
 				<li>
@@ -86,7 +86,7 @@
 			</ul>
 
 			<div class="tab-content">
-				<div class="tab-pane" id="tab_1">
+				<div class="tab-pane active" id="tab_1">
 					<div class="row">
 						<section class="col-md-6">
 							<b>Occurring</b>
@@ -503,7 +503,7 @@
 					</div>
 				</div>
 
-				<div class="tab-pane active" id="tab_3">
+				<div class="tab-pane" id="tab_3">
 					<div class="row">
 						<div class="col-md-9">
 							<b>Filter by Client : </b>
@@ -2378,7 +2378,7 @@
 					{ 
 						data:'open_time',
 						className:'text-center',
-						width:"5%"
+						width:"7%"
 					},
 					{
 						data:'problem',

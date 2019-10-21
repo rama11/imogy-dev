@@ -400,7 +400,7 @@ class TicketingController extends Controller
 	public function sendEmailOpen(Request $request){
 		$mail = $this->makeMailer($request->to,$request->cc,$request->subject,$request->body);
 
-		// $mail->send();
+		$mail->send();
 
 		$detailTicketOpen = new TicketingDetail();
 		$detailTicketOpen->id_ticket = $request->id_ticket;

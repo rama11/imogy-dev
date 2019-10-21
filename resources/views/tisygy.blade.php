@@ -1,15 +1,14 @@
 @extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
 
 @section('head')
-	<link rel="stylesheet" href="{{ url('css/email.multiple.css') }}">
-	<link rel="stylesheet" href="{{ url('css/taginput.css') }}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
+	
 	<link rel="stylesheet" href="{{ url('css/jquery.emailinput.min.css') }}">
 	<link rel="stylesheet" href="{{ url('plugins/timepicker/bootstrap-timepicker.min.css')}}">
-	<link rel="stylesheet" href="{{ url('plugins/select2/select2.min.css')}}">
 	<link rel="stylesheet" href="{{ url('plugins/datepicker/datepicker3.css')}}">
 	<link rel="stylesheet" href="{{ url('plugins/datatables/dataTables.bootstrap.css')}}">
 
-	<link rel="stylesheet" href="{{ url('dist/css/AdminLTE.min.css')}}">
+	<!-- <link rel="stylesheet" href="{{ url('dist/css/AdminLTE.min.css')}}"> -->
 
 	<style type="text/css">
 		.table2 > tbody > tr > th, .table2 > tbody > tr > td {
@@ -1195,16 +1194,14 @@
 @section('script')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.5/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.full.min.js"></script>
 
-<script src="{{ url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
 <script src="{{ url('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
 <script src="{{ url('plugins/slimScroll/jquery.slimscroll.min.js')}}"></script>
 <script src="{{ url('plugins/timepicker/bootstrap-timepicker.min.js')}}"></script>
 <script src="{{ url('plugins/datepicker/bootstrap-datepicker.js')}}"></script>
-<script src="{{ url('plugins/select2/select2.full.min.js')}}"></script>
-<script src="{{ url('js/jquery.email.multiple.js')}}"></script>
-<script src="{{ url('js/taginput.js')}}"></script>
 <script src="{{ url('js/jquery.emailinput.min.js')}}"></script>
 
 <script>

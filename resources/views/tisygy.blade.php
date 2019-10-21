@@ -1,14 +1,15 @@
 @extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
 
 @section('head')
-	<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/timepicker/bootstrap-timepicker.min.css')}}">
-	<!-- <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/daterangepicker/daterangepicker.css')}}"> -->
-	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css"> -->
 	<link rel="stylesheet" href="{{ url('css/email.multiple.css') }}">
 	<link rel="stylesheet" href="{{ url('css/taginput.css') }}">
 	<link rel="stylesheet" href="{{ url('css/jquery.emailinput.min.css') }}">
-	<link rel="stylesheet" href="{{url('plugins/select2/select2.min.css')}}">
-	<link rel="stylesheet" href="{{url('dist/css/AdminLTE.min.css')}}">
+	<link rel="stylesheet" href="{{ url('plugins/timepicker/bootstrap-timepicker.min.css')}}">
+	<link rel="stylesheet" href="{{ url('plugins/select2/select2.min.css')}}">
+	<link rel="stylesheet" href="{{ url('plugins/datepicker/datepicker3.css')}}">
+	<link rel="stylesheet" href="{{ url('plugins/datatables/dataTables.bootstrap.css')}}">
+
+	<link rel="stylesheet" href="{{ url('dist/css/AdminLTE.min.css')}}">
 
 	<style type="text/css">
 		.table2 > tbody > tr > th, .table2 > tbody > tr > td {
@@ -769,7 +770,6 @@
 								<label>Couter Measure</label>
 								<textarea type="text" class="form-control" id="saveCloseCouter"></textarea>
 							</div>
-							<!-- time Picker -->
 							<div class="row">
 								<div class="col-sm-6">
 									<div class="bootstrap-timepicker">
@@ -783,9 +783,7 @@
 													<i class="fa fa-clock-o"></i>
 												</div>
 											</div>
-											<!-- /.input group -->
 										</div>
-										<!-- /.form group -->
 									</div>
 								</div>
 								<div class="col-sm-6">
@@ -798,34 +796,27 @@
 											</div>
 											<input type="text" class="form-control pull-right" id="dateClose">
 										</div>
-										<!-- /.input group -->
 									</div>
 								</div>
 							</div>
 						</form>
 					</div>
 					<div class="modal-footer">
-						<!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->
 						<button type="button" class="btn btn-flat btn-success " onclick="prepareCloseEmail()">Close</button>
 					</div>
 				</div>
-				<!-- /.modal-content -->
 			</div>
-			<!-- /.modal-dialog -->
 		</div>
 	</div>
 
 	<div class="modal fade" id="modal-next-close">
-			
-		{!! csrf_field() !!}
 		<div class="vertical-alignment-helper">
 			<div class="modal-dialog vertical-align-center modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span></button>
-						
-						<h4 class="modal-title" id="modal-ticket-title">Send Close Ticket </h4>
+						<h4 class="modal-title" id="modal-ticket-title">Send Close Ticket</h4>
 					</div>
 					<div class="modal-body">
 						<div class="form-horizontal">
@@ -856,35 +847,22 @@
 							<div class="form-group">
 								<div class="col-sm-12">
 									<div contenteditable="true" class="form-control" style="height: 600px;overflow: auto;" id="bodyCloseMail">
-										
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-sm-12">
 									<div class="pull-right">
-										
-										
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->
-						<!-- <form enctype="multipart/form-data" action="attachmentCloseTicket" method="POST" id="formClose"> -->
-							<!-- <div class="btn btn-default btn-file">
-								<i class="fa fa-paperclip"></i> Attachment
-								<input type="file" name="attachment" id="emailCloseAttachment">
-							</div> -->
-						<!-- </form> -->
 						<i class="btn btn-flat btn-primary" onclick="sendCloseEmail()"><i class="fa fa-envelope-o"></i> Send</i>
-						<!-- <button type="button" class="btn btn-success " id="saveCloseButton">Close</button> -->
 					</div>
 				</div>
-				<!-- /.modal-content -->
 			</div>
-			<!-- /.modal-dialog -->
 		</div>
 	</div>
 
@@ -894,8 +872,8 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span></button>
-						
+							<span aria-hidden="true">&times;</span>
+						</button>
 						<h4 class="modal-title" id="modal-ticket-title">Pending Ticket</h4>
 					</div>
 					<div class="modal-body">
@@ -915,15 +893,13 @@
 	</div>
 
 	<div class="modal fade" id="modal-next-pending">
-			
-		{!! csrf_field() !!}
 		<div class="vertical-alignment-helper">
 			<div class="modal-dialog vertical-align-center modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span></button>
-						
+							<span aria-hidden="true">&times;</span>
+						</button>
 						<h4 class="modal-title" id="modal-ticket-title">Send Pending Ticket </h4>
 					</div>
 					<div class="modal-body">
@@ -961,8 +937,6 @@
 							<div class="form-group">
 								<div class="col-sm-12">
 									<div class="pull-right">
-										
-										
 									</div>
 								</div>
 							</div>
@@ -982,8 +956,8 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span></button>
-						
+							<span aria-hidden="true">&times;</span>
+						</button>
 						<h4 class="modal-title" id="modal-ticket-title">Cancel Ticket</h4>
 					</div>
 					<div class="modal-body">
@@ -1003,14 +977,13 @@
 	</div>
 
 	<div class="modal fade" id="modal-next-cancel">
-			
-		{!! csrf_field() !!}
 		<div class="vertical-alignment-helper">
 			<div class="modal-dialog vertical-align-center modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span></button>
+							<span aria-hidden="true">&times;</span>
+						</button>
 						<h4 class="modal-title" id="modal-ticket-title">Send Cancel Ticket </h4>
 					</div>
 					<div class="modal-body">
@@ -1109,7 +1082,7 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<label>Close Cc</label>
-									<textarea class="form-control" rows="3" id="closeCc">asdfasdfasd&#13;&#10;adfasdfasd&#13;&#10;asdfasdfas</textarea>
+									<textarea class="form-control" rows="3" id="closeCc"></textarea>
 								</div>
 							</div>
 						</div>
@@ -1120,9 +1093,7 @@
 					<button type="button" class="btn btn-primary" onclick="saveClient()">Save changes</button>
 				</div>
 			</div>
-			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal-dialog -->
 	</div>
 
 	<div class="modal fade" id="modal-setting-atm">
@@ -1130,7 +1101,8 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span></button>
+						<span aria-hidden="true">&times;</span>
+					</button>
 					<h4 class="modal-title" id="modal-setting-title">Change ATM Detail </h4>
 				</div>
 				<div class="modal-body">
@@ -1165,9 +1137,7 @@
 					<button type="button" class="btn btn-primary" onclick="saveAtm()">Save changes</button>
 				</div>
 			</div>
-			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal-dialog -->
 	</div>
 
 	<div class="modal fade" id="modal-setting-atm-add">
@@ -1175,7 +1145,8 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span></button>
+						<span aria-hidden="true">&times;</span>
+					</button>
 					<h4 class="modal-title" id="modal-setting-title">ATM Add</h4>
 				</div>
 				<div class="modal-body">
@@ -1210,9 +1181,7 @@
 					<button type="button" class="btn btn-primary" onclick="newAtm()">Add</button>
 				</div>
 			</div>
-			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal-dialog -->
 	</div>
 </div>
 <footer class="main-footer">
@@ -1224,30 +1193,19 @@
 </footer>
 @endsection 
 @section('script')
-<!-- Slimscroll -->
-<!-- <script src="plugins/slimScroll/jquery.slimscroll.min.js"></script> -->
-<!-- bootstrap time picker -->
-<script src="plugins/timepicker/bootstrap-timepicker.min.js"></script>
-<!-- bootstrap datepicker -->
-<script src="plugins/datepicker/bootstrap-datepicker.js"></script>
-<!-- Select2 -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script> -->
-<!-- DataTables -->
-<!-- <script src="../../plugins/datatables/jquery.dataTables.min.js"></script> -->
-<!-- moment.js -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script> -->
-<!-- <script src="../../plugins/datatables/dataTables.bootstrap.min.js"></script> -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.5/Chart.bundle.min.js"></script>
-<script src="../../plugins/input-mask/jquery.inputmask.js"></script>
-<script src="../../plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
-<script src="../../plugins/input-mask/jquery.inputmask.extensions.js"></script>
-
-<script type="text/javascript" src="{{url('js/jquery.email.multiple.js')}}"></script>
-<script type="text/javascript" src="{{url('js/taginput.js')}}"></script>
-<script type="text/javascript" src="{{url('js/jquery.emailinput.min.js')}}"></script>
-
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.5/Chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
+<script src="{{ url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+<script src="{{ url('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
+<script src="{{ url('plugins/slimScroll/jquery.slimscroll.min.js')}}"></script>
+<script src="{{ url('plugins/timepicker/bootstrap-timepicker.min.js')}}"></script>
+<script src="{{ url('plugins/datepicker/bootstrap-datepicker.js')}}"></script>
+<script src="{{ url('plugins/select2/select2.full.min.js')}}"></script>
+<script src="{{ url('js/jquery.email.multiple.js')}}"></script>
+<script src="{{ url('js/taginput.js')}}"></script>
+<script src="{{ url('js/jquery.emailinput.min.js')}}"></script>
 
 <script>
 
@@ -1412,8 +1370,6 @@
 		ctx.fillText(text, textX * 2/3 , textY);
 		ctx.save();
 	}
-
-	$("[data-mask]").inputmask();
 
 	function getDashboard(){
 		$.ajax({

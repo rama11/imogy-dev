@@ -2,7 +2,7 @@
 
 @section('head')
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
-	
+
 	<link rel="stylesheet" href="{{ url('css/jquery.emailinput.min.css') }}">
 	<link rel="stylesheet" href="{{ url('plugins/timepicker/bootstrap-timepicker.min.css')}}">
 	<link rel="stylesheet" href="{{ url('plugins/datepicker/datepicker3.css')}}">
@@ -512,9 +512,9 @@
 						<div class="col-md-3">
 							<b class="pull-right" style="color: white;">.</b>
 							<div class="input-group pull-right">
-								<input id="searchBar" type="text" class="form-control" placeholder="Search Anyting">
+								<input id="searchBarTicket" type="text" class="form-control" placeholder="Search Anyting">
 								<span class="input-group-btn">
-									<button id="applyFilterTable" type="button" class="btn btn-default btn-flat">
+									<button id="applyFilterTablePerformance" type="button" class="btn btn-default btn-flat">
 										<i class="fa fa-fw fa-search"></i>
 									</button>
 									<!-- <button id="clearFilterTable" type="button" class="btn btn-default btn-flat">
@@ -561,23 +561,34 @@
 				
 				<div class="tab-pane" id="tab_4">
 					<div class="row form-group">
-						<div class="col-md-12">
+						<div class="col-md-9">
 							<button class="btn btn-flat btn-default" onclick="emailSetting()">
 								Email Setting
 							</button>
 							<button class="btn btn-flat btn-default" onclick="atmSetting()">
 								ATM Setting
 							</button>
-							<button class="btn btn-flat btn-default" onclick="">
+							<button class="btn btn-flat btn-default" onclick="severitySetting()">
 								Severity Setting
 							</button>
 
-							<button class="pull-right btn btn-flat btn-primary" onclick="atmAdd()" style="display: none" id="addAtm">
-								Add ATM
-							</button>
+							
+						</div>
+						<div class="col-sm-3 settingComponent" style="display: none" id="addAtm2">
+							<div class="input-group">	
+								<input id="searchBarATM" type="text" class="form-control" placeholder="Search ATM">
+								<span class="input-group-btn">
+									<button id="applyFilterTableATM" type="button" class="btn btn-default btn-flat">
+										<i class="fa fa-fw fa-search"></i>
+									</button>
+									<button class="btn btn-flat btn-primary" onclick="atmAdd()" id="addAtm" style="margin-left: 10px;">
+										Add ATM
+									</button>
+								</span>
+							</div>
 						</div>
 					</div>
-					<div style="display: none" id="emailSetting" class="row form-group">
+					<div style="display: none" id="emailSetting" class="row form-group settingComponent">
 						<div class="col-md-12">
 							<div class="table-responsive">
 								<table class="table table-bordered">
@@ -615,30 +626,24 @@
 							</div>		
 						</div>
 					</div>
-					<div style="display: none" id="atmSetting" class="row form-group">
+					<div style="display: none" id="atmSetting" class="row form-group settingComponent">
 						<div class="col-md-12">
-							<table class="table table-striped" id="atmTable">
+							<table class="table table-striped" id="tableAtm">
 								<thead>
 									<tr>
-										<th style="width: 200px;vertical-align: middle;text-align: center;">Owner</th>
+										<th style="vertical-align: middle;text-align: center;">Owner</th>
 										<th style="vertical-align: middle;text-align: center;">ATM ID</th>
 										<th style="vertical-align: middle;text-align: center;">Serial Number</th>
 										<th style="vertical-align: middle;text-align: center;">Location</th>
-										<th conspan="2" style="vertical-align: middle;text-align: center;"></th>
+										<th style="vertical-align: middle;text-align: center;"></th>
 									</tr>
 								</thead>
-								<tbody>
-								@foreach($atms as $atm)
-									<tr>
-										<td style="width: 200px;vertical-align: middle;text-align: center;" >{{$atm->owner}}</td>
-										<td style="vertical-align: middle;text-align: center;">{{$atm->atm_id}}</td>
-										<td style="vertical-align: middle;text-align: center;">{{$atm->serial_number}}</td>
-										<td style="vertical-align: middle;text-align: center;">{{$atm->location }}</td>
-										<td style="vertical-align: middle;text-align: center;"><button type="button" class="btn btn-block btn-default" onclick="editAtm('{{$atm->id}}')">Edit</button></td>
-									</tr>
-								@endforeach
-								</tbody>
 							</table>
+						</div>
+					</div>
+					<div style="display: none" id="severitySetting" class="row form-group settingComponent">
+						<div class="col-md-12">
+							Comming Soon...
 						</div>
 					</div>
 				</div>
@@ -1211,23 +1216,33 @@
 	$(document).ready(function(){
 		getDashboard();
 
-		// $('#searchBar').keyup(function(){
+		// $('#searchBarTicket').keyup(function(){
 		// 	$("#tablePerformance").DataTable().search($(this).val()).draw();
 		// })
-		
-		$('#searchBar').keypress(function(e){
+
+		$('#searchBarATM').keypress(function(e){
 			if(e.keyCode == 13){
-				$("#tablePerformance").DataTable().search($('#searchBar').val()).draw();
+				$("#tableAtm").DataTable().search($('#searchBarATM').val()).draw();
 			}
 		});
 
-		$('#applyFilterTable').click(function(){
-			$("#tablePerformance").DataTable().search($('#searchBar').val()).draw();
+		$('#applyFilterTableATM').click(function(){
+			$("#tableAtm").DataTable().search($('#searchBarATM').val()).draw();
+		})
+		
+		$('#searchBarTicket').keypress(function(e){
+			if(e.keyCode == 13){
+				$("#tablePerformance").DataTable().search($('#searchBarTicket').val()).draw();
+			}
+		});
+
+		$('#applyFilterTablePerformance').click(function(){
+			$("#tablePerformance").DataTable().search($('#searchBarTicket').val()).draw();
 		})
 
 
 		$('#clearFilterTable').click(function(){
-			$('#searchBar').val('')
+			$('#searchBarTicket').val('')
 			$('#tablePerformance').DataTable().search('').draw();
 		});
 
@@ -1627,14 +1642,14 @@
 		
 	}
 
-	$('#atmTable').DataTable({
-		"paging": true,
-		"lengthChange": false,
-		"searching": true,
-		"ordering": true,
-		"info": true,
-		"autoWidth": false
-	});
+	// $('#atmTable').DataTable({
+	// 	"paging": true,
+	// 	"lengthChange": false,
+	// 	"searching": true,
+	// 	"ordering": true,
+	// 	"info": true,
+	// 	"autoWidth": false
+	// });
 
 	
 
@@ -1706,15 +1721,66 @@
 	}
 
 	function emailSetting(){
-		$("#emailSetting").show();
-		$("#atmSetting").hide();
-		$("#addAtm").hide();
+		$(".settingComponent").hide()
+		$("#emailSetting").show()
 	}
 
 	function atmSetting(){
-		$("#atmSetting").show();
-		$("#emailSetting").hide();
-		$("#addAtm").show();
+		$(".settingComponent").hide()
+		$("#atmSetting").show()
+		$("#addAtm").show()
+		$("#addAtm2").show()
+
+		if($.fn.dataTable.isDataTable("#tableAtm")){
+
+		} else {
+			$("#tableAtm").DataTable({
+				ajax:{
+					type:"GET",
+					url:"{{url('tisygy/setting/getAllAtm')}}",
+					dataSrc: function (json){
+						json.data.forEach(function(data,idex){
+							data.action = '<button type="button" class="btn btn-block btn-default" onclick="editAtm('+ data.id + ')">Edit</button>'
+						})
+						return json.data
+					}
+				},
+				columns:[
+					{
+						data:'owner',
+						className:'text-center',
+					},
+					{ 	
+						data:'atm_id',
+						className:'text-center',
+					},
+					{
+						data:'serial_number',
+						className:'text-center',
+					},
+					{ 
+						data:'location',
+						className:'text-center',
+					},
+					{
+						data:'action',
+						className:'text-center',
+						orderable: false,
+						searchable: true,
+					}
+				],
+				// order: [[10, "DESC" ]],
+				autoWidth:false,
+				lengthChange: false,
+				searching:true,
+			})
+		}
+
+	}
+
+	function severitySetting(){
+		$(".settingComponent").hide()
+		$("#severitySetting").show()
 	}
 
 	// $("#inputATM").select2({

@@ -259,8 +259,9 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('tisygy/mail/getPendingMailTemplate','TicketingController@getPendingMailTemplate');
 	Route::get('tisygy/mail/sendEmailPending','TicketingController@sendEmailPending');
 
-	
 	Route::get('tisygy/mail/getReciver', 'TicketingController@getEmailReciver');
+
+	Route::get('tisygy/setting/getAllAtm', 'TicketingController@getAllAtmSetting');
 
 	Route::get('getPerformanceBySeverity','TicketingController@getPerformanceBySeverity');
 	// Route::get('getPerformanceByClient','TicketingController@getPerformanceByClient');

@@ -68,13 +68,13 @@
 	<section class="content">
 		<div class="nav-tabs-custom">
 			<ul class="nav nav-tabs" id="myTab">
-				<li class="active">
+				<li>
 					<a href="#tab_1" data-toggle="tab" onclick="getDashboard()">Dashboard</a>
 				</li>
 				<li>
 					<a href="#tab_2" data-toggle="tab" id="createparam" onclick="makeNewTicket()">Create</a>
 				</li>
-				<li>
+				<li class="active">
 					<a href="#tab_3" data-toggle="tab" id="performance" onclick="getPerformanceAll()">Performance</a>
 				</li>
 				<li>
@@ -86,7 +86,7 @@
 			</ul>
 
 			<div class="tab-content">
-				<div class="tab-pane active" id="tab_1">
+				<div class="tab-pane" id="tab_1">
 					<div class="row">
 						<section class="col-md-6">
 							<b>Occurring</b>
@@ -503,7 +503,7 @@
 					</div>
 				</div>
 
-				<div class="tab-pane" id="tab_3">
+				<div class="tab-pane active" id="tab_3">
 					<div class="row">
 						<div class="col-md-9">
 							<b>Filter by Client : </b>
@@ -2304,13 +2304,14 @@
 					success: function(result){
 						$("#ticketActivity").prepend('<li>' + moment(result.date).format("DD MMMM - HH:mm") + ' [' + result.operator + '] - ' + result.note + '</li>');
 						$("#ticketNote").val("")
-						getPerformanceByClient(result.client_acronym_filter)
 						$("#ticketStatus").attr('class','label label-info');
 						$("#ticketStatus").text('ON PROGRESS')
 						$("#updateButton").prop('disabled',false);
 						$("#closeButton").prop('disabled',false);
 						$("#cancelButton").prop('disabled',false);
 						$("#pendingButton").prop('disabled',false);
+						$("#modal-ticket").modal('toggle')
+						getPerformanceByClient(result.client_acronym_filter)
 						swalWithCustomClass.fire(
 							'Success',
 							'Update Completed!',
@@ -2335,7 +2336,7 @@
 					url:"{{url('tisygy/getPerformanceAll')}}",
 					dataSrc: function (json){
 						json.data.forEach(function(data,idex){
-							data.open_time = moment(data.first_activity_ticket.date,'YYYY-MM-DD, HH:mm:ss').format('dddd, D MMMM YYYY HH:mm')
+							data.open_time = moment(data.first_activity_ticket.date,'YYYY-MM-DD, HH:mm:ss').format('D MMMM YYYY HH:mm')
 							data.pic = data.pic + ' - ' + data.contact_pic
 							if(data.lastest_activity_ticket.activity == "OPEN"){
 								data.lastest_status_numerical = 1
@@ -2360,39 +2361,55 @@
 					}
 				},
 				columns:[
-					{ data:'id_ticket' },
+					{
+						data:'id_ticket',
+						width:"12.5%"
+					},
 					{ 	
 						data:'id_atm',
-						className:'text-center'
+						className:'text-center',
+						width:"5%"
 					},
 					{
 						data:'ticket_number_3party',
-						className:'text-center'
+						className:'text-center',
+						width:"5%"
 					},
 					{ 
 						data:'open_time',
-						className:'text-center'
+						className:'text-center',
+						width:"5%"
 					},
-					{ data:'problem' },
+					{
+						data:'problem',
+						// width:"25%"
+					},
 					{ 
 						data:'pic',
-						className:'text-center'
+						className:'text-center',
+						width:"10%"
 					},
-					{ data:'location' },
+					{
+						data:'location',
+						width:"12%"
+					},
 					{ 
 						data:'lastest_status',
 						className:'text-center',
 						orderData:[ 10 ],
+						width:"3%"
 					},
 					{ 
 						data:'lastest_operator',
-						className:'text-center'
+						className:'text-center',
+						width:"3%"
 					},
 					{
 						data:'action',
 						className:'text-center',
 						orderable: false,
-						searchable: true
+						searchable: true,
+						width:"3%"
 					},
 					{ 
 						data: "lastest_status_numerical",

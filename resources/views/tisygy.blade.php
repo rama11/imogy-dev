@@ -503,23 +503,26 @@
 					</div>
 				</div>
 
-				<div class="tab-pane table-responsive no-padding" id="tab_3">
+				<div class="tab-pane" id="tab_3">
 					<div class="row">
 						<div class="col-md-9">
 							<b>Filter by Client : </b>
 							<div id="clientList"></div>
 						</div>
 						<div class="col-md-3">
-							<b class="pull-right">Search Anyting</b>
+							<b class="pull-right" style="color: white;">.</b>
 							<div class="input-group pull-right">
-								<input id="searchBar" type="text" class="form-control">
+								<input id="searchBar" type="text" class="form-control" placeholder="Search Anyting">
 								<span class="input-group-btn">
-									<button id="clearFilterTable" type="button" class="btn btn-default btn-flat">
+									<button id="applyFilterTable" type="button" class="btn btn-default btn-flat">
+										<i class="fa fa-fw fa-search"></i>
+									</button>
+									<!-- <button id="clearFilterTable" type="button" class="btn btn-default btn-flat">
 										<i class="fa fa-fw fa-remove"></i>
-									</button>
-									<button id="reloadTable" type="button" class="btn btn-default btn-flat">
+									</button> -->
+									<!-- <button id="reloadTable" type="button" class="btn btn-default btn-flat">
 										<i class="fa fa-fw fa-refresh"></i>
-									</button>
+									</button> -->
 								</span>
 							</div>
 						</div>
@@ -556,236 +559,92 @@
 					</div>
 				</div>
 				
-				<div class="tab-pane table-responsive no-padding" id="tab_4">
-					<button class="btn btn-default" onclick="emailSetting()">
-						Email Setting
-					</button>
-					<button class="btn btn-default" onclick="atmSetting()">
-						ATM Setting
-					</button>
-					<button class="btn btn-primary" onclick="atmAdd()" style="display: none" id="addAtm">
-						Add ATM
-					</button>
-					<br>
-					<br>
-					<div class="table-responsive">
-						<table class="table table-bordered" style="display: none;" id="emailSetting">
-							<tr>
-								<th colspan="6" style="vertical-align: middle;text-align: center;">Open</th>
-								<th colspan="6" style="vertical-align: middle;text-align: center;">Close</th>
-							</tr>
-							<tr>
-								<th style="vertical-align: middle;text-align: center;">Client</th>
-								<th style="vertical-align: middle;text-align: center;">Acronym</th>
-								<th style="vertical-align: middle;text-align: center;">Dear</th>
-								<th style="vertical-align: middle;text-align: center;">To</th>
-								<th style="vertical-align: middle;text-align: center;">Cc</th>
-								<th style="vertical-align: middle;text-align: center;">Dear</th>
-								<th style="vertical-align: middle;text-align: center;">To</th>
-								<th style="vertical-align: middle;text-align: center;">Cc</th>
-								<th style="vertical-align: middle;text-align: center;">#</th>
-								
-							</tr>
-							@foreach($clients as $client)
-							<tr>
-								<td style="vertical-align: middle;text-align: left;">{{$client->client_name}}</td>
-								<td style="vertical-align: middle;text-align: center;">{{$client->client_acronym}}</td>
-								<td style="vertical-align: middle;text-align: left;">{{$client->open_dear}}</td>
-								<td style="vertical-align: middle;text-align: left;">{!! $client->open_to !!}</td>
-								<td style="vertical-align: middle;text-align: left;">{!! $client->open_cc !!}</td>
-								<td style="vertical-align: middle;text-align: left;">{{ $client->close_dear }}</td>
-								<td style="vertical-align: middle;text-align: left;">{!! $client->close_to !!}</td>
-								<td style="vertical-align: middle;text-align: left;">{!! $client->close_cc !!}</td>
+				<div class="tab-pane" id="tab_4">
+					<div class="row form-group">
+						<div class="col-md-12">
+							<button class="btn btn-flat btn-default" onclick="emailSetting()">
+								Email Setting
+							</button>
+							<button class="btn btn-flat btn-default" onclick="atmSetting()">
+								ATM Setting
+							</button>
+							<button class="btn btn-flat btn-default" onclick="">
+								Severity Setting
+							</button>
 
-								<td style="vertical-align: middle;text-align: center;"><button type="button" class="btn btn-block btn-default" onclick="editClient({{$client->id}})">Edit</button></td>
-							</tr>
-							@endforeach
-						</table>
+							<button class="pull-right btn btn-flat btn-primary" onclick="atmAdd()" style="display: none" id="addAtm">
+								Add ATM
+							</button>
+						</div>
 					</div>
-					<div style="display: none" id="atmSetting">
-						<table class="table table-striped" id="atmTable">
-							<thead>
-								<tr>
-									<th style="width: 200px;vertical-align: middle;text-align: center;">Owner</th>
-									<th style="vertical-align: middle;text-align: center;">ATM ID</th>
-									<th style="vertical-align: middle;text-align: center;">Serial Number</th>
-									<th style="vertical-align: middle;text-align: center;">Location</th>
-									<th conspan="2" style="vertical-align: middle;text-align: center;"></th>
-								</tr>
-							</thead>
-							<tbody>
-							@foreach($atms as $atm)
-								<tr>
-									<td style="width: 200px;vertical-align: middle;text-align: center;" >{{$atm->owner}}</td>
-									<td style="vertical-align: middle;text-align: center;">{{$atm->atm_id}}</td>
-									<td style="vertical-align: middle;text-align: center;">{{$atm->serial_number}}</td>
-									<td style="vertical-align: middle;text-align: center;">{{$atm->location }}</td>
-									<td style="vertical-align: middle;text-align: center;"><button type="button" class="btn btn-block btn-default" onclick="editAtm('{{$atm->id}}')">Edit</button></td>
-								</tr>
-							@endforeach
-							</tbody>
-						</table>
-					</div>
-					<div class="modal fade" id="modal-setting">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-										<span aria-hidden="true">&times;</span></button>
-									<h4 class="modal-title" id="modal-setting-title">Change Setting for </h4>
-								</div>
-								<div class="modal-body">
-									<form role="form">
-										<input type="hidden" class="form-control" id="clientId">
-										<div class="form-group">
-											<label>Client Title</label>
-											<input type="text" class="form-control" id="clientTitle">
-										</div>
-										<div class="form-group">
-											<label>Client Acronym</label>
-											<input type="text" class="form-control" id="clientAcronym">
-										</div>
-										<hr>
-										<div class="form-group">
-											<label>Open Dear</label>
-											<input type="text" class="form-control" id="openDear">
-										</div>
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>Open To</label>
-													<textarea class="form-control" rows="3" id="openTo"></textarea>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>Open Cc</label>
-													<textarea class="form-control" rows="3" id="openCc"></textarea>
-												</div>
-											</div>
-										</div>
-										<hr>
-										<div class="form-group">
-											<label>Close Dear</label>
-											<input type="text" class="form-control" id="closeDear">
-										</div>
+					<div style="display: none" id="emailSetting" class="row form-group">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table class="table table-bordered">
+									<tr>
+										<th colspan="6" style="vertical-align: middle;text-align: center;">Open</th>
+										<th colspan="6" style="vertical-align: middle;text-align: center;">Close</th>
+									</tr>
+									<tr>
+										<th style="vertical-align: middle;text-align: center;">Client</th>
+										<th style="vertical-align: middle;text-align: center;">Acronym</th>
+										<th style="vertical-align: middle;text-align: center;">Dear</th>
+										<th style="vertical-align: middle;text-align: center;">To</th>
+										<th style="vertical-align: middle;text-align: center;">Cc</th>
+										<th style="vertical-align: middle;text-align: center;">Dear</th>
+										<th style="vertical-align: middle;text-align: center;">To</th>
+										<th style="vertical-align: middle;text-align: center;">Cc</th>
+										<th style="vertical-align: middle;text-align: center;">#</th>
+										
+									</tr>
+									@foreach($clients as $client)
+									<tr>
+										<td style="vertical-align: middle;text-align: left;">{{$client->client_name}}</td>
+										<td style="vertical-align: middle;text-align: center;">{{$client->client_acronym}}</td>
+										<td style="vertical-align: middle;text-align: left;">{{$client->open_dear}}</td>
+										<td style="vertical-align: middle;text-align: left;">{!! $client->open_to !!}</td>
+										<td style="vertical-align: middle;text-align: left;">{!! $client->open_cc !!}</td>
+										<td style="vertical-align: middle;text-align: left;">{{ $client->close_dear }}</td>
+										<td style="vertical-align: middle;text-align: left;">{!! $client->close_to !!}</td>
+										<td style="vertical-align: middle;text-align: left;">{!! $client->close_cc !!}</td>
 
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>Close To</label>
-													<textarea class="form-control" rows="3" id="closeTo"></textarea>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>Close Cc</label>
-													<textarea class="form-control" rows="3" id="closeCc">asdfasdfasd&#13;&#10;adfasdfasd&#13;&#10;asdfasdfas</textarea>
-												</div>
-											</div>
-										</div>
-									</form>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-									<button type="button" class="btn btn-primary" onclick="saveClient()">Save changes</button>
-								</div>
-							</div>
-							<!-- /.modal-content -->
+										<td style="vertical-align: middle;text-align: center;"><button type="button" class="btn btn-block btn-default" onclick="editClient({{$client->id}})">Edit</button></td>
+									</tr>
+									@endforeach
+								</table>
+							</div>		
 						</div>
-						<!-- /.modal-dialog -->
 					</div>
-					<div class="modal fade" id="modal-setting-atm">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-										<span aria-hidden="true">&times;</span></button>
-									<h4 class="modal-title" id="modal-setting-title">Change ATM Detail </h4>
-								</div>
-								<div class="modal-body">
-									<form role="form">
-										<input type="hidden" id="idAtm">
-										<div class="row">
-											<div class="col-sm-6">
-												<div class="form-group">
-													<label>Owner</label>
-													<select class="form-control" id="atmOwner"></select>
-												</div>
-											</div>
-											<div class="col-sm-6">
-												<div class="form-group">
-													<label>ATM ID</label>
-													<input type="text" class="form-control" id="atmID">
-												</div>
-											</div>
-										</div>
-										<div class="form-group">
-											<label>Serial Number</label>
-											<input type="text" class="form-control" id="atmSerial">
-										</div>
-										<div class="form-group">
-											<label>Location ATM</label>
-											<input type="text" class="form-control" id="atmLocation">
-										</div>
-									</form>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-									<button type="button" class="btn btn-primary" onclick="saveAtm()">Save changes</button>
-								</div>
-							</div>
-							<!-- /.modal-content -->
+					<div style="display: none" id="atmSetting" class="row form-group">
+						<div class="col-md-12">
+							<table class="table table-striped" id="atmTable">
+								<thead>
+									<tr>
+										<th style="width: 200px;vertical-align: middle;text-align: center;">Owner</th>
+										<th style="vertical-align: middle;text-align: center;">ATM ID</th>
+										<th style="vertical-align: middle;text-align: center;">Serial Number</th>
+										<th style="vertical-align: middle;text-align: center;">Location</th>
+										<th conspan="2" style="vertical-align: middle;text-align: center;"></th>
+									</tr>
+								</thead>
+								<tbody>
+								@foreach($atms as $atm)
+									<tr>
+										<td style="width: 200px;vertical-align: middle;text-align: center;" >{{$atm->owner}}</td>
+										<td style="vertical-align: middle;text-align: center;">{{$atm->atm_id}}</td>
+										<td style="vertical-align: middle;text-align: center;">{{$atm->serial_number}}</td>
+										<td style="vertical-align: middle;text-align: center;">{{$atm->location }}</td>
+										<td style="vertical-align: middle;text-align: center;"><button type="button" class="btn btn-block btn-default" onclick="editAtm('{{$atm->id}}')">Edit</button></td>
+									</tr>
+								@endforeach
+								</tbody>
+							</table>
 						</div>
-						<!-- /.modal-dialog -->
-					</div>
-					<div class="modal fade" id="modal-setting-atm-add">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-										<span aria-hidden="true">&times;</span></button>
-									<h4 class="modal-title" id="modal-setting-title">ATM Add</h4>
-								</div>
-								<div class="modal-body">
-									<form role="form">
-										<input type="hidden" id="idAtm">
-										<div class="row">
-											<div class="col-sm-6">
-												<div class="form-group">
-													<label>Owner</label>
-													<select class="form-control" id="atmOwner2"></select>
-												</div>
-											</div>
-											<div class="col-sm-6">
-												<div class="form-group">
-													<label>ATM ID</label>
-													<input type="text" class="form-control" id="atmID2">
-												</div>
-											</div>
-										</div>
-										<div class="form-group">
-											<label>Serial Number</label>
-											<input type="text" class="form-control" id="atmSerial2">
-										</div>
-										<div class="form-group">
-											<label>Location ATM</label>
-											<input type="text" class="form-control" id="atmLocation2">
-										</div>
-									</form>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-									<button type="button" class="btn btn-primary" onclick="newAtm()">Add</button>
-								</div>
-							</div>
-							<!-- /.modal-content -->
-						</div>
-						<!-- /.modal-dialog -->
 					</div>
 				</div>
 
 				<div class="tab-pane" id="tab_5">
+					Comming Soon...
 				</div>
 			</div>
 		</div>
@@ -1195,6 +1054,166 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="modal fade" id="modal-setting">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="modal-setting-title">Change Setting for </h4>
+				</div>
+				<div class="modal-body">
+					<form role="form">
+						<input type="hidden" class="form-control" id="clientId">
+						<div class="form-group">
+							<label>Client Title</label>
+							<input type="text" class="form-control" id="clientTitle">
+						</div>
+						<div class="form-group">
+							<label>Client Acronym</label>
+							<input type="text" class="form-control" id="clientAcronym">
+						</div>
+						<hr>
+						<div class="form-group">
+							<label>Open Dear</label>
+							<input type="text" class="form-control" id="openDear">
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Open To</label>
+									<textarea class="form-control" rows="3" id="openTo"></textarea>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Open Cc</label>
+									<textarea class="form-control" rows="3" id="openCc"></textarea>
+								</div>
+							</div>
+						</div>
+						<hr>
+						<div class="form-group">
+							<label>Close Dear</label>
+							<input type="text" class="form-control" id="closeDear">
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Close To</label>
+									<textarea class="form-control" rows="3" id="closeTo"></textarea>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Close Cc</label>
+									<textarea class="form-control" rows="3" id="closeCc">asdfasdfasd&#13;&#10;adfasdfasd&#13;&#10;asdfasdfas</textarea>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" onclick="saveClient()">Save changes</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+	<div class="modal fade" id="modal-setting-atm">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="modal-setting-title">Change ATM Detail </h4>
+				</div>
+				<div class="modal-body">
+					<form role="form">
+						<input type="hidden" id="idAtm">
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label>Owner</label>
+									<select class="form-control" id="atmOwner"></select>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label>ATM ID</label>
+									<input type="text" class="form-control" id="atmID">
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label>Serial Number</label>
+							<input type="text" class="form-control" id="atmSerial">
+						</div>
+						<div class="form-group">
+							<label>Location ATM</label>
+							<input type="text" class="form-control" id="atmLocation">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" onclick="saveAtm()">Save changes</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+	<div class="modal fade" id="modal-setting-atm-add">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="modal-setting-title">ATM Add</h4>
+				</div>
+				<div class="modal-body">
+					<form role="form">
+						<input type="hidden" id="idAtm">
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label>Owner</label>
+									<select class="form-control" id="atmOwner2"></select>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label>ATM ID</label>
+									<input type="text" class="form-control" id="atmID2">
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label>Serial Number</label>
+							<input type="text" class="form-control" id="atmSerial2">
+						</div>
+						<div class="form-group">
+							<label>Location ATM</label>
+							<input type="text" class="form-control" id="atmLocation2">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" onclick="newAtm()">Add</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
 </div>
 <footer class="main-footer">
 	<div class="pull-right hidden-xs">
@@ -1237,9 +1256,20 @@
 	$(document).ready(function(){
 		getDashboard();
 
-		$('#searchBar').keyup(function(){
-			$("#tablePerformance").DataTable().search($(this).val()).draw();
+		// $('#searchBar').keyup(function(){
+		// 	$("#tablePerformance").DataTable().search($(this).val()).draw();
+		// })
+		
+		$('#searchBar').keypress(function(e){
+			if(e.keyCode == 13){
+				$("#tablePerformance").DataTable().search($('#searchBar').val()).draw();
+			}
+		});
+
+		$('#applyFilterTable').click(function(){
+			$("#tablePerformance").DataTable().search($('#searchBar').val()).draw();
 		})
+
 
 		$('#clearFilterTable').click(function(){
 			$('#searchBar').val('')

@@ -234,6 +234,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('tisygy/getPerformanceAll','TicketingController@getPerformanceAll');
 	Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
 	Route::get('tisygy/getPerformanceByTicket','TicketingController@getPerformanceByTicket');
+	Route::get('tisygy/getPerformanceBySeverity','TicketingController@getPerformanceBySeverity');
 	
 	Route::get('tisygy/setUpdateTicket','TicketingController@setUpdateTicket');
 	
@@ -263,7 +264,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 
 	Route::get('tisygy/setting/getAllAtm', 'TicketingController@getAllAtmSetting');
 
-	Route::get('getPerformanceBySeverity','TicketingController@getPerformanceBySeverity');
+	// Route::get('getPerformanceBySeverity','TicketingController@getPerformanceBySeverity');
 	// Route::get('getPerformanceByClient','TicketingController@getPerformanceByClient');
 	
 	Route::get('getPerformance','TicketingController@getPerformance');

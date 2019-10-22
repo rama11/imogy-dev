@@ -96,17 +96,29 @@ class TicketingController extends Controller
 	}
 
 	public function getDashboard(){
-		$start = microtime(true);
-		
-		$result2 = DB::table('ticketing__activity')
-			->select('activity',DB::raw("count(*) as count"))
-			->whereIn('id',function ($query) {
-					$query->select(DB::raw("MAX(id) AS activity"))
-						->from('ticketing__activity')
-						->groupBy('id_ticket');
-				})
-			->groupBy('activity')
-			->get()->keyBy('activity');
+		// $start = microtime(true);
+
+		$result2 = DB::table('ticketing__condition')
+			->select('name',DB::raw("IFNULL(`ticketing_activity`.`count`,0) AS `count`"))
+			->join(DB::raw("(SELECT
+				        `activity`,
+				        COUNT(*) AS `count`
+				    FROM
+				        `ticketing__activity`
+				    WHERE
+				        `id` IN(
+				        SELECT
+				            MAX(`id`) AS `activity`
+				        FROM
+				            `ticketing__activity`
+				        GROUP BY
+				            `id_ticket`
+				    )
+				GROUP BY
+		    `activity`) AS `ticketing_activity`"),'ticketing_activity.activity','=','ticketing__condition.name','left')
+		    ->get()->keyBy('name');
+
+		// return $result2;
 
 		$all = 0;
 		foreach ($result2 as $key => $value) {
@@ -675,76 +687,15 @@ class TicketingController extends Controller
 	public function getPerformanceBySeverity(Request $req){
 		$start = microtime(true);
 
-		// $result = DB::table('ticketing__detail')
-		// 	->select(
-		// 			'ticketing__detail.id',
-		// 			'ticketing__detail.id_ticket',
-		// 			'ticketing__id.id_client',
-		// 			'aaa.operator',
-		// 			'ticketing__detail.refrence',
-		// 			'ticketing__detail.pic',
-		// 			'ticketing__detail.contact_pic',
-		// 			'ticketing__detail.location',
-		// 			'ticketing__detail.problem',
-		// 			'ticketing__detail.serial_device',
-		// 			'ticketing__detail.id_atm',
-		// 			'aaa.note',
-		// 			'ticketing__detail.engineer',
-		// 			'ticketing__detail.ticket_number_3party',
-		// 			'ticketing__detail.reporting_time',
-		// 			'ticketing__detail.severity',
-		// 			DB::raw('aaaa.`date` AS "open"'),
-		// 			DB::raw('ticketing__id.`id` AS "id_open"')
-		// 			// 'ticketing__detail.severity',
-		// 		)
-		// 	->join('ticketing__id','ticketing__detail.id_ticket','=','ticketing__id.id_ticket')
-		// 	->join(DB::raw("(SELECT `ticketing__activity`.`operator`,`ticketing__activity`.`id_ticket`,`ticketing__activity`.`note`
-		// 					FROM `ticketing__activity`
-		// 					JOIN (
-		// 						SELECT MAX(id) AS activity 
-		// 						FROM `ticketing__activity` 
-		// 						GROUP by `id_ticket`
-		// 					) AS aa
-		// 					ON `ticketing__activity`.`id` = aa.`activity`
-		// 				) AS aaa"),"ticketing__detail.id_ticket","=","aaa.id_ticket")
-		// 	->join(DB::raw("(SELECT `ticketing__activity`.`operator`,`ticketing__activity`.`id_ticket`,`ticketing__activity`.`date`
-		// 					FROM `ticketing__activity`
-		// 					JOIN (
-		// 						SELECT MIN(id) AS activity 
-		// 						FROM `ticketing__activity` 
-		// 						GROUP by `id_ticket`
-		// 					) AS bb
-		// 					ON `ticketing__activity`.`id` = bb.`activity`
-		// 				) AS aaaa"),"ticketing__detail.id_ticket","=","aaaa.id_ticket")
-		// 	->where('ticketing__detail.severity','=',$req->severity)
-		// 	->get();
-
-		// 	foreach ($result as $key => $value) {
-		// 		$value->last_status = array(
-		// 		DB::table('ticketing__activity')
-		// 			->where('id_ticket','=',$value->id_ticket)
-		// 			->orderBy('id','DESC')
-		// 			->value('activity'),
-		// 		DB::table('ticketing__activity')
-		// 			->where('id_ticket','=',$value->id_ticket)
-		// 			->orderBy('date','DESC')
-		// 			->value('date')
-		// 		);
-		// 	}
-
-		// $req->severity
-
 		$occurring_ticket = DB::table('ticketing__activity')
-			->select('ticketing__activity.id_ticket','ticketing__activity.activity','ticketing__id.id_client')
+			->select('ticketing__activity.id_ticket','ticketing__activity.activity')
 			->whereIn('ticketing__activity.id',function ($query) {
 				$query->select(DB::raw("MAX(id) AS activity"))
 					->from('ticketing__activity')
 					->groupBy('id_ticket');
 				})
-			->join('ticketing__id','ticketing__id.id_ticket','=','ticketing__activity.id_ticket')
 			->where('ticketing__activity.activity','<>','CANCEL')
 			->where('ticketing__activity.activity','<>','CLOSE')
-			// ->where('ticketing__id.id_client','=',2)
 			->get();
 
 		$occurring_ticket_result = TicketingDetail::with([
@@ -764,10 +715,8 @@ class TicketingController extends Controller
 					->from('ticketing__activity')
 					->groupBy('id_ticket');
 				})
-			// ->whereRaw('`ticketing__activity`.`id_ticket` LIKE "%/' . $client_acronym . '/%"')
 			->whereRaw('(`ticketing__activity`.`activity` = "CANCEL" OR `ticketing__activity`.`activity` = "CLOSE")')
 			->orderBy('ticketing__activity.id','DESC')
-			->take(100 - $occurring_ticket_result->count())
 			->get()
 			->pluck('id_ticket');
 
@@ -778,6 +727,7 @@ class TicketingController extends Controller
 			])
 			->whereIn('id_ticket',$finish_ticket)
 			->where('severity',$req->severity)
+			->take(100 - $occurring_ticket_result->count())
 			->orderBy('id','DESC')
 			->get();
 
@@ -786,7 +736,7 @@ class TicketingController extends Controller
 		// $time_elapsed_secs = microtime(true) - $start;
 		// return $time_elapsed_secs;
 
-		return $result;
+		return array('data' => $result);
 	}
 
 	public function getPerformanceByClient(Request $request){

@@ -2499,136 +2499,18 @@
 	var severityFirst = 1; 
 
 	function getSeverity(severity){
-		var url = "getPerformanceBySeverity?severity=" + severity;
-
-		dataTicket = [];
-
-		$.ajax({
-			type:"GET",
-			url:url,
-			beforeSend:function(){
-				// var url = "getPerformance2?client=all";
-				if (severityFirst == 1) {
-					$("#tablePerformance").empty();
-					$("#myInput2").val("");
-					$("#myInput").val("");
-					var heading = "";
-					heading = heading + '<thead>';
-						heading = heading + '<tr>';
-							heading = heading + '<th style="width: 150px;vertical-align: middle;">ID Ticket</th>';
-							heading = heading + '<th style="text-align:center;width: 100px;vertical-align: middle;">ID ATM*</th>';
-							heading = heading + '<th style="text-align:center;width: 100px;vertical-align: middle;">Ticket Number</th>';
-							// heading = heading + '<th style="width: 100px">Number Tiket</th>';
-							heading = heading + '<th style="text-align:center;width: 100px;vertical-align: middle;">Open</th>';
-							heading = heading + '<th style="vertical-align: middle;">Problem</th>';
-							heading = heading + '<th style="width: 40px;vertical-align: middle;">PIC</th>';
-							heading = heading + '<th style="width: 100px;vertical-align: middle;">Location</th>';
-							heading = heading + '<th style="width: 40px;vertical-align: middle;">Status</th>';
-							heading = heading + '<th style="width: 40px;vertical-align: middle;">Operator</th>';
-							heading = heading + '<th style="width: 40px;vertical-align: middle;">Action</th>';
-						heading = heading + '</tr>';
-					heading = heading + '</thead>';
-					heading = heading + '<tbody>';
-
-					$("#tablePerformance").append(heading);
-				}
-			},
-			success:function(result){
-				if(severityFirst == 1){
-					var body = "";
-					$.each(result, function(key,value){
-						body = body + '<tr>';
-							if((value.id_ticket).indexOf('/') == 3){
-								body = body + '<td style="width: 150px;vertical-align: middle;">0' + value.id_ticket + '</td>';
-							} else {
-								body = body + '<td style="width: 150px;vertical-align: middle;">' + value.id_ticket + '</td>';
-							}
-							body = body + '<td style="width: 50px; vertical-align: middle;">' + value.id_atm + '</td>';
-							body = body + '<td style="width: 100px; vertical-align: middle;">' + value.ticket_number_3party + '</td>';
-							body = body + '<td style="width: 40px" class="text-center">' + moment(value.open).format('dddd, D MMMM YYYY HH:mm') + '</td>';
-							body = body + '<td>' + value.problem + '</td>';
-							body = body + '<td style="width: 100px">' + value.pic + ' - ' + value.contact_pic + '</td>';
-							body = body + '<td style="width: 100px">' + value.location + '</td>';
-							if(value.last_status[0] == "OPEN"){
-								body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><span class="label label-danger">' + value.last_status[0] + '</span></td>';
-							} else if(value.last_status[0] == "ON PROGRESS") {
-								body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><span class="label label-info">' + value.last_status[0] + '</span></td>';
-							} else if(value.last_status[0] == "PENDING") {
-								body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><span class="label label-warning">' + value.last_status[0] + '</span></td>';
-							} else if(value.last_status[0] == "CLOSE") {
-								body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><span class="label label-success">' + value.last_status[0] + '</span></td>';
-							} else if(value.last_status[0] == "CANCEL") {
-								body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><span class="label label-success" style="background-color:#555299 !important;">' + value.last_status[0] + '</span></td>';
-							}
-							body = body + '<td style="width: 40px; vertical-align: middle;">' + value.operator + '</td>';
-							body = body + '<td style="width: 40px; vertical-align: middle;text-align: center"><button class="btn btn-default" onclick="showTicket(' + value.id_open + ')">Detail</button></td>';
-						body = body + '</tr>';
-					});
-
-					$("#tablePerformance").append(body);
-					$("#tablePerformance").append('</tbody>');
-					
-					$("#tablePerformance").DataTable();
-				} else {
-					$.each(result, function(key,value){
-						if((value.id_ticket).indexOf('/') == 3){
-							var id_ticket = '0' + value.id_ticket;
-						} else {
-							var id_ticket =  value.id_ticket;
-						}
-						
-						if(value.last_status[0] == "OPEN"){
-							var status =  '<span class="label label-danger">' + value.last_status[0] + '</span>';
-						} else if(value.last_status[0] == "ON PROGRESS") {
-							var status =  '<span class="label label-info">' + value.last_status[0] + '</span>';
-						} else if(value.last_status[0] == "PENDING") {
-							var status =  '<span class="label label-warning">' + value.last_status[0] + '</span>';
-						} else if(value.last_status[0] == "CLOSE") {
-							var status =  '<span class="label label-success">' + value.last_status[0] + '</span>';
-						} else if(value.last_status[0] == "CANCEL") {
-							var status =  '<span class="label label-success" style="background-color:#555299 !important;">' + value.last_status[0] + '</span>';
-						}
-
-						var button = '<button class="btn btn-default" onclick="showTicket(' + value.id_open + ')">Detail</button>';
-						dataTicket.push([
-							id_ticket,
-							value.id_atm,
-							value.ticket_number_3party,
-							moment(value.open).format('dddd, D MMMM YYYY HH:mm'),
-							value.problem ,
-							value.pic + ' - ' + value.contact_pic,
-							value.location,
-							status,
-							value.operator,
-							button
-						]);
-
-					});
-				}
-			},
-			complete: function(){
-				$('#myTab a[href="#tab_3"]').tab('show');
-				if(severityFirst == 1){
-					severityFirst = 0;
-				} else {
-					$("#tablePerformance").DataTable().clear().draw();
-					$.each(dataTicket, function(key,value){
-						$("#tablePerformance").DataTable().row.add([
-							value[0],
-							value[1],
-							value[2],
-							value[3],
-							value[4],
-							value[5],
-							value[6],
-							value[7],
-							value[8],
-							value[9]
-						]).draw(false);
-					});
-				}
-			}
-		});
+		$("#performance").click()
+		$("#tablePerformance").DataTable().ajax.url('tisygy/getPerformanceBySeverity?severity=' + severity).load();
+		// $.ajax({
+		// 	type:"GET",
+		// 	url:"{{url('tisygy/getPerformanceBySeverity')}}",
+		// 	data:{
+		// 		severity:severity
+		// 	},
+		// 	success:function(result){
+				
+		// 	},
+		// });
 	}
 
 	function addRows(client){

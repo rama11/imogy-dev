@@ -450,7 +450,7 @@
 									<td id="holderNote"></td>
 								</tr>
 							</table>
-							<i class="btn btn-info pull-right" id="createEmailBody" onclick="createEmailBody()">Create Email</i>
+							<i class="btn btn-flat btn-info pull-right" id="createEmailBody" onclick="createEmailBody()">Create Email</i>
 						</div>
 					</div>
 					<div class="row" id="sendTicket" style="display: none;">
@@ -494,7 +494,7 @@
 												<i class="fa fa-paperclip"></i> Attachment
 												<input type="file" name="attachment" id="emailOpenAttachment">
 											</div> -->
-											<button class="btn btn-primary" onclick="sendOpenEmail()"><i class="fa fa-envelope-o"></i> Send</button>
+											<button class="btn btn-flat btn-primary" onclick="sendOpenEmail()"><i class="fa fa-envelope-o"></i> Send</button>
 										</div>
 									</div>
 								</div>
@@ -973,7 +973,7 @@
 						</form>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-flat btn-default " onclick="prepareCancelEmail()">Cancel</button>
+						<button type="button" class="btn btn-flat bg-purple " onclick="prepareCancelEmail()">Cancel</button>
 					</div>
 				</div>
 			</div>
@@ -2110,8 +2110,8 @@
 							$("#emailPendingCc").val(result.ticket_reciver.close_cc)
 							$("#emailPendingCc").emailinput({ onlyValidValue: true, delim: ';' });
 
-							$("#emailPendingSubject").val("Cancel Tiket " + $(".holderPendingLocation").text() + " [" + $(".holderPendingProblem").text() +"]");
-							$("#emailPendingHeader").html("Dear <b>" + result.ticket_reciver.close_dear + "</b><br>Berikut terlampir Cancel Tiket untuk Problem <b>" + $(".holderPendingLocation").text() + "</b> : ");
+							$("#emailPendingSubject").val("Pending Tiket " + $(".holderPendingLocation").text() + " [" + $(".holderPendingProblem").text() +"]");
+							$("#emailPendingHeader").html("Dear <b>" + result.ticket_reciver.close_dear + "</b><br>Berikut terlampir Pending Tiket untuk Problem <b>" + $(".holderPendingLocation").text() + "</b> : ");
 							$(".holderPendingCustomer").text(result.ticket_reciver.client_name);
 
 							if(result.ticket_reciver.client_acronym  == "BJBR" || result.ticket_reciver.client_acronym  == "BSBB" || result.ticket_reciver.client_acronym  == "BRKR"){

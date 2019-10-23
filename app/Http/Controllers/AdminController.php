@@ -1695,37 +1695,30 @@ class AdminController extends Controller
 
 	}
 
-	function getScheduleAll (){
-		$datas = DB::table('shifting')
-			->orderBy('start')
+	function getScheduleThisMonth(Request $req){
+		return DB::table('shifting')
+			->orderBy('start','DESC')
+			->where('start','LIKE','%-' . $req->month . '-%')
 			->get()
 			->toArray();
-
-		$user_detail = DB::table('detail_users')
-			->join('project','project.id','=','detail_users.on_project')
-			->get()
-			->toArray();
-
-		return json_encode($datas);
 	}
 
-	function getScheduleProject ($id){
-		$data = DB::table('shifting')
+	function getScheduleThisProject (Request $req){
+		return DB::table('shifting')
 			->join('detail_users','detail_users.id_user','=','shifting.id_user')
-			->where('detail_users.on_project','=',$id)
+			->where('detail_users.on_project','=',$req->project)
+			->where('start','LIKE','%-' . $req->month . '-%')
 			->get()
 			->toArray();
-
-		return json_encode($data);
 	}
 
-	function getScheduleSelected (Request $req){
-		$data = DB::table('shifting')
+	function getScheduleThisUser (Request $req){
+		return DB::table('shifting')
 			->where('id_user','=',$req->idUser)
-			->where('id_project','=',$req->idProject)
+			// ->where('id_project','=',$req->idProject)
+			->where('start','LIKE','%-' . $req->month . '-%')
 			->get()
 			->toArray();
-		return json_encode($data);
 	}
 
 	public function crateSchedule (Request $req){
@@ -1756,9 +1749,9 @@ class AdminController extends Controller
 		return DB::table('shifting')->orderBy('id','DESC')->first()->id;
 	}
 
-	public function deleteSchedule ($id) {
+	public function deleteSchedule (Request $req) {
 		DB::table('shifting')
-			->where('id','=',$id)
+			->where('id','=',$req->id)
 			->delete();
 	}
 

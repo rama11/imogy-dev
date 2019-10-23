@@ -1,5 +1,9 @@
 @extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
 
+@section('head')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.5/fullcalendar.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.5/fullcalendar.print.css" media="print">
+@endsection
 @section('content')
 <style>
 	.loader {
@@ -19,33 +23,33 @@
 	}
 
 	.pagi, .Pagi {
-		background-color: #dd4b39 !important; /* background color */
-		border-color: #dd4b39 !important;     /* border color */
-		color: #fff !important;;              /* text color */
+		background-color: #dd4b39 !important;
+		border-color: #dd4b39 !important;
+		color: #fff !important;
 	}
 
 	.Helpdesk {
-		background-color: #ca195a !important; /* background color */
-		border-color: #ca195a !important;     /* border color */
-		color: #fff !important;;              /* text color */
+		background-color: #ca195a !important;
+		border-color: #ca195a !important;
+		color: #fff !important;
 	}
 
 	.sore, .Sore {
-		background-color: #f39c12 !important; /* background color */
-		border-color: #f39c12 !important;     /* border color */
-		color: #fff !important;;              /* text color */
+		background-color: #f39c12 !important;
+		border-color: #f39c12 !important;
+		color: #fff !important;
 	}
 
 	.malam, .Malam {
-		background-color: #0073b7 !important; /* background color */
-		border-color: #0073b7 !important;     /* border color */
-		color: #fff !important;;              /* text color */
+		background-color: #0073b7 !important;
+		border-color: #0073b7 !important;
+		color: #fff !important;
 	}
 
 	.libur, .Libur {
-		background-color: #00a65a !important; /* background color */
-		border-color: #00a65a !important;     /* border color */
-		color: #fff !important;;              /* text color */
+		background-color: #00a65a !important;
+		border-color: #00a65a !important;
+		color: #fff !important;
 	}
 
 	@-webkit-keyframes spin {
@@ -82,7 +86,6 @@
 </style>
 
 <div class="content-wrapper">
-	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1>
 			Shifting Schedule
@@ -97,15 +100,12 @@
 
 	<section class="content">
 		<div class="row">
-			<!-- Panel Kiri -->
 			<section class="col-lg-3 col-xs-3" id="panel_simple">
 				
-				<!-- Box For Chart -->
 				<div class="box box-default">
 					<div class="box-header with-border">
-						<h3 class="box-title" id="indicatorMounth">Shifting Users on {{date('F')}}</h3>
+						<h3 class="box-title" id="indicatorMonth">Shifting Users on {{date('F')}}</h3>
 					</div>
-					<!-- /.box-header -->
 					<div class="box-body no-padding" id="listProject">
 						<ul class="nav nav-stacked">
 							@foreach($projects as $project)
@@ -153,13 +153,10 @@
 				</div>
 			</section>
 
-			<!-- Panel Kanan -->
 			<section class="col-lg-9 col-xs-9" id="panel_simple2">
 				
-				<!-- Box For Information -->
 				<div class="box box-default">
 					<div class="box-body no-padding">
-						<!-- THE CALENDAR -->
 						<div id="calendar"></div>
 					</div>
 				</div>	
@@ -167,6 +164,7 @@
 		</div>	
 	</section>	
 </div>
+
 <div class="modal fade" id="modal-addusershifting" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -175,46 +173,50 @@
 			</div>
 			<form method="POST" action="{{url('addUserShifting')}}" enctype="multipart/form-data">
 					{!! csrf_field() !!}
-						<div class="modal-body">
-							<div class="row">
-								<div class="col-md-6">
-									<div class="form-group">
-										<label>Users Name</label>
-										<select class="form-control" name="id_user">
-											@foreach($nameUsers as $nameUser)
-												<option value="{{$nameUser->id}}">{{$nameUser->name}}</option>
-											@endforeach
-										</select>
-									</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Users Name</label>
+									<select class="form-control" name="id_user">
+										@foreach($nameUsers as $nameUser)
+											<option value="{{$nameUser->id}}">{{$nameUser->name}}</option>
+										@endforeach
+									</select>
 								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label>Project Name</label>
-											<select class="form-control" name="on_project" >
-											@foreach($projects as $project)
-												<option value="{{$project->id}}">{{$project->project}}</option>
-											@endforeach
-											</select>
-									</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Project Name</label>
+										<select class="form-control" name="on_project" >
+										@foreach($projects as $project)
+											<option value="{{$project->id}}">{{$project->project}}</option>
+										@endforeach
+										</select>
 								</div>
 							</div>
 						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>						
-							<button type="submit" class="btn btn-primary">Modify user</button>
-						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>						
+						<button type="submit" class="btn btn-primary">Modify user</button>
+					</div>
 			</form>
 		</div>
 	</div>
 </div>
 @endsection
 @section('script')
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js"></script>
+
 <script type="text/javascript">
 	var globalIdUser = 0;
 	var globalProject = 0;
 	function ini_events(ele) {
 		ele.each(function () {
-
 			var str = $(this).text();
 			if(str.indexOf("(") > 0){
 				var shift = "Helpdesk";
@@ -226,27 +228,20 @@
 			var end1 = strip + 2;
 			var start = str.substr(start1,5);
 			var end = str.substr(end1,5);
-			// // console.log(start);
-			// // console.log(end);
-			if(shift == "")
-				shift = "Libur";
-			// // console.log(shift);
+			
 			var eventObject = {
-				title: $.trim($(this).text()), // use the element's text as the event title
+				title: $.trim($(this).text()), 
 				startShift: start,
 				endShift: end,
 				Shift: shift,
-
 			};
 
-			// store the Event Object in the DOM element so we can get to it later
 			$(this).data('eventObject', eventObject);
 
-			// make the event draggable using jQuery UI
 			$(this).draggable({
 				zIndex: 1070,
-				revert: true, // will cause the event to go back to its
-				revertDuration: 0  //  original position after the drag
+				revert: true, 
+				revertDuration: 0 
 			});
 
 		});
@@ -254,14 +249,12 @@
 
 	ini_events($('#external-events div.external-event'));
 
-
 	function showProject(name,idProject){
 		$("#listProject").fadeOut(function (){
-			// console.log(idProject);
 			$("#listName").fadeIn();
 			$("#name").text("for " + name);
 			$("#calendar").fullCalendar('removeEventSources');
-			$("#calendar").fullCalendar('addEventSource', '/getScheduleProject/' + idProject);
+			$("#calendar").fullCalendar('addEventSource', "{{url('schedule/getThisProject')}}?project=" + idProject + "&month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
 			$("." + idProject).show();
 			globalProject = idProject;
 			$("#buttonBack").attr("onclick","backListProject(" + idProject + ")");
@@ -270,19 +263,16 @@
 
 	function showDetail(name,nickname,idUser,idProject){
 		$("#listName").fadeOut(function (){
-			// console.log(idUser);
 			
 			var external2 = ".project-" + idProject;
-			// console.log(external2);
 			$("#external").fadeIn(function(){
 				$(external2).show();
 			});
-			
 
 			$("#name2").text("for " + name);
 			$("#nickname").val(nickname);
 			$("#calendar").fullCalendar('removeEventSources');
-			$("#calendar").fullCalendar('addEventSource', '/getScheduleSelected?idUser=' + idUser + '&idProject=' + globalProject);
+			$("#calendar").fullCalendar('addEventSource', '{{url("schedule/getThisUser")}}?idUser=' + idUser + '&idProject=' + globalProject + "&month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
 			globalIdUser = idUser;
 			$("." + idProject).show();
 			$("#buttonBack2").attr("onclick","backListDetail(" + idProject + ")")
@@ -296,10 +286,9 @@
 
 	function backListDetail(idProject){
 		$("#external").fadeOut(function (){
-			// $("." + idProject).hide();
 			$(".project-" + idProject).fadeOut();
 			$("#calendar").fullCalendar('removeEventSources');
-			$("#calendar").fullCalendar('addEventSource', '/getScheduleProject/' + idProject);
+			$("#calendar").fullCalendar('addEventSource', "{{url('schedule/getThisProject')}}?month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
 			$("#buttonBack").attr("onclick","backListProject(" + idProject + ")");
 			globalIdUser = 0;
 			$("#listName").fadeIn();
@@ -314,14 +303,13 @@
 	function backListProject(idProject){
 		$("#listName").fadeOut(function (){
 			$("#calendar").fullCalendar('removeEventSources');
-			$("#calendar").fullCalendar('addEventSource', '/getScheduleAll');
+			$("#calendar").fullCalendar('addEventSource', "{{url('schedule/getThisMonth')}}?month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
 			$("." + idProject).hide();
 			$("#listProject").fadeIn();
 		});
 	}
 
 	$(".fc-next-button").click(function(){
-		// console.log("asdfadf");
 	});
 
 	var shift_user = [], shift_time = [], shift_date = [];
@@ -334,51 +322,20 @@
 		
 		editable: false,
 		droppable: false,
-		//Random default events
-		events: '/getScheduleAll',
+		events: "{{url('schedule/getThisMonth')}}?month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'),
 			
-		 // this allows things to be dropped onto the calendar !!!
-		drop: function (date, allDay) { // this function is called when something is dropped
+		drop: function (date, allDay) { 
 
-			// retrieve the dropped element's stored Event Object
 			var originalEventObject = $(this).data('eventObject');
-			// var name3 = $("#name2").text();
 			var name3 = $("#nickname").val();
 			console.log(name3)
-			// name3.length;
-			// console.log(name3);
-			// if(name3.indexOf(" ",name3.indexOf(" ") + 1) > 0){
-			// 	name3 = name3.substr(name3.indexOf(" ") + 1,name3.length - name3.indexOf(" "));
-			// 	name3 = name3.substr(name3.indexOf(" ")	,name3.length - name3.indexOf(" "));
-			// } else {
-			// 	name3 = " " + name3.substr(name3.indexOf(" ") + 1,name3.length - name3.indexOf(" "));
-			// }
-			// console.log(name3);
-			// we need to copy it, so that multiple events don't have a reference to the same object
 			var copiedEventObject = $.extend({}, originalEventObject);
 
-			// assign it the date that was reported
 			copiedEventObject.start = date;
-			// // console.log(date._d);
 			var waktu = date._d;
 			waktu = new Date(waktu);
 
 			var day = moment(waktu).toISOString(true);
-			// // console.log(waktu.getUTCSeconds());
-			// // console.log(waktu.getUTCMinutes());
-			// // console.log(waktu.getUTCHours());
-			// // console.log(waktu.getUTCDate());
-			// // console.log(waktu.getUTCMonth());
-			// // console.log(waktu.getUTCFullYear());
-			
-			// var kapan = waktu.getUTCFullYear() + "-" + waktu.getUTCMonth()+ "-" + waktu.getUTCDate()+ "T" + waktu.getUTCHours()+ ":" + waktu.getUTCMinutes()+ ":" + waktu.getUTCSeconds() + ".000";
-			// // console.log("Start : " + originalEventObject.startShift);
-			// // console.log("End : " + originalEventObject.endShift);
-			// // console.log("Original : " + day);
-
-			// // console.log("Mix : " + );
-			// // console.log(originalEventObject);
-
 			var startShift2 = moment(waktu).format('YYYY-MM-DD') + "T" + originalEventObject.startShift + ":00.000Z";
 			var endShift2 = moment(waktu).format('YYYY-MM-DD') + "T" + originalEventObject.endShift + ":00.000Z";
 			
@@ -387,42 +344,30 @@
 			$.ajax({
 				type:"GET",
 				dataType:"json",
-				url:"/getScheduleAll",
+				url:"{{url('schedule/getThisMonth')}}?month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'),
 				success: function(result2){
-					// // console.log(result[0].start);
 					for (var i = 0; i < result2.length; i++) {
 						if (startShift2 == result2[i].start) {
-								// // console.log("ada yang sama");
 							var str = result2[i].title;
 							var str2 = result2[i].start;
 							var shift = str.substr(0,str.indexOf(" "));
-							// // console.log(result2[i].title);
-							// // console.log(str2);
 							
-							// // console.log(shift);
-							// console.log(originalEventObject.Shift);
-							// console.log(str.substr(str.indexOf(" ") + 3, str.length));
 							if(shift == originalEventObject.Shift){
-								// console.log("Bener '" + shift + "' '" + originalEventObject.Shift + "'");
-								// console.log("Bener2 '" + name3.substr(1,name3.length - 1) + "' '" + str.substr(str.indexOf(" ") + 3, str.length) + "'");
 								if(name3.substr(1,name3.length - 1) == str.substr(str.indexOf(" ") + 3, str.length)){
 									ketemu = 1;
 								}
 							} 
 						}
 					};
-						// console.log(ketemu);
 
 					if(ketemu == 1){
 						alert("tanggal sama");
-						// console.log("ketemu");
 					} else {
 						var idEvent = 0;
-						// console.log("bener");
 
 						$.ajax({
 							type: "GET",
-							url: "/crateSchedule",
+							url: "{{url('schedule/crateSchedule')}}",
 							data:{
 								title: originalEventObject.Shift +" - " +  name3,
 								name:name3,
@@ -433,34 +378,14 @@
 
 							},
 							success: function(result){
-								// console.log(result);
 								idEvent = result;
-								// console.log(idEvent + "asdfasd");
 								copiedEventObject.id = idEvent;
-								// console.log(copiedEventObject.id);
 								refresh_calendar();
 							},
 						});
-
-						// console.log(idEvent);
-						// // console.log(idEvent);
-						// // console.log(idEvent);
-						// // console.log(idEvent);
-						// // console.log(idEvent);
-
-
-						// render the event on the calendar
-						// the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-						// $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
 					}
 				},
 			});
-			// copiedEventObject.id = 12312;
-			// copiedEventObject.allDay = allDay;
-			// copiedEventObject.backgroundColor = $(this).css("background-color");
-			// copiedEventObject.borderColor = $(this).css("background-color");
-
-			
 		},
 
 		eventDrop: function(event, delta, revertFunc) {
@@ -480,10 +405,12 @@
 			if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 &&
 				jsEvent.pageY >= y1 && jsEvent.pageY <= y2) {
 				if (confirm("Are you sure to delete this events?")) {
-					// console.log(event.id);
 					$.ajax({
 						type: "GET",
-						url: "/deleteSchedule/" + event.id,
+						url: "{{url('schedule/deleteSchedule')}}",
+						data:{
+							id:event.id
+						},
 						success: function(result){
 							$('#calendar').fullCalendar('removeEvents', event.id);
 						},
@@ -493,20 +420,21 @@
 		},
 
 		viewRender: function (view, element) {
-			$("#indicatorMounth").text("Shifting Users on " + moment(view.intervalStart).format("MMMM"));
-			// console.log( moment(view.intervalStart).format("YYYY-MM"));
+			$("#indicatorMonth").text("Shifting Users on " + moment(view.intervalStart).format("MMMM"));
+			
 			$.ajax({
 				type: "GET",
-				url: "changeMonth",
+				url: "{{url('schedule/changeMonth')}}",
 				data: {
 					start:moment(view.intervalStart).format("YYYY-MM")
+				},
+				beforeSend:function(){
+					$("#calendar").fullCalendar('removeEventSources');
 				},
 				success: function(result){
 					$("#ulUser").empty();
 					var append = "";
 					for (var i = 0; i < result.length; i++) {
-					// for (var i = 0; i < 1; i++) {
-						// // console.log(result[i].name);
 						var showDetail = "showDetail('" + result[i].name + "','" + result[i].nickname + "','" +result[i].id + "','" + result[i].on_project + "')";
 						append = append + '	<li class="' + result[i].on_project + '" style="display:none;padding-bottom:10px">';
 						append = append + '		<a onclick="' + showDetail + '">' + result[i].name;
@@ -520,16 +448,23 @@
 					};
 					$("#ulUser").append(append);
 					$("." + globalProject).show();
-					// console.log("change");
 				},
 			});
+			if($("#listProject").is(":visible")){
+				$("#calendar").fullCalendar('addEventSource', '{{url("schedule/getThisMonth")}}?&month=' + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
+			}
+			if($("#listName").is(":visible")){
+				$("#calendar").fullCalendar('addEventSource', '{{url("schedule/getThisProject")}}?project=' + globalProject + '&month=' + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
+			} else {
+				$("#calendar").fullCalendar('addEventSource', '{{url("schedule/getThisUser")}}?idUser=' + globalIdUser +'&idProject=' + globalProject + "&month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
+			}
 		}
 	});
 
 
 	function refresh_calendar(){
 		$("#calendar").fullCalendar('removeEventSources');
-		$("#calendar").fullCalendar('addEventSource', '/getScheduleSelected?idUser=' + globalIdUser +'&idProject=' + globalProject);
+		$("#calendar").fullCalendar('addEventSource', '{{url("schedule/getThisUser")}}?idUser=' + globalIdUser +'&idProject=' + globalProject + "&month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
 	}
 </script>
 @endsection

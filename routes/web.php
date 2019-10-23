@@ -90,10 +90,10 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::post('/addUserShifting', 'AdminController@addUserShifting');
 	Route::post('/editUser', 'AdminController@editUser');
 	Route::post('/editProfile', 'AdminController@editProfile');
+	Route::get('/precense/myhistory', 'AdminController@myHistory');
+	Route::get('/precense/myhistory/detail', 'AdminController@myHistoryDetail');
 		// User Manage Oleh Admin
 	Route::middleware(['aogy.role'])->group(function () {
-		Route::get('/precense/myhistory', 'AdminController@myHistory');
-		Route::get('/precense/myhistory/detail', 'AdminController@myHistoryDetail');
 
 		Route::get('/precense/teamhistory', 'AdminController@teamHistory');
 		Route::get('/precense/teamhistory/getUserHistory/{id}', 'AdminController@getUserHistory');
@@ -105,19 +105,24 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('/precense/reporting/getReportPrecensePerUser','AdminController@getReportPrecensePerUser');
 	});
 	Route::middleware(['shiftingloc.role'])->group(function () {
+		Route::get('schedule','AdminController@schedule');
+		Route::get('schedule/getThisMonth', 'AdminController@getScheduleThisMonth');
+		Route::get('schedule/getThisProject', 'AdminController@getScheduleThisProject');
+		Route::get('schedule/getThisUser','AdminController@getScheduleThisUser');
+		Route::get('schedule/crateSchedule','AdminController@crateSchedule');
+		Route::get('schedule/deleteSchedule','AdminController@deleteSchedule');
+		Route::get('schedule/changeMonth','AdminController@changeMonth');
+		
+		
 		Route::get('/usermanage', 'AdminController@usermanage');
 		Route::get('/location', 'AdminController@location');
 		Route::get('/getLocation/{id}' , 'AdminController@getLocation');
 		Route::get('/setLocation' , 'AdminController@setLocation');
 		Route::get('/addLocation' , 'AdminController@addLocation');
 		Route::get('/getLocationAfter','AdminController@getLocationAfter');
-		Route::get('/schedule','AdminController@schedule');
-		Route::get('/getScheduleAll', 'AdminController@getScheduleAll');
-		Route::get('/getScheduleProject/{id}', 'AdminController@getScheduleProject');
-		Route::get('/getScheduleSelected','AdminController@getScheduleSelected');
-		Route::get('/crateSchedule','AdminController@crateSchedule');
-		Route::get('/deleteSchedule/{id}','AdminController@deleteSchedule');
-		Route::get('/changeMonth','AdminController@changeMonth');
+		// Route::get('/getScheduleProject/{id}', 'AdminController@getScheduleProject');
+		// Route::get('/deleteSchedule/{id}','AdminController@deleteSchedule');
+		// Route::get('/changeMonth','AdminController@changeMonth');
 	});
 	Route::get('/getMasuk/{id}', 'AdminController@getMasuk');
 	Route::get('/getProfile/{id}', 'AdminController@getProfile');

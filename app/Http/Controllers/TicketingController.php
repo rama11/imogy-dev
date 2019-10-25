@@ -1457,7 +1457,7 @@ class TicketingController extends Controller
 
 	public function getAtmId(Request $request){
 		$result = TicketingClient::with('client_atm')
-			->where('client_acronym','BJBR')
+			->where('client_acronym',$request->acronym)
 			->first();
 
 		return $result->client_atm->pluck('atm_id');

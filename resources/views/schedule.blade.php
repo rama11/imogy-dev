@@ -136,7 +136,7 @@
 							<div style="display: none;" class="external-event bg-yellow project-2">Sore <span class="pull-right">14:00 - 22:30</span></div>
 							<div style="display: none;" class="external-event bg-yellow project-3">Sore <span class="pull-right">14:00 - 21:00</span></div>
 							<div style="display: none;" class="external-event bg-blue project-1">Malam <span class="pull-right">22:00 - 07:00</span></div>
-							<div style="display: none;" class="external-event bg-green project-1 project-3 	project-2">Libur</div>
+							<div style="display: none;" class="external-event bg-green project-1 project-3 	project-2">Libur </div>
 							<br>
 							<button class="btn btn-default" id="buttonBack2">
 								Back

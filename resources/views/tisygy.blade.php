@@ -1594,7 +1594,7 @@
 				clearFormNewTicket()
 				$.ajax({
 					type:"GET",
-					url:"getCreateParameter",
+					url:"{{url('tisygy/create/getParameter')}}",
 					success: function (result){
 						var append = "";
 						var append2 = "<option selected='selected'>Chose the client</option> ";
@@ -1618,7 +1618,7 @@
 		} else {
 			$.ajax({
 				type:"GET",
-				url:"getCreateParameter",
+				url:"{{url('tisygy/create/getParameter')}}",
 				success: function (result){
 					var append = "";
 					var append2 = "<option selected='selected'>Chose the client</option> ";
@@ -2702,7 +2702,7 @@
 	function saveClient(){
 		$.ajax({
 			type:"POST",
-			url:"setSettingClient",
+			url:"{{url('tisygy/setting/setSettingClient')}}",
 			data:{
 				"_token": "{{ csrf_token() }}",
 				id:$("#clientId").val(),
@@ -2724,7 +2724,7 @@
 	function editClient(id){
 		$.ajax({
 			type:"GET",
-			url:"getSettingClient",
+			url:"{{url('tisygy/setting/getSettingClient')}}",
 			data: {
 				id:id,
 			},

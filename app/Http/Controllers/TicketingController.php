@@ -24,6 +24,7 @@ use App\Http\Models\TicketingActivity;
 use App\Http\Models\TicketingResolve;
 use App\Http\Models\TicketingClient;
 use App\Http\Models\TicketingATM;
+use App\Http\Models\TicketingSeverity;
 
 class TicketingController extends Controller
 {
@@ -270,36 +271,15 @@ class TicketingController extends Controller
 
 
 	public function getCreateParameter(){
+		$client = TicketingClient::all();
+		$severity = TicketingSeverity::all();
 		
-		$get_client = DB::table('ticketing__client')
-			->select('id','client_acronym')
-			->get();
-
-		$get_severity = DB::table('ticketing__severity')
-			->select('id','name','description')
-			->get();
-
-		$client = [];
-		foreach ($get_client as $value) {
-			$client[] = $value->client_acronym;
-		}
-
-		$severity_id = [];
-		foreach ($get_severity as $value) {
-			$severity_id[] = $value->id;
-		}
-
-		$severity_name = [];
-		foreach ($get_severity as $value) {
-			$severity_name[] = $value->name;
-		}
-
-		$severity_description = [];
-		foreach ($get_severity as $value) {
-			$severity_description[] = $value->description;
-		}
-
-		return array($client,$severity_id,$severity_name,$severity_description);
+		return array(
+			$client->pluck('client_acronym'),
+			$severity->pluck('id'),
+			$severity->pluck('name'),
+			$severity->pluck('description'),
+		);
 	}
 
 	public function getReserveIdTicket(){

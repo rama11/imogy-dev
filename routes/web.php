@@ -243,6 +243,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	
 	Route::get('tisygy/setUpdateTicket','TicketingController@setUpdateTicket');
 	
+	Route::get('tisygy/create/getParameter','TicketingController@getCreateParameter');
 	Route::get('tisygy/create/getAtmId','TicketingController@getAtmId');
 	Route::get('tisygy/create/getAtmDetail','TicketingController@getAtmDetail');
 	Route::get('tisygy/create/getReserveIdTicket','TicketingController@getReserveIdTicket');
@@ -268,14 +269,15 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('tisygy/mail/getReciver', 'TicketingController@getEmailReciver');
 
 	Route::get('tisygy/setting/getAllAtm', 'TicketingController@getAllAtmSetting');
+	Route::get('tisygy/setting/getSettingClient' , 'TicketingController@getSettingClient');
+	Route::post('tisygy/setting/setSettingClient' , 'TicketingController@setSettingClient');
 
 	// Route::get('getPerformanceBySeverity','TicketingController@getPerformanceBySeverity');
 	// Route::get('getPerformanceByClient','TicketingController@getPerformanceByClient');
 	
 	Route::get('getPerformance','TicketingController@getPerformance');
 	// Route::get('getDashboard','TicketingController@getDashboard');
-	Route::get('getCreateParameter','TicketingController@getCreateParameter');
-	Route::get('getClientTest','TestController@getSettingClient');
+	// Route::get('getClientTest','TestController@getSettingClient');
 	// Route::get('/home', 'HomeController@index')->name('home');
 	// Project Route
 	Route::middleware(['project.role'])->group(function () {

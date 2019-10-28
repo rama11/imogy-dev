@@ -1658,7 +1658,7 @@
 	function newAtm(){
 		$.ajax({
 			type:"GET",
-			url:"newAtm",
+			url:"{{url('tisygy/setting/newAtm')}}",
 			data:{
 				atmOwner:$("#atmOwner2").val(),
 				atmID:$("#atmID2").val(),
@@ -1688,7 +1688,7 @@
 	function saveAtm(){
 		$.ajax({
 			type:"GET",
-			url:"setAtm",
+			url:"{{url('tisygy/setting/setAtm')}}",
 			data:{
 				idAtm:$("#idAtm").val(),
 				atmOwner:$("#atmOwner").val(),
@@ -1706,7 +1706,7 @@
 		$("#modal-setting-atm").modal('toggle');
 		$.ajax({
 			type:"GET",
-			url:"getDetailAtm/" + atm_id,
+			url:"{{url('tisygy/setting/getDetailAtm')}}/" + atm_id,
 			success:function(result){
 				$.each(result[1], function (key,value){
 					$("#atmOwner").append("<option value='" + value.id + "'>(" + value.client_acronym + ") " + value.client_name + "</option>")

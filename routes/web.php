@@ -187,10 +187,10 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('getSettingClient' , 'TicketingController@getSettingClient');
 		Route::post('setSettingClient' , 'TicketingController@setSettingClient');
 		
-		Route::get('getDetailAtm/{id}','TicketingController@getDetailAtm');
-		Route::get('getDetailAtm2/{id}','TicketingController@getDetailAtm2');
-		Route::get('setAtm','TicketingController@setAtm');
-		Route::get('newAtm','TicketingController@newAtm');
+		// Route::get('getDetailAtm/{id}','TicketingController@getDetailAtm');
+		// Route::get('getDetailAtm2/{id}','TicketingController@getDetailAtm2');
+		// Route::get('setAtm','TicketingController@setAtm');
+		// Route::get('newAtm','TicketingController@newAtm');
 		// Route::get('getReportTicket/{client}/{month}','TicketingController@testReport');
 	});
 		
@@ -269,6 +269,9 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('tisygy/mail/getReciver', 'TicketingController@getEmailReciver');
 
 	Route::get('tisygy/setting/getAllAtm', 'TicketingController@getAllAtmSetting');
+	Route::get('tisygy/setting/getDetailAtm/{id}','TicketingController@getDetailAtm');
+	Route::get('tisygy/setting/setAtm','TicketingController@setAtm');
+	Route::get('tisygy/setting/newAtm','TicketingController@newAtm');
 	Route::get('tisygy/setting/getSettingClient' , 'TicketingController@getSettingClient');
 	Route::post('tisygy/setting/setSettingClient' , 'TicketingController@setSettingClient');
 

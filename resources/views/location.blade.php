@@ -83,7 +83,7 @@
 
 <div class="modal fade in" id="modal-default"  tabindex="-1" role="dialog">
 	<div class="modal-dialog">
-		<form method="GET" action="{{url('setLocation')}}">
+		<form method="GET" action="{{url('/usermanage/setLocation')}}">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -129,7 +129,7 @@
 <button data-toggle="modal" data-target="#modal-default2" style="display: none;" id="showAdd"></button>
 <div class="modal fade in" id="modal-addNewLocation" tabindex="-1" role="dialog">
 	<div class="modal-dialog modal-lg">
-		<form method="GET" action="{{url('addLocation')}}">
+		<form method="GET" action="{{url('/usermanage/addLocation')}}">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -192,7 +192,7 @@
 	$("#locationAfter").change(function(){
 		$.ajax({
 			type:'GET',
-			url:'getLocationAfter',
+			url:'{{url("/usermanage/getLocationAfter")}}',
 			data:{
 				location:this.value,
 			},
@@ -265,7 +265,7 @@
 		console.log(id);
 		$.ajax({
 			type: "GET",
-			url: "getLocation/" + id,
+			url: "{{url('/usermanage/getLocation/')}}/" + id,
 			success: function(result){
 				console.log(result[0]["id"]);
 				$("#nameLoc").text("Change location for " + result[0]["name"]);
@@ -282,7 +282,7 @@
 			data:{
 				id:1,
 			},
-			url: "setLocation",
+			url: "{{url('/usermanage/setLocation')}}",
 			success: function(result){
 				console.log(result);
 			},

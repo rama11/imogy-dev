@@ -376,10 +376,6 @@ class AdminController extends Controller
 			->where('id','=',$request->id)
 			->update(['location' => $request->location]);
 
-		echo "Id : " . $request->id . "<br>";
-		echo "Location : " . $request->location . "<br>";
-		echo "Name : " . $request->name . "<br>";
-
 		return redirect('location')->with('status', "Change location for " . $request->name . "success.");
 	}
 

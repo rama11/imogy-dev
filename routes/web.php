@@ -75,8 +75,8 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	// Location Controll oleh Helpdesk
 	Route::get('/hlocation', 'HelpdeskController2@location');
 	Route::get('/getLocation/{id}' , 'HelpdeskController2@getLocation');
-	Route::get('/setLocation' , 'HelpdeskController2@setLocation');
-	Route::get('/addLocation' , 'HelpdeskController2@addLocation');
+	// Route::get('/setLocation' , 'HelpdeskController2@setLocation');
+	// Route::get('/addLocation' , 'HelpdeskController2@addLocation');
 	Route::get('/habsen', 'HelpdeskController2@absen');
 	Route::post('/htisygy', 'HelpdeskController2@add_atisygy');
 	Route::get('/downloadPDF/{id}','HelpdeskController2@download');
@@ -115,11 +115,11 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		
 		
 		Route::get('/usermanage', 'AdminController@usermanage');
+		Route::get('/usermanage/addLocation' , 'AdminController@addLocation');
+		Route::get('/usermanage/getLocationAfter','AdminController@getLocationAfter');
+		Route::get('/usermanage/getLocation/{id}' , 'AdminController@getLocation');
+		Route::get('/usermanage/setLocation' , 'AdminController@setLocation');
 		Route::get('/location', 'AdminController@location');
-		Route::get('/getLocation/{id}' , 'AdminController@getLocation');
-		Route::get('/setLocation' , 'AdminController@setLocation');
-		Route::get('/addLocation' , 'AdminController@addLocation');
-		Route::get('/getLocationAfter','AdminController@getLocationAfter');
 		// Route::get('/getScheduleProject/{id}', 'AdminController@getScheduleProject');
 		// Route::get('/deleteSchedule/{id}','AdminController@deleteSchedule');
 		// Route::get('/changeMonth','AdminController@changeMonth');

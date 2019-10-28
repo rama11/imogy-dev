@@ -1667,7 +1667,7 @@
 			},
 			success: function (){
 				$("#modal-setting-atm-add").modal('toggle');
-				window.location('/tisygy');
+				$("#tableAtm").DataTable().ajax.url("tisygy/setting/getAllAtm").load();
 			}
 		})
 	}
@@ -1698,6 +1698,7 @@
 			},
 			success: function (){
 				$("#modal-setting-atm").modal('toggle');
+				$("#tableAtm").DataTable().ajax.url("tisygy/setting/getAllAtm").load();
 			}
 		})
 	}

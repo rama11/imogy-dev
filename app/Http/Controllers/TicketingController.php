@@ -1447,6 +1447,10 @@ class TicketingController extends Controller
 		return TicketingATM::where('atm_id',$request->id_atm)->first();
 	}
 
+	public function getParameterAddAtm(){
+		return TicketingClient::select('id','client_acronym','client_name')->get();
+	}
+
 	public function getDetailAtm($id_atm){
 		$client = DB::table('ticketing__client')
 			->select('id','client_acronym','client_name')
@@ -1457,18 +1461,6 @@ class TicketingController extends Controller
 			->get();
 
 		return array($return,$client);
-	}
-
-	public function getDetailAtm2($id_atm){
-		$client = DB::table('ticketing__client')
-			->select('id','client_acronym','client_name')
-			->get();
-
-		$return = DB::table('ticketing__atm')
-			->where('atm_id','=',$id_atm)
-			->get();
-
-		return $return;
 	}
 
 	public function setAtm(Request $request){

@@ -270,6 +270,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 
 	Route::get('tisygy/setting/getAllAtm', 'TicketingController@getAllAtmSetting');
 	Route::get('tisygy/setting/getDetailAtm/{id}','TicketingController@getDetailAtm');
+	Route::get('tisygy/setting/getParameterAddAtm','TicketingController@getParameterAddAtm');
 	Route::get('tisygy/setting/setAtm','TicketingController@setAtm');
 	Route::get('tisygy/setting/newAtm','TicketingController@newAtm');
 	Route::get('tisygy/setting/getSettingClient' , 'TicketingController@getSettingClient');

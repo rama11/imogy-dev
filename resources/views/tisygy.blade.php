@@ -1676,9 +1676,9 @@
 		$("#modal-setting-atm-add").modal('toggle');
 		$.ajax({
 			type:"GET",
-			url:"getDetailAtm/621",
+			url:"{{url('tisygy/setting/getParameterAddAtm')}}",
 			success:function(result){
-				$.each(result[1], function (key,value){
+				$.each(result, function (key,value){
 					$("#atmOwner2").append("<option value='" + value.id + "'>(" + value.client_acronym + ") " + value.client_name + "</option>")
 				});
 			}

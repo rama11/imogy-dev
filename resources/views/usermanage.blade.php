@@ -314,7 +314,7 @@
 		// console.log(id);
 		$.ajax({
 			type: "GET",
-			url: "getMasuk/" + id,
+			url: "{{url('/usermanage/getMasuk/')}}/" + id,
 			success: function(result){
 				// console.log(result[0]["id"]);
 				$("#nameMasuk").text("Change work hours for " + result[1]);
@@ -335,7 +335,7 @@
 		console.log(id);
 		$.ajax({
 			type: "GET",
-			url: "getProfile/" + id,
+			url: "{{url('/usermanage/getProfile')}}/" + id,
 			success: function(result){
 				// console.log(result[0]["id"]);
 				$("#id_user").val(id);

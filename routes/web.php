@@ -244,7 +244,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 //Auth::routes();
 	Route::get('tisygy/getDashboard','TicketingController@getDashboard');
 	Route::get('tisygy/getPerformanceAll','TicketingController@getPerformanceAll');
-	// Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
+	Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
 	Route::get('tisygy/getPerformanceByTicket','TicketingController@getPerformanceByTicket');
 	Route::get('tisygy/getPerformanceBySeverity','TicketingController@getPerformanceBySeverity');
 	

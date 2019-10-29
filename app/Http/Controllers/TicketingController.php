@@ -26,13 +26,14 @@ use App\Http\Models\TicketingClient;
 use App\Http\Models\TicketingATM;
 use App\Http\Models\TicketingSeverity;
 
+use Carbon\Carbon;
+
 class TicketingController extends Controller
 {
 
 
 	public function __construct(){
-		$this->middleware('auth');
-		date_default_timezone_set('Asia/Jakarta');
+		
 	}
 
 	public function tisygy(){
@@ -588,80 +589,106 @@ class TicketingController extends Controller
 		return $final;
 	}
 
-	public function getPerformance3($acronym_client,$period){
-		$id_client = DB::table('ticketing__client')
-			->where('client_acronym','=',$acronym_client)
-			->value('id');
+	public function getPerformanceByFinishTicket($acronym_client,$period){
+		$occurring_ticket = DB::table('ticketing__activity')
+			->select('id_ticket','activity')
+			->whereIn('id',function ($query) {
+				$query->select(DB::raw("MAX(id) AS activity"))
+					->from('ticketing__activity')
+					->groupBy('id_ticket');
+				})
+			->where('activity','<>','CANCEL')
+			->where('activity','<>','CLOSE')
+			->whereRaw('`id_ticket` LIKE "%' . $acronym_client . '%"')
+			->get()
+			->pluck('id_ticket');
 
-		$result = DB::table('ticketing__id')
-			->where('ticketing__id.id_client','=',$id_client)
-			->join('ticketing__detail','ticketing__detail.id_ticket','=','ticketing__id.id_ticket')
-			// ->join('ticketing__resolve','ticketing__resolve.id_ticket','=','ticketing__id.id_ticket')
-			->orderBy('ticketing__id.id','ASC')
-			// ->limit()
+		$residual_ticket_result = TicketingDetail::with([
+				'first_activity_ticket:id_ticket,date,operator',
+				'lastest_activity_ticket',
+				'id_detail:id_ticket,id',
+				'resolve',
+			])
+			->whereNotIn('id_ticket',$occurring_ticket)
+			->whereRaw("`id_ticket` LIKE '%/" . $acronym_client . "/" . $period . "'")
+			->orderBy('id','ASC')
 			->get();
 
-		$result2 = [];
+		return $residual_ticket_result;
 
-		foreach ($result as $key => $value) {
-			$temp = explode("/",$value->id_ticket);
-			$value->temp = $temp[2] . "/" . $temp[3];
+		// $id_client = DB::table('ticketing__client')
+		// 	->where('client_acronym','=',$acronym_client)
+		// 	->value('id');
 
-			$check = DB::table('ticketing__activity')
-				->where('id_ticket','=',$value->id_ticket)
-				->orderBy('id','DESC')
-				->value('activity');
+		// $result = DB::table('ticketing__id')
+		// 	->where('ticketing__id.id_client','=',$id_client)
+		// 	->join('ticketing__detail','ticketing__detail.id_ticket','=','ticketing__id.id_ticket')
+		// 	// ->join('ticketing__resolve','ticketing__resolve.id_ticket','=','ticketing__id.id_ticket')
+		// 	->orderBy('ticketing__id.id','ASC')
+		// 	// ->limit()
+		// 	->get();
 
+		// $result2 = [];
 
-			if($value->temp == $period){
-				if($check == "CLOSE" || $check == "CANCEL"){
-					$value->open = DB::table('ticketing__activity')
-						->where('id_ticket','=',$value->id_ticket)
-						->where('activity','=','OPEN')
-						->value('date');
+		// foreach ($result as $key => $value) {
+		// 	$temp = explode("/",$value->id_ticket);
+		// 	$value->temp = $temp[2] . "/" . $temp[3];
 
-					$value->id_open = DB::table('ticketing__id')
-						->where('id_ticket','=',$value->id_ticket)
-						->value('id');
-
-					$value->last_status = array(
-						DB::table('ticketing__activity')
-							->where('id_ticket','=',$value->id_ticket)
-							->orderBy('id','DESC')
-							->value('activity'),
-						DB::table('ticketing__activity')
-							->where('id_ticket','=',$value->id_ticket)
-							->orderBy('id','DESC')
-							->value('date')
-						);
-
-					if($check == "CLOSE"){
-						$value->root_couse = DB::table('ticketing__resolve')
-							->where('id_ticket','=',$value->id_ticket)
-							->value('root_couse');
-
-						$value->counter_measure = DB::table('ticketing__resolve')
-							->where('id_ticket','=',$value->id_ticket)
-							->value('counter_measure');
-					} else {
-						$value->root_couse = '-';
-						$value->counter_measure = '-';
-					}
+		// 	$check = DB::table('ticketing__activity')
+		// 		->where('id_ticket','=',$value->id_ticket)
+		// 		->orderBy('id','DESC')
+		// 		->value('activity');
 
 
-					$value->operator = DB::table('ticketing__activity')
-						->where('id_ticket','=',$value->id_ticket)
-						->orderBy('id','DESC')
-						->value('operator');
+		// 	if($value->temp == $period){
+		// 		if($check == "CLOSE" || $check == "CANCEL"){
+		// 			$value->open = DB::table('ticketing__activity')
+		// 				->where('id_ticket','=',$value->id_ticket)
+		// 				->where('activity','=','OPEN')
+		// 				->value('date');
 
-					$result2[] = $value;
-				}
-			}
-		}
+		// 			$value->id_open = DB::table('ticketing__id')
+		// 				->where('id_ticket','=',$value->id_ticket)
+		// 				->value('id');
 
-		$result = $result2;
+		// 			$value->last_status = array(
+		// 				DB::table('ticketing__activity')
+		// 					->where('id_ticket','=',$value->id_ticket)
+		// 					->orderBy('id','DESC')
+		// 					->value('activity'),
+		// 				DB::table('ticketing__activity')
+		// 					->where('id_ticket','=',$value->id_ticket)
+		// 					->orderBy('id','DESC')
+		// 					->value('date')
+		// 				);
 
-		return $result;
+		// 			if($check == "CLOSE"){
+		// 				$value->root_couse = DB::table('ticketing__resolve')
+		// 					->where('id_ticket','=',$value->id_ticket)
+		// 					->value('root_couse');
+
+		// 				$value->counter_measure = DB::table('ticketing__resolve')
+		// 					->where('id_ticket','=',$value->id_ticket)
+		// 					->value('counter_measure');
+		// 			} else {
+		// 				$value->root_couse = '-';
+		// 				$value->counter_measure = '-';
+		// 			}
+
+
+		// 			$value->operator = DB::table('ticketing__activity')
+		// 				->where('id_ticket','=',$value->id_ticket)
+		// 				->orderBy('id','DESC')
+		// 				->value('operator');
+
+		// 			$result2[] = $value;
+		// 		}
+		// 	}
+		// }
+
+		// $result = $result2;
+
+		// return $result;
 	}
 
 	public function getPerformanceBySeverity(Request $req){
@@ -1555,26 +1582,25 @@ class TicketingController extends Controller
 
 	}
 
-	public function testReport($client,$month){
+	public function makeReportTicket(Request $req){
 		// Create new Spreadsheet object
 		$spreadsheet = new Spreadsheet();
-		$client = $client;
-		$bulan = $month;
+		$client = TicketingClient::find($req->client)->client_acronym;
+		$bulan = Carbon::createFromDate(2018, $req->month + 1, 1)->format('M');
 
 		// Set document properties
-		$title = 'Laporan Bulanan '. $client . ' '. $month . date(" Y");
+		$title = 'Laporan Bulanan '. $client . ' '. $bulan . date(" Y");
 
 		$spreadsheet->getProperties()->setCreator('SIP')
 			->setLastModifiedBy('Rama Agastya')
 			->setTitle($title);
-			
 
 		// Rename worksheet
 		$spreadsheet->getActiveSheet()->setTitle('General');
 
 		// Report Title
 		$spreadsheet->getActiveSheet()->getRowDimension('2')->setRowHeight(35);
-		$spreadsheet->getActiveSheet()->setCellValue('J2', 'LAPORAN REPORT BANK ' . $client);
+		$spreadsheet->getActiveSheet()->setCellValue('J2', 'LAPORAN REPORT ' . $client);
 		$spreadsheet->getActiveSheet()->getStyle('J2')->getFont()->setName('Calibri');
 		$spreadsheet->getActiveSheet()->getStyle('J2')->getFont()->setSize(24);
 		$spreadsheet->getActiveSheet()->getStyle('J2')->getFont()->setBold(true);
@@ -1583,14 +1609,12 @@ class TicketingController extends Controller
 
 		// Report Month
 		$spreadsheet->getActiveSheet()->getRowDimension('2')->setRowHeight(35);
-		$spreadsheet->getActiveSheet()->setCellValue('B2', date('F'));
+		$spreadsheet->getActiveSheet()->setCellValue('B2', Carbon::createFromDate(2018, $req->month + 1, 1)->format('F'));
 		$spreadsheet->getActiveSheet()->getStyle('B2')->getFont()->setName('Calibri');
 		$spreadsheet->getActiveSheet()->getStyle('B2')->getFont()->setSize(24);
 		$spreadsheet->getActiveSheet()->getStyle('B2')->getFont()->setBold(true);
 		$spreadsheet->getActiveSheet()->getStyle('B2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 		$spreadsheet->getActiveSheet()->getStyle('B2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-
-		
 
 		$Colom_Header = [
 			'borders' => [
@@ -1671,7 +1695,7 @@ class TicketingController extends Controller
 			->setCellValue('P4','CONTERMASURE')
 			->setCellValue('Q4','ENGINEER');
 		
-		$value1 = $this->getPerformance3($client,$bulan . "/" . date("Y"));
+		$value1 = $this->getPerformanceByFinishTicket($client,$bulan . "/" . date("Y"));
 		// return $value1;
 
 		foreach ($value1 as $key => $value) {
@@ -1688,24 +1712,28 @@ class TicketingController extends Controller
 			if($value->open == NULL){
 				// $spreadsheet->getActiveSheet()->setCellValue('I' . (5 + $key),"NULL");
 				// $spreadsheet->getActiveSheet()->setCellValue('J' . (5 + $key),"NULL");
-				$spreadsheet->getActiveSheet()->setCellValue('I' . (5 + $key),date_format(date_create($value->reporting_time),'G:i:s'));
-				$spreadsheet->getActiveSheet()->setCellValue('J' . (5 + $key),date_format(date_create($value->reporting_time),'d F Y'));
+				if($value->reporting_time != "Invalid date"){
+					$spreadsheet->getActiveSheet()->setCellValue('I' . (5 + $key),date_format(date_create($value->reporting_time),'G:i:s'));
+					$spreadsheet->getActiveSheet()->setCellValue('J' . (5 + $key),date_format(date_create($value->reporting_time),'d F Y'));
+				}
 			} else {
 				$spreadsheet->getActiveSheet()->setCellValue('I' . (5 + $key),date_format(date_create($value->open),'G:i:s'));
 				$spreadsheet->getActiveSheet()->setCellValue('J' . (5 + $key),date_format(date_create($value->open),'d F Y'));
 			}
-			if($value->last_status[0] == "CANCEL"){
+			if($value->lastest_activity_ticket->activity == "CANCEL"){
 				$spreadsheet->getActiveSheet()->setCellValue('K' . (5 + $key),'-');
 				$spreadsheet->getActiveSheet()->setCellValue('L' . (5 + $key),'-');
 				$spreadsheet->getActiveSheet()->getStyle('B' . (5 + $key) .  ':Q' . (5 + $key))->applyFromArray($cancel_row);
 			} else {
-				$spreadsheet->getActiveSheet()->setCellValue('K' . (5 + $key),date_format(date_create($value->last_status[1]),'G:i:s'));
-				$spreadsheet->getActiveSheet()->setCellValue('L' . (5 + $key),date_format(date_create($value->last_status[1]),'d F Y'));
+				$spreadsheet->getActiveSheet()->setCellValue('K' . (5 + $key),date_format(date_create($value->lastest_activity_ticket->date),'G:i:s'));
+				$spreadsheet->getActiveSheet()->setCellValue('L' . (5 + $key),date_format(date_create($value->lastest_activity_ticket->date),'d F Y'));
+				if(isset($value->resolve)){
+					$spreadsheet->getActiveSheet()->setCellValue('O' . (5 + $key),$value->resolve->root_couse);
+					$spreadsheet->getActiveSheet()->setCellValue('P' . (5 + $key),$value->resolve->counter_measure);
+				}
 			}
 			$spreadsheet->getActiveSheet()->setCellValue('M' . (5 + $key),$value->pic);
 			$spreadsheet->getActiveSheet()->setCellValue('N' . (5 + $key),$value->contact_pic);
-			$spreadsheet->getActiveSheet()->setCellValue('O' . (5 + $key),$value->root_couse);
-			$spreadsheet->getActiveSheet()->setCellValue('P' . (5 + $key),$value->counter_measure);
 			$spreadsheet->getActiveSheet()->setCellValue('Q' . (5 + $key),$value->engineer);
 			// $spreadsheet->getActiveSheet()->setCellValue('R' . (5 + $key),$value->id_ticket);
 		}
@@ -1939,14 +1967,18 @@ class TicketingController extends Controller
 		
 
 
-		$name = 'Report_' . $client . '_-_' . $month . '_(' . date("Y-m-d") . ').xlsx';
+		$name = 'Report_' . $client . '_-_' . Carbon::createFromDate(2018, $req->month + 1, 1)->format('F') . '_(' . date("Y-m-d") . ')_' . Auth::user()->nickname . '.xlsx';
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
 		$writer->save($name);
-		return redirect($_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER['HTTP_HOST'] . "/download.php?nameFile=" . $name);
+		return $name;
 		// return response()->download($name);
 
 		// return $value1;
 
+	}
+
+	public function downloadReportTicket(Request $req){
+		return redirect($_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER['HTTP_HOST'] . "/download.php?nameFile=" . $req->name);
 	}
 
 
@@ -2006,6 +2038,10 @@ class TicketingController extends Controller
 		fclose( $ifp ); 
 	}
 
-	
+	public function getReportParameter(){
+		return array('client_data' => TicketingClient::select('id','client_acronym','client_name')
+			->where('situation','=','1')
+			->get());
+	}
 
 }

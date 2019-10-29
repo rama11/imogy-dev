@@ -2,7 +2,7 @@
 
 // echo "hahaha";
 
-$dir    = '/var/www/html/imogy-dev/public/';
+$dir    =  getcwd() . '/public/';
 $files1 = scandir($dir);
 
 // echo "<pre>";

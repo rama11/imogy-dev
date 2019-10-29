@@ -25,10 +25,17 @@ Route::get('/', function () {
 Route::get('maps', function () {
 	// return view('maps');
 });
+	// Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
+
 // Dibawah adalah route yang hanya bisa di pangil jika sudah terAuthentification (login)
 Auth::routes();
 Route::get('/authenticate/{id}','HomeController@authenticate');
-Route::get('getReportTicket/{client}/{month}','TicketingController@testReport');
+Route::get('getReportTicket/{client}/{month}','TicketingController@getReportTicket');
+Route::get('tisygy/report/getParameter','TicketingController@getReportParameter');
+Route::get('tisygy/report/make','TicketingController@makeReportTicket');
+Route::get('tisygy/report/download','TicketingController@downloadReportTicket');
+		
+
 Route::get('firebase','TestController@firebase');
 Route::get('administration','AdministrationController@index');
 
@@ -237,7 +244,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 //Auth::routes();
 	Route::get('tisygy/getDashboard','TicketingController@getDashboard');
 	Route::get('tisygy/getPerformanceAll','TicketingController@getPerformanceAll');
-	Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
+	// Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
 	Route::get('tisygy/getPerformanceByTicket','TicketingController@getPerformanceByTicket');
 	Route::get('tisygy/getPerformanceBySeverity','TicketingController@getPerformanceBySeverity');
 	

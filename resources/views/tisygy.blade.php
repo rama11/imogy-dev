@@ -649,7 +649,39 @@
 				</div>
 
 				<div class="tab-pane" id="tab_5">
-					Comming Soon...
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>Select Client</label>
+								<select id="selectReportingClient" class="form-control">
+								</select>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>Select Type</label>
+								<select id="selectReportingType" class="form-control">
+									<option>Finish Report</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>Select Month</label>
+								<select id="selectReportingMonth" class="form-control">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-9">
+							<!-- <a id="ReportingButtonLink" href=""> -->
+								<button id="ReportingButtonGo" class="pull-right btn btn-flat btn-primary" style="display: none;" onclick="getReport()">
+									Goo..
+								</button>
+							<!-- </a> -->
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -1280,6 +1312,19 @@
 			autoclose: true,
 			format: 'dd/mm/yyyy'
 		});
+
+		$("#selectReportingClient, #selectReportingMonth").change(function(){
+			if($("#selectReportingClient").val() !== "Select Client" && $("#selectReportingMonth").val() !== "Select Month"){
+				console.log($("#selectReportingClient").val())
+				console.log($("#selectReportingMonth").val())
+				$("#ReportingButtonGo").show()
+			}
+		})
+
+		$("#ReportingButtonGo").click(function(){
+			$("#selectReportingClient").val()
+			$("#selectReportingMonth").val()
+		})
 
 	})
 
@@ -3108,6 +3153,71 @@
 		$("#createTicket").show();
 		getBankAtm();
 	});
+
+	
+
+	$.ajax({
+		type:"GET",
+		url:"{{url('tisygy/report/getParameter')}}",
+		success:function(result){
+			$("#selectReportingClient").append("<option>Select Client</option>")
+			$("#selectReportingMonth").append("<option>Select Month</option>")
+
+			result.client_data.forEach(function(data,index){
+				$("#selectReportingClient").append("<option value='" + data.id + "'>[" + data.client_acronym + "] " + data.client_name + "</option>")
+			})
+			moment.months().forEach(function(data,index){
+				if(index + 1 < moment().format('M')){
+					$("#selectReportingMonth").append("<option value='" + index + "'>" + data + "</option>")
+				}
+			})
+		}
+	})
+
+	function getReport(){
+		swalWithCustomClass.fire({
+			title: 'Are you sure?',
+			text: "Make sure there is nothing wrong to get this report ticket!",
+			type: "warning",
+			showCancelButton: true,
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			allowEnterKey: false,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value){
+					Swal.fire({
+						title: 'Please Wait..!',
+						text: "Prossesing Data Report",
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false,
+						customClass: {
+							popup: 'border-radius-0',
+						},
+						onOpen: () => {
+							Swal.showLoading()
+						}
+					})
+
+					$.ajax({
+						type: "GET",
+						url: '{{url("tisygy/report/make")}}?client=' + $("#selectReportingClient").val() + '&month=' + $("#selectReportingMonth").val(),
+						success: function(result){
+							Swal.hideLoading()
+							swalWithCustomClass.fire({
+								title: 'Success!',
+								text: "You can get your file now",
+								type: 'success',
+								confirmButtonText: '<a style="color:#fff;" href="{{url("tisygy/report/download")}}?name=' + result + '">Get Report</a>',
+							})
+						}
+					});
+				}
+			}
+		);
+	}
 
 </script>
 @endsection

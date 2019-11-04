@@ -155,7 +155,7 @@
 						</a>
 						<div class="pull-left info">
 							<p>{{Auth::user()->name}}</p>
-								<small><i class="fa fa-circle text-success"> </i>  Super Users</small>					
+								<small><i class="fa fa-circle text-success"> </i>  Project Coordinator</small>					
 						</div>
 					</div>
 					

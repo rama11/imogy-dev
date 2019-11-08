@@ -1969,7 +1969,7 @@ class TicketingController extends Controller
 
 		$name = 'Report_' . $client . '_-_' . Carbon::createFromDate(2018, $req->month + 1, 1)->format('F') . '_(' . date("Y-m-d") . ')_' . Auth::user()->nickname . '.xlsx';
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-		$writer->save($name);
+		$writer->save('report/' . $name);
 		return $name;
 		// return response()->download($name);
 

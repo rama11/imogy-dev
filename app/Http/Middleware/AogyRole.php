@@ -16,7 +16,7 @@ class AogyRole
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::user()->jabatan == 1 || Auth::user()->jabatan == 5){
+        if(Auth::user()->jabatan == 1 || Auth::user()->jabatan == 5 || Auth::user()->jabatan == 3){
             return $next($request);
         }
 

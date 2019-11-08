@@ -1,16 +1,10 @@
 <?php
 
-// echo "hahaha";
-
 $dir    =  getcwd() . '/public/';
 $files1 = scandir($dir);
 
-// echo "<pre>";
-// print_r($files1);
-// echo "</pre>";
-// $nameFile = "Report_BJBR_-_Sep_(2019-10-08).xlsx";
 $nameFile = $_GET['nameFile'];
-$attachment_location = $_SERVER["DOCUMENT_ROOT"] . "/" . $nameFile;
+$attachment_location = $_SERVER["DOCUMENT_ROOT"] . "/report/" . $nameFile;
 if (file_exists($attachment_location)) {
 
 	header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
@@ -25,9 +19,3 @@ if (file_exists($attachment_location)) {
 } else {
 	die("Error: File not found.");
 } 
-
-// public function download (){
-// 	return "asdfasdfasd";
-// }
-
-// download();

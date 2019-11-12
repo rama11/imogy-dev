@@ -92,34 +92,34 @@
 								</tr>
 							</thead>
 							<tbody>
-								<?php $no = 1 ;?>
-								@foreach($users as $user)
-								<tr>
-									<td>{{$no}}</td>
-									<td>{{$user->name}}</td>
-									<td>{{$user->email}}</td>
-									<td>
-										@if($user->condition == "on")
-										<span class="label label-primary">Onwork</span>
-										@else
-										<span class="label label-danger">Offwork</span>
-										@endif
-									</td>
-									<td>
-										@if($user->jabatan == 1)	
-										<span class="label label-success">Admin</span>									
-										@elseif($user->jabatan == 2)
-										<span class="label label-success">Helpdesk</span>
-										@elseif($user->jabatan == 3)
-										<span class="label label-success">Engineer</span>
-										@elseif($user->jabatan == 4)
-										<span class="label label-success">Project Cordinator</span>
-										@elseif($user->jabatan == 5)
-										<span class="label label-success">Super User</span>																						
-										@endif
-									</td>	
-								</tr>
-								<?php $no++;?>
+								@foreach($users as $key => $user)
+									@if($user->activition == 1)
+									<tr>
+										<td>{{$key + 1}}</td>
+										<td>{{$user->name}}</td>
+										<td>{{$user->email}}</td>
+										<td>
+											@if($user->condition == "on")
+											<span class="label label-primary">Onwork</span>
+											@else
+											<span class="label label-danger">Offwork</span>
+											@endif
+										</td>
+										<td>
+											@if($user->jabatan == 1)	
+											<span class="label label-success">Admin</span>									
+											@elseif($user->jabatan == 2)
+											<span class="label label-success">Helpdesk</span>
+											@elseif($user->jabatan == 3)
+											<span class="label label-success">Engineer</span>
+											@elseif($user->jabatan == 4)
+											<span class="label label-success">Project Cordinator</span>
+											@elseif($user->jabatan == 5)
+											<span class="label label-success">Super User</span>																						
+											@endif
+										</td>	
+									</tr>
+									@endif
 								@endforeach
 							</tbody>
 						</table>

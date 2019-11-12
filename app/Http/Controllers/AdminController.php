@@ -44,7 +44,9 @@ class AdminController extends Controller
 
 		$users = DB::table('users')
 			->where('team','=',Auth::user()->team)
+			->where('activition','=','1')
 			->orderBy('condition', 'desc')
+			// ->orderBy('id', 'asc')
 			// ->limit(9)
 			->get();
 

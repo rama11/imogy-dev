@@ -512,6 +512,18 @@
 						<div class="col-md-3">
 							<b class="pull-right" style="color: white;">.</b>
 							<div class="input-group pull-right">
+								<div class="input-group-btn">
+									<button type="button" id="btnShowEntryTicket" class="btn btn-default btn-flat dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+										Show 10 entries
+										<span class="fa fa-caret-down"></span>
+									</button>
+									<ul class="dropdown-menu" id="selectShowEntryTicket">
+										<li><a href="#" onclick="changeNumberEntries(10)">10</a></li>
+										<li><a href="#" onclick="changeNumberEntries(25)">25</a></li>
+										<li><a href="#" onclick="changeNumberEntries(50)">50</a></li>
+										<li><a href="#" onclick="changeNumberEntries(100)">100</a></li>
+									</ul>
+								</div>
 								<input id="searchBarTicket" type="text" class="form-control" placeholder="Search Anyting">
 								<span class="input-group-btn">
 									<button id="applyFilterTablePerformance" type="button" class="btn btn-default btn-flat">
@@ -1376,6 +1388,11 @@
 				}
 			}
 		);
+	}
+
+	function changeNumberEntries(number){
+		$("#btnShowEntryTicket").html('Show ' + number + ' entries <span class="fa fa-caret-down"></span>')
+		$("#tablePerformance").DataTable().page.len( number ).draw();
 	}
 
 	$("#manageID").change(function(){

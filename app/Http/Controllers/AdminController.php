@@ -128,6 +128,7 @@ class AdminController extends Controller
 	public function usermanage(){
 		$users = DB::table('users')
 			->orderBy('condition', 'desc')
+			->where('activition','=','1')
 			// ->limit(9)
 			->get()
 			->toArray();

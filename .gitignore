@@ -35,3 +35,7 @@ sftp-config.json.backup
 
 # Ignore Firebase-key
 app/Http/Controllers/firebase-key.json
+
+# Ignore Image
+public/img
+

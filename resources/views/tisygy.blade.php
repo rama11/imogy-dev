@@ -2810,11 +2810,16 @@
 				
 				$("#openDear").val(result[0].open_dear);
 				$("#openTo").val(result[0].open_to);
+				$("#openTo").emailinput({ onlyValidValue: true, delim: ';' })
 				$("#openCc").val(result[0].open_cc);
+				$("#openCc").emailinput({ onlyValidValue: true, delim: ';' })
 
 				$("#closeDear").val(result[0].close_dear);
 				$("#closeTo").val(result[0].close_to);
+				$("#closeTo").emailinput({ onlyValidValue: true, delim: ';' })
 				$("#closeCc").val(result[0].close_cc);
+				$("#closeCc").emailinput({ onlyValidValue: true, delim: ';' })
+				
 				console.log(result);
 			},
 		});

@@ -182,7 +182,7 @@ html{
 										@endif
 									</tr>
 									<tr>	
-										@if($data->harus_pulang)
+										@if($data->harus_pulang && $data->pulang)
 											<td style="text-align: right;">{{$data->harus_pulang}}</td>
 											<td style="text-align: right;">{{$data->pulang}}</td>
 										@else

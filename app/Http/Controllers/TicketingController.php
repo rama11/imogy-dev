@@ -39,10 +39,10 @@ class TicketingController extends Controller
 	public function tisygy(){
 
 		$clients = DB::table('ticketing__client')
+			->where('situation','=',1)
 			->get();
 
-		$count = DB::table('ticketing__client')
-			->count();
+		$count = $clients->count();
 
 		$atms = DB::table('ticketing__atm')
 			->get();

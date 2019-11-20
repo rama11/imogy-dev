@@ -159,7 +159,7 @@ html{
 								
 								@foreach($datas as $key =>$data)
 									<tr>
-										<td>{{$kehadiran[$key]->hadir}}</td>
+										<td>{{$data->hadir}}</td>
 										<td>{{$data->jam}}</td>
 										<td rowspan="2" style="vertical-align: middle;text-align: center;">{{date("d/m/Y", strtotime($data->tanggal))}}</td>
 										<td rowspan="2" style="vertical-align: middle;text-align: center;">{{$data->location}}</td>

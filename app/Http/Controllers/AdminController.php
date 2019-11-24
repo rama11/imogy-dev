@@ -266,21 +266,24 @@ class AdminController extends Controller
 
 	public function location(){
 		$users = DB::table('users')
+			->select(
+				'users.id',
+				'users.name',
+				'users.jabatan',
+				'users.foto')
+			->selectRaw('`location`.`name` AS `location`')
+			->join('location','location.id','=','users.location')
 			->orderBy('location','ASC')
+			->where('activition','=',1)
 			->get()
 			->toArray();
 
 		$location = DB::table('location')
-			->get()
-			->toArray();
+			->orderBy('name','ASC')
+			->selectRaw('`id`,`name` AS `text`')
+			->get()->toArray();
 
-		foreach ($users as $user) {
-			for ($i=0; $i < sizeof($location); $i++) { 
-				if($user->location == $location[$i]->id){
-					$user->location = $location[$i]->name;
-				}
-			}
-		}
+		$location = array("result" => $location);
 
 		if(Auth::user()->jabatan != 5){
 			$privileges = DB::table('privilege')

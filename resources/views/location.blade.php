@@ -189,8 +189,8 @@
 	var map;
 	function initMap(){
 		map = new google.maps.Map(document.getElementById('map'), {
-			center: {lat: -34.397, lng: 150.644},
-			zoom: 8
+			center: {lat: -6.2297419, lng: 106.759478},
+			zoom: 10
 		});
 
 		var input = document.getElementById('search');
@@ -221,8 +221,6 @@
 			}
 			marker.setPosition(place.geometry.location);
 			marker.setVisible(true);
-			console.log(place.geometry.location.lat());
-			console.log(place.geometry.location.lng());
 			$("#lat").val(place.geometry.location.lat());
 			$("#lng").val(place.geometry.location.lng());
 		});
@@ -234,13 +232,11 @@
 	}
 
 	$("#add").click(function () {
-		console.log('Tutup');
 		$("#showAdd").click();
 		google.maps.event.trigger(map, 'resize');
 	});
 
 	function getLocation(id){
-		console.log(id);
 		$.ajax({
 			type: "GET",
 			url: "{{url('/usermanage/getLocation/')}}/" + id,

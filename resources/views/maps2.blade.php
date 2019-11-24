@@ -62,7 +62,7 @@ function geoFindMe() {
   navigator.geolocation.getCurrentPosition(success, error);
 }
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAX4arGqDKY0F0VDrxeR4c5fyAloMqEMis"
+    <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}"
     async defer></script>
   </body>
 </html>

@@ -1,212 +1,190 @@
 @extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
+@section('head')
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
+@endsection
 @section('content')
-<style type="text/css">
-	.pac-container {
-		background-color: #fff;
-		z-index: 1070;
-		position: fixed;
-		display: inline-block;
-		float: left;
-	}
-	.modal{
-		z-index: 1060;  
-
-	.modal-backdrop{
-		z-index: 1050;        
-	}​
-
-</style>
-
 <div class="content-wrapper">
-		<section class="content-header">
-			<h1>
-				Set Absent Location
-				<small>For employe who has onsite at the time</small>
-			</h1>
+	<section class="content-header">
+		<h1>
+			Set Absent Location
+			<small>For employe who has onsite at the time</small>
+		</h1>
 		<a href="#" class="pull-right btn-box-tool text-green pull-left" data-toggle="modal" data-target="#modal-addNewLocation"><i class="fa fa-plus"></i> Add New Location</a>			
-			<ol class="breadcrumb">
-				<li><a href="{{url('admin')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-				<li class="active">Set Location Absent</li>
-			</ol>
-		</section>
+		<ol class="breadcrumb">
+			<li><a href="{{url('admin')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+			<li class="active">Set Location Absent</li>
+		</ol>
+	</section>
+	<section class="content">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="nav-tabs-custom">
+					<ul class="nav nav-tabs">
+						@foreach($privileges as $privilege)
+						<li>
+							<a href="#{{$privilege->id}}" data-toggle="tab" aria-expanded="true">{{$privilege->privilege_name}}</a>
+						</li>
+						@endforeach
+					</ul>
+					<div class="tab-content">
+						@foreach($privileges as $privilege)
+						<div class="tab-pane" id="{{$privilege->id}}">
+							<div class="post">	
+								@foreach($users as $user)
+									@if($user->jabatan == $privilege->id)
+										<div class="user-block">
+										<img class="img-circle img-bordered-sm" src="{{url($user->foto)}}" alt="user image">
+											<span class="username">
+												<a href="#">{{$user->name}}</a>
+												<a href="#" class="pull-right btn-box-tool text-grey" data-toggle="modal" data-target="#modal-default" onclick="getLocation('{{$user->id}}')"><i class="fa fa-edit"></i>  Change Location</a>
+											</span>
+											<span class="description"><small class="label label-success">{{$user->location}}</small> location for this user now.</span>
+									</div>
+									@endif
+								@endforeach
+							</div>
+						</div>
+						@endforeach
+					</div>
+				</div>
 
-		<section class="content">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="nav-tabs-custom">
-						<ul class="nav nav-tabs">
-							@foreach($privileges as $privilege)
-							<li>
-								<a href="#{{$privilege->id}}" data-toggle="tab" aria-expanded="true">{{$privilege->privilege_name}}</a>
-								
-							</li>
-							@endforeach
-						</ul>
-						<div class="tab-content">
-							@foreach($privileges as $privilege)
-							<div class="tab-pane" id="{{$privilege->id}}">
-								<div class="post">	
-									@foreach($users as $user)
-										@if($user->jabatan == $privilege->id)
-											<div class="user-block">
-											<img class="img-circle img-bordered-sm" src="{{url($user->foto)}}" alt="user image">
-												<span class="username">
-													<a href="#">{{$user->name}}</a>
-													<a href="#" class="pull-right btn-box-tool text-grey" data-toggle="modal" data-target="#modal-default" onclick="getLocation('{{$user->id}}')"><i class="fa fa-edit"></i>  Change Location</a>
-												</span>
-												<span class="description"><small class="label label-success">{{$user->location}}</small> location for this user now.</span>
-										</div>
-										@endif
-									@endforeach
+				@if(session('status'))
+				<div class="alert alert-success alert-dismissible" style="margin-top: 150px;margin-right: 10px; position:fixed; top:0; right:0; width:300px;">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+					<h4><i class="icon fa fa-check"></i> Success!</h4>
+					{{session('status')}}
+				</div>
+				@endif
+			</div>
+		</div>
+
+		<div class="modal fade in" id="modal-default">
+			<div class="modal-dialog">
+				<form method="GET" action="{{url('/usermanage/setLocation')}}" role="form">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">×</span>
+							</button>
+							<h4 class="modal-title">Edit Location</h4>
+						</div>
+						<div class="modal-body">
+							<p id="nameLoc"></p>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label>Before</label>
+										<input id="beforeLoc" class="form-control" disabled type="text">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<input id="userID" type="hidden" name="id" value="">
+									<input id="userNAME" type="hidden" name="name" value="">
+									<div class="form-group">
+										<label>After</label>
+										<select class="form-control select2" name="location" style="width: 100%;"  id="locationAfter"></select>
+									</div>
 								</div>
 							</div>
-							@endforeach
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+							<button type="submit" class="btn btn-primary" >Save changes</button>
 						</div>
 					</div>
-
-					@if(session('status'))
-					<div class="alert alert-success alert-dismissible" style="margin-top: 150px;margin-right: 10px; position:fixed; top:0; right:0; width:300px;">
-						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-						<h4><i class="icon fa fa-check"></i> Success!</h4>
-						{{session('status')}}
-					</div>
-					@endif
-					<!-- /.nav-tabs-custom -->
-				</div>
+				</form>
 			</div>
-			<!-- /.row -->
-		</section>
-		<!-- /.content -->
-</div>
+		</div>
 
-<!-- Modal Edit Location -->
-
-<div class="modal fade in" id="modal-default"  tabindex="-1" role="dialog">
-	<div class="modal-dialog">
-		<form method="GET" action="{{url('/usermanage/setLocation')}}">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">×</span></button>
-					<h4 class="modal-title">Edit Location</h4>
-				</div>
-				<div class="modal-body">
-					<p id="nameLoc"></p>
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group">
-								<label>Before</label>
-								<input id="beforeLoc" class="form-control" disabled type="text">
+		<div class="modal fade in" id="modal-addNewLocation">
+			<div class="modal-dialog modal-lg">
+				<form method="GET" action="{{url('/usermanage/addLocation')}}">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">×</span></button>
+							<h4 class="modal-title">Add Location</h4>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<dir class="col-md-12">
+									<div class="form-group">
+										<label>Search Location</label>
+										<input class="form-control" placeholder="Location" type="text" id="search">
+									</div>
+								</dir>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<div id="map" style="height: 350px;width: 800px;margin:auto;display: block;background-color: #000;"></div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<dir class="col-md-12">
+									<div class="form-group">
+										<label>Name </label>
+										<input class="form-control" placeholder="Yout Must Give Name This Location" type="text" name="pleace" required>
+									</div>
+								</dir>
+							</div>
+							<div class="row">
+								<dir class="col-md-6">
+									<div class="form-group">
+										<label>Latitude</label>
+										<input class="form-control" placeholder="" type="text" id="lat" name="lat">
+									</div>
+								</dir>
+								<dir class="col-md-6">
+									<div class="form-group">
+										<label>Longitude</label>
+										<input class="form-control" placeholder="" type="text" id="lng" name="lng">
+									</div>
+								</dir>
 							</div>
 						</div>
-						<div class="col-md-6">
-							<input id="userID" type="hidden" name="id" value="">
-							<input id="userNAME" type="hidden" name="name" value="">
-							<div class="form-group">
-								<label>After</label>
-								<select class="form-control" name="location" id="locationAfter">
-								@foreach($location as $loc)
-									<option value="{{$loc->id}}">{{$loc->name}}</option>
-								@endforeach
-								</select>
-							</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+							<button type="submit" class="btn btn-primary" >Add Location</button>
 						</div>
 					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-					<!-- <button type="button" class="btn btn-default" data-dismiss="modal" id="add">Add Location</button> -->
-					<button type="submit" class="btn btn-primary" >Save changes</button>
-				</div>
-			</div>
-		</form>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
+				</form>
+			</div>	
+		</div>
+	</section>
 </div>
-
-<!-- Modal Add Location -->
-<button data-toggle="modal" data-target="#modal-default2" style="display: none;" id="showAdd"></button>
-<div class="modal fade in" id="modal-addNewLocation" tabindex="-1" role="dialog">
-	<div class="modal-dialog modal-lg">
-		<form method="GET" action="{{url('/usermanage/addLocation')}}">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">×</span></button>
-					<h4 class="modal-title">Add Location</h4>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<dir class="col-md-12">
-							<div class="form-group">
-								<label>Search Location</label>
-								<input class="form-control" placeholder="Location" type="text" id="search">
-							</div>
-						</dir>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<div class="form-group">
-								<div id="map" style="height: 350px;width: 800px;margin:auto;display: block;background-color: #000;"></div>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<dir class="col-md-12">
-							<div class="form-group">
-								<label>Name </label>
-								<input class="form-control" placeholder="Yout Must Give Name This Location" type="text" name="pleace" required>
-							</div>
-						</dir>
-					</div>
-					<div class="row">
-						<dir class="col-md-6">
-							<div class="form-group">
-								<label>Latitude</label>
-								<input class="form-control" placeholder="" type="text" id="lat" name="lat">
-							</div>
-						</dir>
-						<dir class="col-md-6">
-							<div class="form-group">
-								<label>Longitude</label>
-								<input class="form-control" placeholder="" type="text" id="lng" name="lng">
-							</div>
-						</dir>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary" >Add Location</button>
-				</div>
-			</div>
-		</form>
-	</div>	
-</div>
-
 @endsection
 
-@section('script')	
+@section('script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.full.min.js"></script>
+
 <script type="text/javascript">
 
-	$("#locationAfter").change(function(){
-		$.ajax({
-			type:'GET',
-			url:'{{url("/usermanage/getLocationAfter")}}',
-			data:{
-				location:this.value,
-			},
-			success : function(result){
-				if(result != ""){
-					$("#holderShifting").show();
-					$("#checkShifting").html('<input type="checkbox" name="shifting" id="checkShifting"> Shifting on ' + result);
-				} else {
-					$("#holderShifting").hide();
-					$("#checkShifting").html('<input type="checkbox" name="shifting" id="checkShifting"> Shifting on ' + result);
+	$(document).ready(function(){
+		$(".select2").select2({
+			data: @json($location).result
+		});
+
+		$(".select2").change(function(){
+			$.ajax({
+				type:'GET',
+				url:'{{url("/usermanage/getLocationAfter")}}',
+				data:{
+					location:this.value,
+				},
+				success : function(result){
+					if(result != ""){
+						$("#holderShifting").show();
+						$("#checkShifting").html('<input type="checkbox" name="shifting" id="checkShifting"> Shifting on ' + result);
+					} else {
+						$("#holderShifting").hide();
+						$("#checkShifting").html('<input type="checkbox" name="shifting" id="checkShifting"> Shifting on ' + result);
+					}
 				}
-			}
-		})
-	});
+			})
+		});
+	})
 
 	var map;
 	function initMap(){

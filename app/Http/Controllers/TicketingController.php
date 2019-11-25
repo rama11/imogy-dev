@@ -428,84 +428,7 @@ class TicketingController extends Controller
 		return $activityTicketOpen;
 	}
 
-	public function mailOpenTicket(Request $request){
-		$mail = new PHPMailer\PHPMailer(true);
-		
-		// Yandex Configuration
-		$mail_host = env("YANDEX_MAIL_HOST");
-		$mail_port = env("YANDEX_MAIL_PORT");
-		$mail_user = env("YANDEX_MAIL_USERNAME");
-		$mail_pass = env("YANDEX_MAIL_PASSWORD");
-		$mail_auth = env("YANDEX_MAIL_ENCRYPTION");
-		$mail_from = env("YANDEX_MAIL_FROM");
-		$mail_name = env("YANDEX_MAIL_NAME");
-
-		// Gmail Configuration
-		// $mail_host = env("GMAIL_MAIL_HOST");
-		// $mail_port = env("GMAIL_MAIL_PORT");
-		// $mail_user = env("GMAIL_MAIL_USERNAME");
-		// $mail_pass = env("GMAIL_MAIL_PASSWORD");
-		// $mail_auth = env("GMAIL_MAIL_ENCRYPTION");
-		// $mail_from = env("GMAIL_MAIL_FROM");
-		// $mail_name = env("GMAIL_MAIL_NAME");
-
-		try {
-			$mail->isSMTP();
-			$mail->CharSet = "UTF-8";
-			$mail->SMTPAuth = true;
-
-			$mail->Host = $mail_host;
-			$mail->Port = $mail_port;
-			$mail->Username = $mail_user;
-			$mail->Password = $mail_pass;
-			$mail->SMTPSecure = $mail_auth;
-			$mail->SetFrom($mail_from, $mail_name);
-
-			$mail->Subject =  $request->subject;
-			$mail->MsgHTML($request->body);
-
-			$to = explode(";", $request->to);
-			$cc = explode(";", $request->cc);
-			
-			foreach ($to as $key => $value) {
-				if($to[$key] != NULL)
-					$to[$key] = trim($value," ");
-				echo trim($value," ") . "<br>";
-			}
-
-			foreach ($cc as $key => $value) {
-				if($cc[$key] != "")
-					$cc[$key] = trim($value," ");
-				echo trim($value," ") . "<br>";
-			}
-
-
-			$to = array_slice($to,0,sizeof($to) - 1);
-			$cc = array_slice($cc,0,sizeof($cc) - 1);
-
-			for($i = 0;$i < sizeof($to);$i++){
-				$mail->addAddress($to[$i]);
-			}
-
-			for($i = 0;$i < sizeof($cc);$i++){
-				$mail->addCC($cc[$i]);
-			}
-			$mail->send();
-		} catch (phpmailerException $e) {
-			DB::table('email_error')
-				->insert([
-					"id" => $request->id_ticket,
-					"email_to" => $request->to,
-					"email_cc" => $request->cc,
-					"email_subject" => $request->subject,
-					"email_body" => $request->body,
-					"email_type" => "OPEN"
-				]);
-			dd($e);
-		} catch (Exception $e) {
-			dd($e);
-		}
-	}
+	
 
 	public function getPerformance5($acronym_client,$period){
 
@@ -986,118 +909,6 @@ class TicketingController extends Controller
 		return $activityTicketUpdate;
 	}
 
-	public function closeTicket(Request $request){
-		$mail = new PHPMailer\PHPMailer(true);
-		
-		// Yandex Configuration
-		$mail_host = env("YANDEX_MAIL_HOST");
-		$mail_port = env("YANDEX_MAIL_PORT");
-		$mail_user = env("YANDEX_MAIL_USERNAME");
-		$mail_pass = env("YANDEX_MAIL_PASSWORD");
-		$mail_auth = env("YANDEX_MAIL_ENCRYPTION");
-		$mail_from = env("YANDEX_MAIL_FROM");
-		$mail_name = env("YANDEX_MAIL_NAME");
-
-		// Gmail Configuration
-		// $mail_host = env("GMAIL_MAIL_HOST");
-		// $mail_port = env("GMAIL_MAIL_PORT");
-		// $mail_user = env("GMAIL_MAIL_USERNAME");
-		// $mail_pass = env("GMAIL_MAIL_PASSWORD");
-		// $mail_auth = env("GMAIL_MAIL_ENCRYPTION");
-		// $mail_from = env("GMAIL_MAIL_FROM");
-		// $mail_name = env("GMAIL_MAIL_NAME");
-
-		try {
-			$mail->isSMTP();
-			$mail->CharSet = "UTF-8";
-			$mail->SMTPAuth = true;
-
-			$mail->Host = $mail_host;
-			$mail->Port = $mail_port;
-			$mail->Username = $mail_user;
-			$mail->Password = $mail_pass;
-			$mail->SMTPSecure = $mail_auth;
-			$mail->SetFrom($mail_from, $mail_name);
-			
-			$mail->Subject =  $request->subject;
-			$mail->MsgHTML($request->body);
-
-			$to = explode(";", $request->to);
-			$cc = explode(";", $request->cc);
-			
-			foreach ($to as $key => $value) {
-				if($to[$key] != NULL)
-					$to[$key] = trim($value," ");
-				// echo trim($value," ") . "<br>";
-			}
-
-			foreach ($cc as $key => $value) {
-				if($cc[$key] != "")
-					$cc[$key] = trim($value," ");
-				// echo trim($value," ") . "<br>";
-			}
-
-
-			$to = array_slice($to,0,sizeof($to) - 1);
-			$cc = array_slice($cc,0,sizeof($cc) - 1);
-
-			for($i = 0;$i < sizeof($to);$i++){
-				$mail->addAddress($to[$i]);
-			}
-
-			for($i = 0;$i < sizeof($cc);$i++){
-				$mail->addCC($cc[$i]);
-			}
-
-			$mail->send();
-
-			$update = DB::table('ticketing__activity')
-				->insert([
-					"id_ticket" => $request->id_ticket,
-					"date" => $request->finish,
-					"activity" => "CLOSE",
-					"operator" => Auth::user()->nickname,
-					"note" => "Close Ticket"
-				]);
-
-			// echo $request->finish . "<br>";
-			// echo $request->finish . "<br>";
-			// echo date("Y-m-d H:i:s.000000") . "<br>";
-
-			$close = DB::table('ticketing__resolve')
-				->insert([
-					"id_ticket" => $request->id_ticket,
-					"root_couse" => $request->root_cause,
-					"counter_measure" => $request->couter_measure,
-					"finish" => date("Y-m-d H:i:s.000000"),
-					// "operator" => Auth::user()->nickname,
-					// "note" => "note"
-				]);
-
-			$result = DB::table('ticketing__id')
-				->where('ticketing__id.id_ticket','=',$request->id_ticket)
-				->join('ticketing__client','ticketing__client.id','=','ticketing__id.id_client')
-				->value('ticketing__client.client_acronym');
-
-
-			return $result;
-
-		} catch (phpmailerException $e) {
-			DB::table('email_error')
-				->insert([
-					"id" => $request->id_ticket,
-					"email_to" => $request->to,
-					"email_cc" => $request->cc,
-					"email_subject" => $request->subject,
-					"email_body" => $request->body,
-					"email_type" => "CLOSE"
-				]);
-			dd($e);
-		} catch (Exception $e) {
-			dd($e);
-		}
-	}
-
 	public function attachmentCloseTicket(Request $request){
 		// $file = $request->attachment;
 		if(isset($req->attachment)){
@@ -1107,126 +918,40 @@ class TicketingController extends Controller
 		}
 	}
 
-	public function pendingTicket(Request $request){
-		$mail = new PHPMailer\PHPMailer(true);
-		
-		// Yandex Configuration
-		$mail_host = env("YANDEX_MAIL_HOST");
-		$mail_port = env("YANDEX_MAIL_PORT");
-		$mail_user = env("YANDEX_MAIL_USERNAME");
-		$mail_pass = env("YANDEX_MAIL_PASSWORD");
-		$mail_auth = env("YANDEX_MAIL_ENCRYPTION");
-		$mail_from = env("YANDEX_MAIL_FROM");
-		$mail_name = env("YANDEX_MAIL_NAME");
-
-		// Gmail Configuration
-		// $mail_host = env("GMAIL_MAIL_HOST");
-		// $mail_port = env("GMAIL_MAIL_PORT");
-		// $mail_user = env("GMAIL_MAIL_USERNAME");
-		// $mail_pass = env("GMAIL_MAIL_PASSWORD");
-		// $mail_auth = env("GMAIL_MAIL_ENCRYPTION");
-		// $mail_from = env("GMAIL_MAIL_FROM");
-		// $mail_name = env("GMAIL_MAIL_NAME");
-
-		try {
-			$mail->isSMTP();
-			$mail->CharSet = "UTF-8";
-			$mail->SMTPAuth = true;
-
-			$mail->Host = $mail_host;
-			$mail->Port = $mail_port;
-			$mail->Username = $mail_user;
-			$mail->Password = $mail_pass;
-			$mail->SMTPSecure = $mail_auth;
-			$mail->SetFrom($mail_from, $mail_name);
-
-			$mail->Subject =  $request->subject;
-			$mail->MsgHTML($request->body);
-
-			$to = explode(";", $request->to);
-			$cc = explode(";", $request->cc);
-			
-			foreach ($to as $key => $value) {
-				if($to[$key] != NULL)
-					$to[$key] = trim($value," ");
-				// echo trim($value," ") . "<br>";
-			}
-
-			foreach ($cc as $key => $value) {
-				if($cc[$key] != "")
-					$cc[$key] = trim($value," ");
-				// echo trim($value," ") . "<br>";
-			}
-
-
-			$to = array_slice($to,0,sizeof($to) - 1);
-			$cc = array_slice($cc,0,sizeof($cc) - 1);
-
-			for($i = 0;$i < sizeof($to);$i++){
-				$mail->addAddress($to[$i]);
-			}
-
-			for($i = 0;$i < sizeof($cc);$i++){
-				$mail->addCC($cc[$i]);
-			}
-
-			$mail->send();
-
-			$update = DB::table('ticketing__activity')
-			->insert([
-				"id_ticket" => $request->id_ticket,
-				"date" => date("Y-m-d H:i:s.000000"),
-				"activity" => "PENDING",
-				"operator" => Auth::user()->nickname,
-				"note" => "Panding Ticket - " .  $request->note_pending
-			]);
-
-			$result = DB::table('ticketing__id')
-				->where('ticketing__id.id_ticket','=',$request->id_ticket)
-				->join('ticketing__client','ticketing__client.id','=','ticketing__id.id_client')
-				->value('ticketing__client.client_acronym');
-
-
-			return $result;
-
-		} catch (phpmailerException $e) {
-			DB::table('email_error')
-				->insert([
-					"id" => $request->id_ticket,
-					"email_to" => $request->to,
-					"email_cc" => $request->cc,
-					"email_subject" => $request->subject,
-					"email_body" => $request->body,
-					"email_type" => "PENDING"
-				]);
-			dd($e);
-		} catch (Exception $e) {
-			dd($e);
-		}
-
-		
-	}
+	
 
 	public function makeMailer($to, $cc, $subject, $body){
 		$mail = new PHPMailer\PHPMailer(true);
 
-		// Yandex Configuration
-		$mail_host = env("YANDEX_MAIL_HOST");
-		$mail_port = env("YANDEX_MAIL_PORT");
-		$mail_user = env("YANDEX_MAIL_USERNAME");
-		$mail_pass = env("YANDEX_MAIL_PASSWORD");
-		$mail_auth = env("YANDEX_MAIL_ENCRYPTION");
-		$mail_from = env("YANDEX_MAIL_FROM");
-		$mail_name = env("YANDEX_MAIL_NAME");
+		$email_type = "Yandex MSM01";
 
-		// Gmail Configuration
-		// $mail_host = env("GMAIL_MAIL_HOST");
-		// $mail_port = env("GMAIL_MAIL_PORT");
-		// $mail_user = env("GMAIL_MAIL_USERNAME");
-		// $mail_pass = env("GMAIL_MAIL_PASSWORD");
-		// $mail_auth = env("GMAIL_MAIL_ENCRYPTION");
-		// $mail_from = env("GMAIL_MAIL_FROM");
-		// $mail_name = env("GMAIL_MAIL_NAME");
+		if($email_type == "Yandex MSM01"){
+			$mail_host = env('YANDEX_MAIL_HOST_MSM01');
+			$mail_port = env('YANDEX_MAIL_PORT_MSM01');
+			$mail_user = env('YANDEX_MAIL_USERNAME_MSM01');
+			$mail_pass = env('YANDEX_MAIL_PASSWORD_MSM01');
+			$mail_auth = env('YANDEX_MAIL_ENCRYPTION_MSM01');
+			$mail_from = env('YANDEX_MAIL_FROM_MSM01');
+			$mail_name = env('YANDEX_MAIL_NAME_MSM01');
+
+		} else if ($email_type == "Yandex Imogy"){
+			$mail_host = env('YANDEX_MAIL_HOST_IMOGY');
+			$mail_port = env('YANDEX_MAIL_PORT_IMOGY');
+			$mail_user = env('YANDEX_MAIL_USERNAME_IMOGY');
+			$mail_pass = env('YANDEX_MAIL_PASSWORD_IMOGY');
+			$mail_auth = env('YANDEX_MAIL_ENCRYPTION_IMOGY');
+			$mail_from = env('YANDEX_MAIL_FROM_IMOGY');
+			$mail_name = env('YANDEX_MAIL_NAME_IMOGY');
+		} else if ($email_type == "Gmail Hello"){
+			// Gmail Configuration
+			$mail_host = env('GMAIL_MAIL_HOST');
+			$mail_port = env('GMAIL_MAIL_PORT');
+			$mail_user = env('GMAIL_MAIL_USERNAME');
+			$mail_pass = env('GMAIL_MAIL_PASSWORD');
+			$mail_auth = env('GMAIL_MAIL_ENCRYPTION');
+			$mail_from = env('GMAIL_MAIL_FROM');
+			$mail_name = env('GMAIL_MAIL_NAME');
+		}
 
 		try {
 			$mail->isSMTP();
@@ -1388,66 +1113,7 @@ class TicketingController extends Controller
 			]);
 	}
 
-	public function testMail(Request $request){
-		$mail = new PHPMailer\PHPMailer(true);
-
-		try {
-			$mail->isSMTP();
-			$mail->CharSet = "utf-8";
-			$mail->SMTPAuth = true;
-			$mail->SMTPSecure = "tls";
-			$mail->Host = "smtp.gmail.com";
-			$mail->Port = 587;
-			$mail->Username = "aqsharidho@gmail.com";
-			$mail->Password = "Ridho731922";
-			$mail->SetFrom('imogy@sinergy.co.id', 'Helpdesk Sinergy');
-			$mail->Subject =  $request->subject;
-			$mail->MsgHTML($request->body);
-
-			// $request->to = "prof.agastyo@gmail.com; prof.agastyo@hotmail.com; prof.agastyo@yahoo.co.id; alam@sinergy.co.id; firdaus@sinergy.co.id;";
-			// $request->cc = "agastya@sinergy.co.id;";
-
-			// echo $request->to . "<br>";
-			// echo $request->cc . "<br><br>";
-
-			$to = explode(";", $request->to);
-			$cc = explode(";", $request->cc);
-			
-			foreach ($to as $key => $value) {
-				if($to[$key] != NULL)
-					$to[$key] = trim($value," ");
-				echo trim($value," ") . "<br>";
-			}
-
-			foreach ($cc as $key => $value) {
-				if($cc[$key] != "")
-					$cc[$key] = trim($value," ");
-				echo trim($value," ") . "<br>";
-			}
-
-
-			$to = array_slice($to,0,sizeof($to) - 1);
-			$cc = array_slice($cc,0,sizeof($cc) - 1);
-
-			for($i = 0;$i < sizeof($to);$i++){
-				// echo $to[$i] . "<br>";
-				$mail->addAddress($to[$i]);
-			}
-
-			for($i = 0;$i < sizeof($cc);$i++){
-				// echo $cc[$i] . "<br>";
-				$mail->addCC($cc[$i]);
-			}
-
-
-			// $mail->addAddress("prof.agastyo@gmail.com", "Helpdesk Sinergy");
-			$mail->send();
-		} catch (phpmailerException $e) {
-			dd($e);
-		} catch (Exception $e) {
-			dd($e);
-		}
-	}
+	
 
 	public function getAllAtmSetting(){
 		return array('data' => TicketingATM::join('ticketing__client','ticketing__atm.owner','=','ticketing__client.id')
@@ -1990,35 +1656,6 @@ class TicketingController extends Controller
 
 	public function testEmail1(){
 		return view('testEmail');
-	}
-
-	public function testEmail2(){
-		$mail = new PHPMailer\PHPMailer(true);
-		
-		try {
-			$mail->isSMTP();
-			$mail->SMTPDebug = 2;
-			$mail->CharSet = "utf-8";
-			$mail->SMTPAuth = true;
-			$mail->SMTPSecure = "tls";
-			$mail->Host = "smtp.yandex.ru";
-			$mail->Port = 587;
-			$mail->Username = "imogy@sinergy.co.id";
-			$mail->Password = "bpdorgcsuturrmij";
-			$mail->SetFrom('imogy@sinergy.co.id', 'Helpdesk Sinergy');
-			$mail->Subject =  "Test";
-			$mail->MsgHTML("<h1>Test email with atchment</h1>");
-			$mail->addAddress('agastya@sinergy.co.id');
-			$mail->addAddress('msm@sinergy.co.id');
-			$mail->addCC('prof.agastyo@gmail.com');
-			$mail->addAttachment("img/WIMOGY.png");
-			$mail->send();
-			return "Success";
-		} catch (phpmailerException $e) {
-			dd($e);
-		} catch (Exception $e) {
-			dd($e);
-		}
 	}
 
 	public function testUpload(Request $request){

@@ -45,37 +45,37 @@ class TestController extends Controller
 		}
 	}
 
-	public function performance(){
-		echo "<h1>Test Performance</h1><br>";
+	public function buildEmail($email_type){
 		$mail = new PHPMailer\PHPMailer(true);
+
+		if($email_type == "Yandex MSM01"){
+			$mail_host = env('YANDEX_MAIL_HOST_MSM01');
+			$mail_port = env('YANDEX_MAIL_PORT_MSM01');
+			$mail_user = env('YANDEX_MAIL_USERNAME_MSM01');
+			$mail_pass = env('YANDEX_MAIL_PASSWORD_MSM01');
+			$mail_auth = env('YANDEX_MAIL_ENCRYPTION_MSM01');
+			$mail_from = env('YANDEX_MAIL_FROM_MSM01');
+			$mail_name = env('YANDEX_MAIL_NAME_MSM01');
+
+		} else if ($email_type == "Yandex Imogy"){
+			$mail_host = env('YANDEX_MAIL_HOST_IMOGY');
+			$mail_port = env('YANDEX_MAIL_PORT_IMOGY');
+			$mail_user = env('YANDEX_MAIL_USERNAME_IMOGY');
+			$mail_pass = env('YANDEX_MAIL_PASSWORD_IMOGY');
+			$mail_auth = env('YANDEX_MAIL_ENCRYPTION_IMOGY');
+			$mail_from = env('YANDEX_MAIL_FROM_IMOGY');
+			$mail_name = env('YANDEX_MAIL_NAME_IMOGY');
+		} else if ($email_type == "Gmail Hello"){
+			// Gmail Configuration
+			$mail_host = env('GMAIL_MAIL_HOST');
+			$mail_port = env('GMAIL_MAIL_PORT');
+			$mail_user = env('GMAIL_MAIL_USERNAME');
+			$mail_pass = env('GMAIL_MAIL_PASSWORD');
+			$mail_auth = env('GMAIL_MAIL_ENCRYPTION');
+			$mail_from = env('GMAIL_MAIL_FROM');
+			$mail_name = env('GMAIL_MAIL_NAME');
+		}
 		
-		// Yandex Configuration
-		// $mail_host = env("YANDEX_MAIL_HOST");
-		// $mail_port = env("YANDEX_MAIL_PORT");
-		// $mail_user = env("YANDEX_MAIL_USERNAME");
-		// $mail_pass = env("YANDEX_MAIL_PASSWORD");
-		// $mail_auth = env("YANDEX_MAIL_ENCRYPTION");
-		// $mail_from = env("YANDEX_MAIL_FROM");
-		// $mail_name = env("YANDEX_MAIL_NAME");
-
-		// YANDEX_MAIL_DRIVER=smtp
-		// YANDEX_MAIL_HOST=smtp.yandex.ru
-		// YANDEX_MAIL_PORT=587
-		// YANDEX_MAIL_USERNAME=imogy@sinergy.co.id
-		// YANDEX_MAIL_PASSWORD=hxzlglnccehzohhk
-		// YANDEX_MAIL_ENCRYPTION=tls
-		// YANDEX_MAIL_FROM=imogy@sinergy.co.id
-		// YANDEX_MAIL_NAME="Helpdesk Sinergy"
-
-		// Gmail Configuration
-		$mail_host = "smtp.yandex.ru";
-		$mail_port = "587";
-		$mail_user = "imogy@sinergy.co.id";
-		$mail_pass = "vwjzakygpyqrgedx";
-		$mail_auth = "tls";
-		$mail_from = "imogy@sinergy.co.id";
-		$mail_name = "Helpdesk Sinergy";
-
 		try {
 			$mail->isSMTP();
 			$mail->SMTPDebug = 2;
@@ -87,8 +87,21 @@ class TestController extends Controller
 			$mail->Password = $mail_pass;
 			$mail->SMTPSecure = $mail_auth;
 			$mail->SetFrom($mail_from, $mail_name);
+			return $mail;
 
-			// $mail->Subject =  "Testing Performance for Email Yandex";
+		} catch (phpmailerException $e) {
+			
+			return dd($e);
+		} catch (Exception $e) {
+			return dd($e);
+		}
+	}
+
+	public function performance(){
+		echo "<h1>Test Performance</h1><br>";
+		try {
+			$mail = $this->buildEmail("Gmail Hello");
+
 			$mail->Subject =  "Testing Performance for Email Gmail";
 			$mail->MsgHTML("testPerformance");
 

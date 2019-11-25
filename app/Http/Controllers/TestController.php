@@ -100,7 +100,7 @@ class TestController extends Controller
 	public function performance(){
 		echo "<h1>Test Performance</h1><br>";
 		try {
-			$mail = $this->buildEmail("Gmail Hello");
+			$mail = $this->buildEmail("Yandex MSM01");
 
 			$mail->Subject =  "Testing Performance for Email Gmail";
 			$mail->MsgHTML("testPerformance");

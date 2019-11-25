@@ -2872,26 +2872,7 @@
 		// if(confirm("Are you sure to send this ticket?")){
 		// 	console.log("Yes");
 		// 	var body = $("#bodyOpenMail").html();
-			
-		// 	$.ajax({
-		// 		type:"GET",
-		// 		url:"mailOpenTicket",
-		// 		data:{
-		// 			body:body,
-		// 			subject: $("#emailOpenSubject").val(),
-		// 			to: $("#emailOpenTo").val(),
-		// 			cc: $("#emailOpenCc").val(),
-		// 			attachment: $("#emailOpenAttachment").val()
-		// 		},
-		// 		success: function(result){
-		// 			console.log("success");
-		// 			alert('Email Has Been Sent!');
-		// 			$("#performance").click();
-		// 			// window.location('/tisygy');
-		// 		},
-		// 	});
-
-		// }
+		
 	}
 
 	function reserveIdTicket() {

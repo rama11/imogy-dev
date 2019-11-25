@@ -186,9 +186,9 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		// Route::get('getPerformance2','TicketingController@getPerformance2');
 		// Route::get('getTicket','TicketingController@getTicket');
 		// Route::get('updateTicket','TicketingController@updateTicket');
-		Route::get('closeTicket','TicketingController@closeTicket');
+		// Route::get('closeTicket','TicketingController@closeTicket');
 		Route::post('attachmentCloseTicket','TicketingController@attachmentCloseTicket');
-		Route::get('pendingTicket','TicketingController@pendingTicket');
+		// Route::get('pendingTicket','TicketingController@pendingTicket');
 		// Route::get('cancelTicket','TicketingController@cancelTicket');
 		Route::get('mailCloseTicket','TicketingController@mailCloseTicket');	
 		Route::get('getSettingClient' , 'TicketingController@getSettingClient');
@@ -233,7 +233,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	// Route::get('testPulang','AdminController@testPulang');
 	// // Route::get('testHariRaya','AdminController@testHariRaya');/
 	
-	Route::get('testEmail2','TicketingController@testEmail2');
+	// Route::get('testEmail2','TicketingController@testEmail2');
 	// Route::get('testEmail1','TicketingController@testEmail1');
 	// Route::post('testUpload','TicketingController@testUpload');
 	// Route::get('testMiddleware','AdminController@index')->middleware('debugging');

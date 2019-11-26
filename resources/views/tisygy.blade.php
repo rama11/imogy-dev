@@ -3170,7 +3170,7 @@
 				$("#selectReportingClient").append("<option value='" + data.id + "'>[" + data.client_acronym + "] " + data.client_name + "</option>")
 			})
 			moment.months().forEach(function(data,index){
-				if(index + 1 < moment().format('M')){
+				if(index < moment().format('M')){
 					$("#selectReportingMonth").append("<option value='" + index + "'>" + data + "</option>")
 				}
 			})
@@ -3213,7 +3213,7 @@
 								title: 'Success!',
 								text: "You can get your file now",
 								type: 'success',
-								confirmButtonText: '<a style="color:#fff;" href="{{url("tisygy/report/download")}}?name=' + result + '">Get Report</a>',
+								confirmButtonText: '<a style="color:#fff;" href="report/' + result.slice(1) + '">Get Report</a>',
 							})
 						}
 					});

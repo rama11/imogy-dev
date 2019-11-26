@@ -112,10 +112,10 @@
 </div>
 @endsection
 @section('script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
 <script src="{{ asset('AdminLTE/plugins/select2/select2.full.min.js')}}"></script>
 <script src="{{ asset('AdminLTE/plugins/daterangepicker/daterangepicker.js')}}"></script>
 <script src="{{ asset('AdminLTE/plugins/datepicker/bootstrap-datepicker.js')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
 <script src="{{ asset('AdminLTE/plugins/pace/pace.min.js')}}"></script>
 <script src="{{ asset('js/jquery.transfer.js')}}"></script>
 <script>

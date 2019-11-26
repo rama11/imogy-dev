@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
+use Storage;
 use DB;
 use Auth;
 use PDF;
@@ -2045,18 +2046,16 @@ class AdminController extends Controller
 			}
 			$summary[4] = $summary[0] + $summary[1] + $summary[2];
 	
-			$tittle = 'Attandance Report All Member [' . $req->startDate . ' to ' . $req->endDate . "]";
+			$tittle = 'Attandance Report All Member [' . $req->startDate . ' to ' . $req->endDate . "] by " . Auth::user()->nickname;
 			$pdf = PDF::loadView('precense.getAllReportPDF',compact('var','summary','data','details','tittle'));
-			return $pdf->stream($tittle . ".pdf");
+			// return $pdf->stream($tittle . ".pdf");
+			Storage::put("public/report_attandance/" .$tittle . ".pdf", $pdf->output());
+			return redirect(Storage::url("public/report_attandance/" .$tittle . ".pdf"));
 			// return view('precense.getAllReportPDF',compact('var','summary','data','details','tittle'));
 			// return $summary;
 			// return $details;
 			// return $var;
 
-		// 	$tittle = 'My Attendence';
-		$pdf = PDF::loadView('pdf', compact('datas','kehadiran','count','name','absen'));
-		return $pdf->stream($tittle .".pdf");
-			
 			// return view('pdf2',compact('var','summary','data','details','tittle'));
 			// return view('pdf4',compact('var','summary','data','details'));
 		} else {

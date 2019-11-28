@@ -2374,33 +2374,35 @@
 				type: 'warning',
 				showCancelButton: true,
 			}).then((result) => {
-				$.ajax({
-					type:"GET",
-					url:"{{url('tisygy/setUpdateTicket')}}",
-					data:{
-						id_ticket:id,
-						ticket_number_3party:$("#ticketNumber").val(),
-						engineer:$("#ticketEngineer").val(),
-						note:$("#ticketNote").val(),
-					},
-					success: function(result){
-						$("#ticketActivity").prepend('<li>' + moment(result.date).format("DD MMMM - HH:mm") + ' [' + result.operator + '] - ' + result.note + '</li>');
-						$("#ticketNote").val("")
-						$("#ticketStatus").attr('class','label label-info');
-						$("#ticketStatus").text('ON PROGRESS')
-						$("#updateButton").prop('disabled',false);
-						$("#closeButton").prop('disabled',false);
-						$("#cancelButton").prop('disabled',false);
-						$("#pendingButton").prop('disabled',false);
-						$("#modal-ticket").modal('toggle')
-						getPerformanceByClient(result.client_acronym_filter)
-						swalWithCustomClass.fire(
-							'Success',
-							'Update Completed!',
-							'success'
-						)
-					}
-				});
+				if(result.value){
+					$.ajax({
+						type:"GET",
+						url:"{{url('tisygy/setUpdateTicket')}}",
+						data:{
+							id_ticket:id,
+							ticket_number_3party:$("#ticketNumber").val(),
+							engineer:$("#ticketEngineer").val(),
+							note:$("#ticketNote").val(),
+						},
+						success: function(result){
+							$("#ticketActivity").prepend('<li>' + moment(result.date).format("DD MMMM - HH:mm") + ' [' + result.operator + '] - ' + result.note + '</li>');
+							$("#ticketNote").val("")
+							$("#ticketStatus").attr('class','label label-info');
+							$("#ticketStatus").text('ON PROGRESS')
+							$("#updateButton").prop('disabled',false);
+							$("#closeButton").prop('disabled',false);
+							$("#cancelButton").prop('disabled',false);
+							$("#pendingButton").prop('disabled',false);
+							$("#modal-ticket").modal('toggle')
+							getPerformanceByClient(result.client_acronym_filter)
+							swalWithCustomClass.fire(
+								'Success',
+								'Update Completed!',
+								'success'
+							)
+						}
+					});
+				}
 			})
 		}
 	}

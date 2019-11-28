@@ -583,6 +583,9 @@
 							<button class="btn btn-flat btn-default" onclick="severitySetting()">
 								Severity Setting
 							</button>
+							<button class="btn btn-flat btn-default" onclick="clientSetting()">
+								Client Setting
+							</button>
 
 							
 						</div>
@@ -654,6 +657,11 @@
 						</div>
 					</div>
 					<div style="display: none" id="severitySetting" class="row form-group settingComponent">
+						<div class="col-md-12">
+							Comming Soon...
+						</div>
+					</div>
+					<div style="display: none" id="clientSetting" class="row form-group settingComponent">
 						<div class="col-md-12">
 							Comming Soon...
 						</div>
@@ -1844,6 +1852,11 @@
 	function severitySetting(){
 		$(".settingComponent").hide()
 		$("#severitySetting").show()
+	}
+
+	function clientSetting(){
+		$(".settingComponent").hide()
+		$("#clientSetting").show()
 	}
 
 	// $("#inputATM").select2({

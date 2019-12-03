@@ -172,9 +172,9 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	// Ticketing Route
 
 
+		Route::get('tisygy', 'TicketingController@tisygy');
 	Route::middleware(['tisygy.role'])->group(function () {
 
-		Route::get('tisygy', 'TicketingController@tisygy');
 		Route::get('tisygy2', 'TicketingController@tisygy2');
 		// Route::get('tisygy', function(){
 			// echo "<h1 style='font-size:100px'>Mas Danang Nganteng</h1gController@createIdTicket');
@@ -323,6 +323,18 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('project/setting/setSettingPeriodStart','ProjectController@setSettingPeriodStart');
 
 	});
+
+	Route::get('budget/account','BudgetController@indexAccount');
+	Route::get('budget/account/getDataAccount','BudgetController@getDataAccount');
+	Route::post('budget/account/setAccount','BudgetController@setAccount');
+
+	Route::get('budget/note','BudgetController@indexNote');
+	Route::get('budget/note/getDataNote','BudgetController@getDataNote');
+	Route::get('budget/note/getDataParameterNote','BudgetController@getDataParameterNote');
+	Route::post('budget/note/setNote','BudgetController@setNote');
+	Route::get('budget/note/getIndividualNote','BudgetController@getIndividualNote');
+	
+	Route::post('budget/note/updateNote','BudgetController@updateNote');
 
 
 	Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');

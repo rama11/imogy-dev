@@ -219,6 +219,25 @@
 								<span>Log Phone</span>
 							</a>
 						</li>
+						<li class="activeable treeview" id="budget">
+							<a href="#">
+								<i class="fa fa-usd"></i>
+								<span>SIWI</span>
+								<i class="fa fa-angle-left pull-right"></i>
+							</a>
+							<ul class="treeview-menu">
+								<li>
+									<a href="{{ url('budget')}}">Overview</a>
+								</li>
+								<li>
+									<a href="{{ url('budget/account')}}">Account</a>
+								</li>
+								<li>
+									<a href="{{ url('budget/note')}}">Note</a>
+								</li>
+							</ul>
+						</li>
+						
 					</ul>
 				</section>
 			</aside>

@@ -203,10 +203,10 @@
 								<label>Account</label>
 								<input type="text" class="form-control" id="updateNoteAccount" readonly>
 							</div> -->
-							<!-- <div class="form-group">
+							<div class="form-group updateNoteDateHolder" style="display: none;">
 								<label>Date</label>
-								<input type="text" class="form-control" id="updateNoteDate" readonly>
-							</div> -->
+								<input type="text" class="form-control" id="updateNoteDateInput">
+							</div>
 							<div class="form-group">
 								<label>Document (Optional)</label>
 								<input type="text" class="form-control" id="updateNoteDocument" readonly>
@@ -505,6 +505,8 @@
 		$("#updateNotePurpose").prop('readonly',false)
 		$("#updateNoteDescribe").prop('readonly',false)
 		$("#updateNoteNominal").prop('readonly',false)
+		$("#updateNoteDateInput").inputmask("date");
+		$(".updateNoteDateHolder").show()
 		$(".edit-btn").hide()
 		$(".save-btn").show()
 		$(".cancel-btn").show()
@@ -516,6 +518,7 @@
 		$("#updateNotePurpose").prop('readonly',true)
 		$("#updateNoteDescribe").prop('readonly',true)
 		$("#updateNoteNominal").prop('readonly',true)
+		$(".updateNoteDateHolder").hide()
 		$(".edit-btn").show()
 		$(".save-btn").hide()
 		$(".cancel-btn").hide()
@@ -531,6 +534,7 @@
 		$(".save-btn").hide()
 		$(".cancel-btn").hide()
 		$("#updateNoteNominal").inputmask('remove');
+		
 		$.ajax({
 			type:"POST",
 			url:"{{url('budget/note/editNote')}}",
@@ -541,8 +545,10 @@
 				purpose:$("#updateNotePurpose").val(),
 				detail:$("#updateNoteDescribe").val(),
 				nominal:$("#updateNoteNominal").val(),
+				date:moment($("#updateNoteDateInput").val(),'DD/MM/YYYY').format('YYYY-MM-DD'),
 			},
 			success:function(result){
+				$(".updateNoteDateHolder").hide()
 				$("#modalUpdateNote").modal("toggle")
 				$("#tableBudgetNote").DataTable().ajax.url("{{url('budget/note/getDataNote')}}").load()
 			}

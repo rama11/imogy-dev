@@ -110,6 +110,7 @@ class BudgetController extends Controller
 
     public function editNote(Request $req){
         $data = BudgetNote::find($req->id_note);
+        $data->date =  Carbon::parse($req->date)->toDateString();
         $data->document = $req->document;
         $data->purpose = $req->purpose;
         $data->detail = $req->detail;

@@ -77,7 +77,7 @@
 									</div>	
 									<div class="input-group-btn">
 										<button type="button" id="btnShowGrouping" class="btn btn-flat btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="margin-right: 5px;">
-											Group By : Account
+											Group By : Month
 											<span class="fa fa-caret-down"></span>
 										</button>
 										<ul class="dropdown-menu">
@@ -579,9 +579,9 @@
 					return json.data;
 				}
 			},
-			// "rowGroup": {
-	  //           "dataSrc": "PID"
-	  //       },
+			"rowGroup": {
+	            "dataSrc": "month"
+	        },
 			"columns": [
 				{
 					"className": 'details-control',
@@ -649,6 +649,7 @@
 
 	function changeGroupingTable(groupBy,groupBy_name,orderBy){
 		$("#btnShowGrouping").html('Group By : ' + groupBy_name + ' <span class="fa fa-caret-down"></span>')
+		// $('#tableBudgetNote').DataTable( { rowGroup: true } );
 		$("#tableBudgetNote").DataTable().rowGroup().dataSrc( groupBy ).order([orderBy,'asc']).draw();
 	}
 

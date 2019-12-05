@@ -107,4 +107,27 @@ class BudgetController extends Controller
         $data->save();
 
     }
+
+    public function editNote(Request $req){
+        $data = BudgetNote::find($req->id_note);
+        $data->document = $req->document;
+        $data->purpose = $req->purpose;
+        $data->detail = $req->detail;
+        $data->nominal = $req->nominal;
+
+        if($data->isDirty()){
+            foreach ($data->getDirty() as $key => $value) {
+                $dataActivity = new BudgetActivity();
+                $dataActivity->id_note = $req->id_note;
+                $dataActivity->date = Carbon::now()->toDateTimeString();
+                $dataActivity->activity = "On Progress";
+                $dataActivity->note = "Edited : " . $key ." -> " . $value;
+                $dataActivity->updater = Auth::user()->nickname;
+                $dataActivity->save();
+            }
+        }
+
+        $data->save();
+
+    }
 }

@@ -386,6 +386,7 @@
 					$("#updateNotePurpose").val(result.note.purpose)
 					$("#updateNoteDescribe").val(result.note.detail)
 					$("#updateNoteNominal").val(result.note.nominal)
+					$("#updateNoteDateInput").val(moment(result.note.date,'YYYY-MM-DD').format('DD/MM/YYYY'))
 					$("#modalUpdateNote").modal('toggle')
 				}
 			})

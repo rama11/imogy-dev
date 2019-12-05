@@ -241,6 +241,9 @@
 					</div>
 					<div class="modal-footer">
 						<!-- <button type="button" class="btn btn-flat btn-default pull-left">Cancel</button> -->
+						<button type="button" class="btn btn-flat btn-default updateBtn pull-left edit-btn" onclick="editNote()">Edit</button>
+						<button type="button" class="btn btn-flat btn-default updateBtn pull-left cancel-btn" onclick="cancelEditNote()" style="display: none;">Cancel</button>
+						<button type="button" class="btn btn-flat btn-default updateBtn pull-left save-btn" onclick="saveEditNote()"  style="display: none;">Save</button>
 						<button type="button" class="btn btn-flat btn-warning updateBtn" onclick="pendingNote()">Pending</button>
 						<button type="button" class="btn btn-flat btn-success updateBtn" onclick="successNote()">Succes</button>
 						<button type="button" class="btn btn-flat btn-primary updateBtn" onclick="updateNote()">Update</button>
@@ -350,9 +353,9 @@
 						prefix: 'Rp '
 					});
 					
-						$(".updateBtn").removeClass('disabled')
-						$(".updateBtn").attr('disabled','false')
-
+					$(".updateBtn").removeClass('disabled')
+					$('.updateBtn').prop("disabled", false)
+					// $(".updateBtn").attr('disabled','false')
 
 					if(result.latest.activity == "Created"){
 						var status = 'Created'
@@ -363,12 +366,13 @@
 					} else if (result.latest.activity == "Pending") {
 						var status = 'Pending'
 						$("#updateNoteStatus").attr('class','label label-warning');
-					} else {
+					} else if (result.latest.activity == "Success"){
 						$(".updateBtn").addClass('disabled')
-						$(".updateBtn").attr('disabled','true')
+						$('.updateBtn').prop("disabled", true)
 						var status = 'Done'
 						$("#updateNoteStatus").attr('class','label label-success');
 					}
+
 					$("#updateNoteActivity").text('')
 					$.each(result.activity,function(key,value){
 						$("#updateNoteActivity").append('<li>' + moment(value.date,'YYYY-MM-DD HH:mm:ss').format("DD MMMM - HH:mm") + ' [' + value.updater + '] - ' + value.note + '</li>');
@@ -491,6 +495,56 @@
 				});
 
 				$("#inputNoteIssuer").select2();
+			}
+		})
+	}
+
+	function editNote(){
+
+		$("#updateNoteDocument").prop('readonly',false)
+		$("#updateNotePurpose").prop('readonly',false)
+		$("#updateNoteDescribe").prop('readonly',false)
+		$("#updateNoteNominal").prop('readonly',false)
+		$(".edit-btn").hide()
+		$(".save-btn").show()
+		$(".cancel-btn").show()
+	}
+
+	function cancelEditNote(){
+
+		$("#updateNoteDocument").prop('readonly',true)
+		$("#updateNotePurpose").prop('readonly',true)
+		$("#updateNoteDescribe").prop('readonly',true)
+		$("#updateNoteNominal").prop('readonly',true)
+		$(".edit-btn").show()
+		$(".save-btn").hide()
+		$(".cancel-btn").hide()
+	}
+
+	function saveEditNote(){
+
+		$("#updateNoteDocument").prop('readonly',true)
+		$("#updateNotePurpose").prop('readonly',true)
+		$("#updateNoteDescribe").prop('readonly',true)
+		$("#updateNoteNominal").prop('readonly',true)
+		$(".edit-btn").show()
+		$(".save-btn").hide()
+		$(".cancel-btn").hide()
+		$("#updateNoteNominal").inputmask('remove');
+		$.ajax({
+			type:"POST",
+			url:"{{url('budget/note/editNote')}}",
+			data:{
+				_token:'{{csrf_token()}}',
+				id_note:$("#updateNoteId").val(),
+				document:$("#updateNoteDocument").val(),
+				purpose:$("#updateNotePurpose").val(),
+				detail:$("#updateNoteDescribe").val(),
+				nominal:$("#updateNoteNominal").val(),
+			},
+			success:function(result){
+				$("#modalUpdateNote").modal("toggle")
+				$("#tableBudgetNote").DataTable().ajax.url("{{url('budget/note/getDataNote')}}").load()
 			}
 		})
 	}
@@ -660,8 +714,8 @@
 							_token: "{{ csrf_token() }}",
 							PID: $("#inputNotePID").val(),
 							date: moment($("#inputNoteDate").val(),'DD/MM/YYYY').format('YYYY-MM-DD'),
-							document: $("#inputNoteDocument").val(),
 							issuer: $("#inputNoteIssuer").val(),
+							document: $("#inputNoteDocument").val(),
 							purpose: $("#inputNotePurpose").val(),
 							detail: $("#inputNoteDetail").val(),
 							nominal: $("#inputNoteNominal").val(),

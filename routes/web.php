@@ -55,7 +55,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('/eprofile', 'HomeController@eprofile');
 	Route::get('/eabsen', 'HomeController@eabsen');
 	Route::get('/ehistory', 'HomeController@ehistory');
-	Route::get('/etisygy', 'HomeController@etisygy');
+	// Route::get('/etisygy', 'HomeController@etisygy');
 	Route::get('/eannoun', 'HomeController@eannoun');
 	Route::get('/eteamhistory', 'HomeController@eteamhistory');
 	// Helpdesk Route
@@ -66,7 +66,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		//Route::get('/history2', 'HelpdeskController2@history');
 		// Route::get('/profile', 'HelpdeskController2@profile');
 	Route::get('/hsycal', 'HelpdeskController2@hsycal');
-	Route::get('/htisygy', 'HelpdeskController2@htisygy');
+	// Route::get('/htisygy', 'HelpdeskController2@htisygy');
 	Route::get('/hannouncement', 'HelpdeskController2@hannouncement');
 	// Route::get('/husermanage', 'HelpdeskController2@husermanage');
 	Route::get('/hhistory', 'HelpdeskController2@hhistory');
@@ -85,7 +85,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	// Route::get('/setLocation' , 'HelpdeskController2@setLocation');
 	// Route::get('/addLocation' , 'HelpdeskController2@addLocation');
 	Route::get('/habsen', 'HelpdeskController2@absen');
-	Route::post('/htisygy', 'HelpdeskController2@add_atisygy');
+	// Route::post('/htisygy', 'HelpdeskController2@add_atisygy');
 	Route::get('/downloadPDF/{id}','HelpdeskController2@download');
 	Route::get('/schedule','HelpdeskController2@schedule');
 	Route::get('/changeAbsent/{id}','HelpdeskController2@changeAbsent');
@@ -172,7 +172,8 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	// Ticketing Route
 
 
-		Route::get('tisygy', 'TicketingController@tisygy');
+	Route::get('tisygy', 'TicketingController@tisygy');
+	Route::get('tisygy/controll', 'TicketingController@controll');
 	Route::middleware(['tisygy.role'])->group(function () {
 
 		Route::get('tisygy2', 'TicketingController@tisygy2');
@@ -335,6 +336,8 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('budget/note/getIndividualNote','BudgetController@getIndividualNote');
 	
 	Route::post('budget/note/updateNote','BudgetController@updateNote');
+	Route::post('budget/note/editNote','BudgetController@editNote');
+	
 
 
 	Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');

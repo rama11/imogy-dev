@@ -214,7 +214,8 @@
 				budget:$("#inputAccountNominal").val(),
 			},
 			success: function(result){
-				$("#tableBudgetAccout").DataTable().ajax.url("{{url('budget/account/setAccount')}}").load()
+				$("#tableBudgetAccout").DataTable().ajax.url("{{url('budget/account/getDataAccount')}}").load()
+				$("#modalAddPID").modal('toggle')
 				alert('success')
 			}
 		})

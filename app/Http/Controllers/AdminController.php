@@ -146,14 +146,16 @@ class AdminController extends Controller
 			->get()
 			->toArray();
 
-		if(Auth::user()->jabatan != 5){
-			$privileges = DB::table('privilege')
-			->where('id','<>','5')
-			->get();	
-		}else{
-			$privileges = DB::table('privilege')
+		// if(Auth::user()->jabatan != 5){
+		// 	$privileges = DB::table('privilege')
+		// 	->where('id','<>','5')
+		// 	->get();	
+		// }else{
+		// 	$privileges = DB::table('privilege')
+		// 	->get();
+		// }
+		$privileges = DB::table('privilege')
 			->get();
-		}
 
 		// $shifting = DB::table('users')
 

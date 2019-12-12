@@ -8,6 +8,11 @@ use App\Http\Models\BudgetNote;
 use App\Http\Models\BudgetActivity;
 use Auth;
 use Carbon\Carbon;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
+
 
 
 class BudgetController extends Controller
@@ -130,5 +135,46 @@ class BudgetController extends Controller
 
         $data->save();
 
+    }
+
+    public function makeReportBudget(Request $req){
+        $spreadsheet = new Spreadsheet();
+
+        $title = 'Laporan Budgeting';
+
+        $spreadsheet->getProperties()->setCreator('SIP')
+            ->setLastModifiedBy(Auth::user()->name)
+            ->setTitle($title);
+
+        $spreadsheet->getActiveSheet()->setTitle('All');
+
+        $spreadsheet->getActiveSheet()->setCellValue('A1', 'ID ');
+        $spreadsheet->getActiveSheet()->setCellValue('B1', 'Account ');
+        $spreadsheet->getActiveSheet()->setCellValue('C1', 'Date ');
+        $spreadsheet->getActiveSheet()->setCellValue('D1', 'Document ');
+        $spreadsheet->getActiveSheet()->setCellValue('E1', 'Issuer ');
+        $spreadsheet->getActiveSheet()->setCellValue('F1', 'Purpose ');
+        $spreadsheet->getActiveSheet()->setCellValue('G1', 'Detail ');
+        $spreadsheet->getActiveSheet()->setCellValue('H1', 'Nominal ');
+        $spreadsheet->getActiveSheet()->setCellValue('I1', 'Procced ');
+
+        $notes = BudgetNote::all();
+        foreach ($notes as $key => $note) {
+            $key = $key + 1;
+            $spreadsheet->getActiveSheet()->setCellValue("A" . ($key + 1), $note->id);
+            $spreadsheet->getActiveSheet()->setCellValue("B" . ($key + 1), $note->id_account);
+            $spreadsheet->getActiveSheet()->setCellValue("C" . ($key + 1), $note->date);
+            $spreadsheet->getActiveSheet()->setCellValue("D" . ($key + 1), $note->document);
+            $spreadsheet->getActiveSheet()->setCellValue("E" . ($key + 1), $note->issuer);
+            $spreadsheet->getActiveSheet()->setCellValue("F" . ($key + 1), $note->purpose);
+            $spreadsheet->getActiveSheet()->setCellValue("G" . ($key + 1), $note->detail);
+            $spreadsheet->getActiveSheet()->setCellValue("H" . ($key + 1), $note->nominal);
+            $spreadsheet->getActiveSheet()->setCellValue("I" . ($key + 1), $note->procced);
+        }
+
+        $name = 'Report_Budget_by_' . Auth::user()->nickname . '_' . date('Y-m-d') . '.xlsx';
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('report/' . $name);
+        return $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER['HTTP_HOST'] . "/report/" . $name;
     }
 }

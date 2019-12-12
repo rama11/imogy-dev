@@ -47,6 +47,7 @@
 			<!-- <small>finish and update all activiy of project</small> -->
 		</h1>
 		<ol class="breadcrumb">
+			<button type="button" class="btn btn-flat btn-primary btn-xs" onclick='downloadNote()'>Download Note</button>
 			<button type="button" class="btn btn-flat btn-success btn-xs" data-toggle="modal" data-target="#modalAddNote" onclick='prepareAddNote()'>Add Note</button>
 		</ol>
 	</section>
@@ -409,6 +410,80 @@
 			$("#tableBudgetNote").DataTable().search($(this).val()).draw();
 		})
 	})
+
+	function downloadNote(){
+		swalWithCustomClass.fire({
+			title: 'Are you sure?',
+			text: "To download all note!",
+			type: 'warning',
+			showCancelButton: true,
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			allowEnterKey: false,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value){
+					Swal.fire({
+						title: 'Please Wait..!',
+						text: "It's proccessing..",
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false,
+						customClass: {
+							popup: 'border-radius-0',
+						},
+						onOpen: () => {
+							Swal.showLoading()
+						}
+					})
+					$("#inputNoteNominal").inputmask('remove');
+					$.ajax({
+						type:"GET",
+						url:"{{url('budget/note/makeReportBudget')}}",
+						success:function(result){
+							Swal.hideLoading()
+							swalWithCustomClass.fire({
+								title: 'Success!',
+								text: "Budget Note Report Created",
+								type: 'success',
+								confirmButtonText: '<a style="color:#fff;" href="' + result.slice(1) + '">Download</a>',
+								// confirmButtonText: 'Download',
+							})
+						}
+					})
+					// $.ajax({
+					// 	type:"POST",
+					// 	url:"{{url('budget/note/setNote')}}",
+						
+					// 	data:{
+					// 		_token: "{{ csrf_token() }}",
+					// 		PID: $("#inputNotePID").val(),
+					// 		date: moment($("#inputNoteDate").val(),'DD/MM/YYYY').format('YYYY-MM-DD'),
+					// 		issuer: $("#inputNoteIssuer").val(),
+					// 		document: $("#inputNoteDocument").val(),
+					// 		purpose: $("#inputNotePurpose").val(),
+					// 		detail: $("#inputNoteDetail").val(),
+					// 		nominal: $("#inputNoteNominal").val(),
+					// 	},
+					// 	success: function(){
+					// 		Swal.hideLoading()
+					// 		swalWithCustomClass.fire({
+					// 			title: 'Success!',
+					// 			text: "Note submited",
+					// 			type: 'success',
+					// 			confirmButtonText: 'Reload',
+					// 		}).then((result) => {
+					// 			$("#tableBudgetNote").DataTable().ajax.url("{{url('budget/note/getDataNote')}}").load()
+					// 			$("#modalAddNote").modal('toggle')
+					// 		})
+					// 	}
+					// })
+				}
+			}
+		);
+		
+	}
 
 	function updateNote(){
 		$.ajax({

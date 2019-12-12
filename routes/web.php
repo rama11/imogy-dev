@@ -337,7 +337,8 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	
 	Route::post('budget/note/updateNote','BudgetController@updateNote');
 	Route::post('budget/note/editNote','BudgetController@editNote');
-	
+	Route::get('budget/note/makeReportBudget','BudgetController@makeReportBudget');
+
 
 
 	Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');

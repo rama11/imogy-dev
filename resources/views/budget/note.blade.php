@@ -320,6 +320,8 @@
 				$(this).closest('tr > td').children().attr("class","fa fa-plus");
 			}
 			else {
+				var tr2 = $(this).closest('tr > td').children()
+				// console.log($(this))
 				$.ajax({
 					type:"GET",
 					url:"{{url('budget/note/getIndividualNote')}}",
@@ -327,9 +329,10 @@
 						id:row.data().id
 					},
 					success:function(result){
+						// console.log('asdfadf')
 						row.child( format(row.data(),result)).show();
 						tr.addClass('shown');
-						$(this).closest('tr > td').children().attr("class","fa fa-minus");
+						tr2.attr("class","fa fa-minus");
 					}
 				})
 				
@@ -525,7 +528,7 @@
 			url:"{{url('budget/note/updateNote')}}",
 			data:{
 				_token:'{{csrf_token()}}',
-				note:'Done : ' + $("#updateNoteUpdate").val(),
+				note:$("#updateNoteUpdate").val(),
 				id_note:$("#updateNoteId").val(),
 				activity:'Success'
 			},
@@ -714,6 +717,7 @@
 			// "paging": false,
 			"info":false,
 			"scrollX": false,
+			"order": [[ 1, "desc" ]]
 		})
 
 	}

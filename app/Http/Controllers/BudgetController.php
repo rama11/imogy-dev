@@ -150,26 +150,29 @@ class BudgetController extends Controller
 
         $spreadsheet->getActiveSheet()->setCellValue('A1', 'ID ');
         $spreadsheet->getActiveSheet()->setCellValue('B1', 'Account ');
-        $spreadsheet->getActiveSheet()->setCellValue('C1', 'Date ');
-        $spreadsheet->getActiveSheet()->setCellValue('D1', 'Document ');
-        $spreadsheet->getActiveSheet()->setCellValue('E1', 'Issuer ');
-        $spreadsheet->getActiveSheet()->setCellValue('F1', 'Purpose ');
-        $spreadsheet->getActiveSheet()->setCellValue('G1', 'Detail ');
-        $spreadsheet->getActiveSheet()->setCellValue('H1', 'Nominal ');
-        $spreadsheet->getActiveSheet()->setCellValue('I1', 'Procced ');
+        $spreadsheet->getActiveSheet()->setCellValue('C1', 'Customer ');
+        $spreadsheet->getActiveSheet()->setCellValue('D1', 'Date ');
+        $spreadsheet->getActiveSheet()->setCellValue('E1', 'Document ');
+        $spreadsheet->getActiveSheet()->setCellValue('F1', 'Issuer ');
+        $spreadsheet->getActiveSheet()->setCellValue('G1', 'Purpose ');
+        $spreadsheet->getActiveSheet()->setCellValue('H1', 'Detail ');
+        $spreadsheet->getActiveSheet()->setCellValue('I1', 'Nominal ');
+        $spreadsheet->getActiveSheet()->setCellValue('J1', 'Procced ');
 
-        $notes = BudgetNote::all();
+        // $notes = BudgetNote::all();
+        $notes = BudgetNote::with('account_note')->get();
         foreach ($notes as $key => $note) {
             $key = $key + 1;
             $spreadsheet->getActiveSheet()->setCellValue("A" . ($key + 1), $note->id);
-            $spreadsheet->getActiveSheet()->setCellValue("B" . ($key + 1), $note->id_account);
-            $spreadsheet->getActiveSheet()->setCellValue("C" . ($key + 1), $note->date);
-            $spreadsheet->getActiveSheet()->setCellValue("D" . ($key + 1), $note->document);
-            $spreadsheet->getActiveSheet()->setCellValue("E" . ($key + 1), $note->issuer);
-            $spreadsheet->getActiveSheet()->setCellValue("F" . ($key + 1), $note->purpose);
-            $spreadsheet->getActiveSheet()->setCellValue("G" . ($key + 1), $note->detail);
-            $spreadsheet->getActiveSheet()->setCellValue("H" . ($key + 1), $note->nominal);
-            $spreadsheet->getActiveSheet()->setCellValue("I" . ($key + 1), $note->procced);
+            $spreadsheet->getActiveSheet()->setCellValue("B" . ($key + 1), $note->account_note->PID);
+            $spreadsheet->getActiveSheet()->setCellValue("C" . ($key + 1), $note->account_note->customer);
+            $spreadsheet->getActiveSheet()->setCellValue("D" . ($key + 1), Carbon::parse($note->date)->format('d/m/Y'));
+            $spreadsheet->getActiveSheet()->setCellValue("E" . ($key + 1), $note->document);
+            $spreadsheet->getActiveSheet()->setCellValue("F" . ($key + 1), $note->issuer);
+            $spreadsheet->getActiveSheet()->setCellValue("G" . ($key + 1), $note->purpose);
+            $spreadsheet->getActiveSheet()->setCellValue("H" . ($key + 1), $note->detail);
+            $spreadsheet->getActiveSheet()->setCellValue("I" . ($key + 1), $note->nominal);
+            $spreadsheet->getActiveSheet()->setCellValue("J" . ($key + 1), $note->procced);
         }
 
         $name = 'Report_Budget_by_' . Auth::user()->nickname . '_' . date('Y-m-d') . '.xlsx';

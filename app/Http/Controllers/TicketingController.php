@@ -1648,11 +1648,11 @@ class TicketingController extends Controller
 	}
 
 
-	public function controll(){
-		$user = DB::table('users')
-			->get();
-		return view('controllPage');
-	}
+	// public function controll(){
+	// 	$user = DB::table('users')
+	// 		->get();
+	// 	return view('controllPage');
+	// }
 
 	public function testEmail1(){
 		return view('testEmail');
@@ -1679,6 +1679,13 @@ class TicketingController extends Controller
 		return array('client_data' => TicketingClient::select('id','client_acronym','client_name')
 			->where('situation','=','1')
 			->get());
+	}
+
+	public function controll(){
+		// echo "asdfasdf";
+		if(Auth::user()->id == 4 || Auth::user()->id == 6){
+			return view('tisygyControll');
+		}
 	}
 
 }

@@ -126,12 +126,14 @@
 								<span>TISYGY</span>
 							</a>
 						</li>
-						<li class="activeable" id="controll">
-							<a href="{{ url('tisygy/controll')}}">
-								<i class="fa fa-gg"></i>
-								<span>Controll</span>
-							</a>
-						</li>
+						@if(Auth::user()->id == 4 || Auth::user()->id == 6)
+							<li class="activeable" id="controll">
+								<a href="{{ url('tisygy/controll')}}">
+									<i class="fa fa-gg"></i>
+									<span>Controll</span>
+								</a>
+							</li>
+						@endif
 						<li class="activeable" id="usermanage">
 							<a href="{{ url('usermanage')}}">
 								<i class="fa fa-users"></i>

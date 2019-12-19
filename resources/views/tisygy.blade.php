@@ -1,60 +1,61 @@
 @extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
 
 @section('head')
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
 
-	<link rel="stylesheet" href="{{ url('css/jquery.emailinput.min.css') }}">
-	<link rel="stylesheet" href="{{ url('plugins/timepicker/bootstrap-timepicker.min.css')}}">
-	<link rel="stylesheet" href="{{ url('plugins/datepicker/datepicker3.css')}}">
-	<link rel="stylesheet" href="{{ url('plugins/datatables/dataTables.bootstrap.css')}}">
+		<!-- Start of head section -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
 
-	<!-- <link rel="stylesheet" href="{{ url('dist/css/AdminLTE.min.css')}}"> -->
+		<link rel="stylesheet" href="{{ url('css/jquery.emailinput.min.css') }}">
+		<link rel="stylesheet" href="{{ url('plugins/timepicker/bootstrap-timepicker.min.css')}}">
+		<link rel="stylesheet" href="{{ url('plugins/datepicker/datepicker3.css')}}">
+		<link rel="stylesheet" href="{{ url('plugins/datatables/dataTables.bootstrap.css')}}">
 
-	<style type="text/css">
-		.table2 > tbody > tr > th, .table2 > tbody > tr > td {
-			border-color: #141414;border: 1px solid;padding: 3px;}
+		<style type="text/css">
+			.table2 > tbody > tr > th, .table2 > tbody > tr > td {
+				border-color: #141414;border: 1px solid;padding: 3px;}
 
-		.vertical-alignment-helper {
-			display:table;
-			height: 100%;
-			width: 100%;
-			pointer-events:none;
-		}
-		.vertical-align-center {
-			display: table-cell;
-			vertical-align: middle;
-			pointer-events:none;
-		}
-		.modal-content {
-			width:inherit;
-			max-width:inherit; 
-			height:inherit;
-			margin: 0 auto;
-			pointer-events: all;
-		}
+			.vertical-alignment-helper {
+				display:table;
+				height: 100%;
+				width: 100%;
+				pointer-events:none;
+			}
+			.vertical-align-center {
+				display: table-cell;
+				vertical-align: middle;
+				pointer-events:none;
+			}
+			.modal-content {
+				width:inherit;
+				max-width:inherit; 
+				height:inherit;
+				margin: 0 auto;
+				pointer-events: all;
+			}
 
-		.table > tbody > tr > td {
-			vertical-align: middle;
-		}
+			.table > tbody > tr > td {
+				vertical-align: middle;
+			}
 
-		.dataTables_filter {display: none;}
-		.border-radius-0 {
-			border-radius: 0px !important;
-		}
-		.swal2-margin {
-			margin: .3125em;
-		}
+			.dataTables_filter {display: none;}
+			.border-radius-0 {
+				border-radius: 0px !important;
+			}
+			.swal2-margin {
+				margin: .3125em;
+			}
 
-		.label {
-			border-radius: 0px !important;
-		}
+			.label {
+				border-radius: 0px !important;
+			}
 
-		.has-error .select2-selection {
-			border-color: rgb(185, 74, 72) !important;
-		}
-		
-		body { padding-right: 0 !important }
-	</style>
+			.has-error .select2-selection {
+				border-color: rgb(185, 74, 72) !important;
+			}
+			
+			body { padding-right: 0 !important }
+		</style>
+		<!-- End of head section -->
 @endsection
 @section('content')
 <div class="content-wrapper">

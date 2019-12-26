@@ -1160,6 +1160,8 @@ class AdminController extends Controller
 			->get()
 			->toarray();
 		$datas = array_slice(array_reverse($datas), 0, 9);
+
+		// return $datas;
 		
 		$datas2 = DB::table('waktu_absen')
 			->join('location','waktu_absen.location','=','location.id')
@@ -1405,7 +1407,29 @@ class AdminController extends Controller
 		// print_r($users);
 		// print_r($datas2);
 		// echo "</pre>";
-		return view('precense.teamHistory',compact('datas','datas2','var','status','late','injury','ontime','count','absen','attendance','absenToday','ids','problem'));
+		// return view('precense.teamHistory',compact('datas','datas2','var','status','late','injury','ontime','count','absen','attendance','absenToday','ids','problem'));
+
+		// return $var;
+
+		$summaryCounts = DB::table('waktu_absen')
+		    ->selectRaw('`users`.`id` AS `id_user`')
+		    ->selectRaw('`users`.`name` AS `name`')
+	    	->selectRaw('`location`.`name` AS `location`')
+		    ->selectRaw('COUNT(IF(`waktu_absen`.`late` = "On-Time", 1, NULL)) AS `on_time`')
+		    ->selectRaw('COUNT(IF(`waktu_absen`.`late` = "Injury-Time", 1, NULL)) AS `tolerance`')
+		    ->selectRaw('COUNT(IF(`waktu_absen`.`late` = "Late", 1, NULL)) AS `late`')
+		    ->selectRaw('COUNT(*) AS `All`')
+		    // ->where('waktu_absen.tanggal','LIKE',date('Y-m') . "%")
+		    ->whereBetween('waktu_absen.tanggal', [date('Y-') . (string)(date('m') - 1) . "-25", date('Y-m-25')])
+		    ->join('users','users.id','=','waktu_absen.id_user')
+		    ->join('location','users.location','=','location.id')
+		    ->groupBy('waktu_absen.id_user')
+		    ->orderBy('location.name','ASC')
+		    ->get();
+
+		// return $summaryCounts;
+
+		return view('precense.teamHistory',compact('datas2','summaryCounts','status','late','injury','ontime','count','absen','attendance','absenToday','ids','problem'));
 	}
 
 	public function getUserHistory ($id,$start = 0,$end = 0){
@@ -1917,7 +1941,8 @@ class AdminController extends Controller
 	public function getUserToReport(){
 		return DB::table('users')
 			->select('users.nickname','privilege.privilege_name','users.id as value')
-			->whereNotIn('users.id',[3,32,35,74,76,82,83,84])
+			// ->whereNotIn('users.id',[3,32,35,74,76,82,83,84])
+			->where('users.activition','=',1)
 			->join('privilege','users.jabatan','=','privilege.id')
 			->get()
 			->groupBy('privilege_name')

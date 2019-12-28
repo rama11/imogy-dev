@@ -814,6 +814,13 @@ class AdminController extends Controller
 			echo "<br>" . $late;
 
 		} else {
+			if(Auth::check()){
+				$user = "{userId:" . Auth::id() . " email:" . Auth::user()->email . "}";
+			} else {
+				// $user = "{userId:" . Auth::id() . " email:" . Auth::user()->mail . "}";
+				$user = "{userId:NaN email:NaN}";
+			}
+			Log::info("Try to absen pulang " . $user);
 
 			echo "Anda sudah absen hari ini ";
 			$pulang = DB::table('waktu_absen')

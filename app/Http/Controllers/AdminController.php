@@ -10,6 +10,7 @@ use DB;
 use Auth;
 use PDF;
 use Mail;
+use Log;
 use App\Mail\Ticket;
 use App\Mail\TicketMail;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;

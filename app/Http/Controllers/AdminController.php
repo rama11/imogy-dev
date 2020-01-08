@@ -1419,6 +1419,12 @@ class AdminController extends Controller
 
 		// return $var;
 
+		if(date('m') == 1){
+			$dateRange = [(string)(date('Y') - 1) . "-12-25", date('Y-m-25')];
+		} else {
+			$dateRange = [date('Y-') . (string)(date('m') - 1) . "-25", date('Y-m-25')];
+		}
+
 		$summaryCounts = DB::table('waktu_absen')
 		    ->selectRaw('`users`.`id` AS `id_user`')
 		    ->selectRaw('`users`.`name` AS `name`')
@@ -1428,7 +1434,7 @@ class AdminController extends Controller
 		    ->selectRaw('COUNT(IF(`waktu_absen`.`late` = "Late", 1, NULL)) AS `late`')
 		    ->selectRaw('COUNT(*) AS `All`')
 		    // ->where('waktu_absen.tanggal','LIKE',date('Y-m') . "%")
-		    ->whereBetween('waktu_absen.tanggal', [date('Y-') . (string)(date('m') - 1) . "-25", date('Y-m-25')])
+		    ->whereBetween('waktu_absen.tanggal', $dateRange)
 		    ->join('users','users.id','=','waktu_absen.id_user')
 		    ->join('location','users.location','=','location.id')
 		    ->groupBy('waktu_absen.id_user')
@@ -1442,10 +1448,17 @@ class AdminController extends Controller
 
 	public function getUserHistory ($id,$start = 0,$end = 0){
 	
+		if(date('m') == 1){
+			$dateRange = [(string)(date('Y') - 1) . "-12-25", date('Y-m-25')];
+		} else {
+			$dateRange = [date('Y-') . (string)(date('m') - 1) . "-25", date('Y-m-25')];
+		}
+	
 		if($start == 0 && $end == 0){
 			$datas = DB::table('waktu_absen')
 				->where('id_user','=',$id)
-				->where('tanggal','like','%' . date('y') . '-' . date('m') .'-%')
+				// ->where('tanggal','like','%' . date('y') . '-' . date('m') .'-%')
+			    ->whereBetween('waktu_absen.tanggal', $dateRange)
 				->orderBy('tanggal','ASC')
 				->orderBy('jam','ASC')
 				->get()

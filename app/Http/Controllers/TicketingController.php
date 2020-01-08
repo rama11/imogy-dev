@@ -272,7 +272,7 @@ class TicketingController extends Controller
 
 
 	public function getCreateParameter(){
-		$client = TicketingClient::all();
+		$client = TicketingClient::where('situation','=',1)->orderBy('client_acronym')->get();
 		$severity = TicketingSeverity::all();
 		
 		return array(
@@ -1252,10 +1252,10 @@ class TicketingController extends Controller
 		// Create new Spreadsheet object
 		$spreadsheet = new Spreadsheet();
 		$client = TicketingClient::find($req->client)->client_acronym;
-		$bulan = Carbon::createFromDate(2018, $req->month + 1, 1)->format('M');
+		$bulan = Carbon::createFromDate($req->year, $req->month + 1, 1)->format('M');
 
 		// Set document properties
-		$title = 'Laporan Bulanan '. $client . ' '. $bulan . date(" Y");
+		$title = 'Laporan Bulanan '. $client . ' '. $bulan . " " . $req->year;
 
 		$spreadsheet->getProperties()->setCreator('SIP')
 			->setLastModifiedBy('Rama Agastya')
@@ -1361,7 +1361,7 @@ class TicketingController extends Controller
 			->setCellValue('P4','CONTERMASURE')
 			->setCellValue('Q4','ENGINEER');
 		
-		$value1 = $this->getPerformanceByFinishTicket($client,$bulan . "/" . date("Y"));
+		$value1 = $this->getPerformanceByFinishTicket($client,$bulan . "/" . $req->year);
 		// return $value1;
 
 		foreach ($value1 as $key => $value) {
@@ -1477,7 +1477,7 @@ class TicketingController extends Controller
 		$spreadsheet->getActiveSheet()->getStyle("I5")->getAlignment()->setWrapText(true);
 		$spreadsheet->getActiveSheet()->getStyle("J5")->getAlignment()->setWrapText(true);
 
-		$value1 = $this->getPerformance5($client,$bulan . "/" . date("Y"));
+		$value1 = $this->getPerformance5($client,$bulan . "/" . $req->year);
 
 		$middle = [
 			'alignment' => [
@@ -1633,7 +1633,7 @@ class TicketingController extends Controller
 		
 
 
-		$name = 'Report_' . $client . '_-_' . Carbon::createFromDate(2018, $req->month + 1, 1)->format('F') . '_(' . date("Y-m-d") . ')_' . Auth::user()->nickname . '.xlsx';
+		$name = 'Report_' . $client . '_-_' . Carbon::createFromDate( $req->year , $req->month + 1, 1)->format('F-Y') . '_(' . date("Y-m-d") . ')_' . Auth::user()->nickname . '.xlsx';
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
 		$writer->save('report/' . $name);
 		return $name;
@@ -1676,9 +1676,16 @@ class TicketingController extends Controller
 	}
 
 	public function getReportParameter(){
-		return array('client_data' => TicketingClient::select('id','client_acronym','client_name')
-			->where('situation','=','1')
-			->get());
+		return array(
+			'client_data' => TicketingClient::select('id','client_acronym','client_name')
+				->where('situation','=','1')
+				->get(),
+			'ticket_year' => DB::table('ticketing__detail')
+				->selectRaw("SUBSTRING_INDEX(`id_ticket`, '/', -1) AS `year`")
+				->orderBy('year','DESC')
+				->groupBy('year')
+				->get()
+			);
 	}
 
 	public function controll(){

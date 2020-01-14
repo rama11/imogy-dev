@@ -885,4 +885,8 @@ class TestController extends Controller
 		]);
 	}
 
+	public function testingATMMaps(){
+		return view('mapsAtm');
+	}
+
 }

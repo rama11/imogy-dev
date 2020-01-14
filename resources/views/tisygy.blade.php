@@ -685,8 +685,14 @@
 									<option>Finish Report</option>
 								</select>
 							</div>
+						</div><div class="col-md-2">
+							<div class="form-group">
+								<label>Select Year</label>
+								<select id="selectReportingYear" class="form-control">
+								</select>
+							</div>
 						</div>
-						<div class="col-md-3">
+						<div class="col-md-2">
 							<div class="form-group">
 								<label>Select Month</label>
 								<select id="selectReportingMonth" class="form-control">
@@ -695,7 +701,7 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-9">
+						<div class="col-md-10">
 							<!-- <a id="ReportingButtonLink" href=""> -->
 								<button id="ReportingButtonGo" class="pull-right btn btn-flat btn-primary" style="display: none;" onclick="getReport()">
 									Goo..
@@ -1160,38 +1166,72 @@
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title" id="modal-setting-title">Change ATM Detail </h4>
+					<h4 class="modal-title" id="modal-setting-title">Change ATM Detail</h4>
 				</div>
 				<div class="modal-body">
 					<form role="form">
-						<input type="hidden" id="idAtm">
+						<input type="hidden" id="idEditAtm">
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label>Owner</label>
-									<select class="form-control" id="atmOwner"></select>
+									<select class="form-control" id="atmEditOwner"></select>
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label>ATM ID</label>
-									<input type="text" class="form-control" id="atmID">
+									<input type="text" class="form-control" id="atmEditID">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>Serial Number</label>
+									<input type="text" class="form-control" id="atmEditSerial">
+								</div>
+							</div>
+							<div class="col-sm-8">
+								<div class="form-group">
+									<label>Location ATM</label>
+									<input type="text" class="form-control" id="atmEditLocation">
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
+							<label>Address</label>
+							<textarea type="text" class="form-control" id="atmEditAddress"></textarea>
+						</div>
+						<hr>
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>Activation Date</label>
+									<input type="text" class="form-control" id="atmEditActivation">
+								</div>
+							</div>
+							<div class="col-sm-8">
+								<div class="form-group">
+									<label>Note</label>
+									<input type="text" class="form-control" placeholder="ex : Kanwil II" id="atmEditNote">
+								</div>
+							</div>
+						</div>
+						<!-- <div class="form-group">
 							<label>Serial Number</label>
 							<input type="text" class="form-control" id="atmSerial">
 						</div>
 						<div class="form-group">
 							<label>Location ATM</label>
 							<input type="text" class="form-control" id="atmLocation">
-						</div>
+						</div> -->
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary" onclick="saveAtm()">Save changes</button>
+					<button type="button" class="btn btn-flat btn-default pull-left" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-flat btn-danger pull-left" onclick="deleteAtm()">Delete</button>
+					<button type="button" class="btn btn-flat btn-primary" onclick="saveAtm()">Save changes</button>
 				</div>
 			</div>
 		</div>
@@ -1208,21 +1248,55 @@
 				</div>
 				<div class="modal-body">
 					<form role="form">
-						<input type="hidden" id="idAtm">
+						<input type="hidden" id="idAddAtm">
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label>Owner</label>
-									<select class="form-control" id="atmOwner2"></select>
+									<select class="form-control" id="atmAddOwner"></select>
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label>ATM ID</label>
-									<input type="text" class="form-control" id="atmID2">
+									<input type="text" class="form-control" id="atmAddID">
 								</div>
 							</div>
 						</div>
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>Serial Number</label>
+									<input type="text" class="form-control" id="atmAddSerial">
+								</div>
+							</div>
+							<div class="col-sm-8">
+								<div class="form-group">
+									<label>Location ATM</label>
+									<input type="text" class="form-control" id="atmAddLocation">
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label>Address</label>
+							<textarea type="text" class="form-control" id="atmAddAddress"></textarea>
+						</div>
+						<hr>
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>Activation Date</label>
+									<input type="text" class="form-control" id="atmAddActivation">
+								</div>
+							</div>
+							<div class="col-sm-8">
+								<div class="form-group">
+									<label>Note</label>
+									<input type="text" class="form-control" placeholder="ex : Kanwil II" id="atmAddNote">
+								</div>
+							</div>
+						</div>
+						<!-- 
 						<div class="form-group">
 							<label>Serial Number</label>
 							<input type="text" class="form-control" id="atmSerial2">
@@ -1230,12 +1304,12 @@
 						<div class="form-group">
 							<label>Location ATM</label>
 							<input type="text" class="form-control" id="atmLocation2">
-						</div>
+						</div> -->
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary" onclick="newAtm()">Add</button>
+					<button type="button" class="btn btn-flat btn-default pull-left" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-flat btn-primary" onclick="newAtm()">Add</button>
 				</div>
 			</div>
 		</div>
@@ -1253,6 +1327,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.5/Chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.2.6/jquery.inputmask.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.full.min.js"></script>
 
@@ -1268,6 +1343,8 @@
 
 	$(document).ready(function(){
 		getDashboard();
+
+		$("#atmAddActivation, #atmEditActivation").inputmask("date");
 
 		// $('#searchBarTicket').keyup(function(){
 		// 	$("#tablePerformance").DataTable().search($(this).val()).draw();
@@ -1334,16 +1411,39 @@
 			format: 'dd/mm/yyyy'
 		});
 
-		$("#selectReportingClient, #selectReportingMonth").change(function(){
-			if($("#selectReportingClient").val() !== "Select Client" && $("#selectReportingMonth").val() !== "Select Month"){
+		$("#selectReportingClient, #selectReportingYear, #selectReportingMonth").change(function(){
+			if($("#selectReportingClient").val() !== "Select Client" && $("#selectReportingYear").val() !== "Select Year"  && $("#selectReportingMonth").val() !== "Select Month"){
 				console.log($("#selectReportingClient").val())
+				console.log($("#selectReportingYear").val())
 				console.log($("#selectReportingMonth").val())
+				
+				var urlAjax = '{{url("tisygy/report/make")}}?client=' + $("#selectReportingClient").val() + '&year=' + $("#selectReportingYear").val() + '&month=' + $("#selectReportingMonth").val()
+				$("#ReportingButtonGo").attr('onclick',"getReport('" + urlAjax + "')")
 				$("#ReportingButtonGo").show()
+			}
+
+			if ($("#selectReportingYear").val() !== moment().format('YYYY') && $("#selectReportingYear").val() !== "Select Year"){
+				console.log('true')
+				$("#selectReportingMonth").empty()
+				$("#selectReportingMonth").append("<option>Select Month</option>")
+				moment.months().forEach(function(data,index){
+					$("#selectReportingMonth").append("<option value='" + index + "'>" + data + "</option>")
+				})
+			} else if ($("#selectReportingYear").val() === moment().format('YYYY')){
+				console.log('false')
+				$("#selectReportingMonth").empty()
+				$("#selectReportingMonth").append("<option>Select Month</option>")
+				moment.months().forEach(function(data,index){
+					if(index < moment().format('M')){
+						$("#selectReportingMonth").append("<option value='" + index + "'>" + data + "</option>")
+					}
+				})
 			}
 		})
 
 		$("#ReportingButtonGo").click(function(){
 			$("#selectReportingClient").val()
+			$("#selectReportingYear").val()
 			$("#selectReportingMonth").val()
 		})
 
@@ -1731,15 +1831,35 @@
 			type:"GET",
 			url:"{{url('tisygy/setting/newAtm')}}",
 			data:{
-				atmOwner:$("#atmOwner2").val(),
-				atmID:$("#atmID2").val(),
-				atmSerial:$("#atmSerial2").val(),
-				atmLocation:$("#atmLocation2").val(),
+				atmOwner:$("#atmAddOwner").val(),
+				atmID:$("#atmAddID").val(),
+				atmSerial:$("#atmAddSerial").val(),
+				atmLocation:$("#atmAddLocation").val(),
+				atmAddress:$("#atmAddAddress").val(),
+				atmActivation:$("#atmAddActivation").val(),
+				atmNote:$("#atmAddNote").val(),
 			},
-			success: function (){
-				$("#modal-setting-atm-add").modal('toggle');
-				$("#tableAtm").DataTable().ajax.url("tisygy/setting/getAllAtm").load();
-			}
+			success: function (data){
+				if(!$.isEmptyObject(data.error)){
+					var errorMessage = ""
+					data.error.forEach(function(data,index){
+						errorMessage = errorMessage + data + "<br>";
+					})
+                    swalWithCustomClass.fire(
+						'Error',
+						errorMessage,
+						'error'
+					)
+                } else {
+                	 swalWithCustomClass.fire(
+						'Success',
+						'ATM Added',
+						'success'
+					)
+					$("#modal-setting-atm-add").modal('toggle');
+					$("#tableAtm").DataTable().ajax.url("tisygy/setting/getAllAtm").load();
+                }
+			},
 		})
 	}
 
@@ -1750,7 +1870,7 @@
 			url:"{{url('tisygy/setting/getParameterAddAtm')}}",
 			success:function(result){
 				$.each(result, function (key,value){
-					$("#atmOwner2").append("<option value='" + value.id + "'>(" + value.client_acronym + ") " + value.client_name + "</option>")
+					$("#atmAddOwner").append("<option value='" + value.id + "'>(" + value.client_acronym + ") " + value.client_name + "</option>")
 				});
 			}
 		});
@@ -1761,33 +1881,111 @@
 			type:"GET",
 			url:"{{url('tisygy/setting/setAtm')}}",
 			data:{
-				idAtm:$("#idAtm").val(),
-				atmOwner:$("#atmOwner").val(),
-				atmID:$("#atmID").val(),
-				atmSerial:$("#atmSerial").val(),
-				atmLocation:$("#atmLocation").val(),
+				idAtm:$("#idEditAtm").val(),
+				atmOwner:$("#atmEditOwner").val(),
+				atmID:$("#atmEditID").val(),
+				atmSerial:$("#atmEditSerial").val(),
+				atmLocation:$("#atmEditLocation").val(),
+				atmAddress:$("#atmEditAddress").val(),
+				atmActivation:$("#atmEditActivation").val(),
+				atmNote:$("#atmEditNote").val(),
 			},
-			success: function (){
-				$("#modal-setting-atm").modal('toggle');
-				$("#tableAtm").DataTable().ajax.url("tisygy/setting/getAllAtm").load();
+			success: function (data){
+				if(!$.isEmptyObject(data.error)){
+					var errorMessage = ""
+					data.error.forEach(function(data,index){
+						errorMessage = errorMessage + data + "<br>";
+					})
+                    swalWithCustomClass.fire(
+						'Error',
+						errorMessage,
+						'error'
+					)
+                } else {
+                	 swalWithCustomClass.fire(
+						'Success',
+						'ATM Changed',
+						'success'
+					)
+					$("#modal-setting-atm").modal('toggle');
+					$("#tableAtm").DataTable().ajax.url("tisygy/setting/getAllAtm").load();
+                }
 			}
 		})
 	}
 
+	function deleteAtm(){
+		swalWithCustomClass.fire({
+			title: 'Are you sure?',
+			text: "To delete this ATM?",
+			type: "warning",
+			showCancelButton: true,
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			allowEnterKey: false,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value){
+					Swal.fire({
+						title: 'Please Wait..!',
+						text: "It's Deleting",
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false,
+						customClass: {
+							popup: 'border-radius-0',
+						},
+						onOpen: () => {
+							Swal.showLoading()
+						}
+					})
+
+					$.ajax({
+						type:"GET",
+						url:"{{url('tisygy/setting/deleteAtm')}}",
+						data:{
+							idAtm:$("#idEditAtm").val(),
+						},
+						success: function(resultAjax){
+							Swal.hideLoading()
+							swalWithCustomClass.fire({
+								title: 'Success!',
+								text: "ATM Deleted",
+								type: 'success',
+								confirmButtonText: 'Reload',
+							}).then((result) => {
+								$("#modal-setting-atm").modal('toggle');
+								$("#tableAtm").DataTable().ajax.url("tisygy/setting/getAllAtm").load();
+							})
+						}
+					});
+				}
+			}
+		);
+	}
+
 	function editAtm(atm_id){
-		$("#modal-setting-atm").modal('toggle');
 		$.ajax({
 			type:"GET",
-			url:"{{url('tisygy/setting/getDetailAtm')}}/" + atm_id,
+			url:"{{url('tisygy/setting/getDetailAtm')}}",
+			data:{
+				id_atm:atm_id
+			},
 			success:function(result){
-				$.each(result[1], function (key,value){
-					$("#atmOwner").append("<option value='" + value.id + "'>(" + value.client_acronym + ") " + value.client_name + "</option>")
+				$.each(result.client, function (key,value){
+					$("#atmEditOwner").append("<option value='" + value.id + "'>(" + value.client_acronym + ") " + value.client_name + "</option>")
 				});
-				$("#idAtm").val(atm_id);
-				$("#atmOwner").val(result[0][0].owner);
-				$("#atmID").val(result[0][0].atm_id);
-				$("#atmSerial").val(result[0][0].serial_number);
-				$("#atmLocation").val(result[0][0].location);
+				$("#idEditAtm").val(atm_id);
+				$("#atmEditOwner").val(result.atm.owner);
+				$("#atmEditID").val(result.atm.atm_id);
+				$("#atmEditSerial").val(result.atm.serial_number);
+				$("#atmEditLocation").val(result.atm.location);
+				$("#atmEditAddress").val(result.atm.address);
+				$("#atmEditActivation").val(moment(result.atm.activation,'YYYY-MM-DD').format('DD/MM/YYYY'));
+				$("#atmEditNote").val(result.atm.note);
+
+				$("#modal-setting-atm").modal('toggle');
 			}
 		});
 	}
@@ -1812,7 +2010,7 @@
 					url:"{{url('tisygy/setting/getAllAtm')}}",
 					dataSrc: function (json){
 						json.data.forEach(function(data,idex){
-							data.action = '<button type="button" class="btn btn-block btn-default" onclick="editAtm('+ data.id + ')">Edit</button>'
+							data.action = '<button type="button" class="btn btn-flat btn-block btn-default" onclick="editAtm('+ data.id + ')">Edit</button>'
 						})
 						return json.data
 					}
@@ -3181,9 +3379,13 @@
 		success:function(result){
 			$("#selectReportingClient").append("<option>Select Client</option>")
 			$("#selectReportingMonth").append("<option>Select Month</option>")
+			$("#selectReportingYear").append("<option>Select Year</option>")
 
 			result.client_data.forEach(function(data,index){
 				$("#selectReportingClient").append("<option value='" + data.id + "'>[" + data.client_acronym + "] " + data.client_name + "</option>")
+			})
+			result.ticket_year.forEach(function(data,index){
+				$("#selectReportingYear").append("<option value='" + data.year + "'>" + data.year + "</option>")
 			})
 			moment.months().forEach(function(data,index){
 				if(index < moment().format('M')){
@@ -3193,7 +3395,7 @@
 		}
 	})
 
-	function getReport(){
+	function getReport(urlAjax){
 		swalWithCustomClass.fire({
 			title: 'Are you sure?',
 			text: "Make sure there is nothing wrong to get this report ticket!",
@@ -3222,7 +3424,7 @@
 
 					$.ajax({
 						type: "GET",
-						url: '{{url("tisygy/report/make")}}?client=' + $("#selectReportingClient").val() + '&month=' + $("#selectReportingMonth").val(),
+						url: urlAjax,
 						success: function(result){
 							Swal.hideLoading()
 							swalWithCustomClass.fire({

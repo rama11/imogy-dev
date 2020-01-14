@@ -22,7 +22,8 @@ class TicketingClient extends Model
 		'close_dear',
 		'close_to',
 		'close_cc',
-		'situation'
+		'situation',
+		'banking',
 	];
 
 	public function client_atm(){

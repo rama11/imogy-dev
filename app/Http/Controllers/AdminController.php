@@ -386,7 +386,7 @@ class AdminController extends Controller
 			->where('id','=',$request->id)
 			->update(['location' => $request->location]);
 
-		return redirect('location')->with('status', "Change location for " . $request->name . "success.");
+		return redirect('location')->with('status', "Change location for " . $request->name . " success.");
 	}
 
 	public function addLocation(Request $request){

@@ -57,7 +57,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('/ehistory', 'HomeController@ehistory');
 	// Route::get('/etisygy', 'HomeController@etisygy');
 	Route::get('/eannoun', 'HomeController@eannoun');
-	Route::get('/eteamhistory', 'HomeController@eteamhistory');
+	// Route::get('/eteamhistory', 'HomeController@eteamhistory');
 	// Helpdesk Route
 	Route::get('/helpdesk', 'HelpdeskController2@index');
 	Route::get('/raw2/{id}','HelpdeskController2@raw');
@@ -70,14 +70,14 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('/hannouncement', 'HelpdeskController2@hannouncement');
 	// Route::get('/husermanage', 'HelpdeskController2@husermanage');
 	Route::get('/hhistory', 'HelpdeskController2@hhistory');
-	Route::get('/hteamhistory', 'HelpdeskController2@hteamhistory');
+	// Route::get('/hteamhistory', 'HelpdeskController2@hteamhistory');
 	// User Manage Oleh Helpdesk
 	// Route::get('/getMasuk/{id}', 'HelpdeskController2@getMasuk');
 	Route::get('/getProfile/{id}', 'HelpdeskController2@getProfile');
 	// Route::get('/setMasuk', 'HelpdeskController2@setMasuk');
 	Route::get('/user', 'HelpdeskController2@user');
 	Route::get('/hhistory', 'HelpdeskController2@history');
-	Route::get('/hteamhistory', 'HelpdeskController2@teamhistory');
+	// Route::get('/hteamhistory', 'HelpdeskController2@teamhistory');
 	Route::get('/huserhistory/{id}', 'HelpdeskController2@huserhistory');
 	// Location Controll oleh Helpdesk
 	Route::get('/hlocation', 'HelpdeskController2@location');
@@ -216,6 +216,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('logging/{type}','TestController@logging_activity');
 	Route::get('testGetTicketingPerformance','TestController@getTicketingPerformance');
 	Route::get('testChunkQuery','TestController@testChunkQuery');
+	Route::get('testingATMMaps','TestController@testingATMMaps');
 	// testChunkQuery
 	
 	// Route::get('testGetHadir', 'AdminController@getAbsen');
@@ -277,9 +278,10 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('tisygy/mail/getReciver', 'TicketingController@getEmailReciver');
 
 	Route::get('tisygy/setting/getAllAtm', 'TicketingController@getAllAtmSetting');
-	Route::get('tisygy/setting/getDetailAtm/{id}','TicketingController@getDetailAtm');
+	Route::get('tisygy/setting/getDetailAtm','TicketingController@getDetailAtm');
 	Route::get('tisygy/setting/getParameterAddAtm','TicketingController@getParameterAddAtm');
 	Route::get('tisygy/setting/setAtm','TicketingController@setAtm');
+	Route::get('tisygy/setting/deleteAtm','TicketingController@deleteAtm');
 	Route::get('tisygy/setting/newAtm','TicketingController@newAtm');
 	Route::get('tisygy/setting/getSettingClient' , 'TicketingController@getSettingClient');
 	Route::post('tisygy/setting/setSettingClient' , 'TicketingController@setSettingClient');

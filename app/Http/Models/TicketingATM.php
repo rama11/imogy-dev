@@ -18,5 +18,8 @@ class TicketingATM extends Model
 		'atm_id',
 		'serial_number',
 		'location',
+		'address',
+		'activation',
+		'note',
 	];
 }

@@ -27,6 +27,8 @@ use App\Http\Models\TicketingATM;
 use App\Http\Models\TicketingSeverity;
 
 use Carbon\Carbon;
+use Validator;
+use Illuminate\Validation\Rule;;
 
 class TicketingController extends Controller
 {
@@ -1124,6 +1126,7 @@ class TicketingController extends Controller
 				'ticketing__atm.serial_number',
 				'ticketing__atm.location'
 			)
+			->orderBy('ticketing__atm.id','DESC')
 			->get());
 	}
 
@@ -1141,40 +1144,95 @@ class TicketingController extends Controller
 	}
 
 	public function getParameterAddAtm(){
-		return TicketingClient::select('id','client_acronym','client_name')->get();
+		return TicketingClient::select('id','client_acronym','client_name')
+			->where('banking','=',1)
+			->get();
 	}
 
-	public function getDetailAtm($id_atm){
-		$client = DB::table('ticketing__client')
-			->select('id','client_acronym','client_name')
+	public function getDetailAtm(Request $request){
+		$atm = TicketingATM::where('id',$request->id_atm)->first();
+
+		$client = TicketingClient::select('id','client_acronym','client_name')
+			->where('banking','=',1)
 			->get();
 
-		$return = DB::table('ticketing__atm')
-			->where('id','=',$id_atm)
-			->get();
-
-		return array($return,$client);
+		return array(
+			'atm' => $atm,
+			'client' => $client
+		);
 	}
 
 	public function setAtm(Request $request){
-		return DB::table('ticketing__atm')
-			->where('id','=',$request->idAtm)
-			->update([
+		$setAtm = TicketingATM::where('id','=',$request->idAtm)->first();
+		 $messages = [
+		    'atmID.unique' => 'The ATM ID has already been taken!',
+		    'atmSerial.unique' => 'The Serial Number has already been taken!',
+		];
+
+    	$validator = Validator::make($request->all(), [
+			'atmID' => Rule::unique('ticketing__atm','atm_id')->ignore($setAtm->id),
+			'atmSerial' => Rule::unique('ticketing__atm','serial_number')->ignore($setAtm->id),
+        ],$messages);
+
+        if (!$validator->passes()) {
+			return response()->json(['error'=>$validator->errors()->all()]);
+        }
+
+		$setAtm->fill([
 				"owner" => $request->atmOwner,
 				"atm_id" => $request->atmID, 
 				"serial_number" => $request->atmSerial,
 				"location" => $request->atmLocation,
+				"address" => $request->atmAddress,
+				"activation" =>  Carbon::createFromFormat('d/m/Y',$request->atmActivation)->formatLocalized('%Y-%m-%d'),
+				"note" => $request->atmNote,
 			]);
+
+		$setAtm->save();
+
+	}
+
+	public function deleteAtm(Request $request){
+		TicketingATM::where('id','=',$request->idAtm)->first()->delete();
 	}
 
 	public function newAtm(Request $request){
-		DB::table('ticketing__atm')
-			->insert([
+		$newAtm = new TicketingATM();
+
+        $messages = [
+		    'atmID.unique' => 'The ATM ID has already been taken!',
+		    'atmSerial.unique' => 'The Serial Number has already been taken!',
+		    'atmOwner.required' => 'You must select ATM Owner!',
+		    'atmLocation.required' => 'You must set ATM Location!',
+		    'atmAddress.required' => 'You must select ATM Address!',
+		    'atmActivation.required' => 'You must set ATM Activation date!',
+		];
+
+    	$validator = Validator::make($request->all(), [
+			'atmID' => 'unique:ticketing__atm,atm_id',
+			'atmSerial' => 'unique:ticketing__atm,serial_number',
+			'atmOwner' => 'required',
+			'atmLocation' => 'required',
+			'atmAddress' => 'required',
+			'atmActivation' => 'required',
+        ],$messages);
+
+        if (!$validator->passes()) {
+			return response()->json(['error'=>$validator->errors()->all()]);
+        }
+
+		$newAtm->fill([
 				"owner" => $request->atmOwner,
 				"atm_id" => $request->atmID, 
 				"serial_number" => $request->atmSerial,
-				"location" => $request->atmLocation
+				"location" => $request->atmLocation,
+				"address" => $request->atmAddress,
+				"activation" =>  Carbon::createFromFormat('d/m/Y',$request->atmActivation)->formatLocalized('%Y-%m-%d'),
+				"note" => $request->atmNote,
 			]);
+
+		$newAtm->save();
+
 	}
 
 	public function getReport($client){

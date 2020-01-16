@@ -651,6 +651,7 @@
 										<th style="vertical-align: middle;text-align: center;">ATM ID</th>
 										<th style="vertical-align: middle;text-align: center;">Serial Number</th>
 										<th style="vertical-align: middle;text-align: center;">Location</th>
+										<th style="vertical-align: middle;text-align: center;">Activation</th>
 										<th style="vertical-align: middle;text-align: center;"></th>
 									</tr>
 								</thead>
@@ -2030,6 +2031,10 @@
 					},
 					{ 
 						data:'location',
+						className:'text-center',
+					},
+					{ 
+						data:'activation',
 						className:'text-center',
 					},
 					{

@@ -1124,7 +1124,8 @@ class TicketingController extends Controller
 				DB::raw('`ticketing__client`.`client_acronym` AS `owner`'),
 				'ticketing__atm.atm_id',
 				'ticketing__atm.serial_number',
-				'ticketing__atm.location'
+				'ticketing__atm.location',
+				'ticketing__atm.activation'
 			)
 			->orderBy('ticketing__atm.id','DESC')
 			->get());

@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-
+use DB;
 
 
 
@@ -135,6 +135,60 @@ class BudgetController extends Controller
 
         $data->save();
 
+    }
+
+    public function getAllParameterFilter(){
+        return collect([
+            "issuer" => BudgetNote::select('issuer')->groupBy('issuer')->pluck('issuer'),
+            "customer" => BudgetAccount::select('customer')->groupBy('customer')->pluck('customer'),
+        ]);
+    }
+
+    public function getFilteredData(Request $req){
+        $result = BudgetNote::join('budget__account','budget__account.id','=','budget__note.id_account')
+        	->join(DB::raw('(SELECT
+				    `id_note`,`activity`
+				FROM
+				    `budget__activity`
+				WHERE
+				    `id` IN(
+				    SELECT
+				        MAX(`id`) AS `id`
+				    FROM
+				        `budget__activity`
+				    GROUP BY
+				        `id_note`
+				)) `budget__activity`'),'budget__activity.id_note','=','budget__note.id')
+            ->select(
+                'budget__note.id',
+                'budget__note.date',
+                'budget__note.document',
+                'budget__note.issuer',
+                'budget__note.purpose',
+                'budget__note.detail',
+                'budget__note.nominal',
+                'budget__account.PID',
+                'budget__account.customer',
+                'budget__activity.activity'
+            )->orderBy('id','DESC');
+
+        if($req->has('issuer')){
+            $result->where('budget__note.issuer',$req->issuer);
+        }
+        if($req->has('date')){
+            $result->where('budget__note.date','>',Carbon::parse('-' . $req->date)->toDateString());
+        }
+        if($req->has('customer')){
+            $result->where('budget__account.customer',$req->customer);
+        }
+        if($req->has('status')){
+        	if($req->status == "Done"){
+	            $result->where('budget__activity.activity','=','Success');
+        	} else {
+	            $result->where('budget__activity.activity','<>',$req->status);
+        	}
+        }
+        return array("data" => $result->get());
     }
 
     public function makeReportBudget(Request $req){

@@ -337,6 +337,10 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::post('budget/note/setNote','BudgetController@setNote');
 	Route::get('budget/note/getIndividualNote','BudgetController@getIndividualNote');
 	
+	Route::get('budget/note/filter/getAllParameterFilter','BudgetController@getAllParameterFilter');
+	Route::get('budget/note/filter/getFilteredData','BudgetController@getFilteredData')->name('getFilteredData');
+
+	
 	Route::post('budget/note/updateNote','BudgetController@updateNote');
 	Route::post('budget/note/editNote','BudgetController@editNote');
 	Route::get('budget/note/makeReportBudget','BudgetController@makeReportBudget');

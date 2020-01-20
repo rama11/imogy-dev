@@ -75,33 +75,85 @@
 											<li><a href="#" style="color: #333;" onclick="changeNumberEntries(50)">50</a></li>
 											<li><a href="#" style="color: #333;" onclick="changeNumberEntries(100)">100</a></li>
 										</ul>
-									</div>	
+									</div>
 									<div class="input-group-btn">
 										<button type="button" id="btnShowGrouping" class="btn btn-flat btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="margin-right: 5px;">
-											Group By : Month
+											Group By : None
 											<span class="fa fa-caret-down"></span>
 										</button>
 										<ul class="dropdown-menu">
+											<li><a href="#" style="color: #333;" onclick="changeGroupingTable('None','None','-')">None</a></li>
+											<li class="divider"></li>
 											<li><a href="#" style="color: #333;" onclick="changeGroupingTable('PID','Account','9')">Account</a></li>
 											<li><a href="#" style="color: #333;" onclick="changeGroupingTable('issuer','Issuer','3')">Issuer</a></li>
 											<li><a href="#" style="color: #333;" onclick="changeGroupingTable('customer','Customer','10')">Customer</a></li>
 											<li><a href="#" style="color: #333;" onclick="changeGroupingTable('month','Month','1')">Month</a></li>
 										</ul>
 									</div>
-									<!-- <div class="input-group-btn">
-										<button type="button" class="btn btn-flat btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="margin-right: 5px;">
+									<div class="input-group-btn">
+										<button class="btn btn-flat btn-sm btn-default" id="filterActivator" onclick="showFilterOption()">
 											Filter
-											<span class="fa fa-caret-down"></span>
 										</button>
-										<ul class="dropdown-menu">
-											<li><a href="#">Progress</a></li>
-											<li><a href="#">Finish</a></li>
-										</ul>
-									</div> -->
-									
+									</div>
+										
 								</div>
 								<div class="box-tools pull-right">
-									<input type="text" class="form-control input-sm" id="searchBarNote" placeholder="Search">
+									<input type="text" class="form-control input-sm" id="searchBarNote" placeholder="Search" style="width: 250px;">
+								</div>
+							</div>
+						</div>
+						<div class="row" >
+							<div class="col-md-6" id="filterOption" style="margin-top: 5px; display: none;">
+								<div class="box-tools pull-left">
+									<div class="input-group-btn">
+										<button type="button" class="btn btn-flat btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="margin-right: 5px;">
+											<i class="fa fa-fw fa-user"></i> Issuer
+											<span class="fa fa-caret-down"></span>
+										</button>
+										<ul class="dropdown-menu" id="filterOptionIssuer">
+										</ul>
+									</div>
+									<div class="input-group-btn">
+										<button type="button" class="btn btn-flat btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="margin-right: 5px;">
+											<i class="fa fa-calendar"></i> Date
+											<span class="fa fa-caret-down"></span>
+										</button>
+										<ul class="dropdown-menu" id="filterOptionDate">
+											<li style="cursor: default"><a href="#" style="color: #333;cursor: default" onclick="filterApply('date','1 week')">1 week</a></li>
+											<li style="cursor: default"><a href="#" style="color: #333;cursor: default" onclick="filterApply('date','1 month')">1 month</a></li>
+											<li style="cursor: default"><a href="#" style="color: #333;cursor: default" onclick="filterApply('date','2 month')">2 month</a></li>
+											<li style="cursor: default"><a href="#" style="color: #333;cursor: default" onclick="filterApply('date','Custom')">Custom</a></li>
+										</ul>
+									</div>
+									<div class="input-group-btn">
+										<button type="button" class="btn btn-flat btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="margin-right: 5px;">
+											<i class="fa fa-address-book-o"></i> Customer
+											<span class="fa fa-caret-down"></span>
+										</button>
+										<ul class="dropdown-menu" id="filterOptionCustomer">
+										</ul>
+									</div>
+									<div class="input-group-btn">
+										<button type="button" class="btn btn-flat btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="margin-right: 5px;">
+											<i class="fa fa-check"></i> Status
+											<span class="fa fa-caret-down"></span>
+										</button>
+										<ul class="dropdown-menu" id="filterOptionStatus">
+											<li style="cursor: default"><a href="#" style="color: #333;cursor: default;" onclick="filterApply('status','Done')">Done</a></li>
+											<li style="cursor: default"><a href="#" style="color: #333;cursor: default;" onclick="filterApply('status','On Progress')">On Progress</a></li>
+										</ul>
+									</div>	
+								</div>
+							</div>
+							<div class="col-md-6" id="filterResult" style="display: none;">
+								<div class="box-tools pull-right">
+									<div class="pull-right" id="filterResultHolder" style="display: none;">
+										Filter By :
+										<span class="label bg-green issuer" style="display: none" id="filterResultIssuer" onclick="filterClear('issuer')"></span>
+										<span class="label bg-blue date" style="display: none" id="filterResultDate" onclick="filterClear('date')"></span>
+										<span class="label bg-orange customer" style="display: none" id="filterResultCustomer" onclick="filterClear('customer')"></span>
+										<span class="label bg-maroon status" style="display: none" id="filterResultStatus" onclick="filterClear('status')"></span>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -414,6 +466,122 @@
 		})
 	})
 
+	function showFilterOption(){
+		if($("#filterOption").is(':hidden')){
+			$("#filterActivator").removeClass('btn-default')
+			$("#filterActivator").addClass('btn-primary')
+			$.ajax({
+				type:"GET",
+				url:"{{url('budget/note/filter/getAllParameterFilter')}}",
+				beforeSend:function(){
+					$("#filterOptionIssuer").empty()
+					$("#filterOptionCustomer").empty()
+				},
+				success: function(result) {
+					var listIssuer = ""
+					var listCustomer = ""
+					// console.log(result)
+					result.issuer.forEach(function(data,index){
+						dataParameter = "'"+ data + "'"
+						dataType = "'issuer'"
+						listIssuer = listIssuer + '<li style="cursor: default"><a href="#" style="color: #333;cursor: default" onclick="filterApply(' + dataType + ',' + dataParameter + ')">' + data + '</a></li>'
+					})
+
+					result.customer.forEach(function(data,index){
+						dataParameter = "'"+ data + "'"
+						dataType = "'customer'"
+						listCustomer = listCustomer + '<li style="cursor: default"><a href="#" style="color: #333;cursor: default" onclick="filterApply(' + dataType + ',' + dataParameter + ')">' + data + '</a></li>'
+					})
+
+					filterOptionCustomer
+					$("#filterOptionIssuer").append(listIssuer)
+					$("#filterOptionCustomer").append(listCustomer)
+
+					$("#filterResult").slideDown()
+					$("#filterOption").slideDown()
+				}
+			})
+		} else {
+			$("#filterOptionIssuer, #filterOptionDate, #filterOptionCustomer, #filterOptionStatus").prev().removeClass('btn-primary').addClass('btn-default')
+			
+			$("#filterResultIssuer, #filterResultDate, #filterResultCustomer, #filterResultStatus").text("").hide()
+			$("#filterResultHolder").hide()
+
+			$("#filterActivator").removeClass('btn-primary').addClass('btn-default')
+
+			$("#filterResult").slideUp()
+			$("#filterOption").slideUp()
+		}
+	}
+
+	function filterApply(type,parameter){
+		$("#filterResultHolder").show()
+		
+		switch(type){
+			case "issuer":
+				$("#filterResultIssuer").text("").text(parameter).show()
+				$("#filterOptionIssuer").prev().removeClass('btn-default').addClass('btn-primary')
+				break
+			case "date":
+				$("#filterResultDate").text("").text(parameter).show()
+				$("#filterOptionDate").prev().removeClass('btn-default').addClass('btn-primary')
+				break
+			case "customer":
+				$("#filterResultCustomer").text("").text(parameter).show()
+				$("#filterOptionCustomer").prev().removeClass('btn-default').addClass('btn-primary')
+				break
+			case "status":
+				$("#filterResultStatus").text("").text(parameter).show()
+				$("#filterOptionStatus").prev().removeClass('btn-default').addClass('btn-primary')
+				break
+		}
+		if($("#filterResultHolder").children(":visible").length != 0){
+			var parameterCollection = ""
+			$("#filterResultHolder").children(":visible").each(function(index){
+				parameterCollection = parameterCollection + $(this).attr('class').split(' ').pop() + "=" + $(this).html() + "&"
+			})
+			$("#tableBudgetNote").DataTable().ajax.url("{{url('budget/note/filter/getFilteredData')}}?" + parameterCollection.slice(0, -1)).load()
+		} else {
+			$("#tableBudgetNote").DataTable().ajax.url("{{url('budget/note/filter/getFilteredData')}}?" + type + "=" + parameter).load()
+		}
+	}
+
+	function filterClear(type,parameter){
+		switch(type){
+			case "issuer":
+				$("#filterResultIssuer").hide()
+				$("#filterOptionIssuer").prev().removeClass('btn-primary').addClass('btn-default')
+				break
+			case "date":
+				$("#filterResultDate").hide()
+				$("#filterOptionDate").prev().removeClass('btn-primary').addClass('btn-default')
+				break
+			case "customer":
+				$("#filterResultCustomer").hide()
+				$("#filterOptionCustomer").prev().removeClass('btn-primary').addClass('btn-default')
+				break
+			case "status":
+				$("#filterResultStatus").hide()
+				$("#filterOptionStatus").prev().removeClass('btn-primary').addClass('btn-default')
+				break
+		}
+		if($("#filterResultIssuer").is(":hidden") && $("#filterResultDate").is(":hidden") && $("#filterResultCustomer").is(":hidden") && $("#filterResultStatus").is(":hidden")){
+			$("#filterResultHolder").hide()
+		} else {
+			$("#filterResultHolder").show()
+		}
+		if($("#filterResultHolder").children(":visible").length != 0){
+			var parameterCollection = ""
+			$("#filterResultHolder").children(":visible").each(function(index){
+				parameterCollection = parameterCollection + $(this).attr('class').split(' ').pop() + "=" + $(this).html() + "&"
+			})
+			$("#tableBudgetNote").DataTable().ajax.url("{{url('budget/note/filter/getFilteredData')}}?" + parameterCollection.slice(0, -1)).load()
+		} else {
+			$("#tableBudgetNote").DataTable().ajax.url("{{url('budget/note/getDataNote')}}").load()
+		}
+	}
+	
+
 	function downloadNote(){
 		swalWithCustomClass.fire({
 			title: 'Are you sure?',
@@ -641,7 +809,6 @@
 				"type":"GET",
 				"url":"{{url('budget/note/getDataNote')}}",
 				"dataSrc": function (json){
-					
 
 					// switch between locales
 					numeral.locale('id');
@@ -659,7 +826,8 @@
 				}
 			},
 			"rowGroup": {
-	            "dataSrc": "month"
+	            "dataSrc": "month",
+	            "enable": false,
 	        },
 			"columns": [
 				{
@@ -730,7 +898,12 @@
 	function changeGroupingTable(groupBy,groupBy_name,orderBy){
 		$("#btnShowGrouping").html('Group By : ' + groupBy_name + ' <span class="fa fa-caret-down"></span>')
 		// $('#tableBudgetNote').DataTable( { rowGroup: true } );
-		$("#tableBudgetNote").DataTable().rowGroup().dataSrc( groupBy ).order([orderBy,'asc']).draw();
+		// $("#tableBudgetNote").DataTable().rowGroup().enable().draw();
+		if(groupBy == "None"){
+			$("#tableBudgetNote").DataTable().rowGroup().disable().draw();
+		} else {
+			$("#tableBudgetNote").DataTable().rowGroup().dataSrc( groupBy ).order([orderBy,'asc']).enable().draw();
+		}
 	}
 
 	function format ( d,ajaxData ) {

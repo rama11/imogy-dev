@@ -289,7 +289,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	// Route::get('getPerformanceBySeverity','TicketingController@getPerformanceBySeverity');
 	// Route::get('getPerformanceByClient','TicketingController@getPerformanceByClient');
 	
-	Route::get('getPerformance','TicketingController@getPerformance');
+	// Route::get('getPerformance','TicketingController@getPerformance');
 	// Route::get('getDashboard','TicketingController@getDashboard');
 	// Route::get('getClientTest','TestController@getSettingClient');
 	// Route::get('/home', 'HomeController@index')->name('home');

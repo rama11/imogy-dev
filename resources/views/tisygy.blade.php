@@ -513,6 +513,8 @@
 						<div class="col-md-3">
 							<b class="pull-right" style="color: white;">.</b>
 							<div class="input-group pull-right">
+								<input id="searchBarTicket" type="text" class="form-control" placeholder="Search Anything">
+								
 								<div class="input-group-btn">
 									<button type="button" id="btnShowEntryTicket" class="btn btn-default btn-flat dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 										Show 10 entries
@@ -525,7 +527,6 @@
 										<li><a href="#" onclick="changeNumberEntries(100)">100</a></li>
 									</ul>
 								</div>
-								<input id="searchBarTicket" type="text" class="form-control" placeholder="Search Anyting">
 								<span class="input-group-btn">
 									<button id="applyFilterTablePerformance" type="button" class="btn btn-default btn-flat">
 										<i class="fa fa-fw fa-search"></i>

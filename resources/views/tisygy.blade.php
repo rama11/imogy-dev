@@ -517,7 +517,7 @@
 								
 								<div class="input-group-btn">
 									<button type="button" id="btnShowEntryTicket" class="btn btn-default btn-flat dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-										Show 10 entries
+										Show 10 entries 
 										<span class="fa fa-caret-down"></span>
 									</button>
 									<ul class="dropdown-menu" id="selectShowEntryTicket">

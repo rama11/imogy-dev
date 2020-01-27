@@ -2059,7 +2059,10 @@ class AdminController extends Controller
 		// return $var;
 
 		foreach ($IDUser as $key => $value) {
-			$details [] = $this->getUserHistory($value,$req->start,$req->end);
+			$temp = $this->getUserHistory($value,$req->start,$req->end);
+			$temp[6] = collect($this->getUserHistory($value,$req->start,$req->end)[6])->sortBy('tanggal')->values()->all();
+			$details [] = $temp;
+
 			foreach ($details as $detail) {
 				if($detail[6] != NULL){
 					foreach($detail[6] as $detail2){

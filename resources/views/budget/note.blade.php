@@ -219,7 +219,11 @@
 							</div>
 							<div class="form-group">
 								<label>Nominal</label>
-								<input type="text" class="form-control" id="inputNoteNominal" required>
+								<div class="input-group">
+									<span class="input-group-addon">Rp.</span>
+									<input type="text" class="form-control" id="inputNoteNominal" required>
+									<span class="input-group-addon">,00</span>
+								</div>
 							</div>
 						</form>
 					</div>
@@ -727,7 +731,6 @@
 					groupSeparator: ".", 
 					digits: 2,
 					autoGroup: true,
-					prefix: 'Rp '
 				});
 			},
 			success: function(result){

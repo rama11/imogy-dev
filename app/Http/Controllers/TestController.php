@@ -14,6 +14,7 @@ use Kreait\Firebase\ServiceAccount;
 use Kreait\Firebase\Database;
 
 use App\Http\Models\Ticketing;
+use App\Mail\MailOpenProject;
 
 class TestController extends Controller
 {
@@ -887,6 +888,66 @@ class TestController extends Controller
 
 	public function testingATMMaps(){
 		return view('mapsAtm');
+	}
+
+	public function testEmailReturn(){
+		$data = array(
+			"to" => array(
+				"agastya@sinergy.co.id",
+				'prof.agastyo@gmail.com',
+
+				// "siwi@sinergy.co.id",
+				// "johan@sinergy.co.id",
+				// "dicky@sinergy.co.id",
+				// "ferdinand@sinergy.co.id",
+				// "wisnu.darman@sinergy.co.id"
+			),
+			"cc" => array(
+				// "endraw@sinergy.co.id",
+				// "msm@sinergy.co.id",
+
+				'imogy@sinergy.co.id',
+				'hellosinergy@gmail.com'
+			),
+			// "subject" => "Open Project - " . $req->CustomerName,
+			"subject" => "Open Project - PT. Bussan Auto Finance",
+			'name' => Auth::user()->name,
+			'phone' => Auth::user()->phone,
+
+			"customer" => "PT. Bussan Auto Finance",
+			// "customer" => $req->CustomerName,
+			"name_project" => "Cisco IP Phone Branch Denpasar",
+			// "name_project" => $req->Name,
+			"project_id" => "244/SOMPO/478/SIP/IX/2018",
+			// "project_id" => $req->PID,
+			"period" => "4x",
+			// "period" => $req->Period . "x",
+			"duration" => "3 Bulan",
+			// "duration" => $req->Duration . " Bulan",
+			"start" => "1 August 2019",
+			// "start" => $startPeriod,
+			"end" => "31 October 2019",
+			// "end" => $endPeriod,
+			
+			"coordinatorName" => "Wisnu Darman",
+			// "coordinatorName" => DB::table('users')->where('id',$req->Coordinator)->value('name'),
+			"coordinatorEmail" => "wisnu.darman@sinergy.co.id",
+			// "coordinatorEmail" => DB::table('users')->where('id',$req->Coordinator)->value('email'),
+			
+			"teamLeadName" => "Johan Ardi Wibisono",
+			// "teamLeadName" => DB::table('users')->where('id',$req->Lead)->value('name'),
+			"teamLeadEmail" => "johan@sinergy.co.id",
+			// "teamLeadEmail" => DB::table('users')->where('id',$req->Lead)->value('email'),
+
+			"teamMemberName" => array("Rama Agastya","Siwi Karuniawati","M Dicky Ardiansyah","Yohanis Ferdinand"),
+			// "teamMemberName" => $teamMemberName,
+			"teamMemberEmail" => array("agastya@sinergy.co.id","siwi@sinergy.co.id","dicky@sinergy.co.id","yohanis@sinergy.co.id")
+			// "teamMemberEmail" => $teamMemberEmail
+		);
+
+
+		return new MailOpenProject($data);
+
 	}
 
 }

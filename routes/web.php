@@ -209,7 +209,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		// });
 		
 	Route::get('controll','TicketingController@controll');
-	Route::get('getReportHelpdesk','TestController@getReportHelpdesk');
+	Route::get('getReportHelpdesk','TestController@getReportHelpsdesk');
 	Route::get('getReportHelpdesk2','TestController@getReportHelpdesk2');
 	// Testing Route
 	Route::get('testPerformance', 'TestController@performance');
@@ -219,7 +219,9 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('testingATMMaps','TestController@testingATMMaps');
 	// testChunkQuery
 	
-	// Route::get('testGetHadir', 'AdminController@getAbsen');
+	Route::get('testGetHadir/{start}/{end}/{id}', 'AdminController@getAbsen');
+	Route::get('testEmailReturn', 'TestController@testEmailReturn');
+	
 	// Route::get('testGetHadir2', 'AdminController@getAbsen2');
 	// Route::get('testCount', 'TicketingController@count_query');
 	// Route::get('testPage', 'HomeController@testPage');

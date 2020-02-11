@@ -1344,6 +1344,10 @@
 	var swalWithCustomClass
 
 	$(document).ready(function(){
+		if(parseInt((location.toString()).split('#')[1]) > 0){
+			$("#performance").click()
+			showTicket(parseInt((location.toString()).split('#')[1]))
+		}
 		getDashboard();
 
 		$("#atmAddActivation, #atmEditActivation").inputmask("date");

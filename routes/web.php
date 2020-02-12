@@ -25,6 +25,13 @@ Route::get('/', function () {
 Route::get('maps', function () {
 	// return view('maps');
 });
+	Route::get('tisygy', 'TicketingController@tisygy');
+	Route::get('tisygy/getDashboard','TicketingController@getDashboard');
+	
+Route::get('tisygy/report/getParameter','TicketingController@getReportParameter');
+
+
+
 	// Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
 
 // Dibawah adalah route yang hanya bisa di pangil jika sudah terAuthentification (login)
@@ -172,7 +179,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	// Ticketing Route
 
 
-	Route::get('tisygy', 'TicketingController@tisygy');
+	// Route::get('tisygy', 'TicketingController@tisygy');
 	Route::get('tisygy/controll', 'TicketingController@controll');
 	Route::middleware(['tisygy.role'])->group(function () {
 
@@ -221,6 +228,9 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	
 	Route::get('testGetHadir/{start}/{end}/{id}', 'AdminController@getAbsen');
 	Route::get('testEmailReturn', 'TestController@testEmailReturn');
+	Route::get('testingServerSideDatatables', 'TestController@testingServerSideDatatables');
+	Route::get('testingGetDataServerSide', 'TestController@testingGetDataServerSide');
+
 	
 	// Route::get('testGetHadir2', 'AdminController@getAbsen2');
 	// Route::get('testCount', 'TicketingController@count_query');
@@ -246,7 +256,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	// 	echo sprintf("iki adalah sebuah format %02d", $date);
 	// });
 //Auth::routes();
-	Route::get('tisygy/getDashboard','TicketingController@getDashboard');
+	// Route::get('tisygy/getDashboard','TicketingController@getDashboard');
 	Route::get('tisygy/getPerformanceAll','TicketingController@getPerformanceAll');
 	Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
 	Route::get('tisygy/getPerformanceByTicket','TicketingController@getPerformanceByTicket');

@@ -1,4 +1,4 @@
-@extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
+@extends('layouts.superuser.slayout')
 
 @section('head')
 
@@ -1684,9 +1684,7 @@
 				var ctx = document.getElementById("pieChart").getContext("2d");
 				window.myDoughnut = new Chart(ctx, config);
 
-				if("{{Auth::user()->id}}" == 4){
-					$("#management").click();
-				}
+				
 
 			}
 		});
@@ -3330,7 +3328,7 @@
 				data:{
 					id_ticket:$("#inputticket").val() + "/" + acronym_client + moment().format("/MMM/YYYY"),
 					acronym_client:acronym_client,
-					operator:"{{Auth::user()->nickname}}",
+					operator:"{{(Auth::check())?Auth::user()->nickname:'-'}}",
 				},
 				success: function(result){
 					$("#inputticket").val($("#inputticket").val() + "/" + acronym_client + moment().format("/MMM/YYYY"));

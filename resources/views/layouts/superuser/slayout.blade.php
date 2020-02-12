@@ -39,41 +39,45 @@
 						<ul class="nav navbar-nav">
 							<li class="dropdown user user-menu">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									@if(Auth::user()->foto == "0")
-										<img src="{{url('img/no-image.png')}}" class="user-image" alt="User Image">
+									@if(Auth::check())
+										@if(Auth::user()->foto != "0")
+											<img src="{{url(Auth::user()->foto)}}" class="user-image" alt="User Image">
+										@else
+											<img src="{{url('img/no-image.png')}}" class="user-image" alt="User Image">
+										@endif
+										<span class="hidden-xs">{{Auth::user()->name}}</span>
 									@else
-										<img src="{{url(Auth::user()->foto)}}" class="user-image" alt="User Image">
+										<img src="{{url('img/no-image.png')}}" class="user-image" alt="User Image">
+										<span class="hidden-xs">-</span>
 									@endif
-									<span class="hidden-xs">{{Auth::user()->name}}</span>
 								</a>
 								<ul class="dropdown-menu">
 									<li class="user-header" style="background-color:#222d32">
-										@if(Auth::user()->foto == "0")
-											<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
+										@if(Auth::check())
+											@if(Auth::user()->foto != "0")
+												<img src="{{url(Auth::user()->foto)}}" class="img-circle" alt="User Image">
+											@else
+												<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
+											@endif
+											<p>
+												{{Auth::user()->name}} 
+												<small><i class="fa fa-circle text-success"></i> Super Users</small>
+											</p>
 										@else
-											<img src="{{url(Auth::user()->foto)}}" class="img-circle" alt="User Image">
+											<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
+											<p>
+												- 
+												<small><i class="fa fa-circle text-success"></i> Super Users</small>
+											</p>
 										@endif
 
-										<p>
-											{{Auth::user()->name}} 
-											<small><i class="fa fa-circle text-success"></i> Super Users</small>
-										</p>
 									</li>
 									
 									<li class="user-footer">
-										@if(Auth::user()->id != 4)
-											<div class="pull-left">
-												<a href="{{ url('profile')}}" class="btn btn-default btn-flat">Profile</a>
-											</div>
-										@else
-											<div class="pull-left">
-												@if(isset($debug))
-													<a href="{{ url('debugMode')}}" class="btn btn-danger btn-flat">Active</a>
-												@else
-													<a href="{{ url('debugMode')}}" class="btn btn-success btn-flat">Passive</a>
-												@endif
-											</div>
-										@endif
+										<div class="pull-left">
+											<a href="{{ url('profile')}}" class="btn btn-default btn-flat">Profile</a>
+										</div>
+										
 										
 										<div class="pull-right">
 											<a class="btn btn-default btn-flat"  href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">{{ __('Logout') }}</a>
@@ -93,14 +97,22 @@
 				<section class="sidebar">
 					<div class="user-panel">
 						<a href="{{ url('profile')}}" class="pull-left image">
-							@if(Auth::user()->foto == "0")
-								<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
+							@if(Auth::check())
+								@if(Auth::user()->foto != "0")
+									<img src="{{url(Auth::user()->foto)}}" class="img-circle" alt="User Image">
+								@else
+									<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
+								@endif
 							@else
-								<img src="{{url(Auth::user()->foto)}}" class="img-circle" alt="User Image">
+								<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
 							@endif
 						</a>
 						<div class="pull-left info">
-							<p>{{Auth::user()->name}}</p>
+							@if(Auth::check())
+								<p>{{Auth::user()->name}}</p>
+							@else
+								<p>-</p>
+							@endif
 								<small><i class="fa fa-circle text-success"> </i>  Super Users</small>					
 						</div>
 					</div>
@@ -126,14 +138,6 @@
 								<span>TISYGY</span>
 							</a>
 						</li>
-						@if(Auth::user()->id == 4 || Auth::user()->id == 6)
-							<li class="activeable" id="controll">
-								<a href="{{ url('tisygy/controll')}}">
-									<i class="fa fa-gg"></i>
-									<span>Controll</span>
-								</a>
-							</li>
-						@endif
 						<li class="activeable" id="usermanage">
 							<a href="{{ url('usermanage')}}">
 								<i class="fa fa-users"></i>

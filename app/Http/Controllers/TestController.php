@@ -16,6 +16,10 @@ use Kreait\Firebase\Database;
 use App\Http\Models\Ticketing;
 use App\Mail\MailOpenProject;
 
+use DataTables;
+use App\User;
+use App\Http\Models\TicketingDetail;
+
 class TestController extends Controller
 {
 
@@ -948,6 +952,57 @@ class TestController extends Controller
 
 		return new MailOpenProject($data);
 
+	}
+
+	public function testingServerSideDatatables(){
+		return view('testingServerSideDatatables');
+	}
+
+	public function testingGetDataServerSide(){
+		$occurring_ticket = DB::table('ticketing__activity')
+			->select('id_ticket','activity')
+			->whereIn('id',function ($query) {
+				$query->select(DB::raw("MAX(id) AS activity"))
+					->from('ticketing__activity')
+					->groupBy('id_ticket');
+				})
+			->where('activity','<>','CANCEL')
+			->where('activity','<>','CLOSE')
+			->get()
+			->pluck('id_ticket');
+
+		$occurring_ticket_result = TicketingDetail::with([
+				'first_activity_ticket:id_ticket,date,operator',
+				'lastest_activity_ticket',
+				'id_detail:id_ticket,id',
+			])
+			->whereIn('id_ticket',$occurring_ticket)
+			->orderBy('id','DESC')
+			->get();
+
+		// $residual_ticket_result = TicketingDetail::with([
+		// 		'first_activity_ticket:id_ticket,date,operator',
+		// 		'lastest_activity_ticket',
+		// 		'id_detail:id_ticket,id',
+		// 	])
+		// 	->whereNotIn('id_ticket',$occurring_ticket)
+		// 	// ->limit((100 - $occurring_ticket->count()))
+		// 	// ->limit((200 - $occurring_ticket->count()))
+		// 	// ->limit((300 - $occurring_ticket->count()))
+		// 	// ->limit((400 - $occurring_ticket->count()))
+		// 	// ->limit((500 - $occurring_ticket->count()))
+		// 	// ->limit((600 - $occurring_ticket->count()))
+		// 	// ->limit((700 - $occurring_ticket->count()))
+		// 	// ->limit((800 - $occurring_ticket->count()))
+		// 	// ->limit((900 - $occurring_ticket->count()))
+		// 	->limit((1000 - $occurring_ticket->count()))
+		// 	->orderBy('id','DESC')
+		// 	->get();
+
+		$result = $occurring_ticket_result;
+		// $result = $occurring_ticket_result->merge($residual_ticket_result);
+		return Datatables::of($result)->make(true);
+		// return Datatables::of(User::all())->make(true);
 	}
 
 }

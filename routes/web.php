@@ -25,10 +25,7 @@ Route::get('/', function () {
 Route::get('maps', function () {
 	// return view('maps');
 });
-	Route::get('tisygy', 'TicketingController@tisygy');
-	Route::get('tisygy/getDashboard','TicketingController@getDashboard');
 	
-Route::get('tisygy/report/getParameter','TicketingController@getReportParameter');
 
 
 
@@ -257,6 +254,9 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	// });
 //Auth::routes();
 	// Route::get('tisygy/getDashboard','TicketingController@getDashboard');
+	Route::get('tisygy', 'TicketingController@tisygy');
+	Route::get('tisygy/getDashboard','TicketingController@getDashboard');
+	Route::get('tisygy/report/getParameter','TicketingController@getReportParameter');
 	Route::get('tisygy/getPerformanceAll','TicketingController@getPerformanceAll');
 	Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
 	Route::get('tisygy/getPerformanceByTicket','TicketingController@getPerformanceByTicket');

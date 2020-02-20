@@ -79,6 +79,14 @@ class TestController extends Controller
 			$mail_auth = env('GMAIL_MAIL_ENCRYPTION');
 			$mail_from = env('GMAIL_MAIL_FROM');
 			$mail_name = env('GMAIL_MAIL_NAME');
+		} else if ($email_type == "MailTrap Testing"){
+			$mail_host = env('MAILTRAP_MAIL_HOST');
+			$mail_port = env('MAILTRAP_MAIL_PORT');
+			$mail_user = env('MAILTRAP_MAIL_USERNAME');
+			$mail_pass = env('MAILTRAP_MAIL_PASSWORD');
+			$mail_auth = env('MAILTRAP_MAIL_ENCRYPTION');
+			$mail_from = env('MAILTRAP_MAIL_FROM');
+			$mail_name = env('MAILTRAP_MAIL_NAME');
 		}
 		
 		try {
@@ -102,25 +110,46 @@ class TestController extends Controller
 		}
 	}
 
-	public function performance(){
+	public function performance(Request $req){
 		echo "<h1>Test Performance</h1><br>";
-		try {
-			$mail = $this->buildEmail("Yandex MSM01");
+		if(isset($req->type) == "mailtrap"){
+			try {
+				$mail = $this->buildEmail("MailTrap Testing");
 
-			$mail->Subject =  "Testing Performance for Email Gmail";
-			$mail->MsgHTML("testPerformance");
+				$mail->Subject =  "Testing Performance for MailTrap Testing";
+				$mail->MsgHTML("testPerformance");
 
-			$mail->addAddress("aqsharidho@gmail.com");
-			$mail->addCC("prof.agastyo@gmail.com");
-			$mail->send();
+				$mail->addAddress("agastya@sinergy.co.id");
+				$mail->addCC("prof.agastyo@gmail.com");
+				$mail->send();
 
-			return "Testing Performance for Email : Success";
+				return "Testing Performance for Email : Success";
 
-		} catch (phpmailerException $e) {
-			
-			return dd($e);
-		} catch (Exception $e) {
-			return dd($e);
+			} catch (phpmailerException $e) {
+				
+				return dd($e);
+			} catch (Exception $e) {
+				return dd($e);
+			}
+		} else {
+			try {
+				$mail = $this->buildEmail("Yandex MSM01");
+
+				$mail->Subject =  "Testing Performance for Email Gmail";
+				$mail->MsgHTML("testPerformance");
+
+				$mail->addAddress("aqsharidho@gmail.com");
+				$mail->addCC("prof.agastyo@gmail.com");
+				$mail->send();
+
+				return "Testing Performance for Email : Success";
+
+			} catch (phpmailerException $e) {
+				
+				return dd($e);
+			} catch (Exception $e) {
+				return dd($e);
+			}
 		}
 	}
 

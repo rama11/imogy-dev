@@ -875,7 +875,8 @@ class TicketingController extends Controller
 			->with([
 				'lastest_activity_ticket:id_ticket,date,activity,operator',
 				'resolve',
-				'all_activity_ticket'
+				'all_activity_ticket',
+				'first_activity_ticket'
 			])
 			->first();
 

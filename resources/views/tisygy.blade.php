@@ -4,10 +4,10 @@
 
 		<!-- Start of head section -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css">
 
 		<link rel="stylesheet" href="{{ url('css/jquery.emailinput.min.css') }}">
 		<link rel="stylesheet" href="{{ url('plugins/timepicker/bootstrap-timepicker.min.css')}}">
-		<link rel="stylesheet" href="{{ url('plugins/datepicker/datepicker3.css')}}">
 		<link rel="stylesheet" href="{{ url('plugins/datatables/dataTables.bootstrap.css')}}">
 
 		<style type="text/css">
@@ -1332,11 +1332,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.2.6/jquery.inputmask.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
 <script src="{{ url('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
 <script src="{{ url('plugins/slimScroll/jquery.slimscroll.min.js')}}"></script>
 <script src="{{ url('plugins/timepicker/bootstrap-timepicker.min.js')}}"></script>
-<script src="{{ url('plugins/datepicker/bootstrap-datepicker.js')}}"></script>
 <script src="{{ url('js/jquery.emailinput.min.js')}}"></script>
 
 <script>
@@ -1396,11 +1396,7 @@
 			buttonsStyling: false,
 		})
 
-		$('#dateClose').datepicker({
-			autoclose: true,
-			format: 'dd/mm/yyyy'
-		});
-
+		
 
 		$("#inputReportingTime").val(moment().format('HH:mm:ss'))
 
@@ -2567,6 +2563,7 @@
 		$("#saveCloseRoute").val('')
 		$("#saveCloseCouter").val('')
 		$('#modal-close').modal('toggle');
+
 	}
 
 	function pendingTicket(id){
@@ -2963,6 +2960,13 @@
 					$("#closeButton").prop('disabled',false);
 					$("#cancelButton").prop('disabled',false);
 					$("#pendingButton").prop('disabled',false);
+					$('#dateClose').datepicker({
+						autoclose: true,
+						startDate: moment(result.first_activity_ticket.date).format("MM/DD/YYYY"),
+						endDate: moment().format("MM/DD/YYYY")
+					}).on('hide',function(result){
+						$('#dateClose').val(moment(result.date).format("DD/MM/YYYY"))
+					});
 				} else if(result.lastest_activity_ticket.activity == "CANCEL"){
 					$("#ticketStatus").attr('class','label label-purple');
 					$("#ticketStatus").attr('style','background-color: #555299 !important;');

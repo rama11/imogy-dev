@@ -728,7 +728,7 @@
 							<span class="label label-default" id="ticketSeverity" style="font-size: 15px;"></span>
 						</div>
 						<div style="margin-top: 5px;">
-							<span id="ticketOpen"></span> 
+							<span id="ticketLatestStatus"></span> 
 							<span class="label label-default" id="ticketStatus"></span>
 						</div>
 					</div>
@@ -740,6 +740,7 @@
 				<div class="modal-body">
 					<form role="form">
 						<input type="hidden" class="form-control" id="ticketID">
+						<input type="hidden" class="form-control" id="ticketOpen">
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
@@ -1338,12 +1339,14 @@
 <script src="{{ url('plugins/slimScroll/jquery.slimscroll.min.js')}}"></script>
 <script src="{{ url('plugins/timepicker/bootstrap-timepicker.min.js')}}"></script>
 <script src="{{ url('js/jquery.emailinput.min.js')}}"></script>
+<script src="{{ url('js/roman.js')}}"></script>
 
 <script>
 
 	var swalWithCustomClass
 
 	$(document).ready(function(){
+		console.log(roman.toRoman(parseInt(moment().format("M"))))
 		if(parseInt((location.toString()).split('#')[1]) > 0){
 			$("#performance").click()
 			showTicket(parseInt((location.toString()).split('#')[1]))
@@ -2166,6 +2169,8 @@
 				alert('You must fill time!');
 			} else if($("#dateClose").val() == ""){
 				alert('You must fill date!');
+			} else if (moment($("#ticketOpen").text(),'D MMMM YYYY (HH:mm)')){
+
 			} else {
 				if(confirm("Are you sure to close this ticket?")){
 					$("#modal-next-close").modal('toggle');
@@ -2890,11 +2895,12 @@
 				}
 
 				$('#ticketID').val(result.id_ticket);
+				$('#ticketOpen').val(moment(result.first_activity_ticket.date).format("D MMMM YYYY (HH:mm)"))
 				$("#modal-ticket-title").html("Ticket ID <b>" + result.id_ticket + "</b>");
 				$("#ticketOperator").html(" latest by: <b>" + result.lastest_activity_ticket.operator + "</b>");
 				$("#ticketSeverity").text(severityType);
 				$("#ticketSeverity").attr('class',severityClass);
-				$("#ticketOpen").text(moment(result.lastest_activity_ticket.date).format('D MMMM YYYY (HH:mm)'));
+				$("#ticketLatestStatus").text(moment(result.lastest_activity_ticket.date).format('D MMMM YYYY (HH:mm)'));
 				$("#ticketStatus").text(result.lastest_activity_ticket.activity);
 				$("#ticketStatus").attr('style','');
 

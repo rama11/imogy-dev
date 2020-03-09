@@ -27,7 +27,7 @@ Route::get('maps', function () {
 	// return view('maps');
 });
 
-Route::get('testTelegram',function(){
+Route::post('testTelegram',function(){
 	return 'Telegram WebHook Test';
 });
 	

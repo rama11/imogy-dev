@@ -26,6 +26,10 @@ Route::get('/', function () {
 Route::get('maps', function () {
 	// return view('maps');
 });
+
+Route::get('testTelegram',function(){
+	return 'Telegram WebHook Test';
+});
 	
 
 

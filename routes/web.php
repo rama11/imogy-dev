@@ -11,7 +11,7 @@
 */
 // Route yang di panggil pertama sendiri atau sebelum login
 Route::get('/', function () {
-	//return view('welcome2');
+	return view('welcome2');
 	//return view('welcome3');
 });
 

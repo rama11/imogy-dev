@@ -26,9 +26,23 @@ Route::get('/', function () {
 Route::get('maps', function () {
 	// return view('maps');
 });
+use Telegram;
+
+
+Route::get('testGetUpdate',function(){
+
+	$response = Telegram::getMe();
+	$botId = $response->getId();
+	$firstName = $response->getFirstName();
+	$username = $response->getUsername();
+
+	return array('response' => $response);
+});
 
 Route::post('testTelegram',function(){
-	return 'Telegram WebHook Test';
+	// return 'Telegram WebHook Test';
+	return Telegram::getWebhookUpdates();
+	
 });
 	
 

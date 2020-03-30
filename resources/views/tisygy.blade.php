@@ -543,32 +543,34 @@
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<table class="table table-bordered table-striped" id="tablePerformance">
-								<thead>
-									<th style="width: 120px;text-align:center;vertical-align: middle;">ID Ticket</th>
-									<th style="width: 100px;text-align:center;vertical-align: middle;">ID ATM*</th>
-									<th style="width: 100px;text-align:center;vertical-align: middle;">Ticket Number</th>
-									<th style="width: 100px;text-align:center;vertical-align: middle;">Open</th>
-									<th style="vertical-align: middle;">Problem</th>
-									<th style="text-align: center;vertical-align: middle;">PIC</th>
-									<th style="width: 100px;vertical-align: middle;">Location</th>
-									<th style="text-align: center;vertical-align: middle;">Status</th>
-									<th style="text-align: center;vertical-align: middle;">Operator</th>
-									<th style="text-align: center;vertical-align: middle;">Action</th>
-								</thead>
-								<tfoot>
-									<th style="width: 120px;text-align:center;vertical-align: middle;">ID Ticket</th>
-									<th style="width: 100px;text-align:center;vertical-align: middle;">ID ATM*</th>
-									<th style="width: 100px;text-align:center;vertical-align: middle;">Ticket Number</th>
-									<th style="width: 100px;text-align:center;vertical-align: middle;">Open</th>
-									<th style="vertical-align: middle;">Problem</th>
-									<th style="text-align: center;vertical-align: middle;">PIC</th>
-									<th style="width: 100px;vertical-align: middle;">Location</th>
-									<th style="text-align: center;vertical-align: middle;">Status</th>
-									<th style="text-align: center;vertical-align: middle;">Operator</th>
-									<th style="text-align: center;vertical-align: middle;">Action</th>
-								</tfoot>
-							</table>
+							<div class="table-responsive no-padding">
+								<table class="table table-bordered table-striped dataTable" id="tablePerformance">
+									<thead>
+										<th style="width: 120px;text-align:center;vertical-align: middle;">ID Ticket</th>
+										<th style="width: 100px;text-align:center;vertical-align: middle;">ID ATM*</th>
+										<th style="width: 100px;text-align:center;vertical-align: middle;">Ticket Number</th>
+										<th style="width: 100px;text-align:center;vertical-align: middle;">Open</th>
+										<th style="vertical-align: middle;">Problem</th>
+										<th style="text-align: center;vertical-align: middle;">PIC</th>
+										<th style="width: 100px;vertical-align: middle;">Location</th>
+										<th style="text-align: center;vertical-align: middle;">Status</th>
+										<th style="text-align: center;vertical-align: middle;">Operator</th>
+										<th style="text-align: center;vertical-align: middle;">Action</th>
+									</thead>
+									<tfoot>
+										<th style="width: 120px;text-align:center;vertical-align: middle;">ID Ticket</th>
+										<th style="width: 100px;text-align:center;vertical-align: middle;">ID ATM*</th>
+										<th style="width: 100px;text-align:center;vertical-align: middle;">Ticket Number</th>
+										<th style="width: 100px;text-align:center;vertical-align: middle;">Open</th>
+										<th style="vertical-align: middle;">Problem</th>
+										<th style="text-align: center;vertical-align: middle;">PIC</th>
+										<th style="width: 100px;vertical-align: middle;">Location</th>
+										<th style="text-align: center;vertical-align: middle;">Status</th>
+										<th style="text-align: center;vertical-align: middle;">Operator</th>
+										<th style="text-align: center;vertical-align: middle;">Action</th>
+									</tfoot>
+								</table>
+							</div>
 						</div>
 					</div>
 				</div>

@@ -809,6 +809,7 @@
 					</form>
 				</div>
 				<div class="modal-footer">
+					<button type="button" class="btn btn-flat btn-default pull-left" onclick="exitTicket()">Exit</button>
 					<button type="button" class="btn btn-flat btn-success" id="closeButton">Close</button>
 					<button type="button" class="btn btn-flat btn-warning" id="pendingButton">Pending</button>
 					<button type="button" class="btn btn-flat bg-purple" id="cancelButton" >Cancel</button>
@@ -2564,6 +2565,10 @@
 			$("#modal-next-cancel").modal('toggle');
 			$("#modal-ticket").modal('toggle');
 		})
+	}
+
+	function exitTicket(){
+		$("#modal-ticket").modal('toggle');
 	}
 
 	function closeTicket(id){

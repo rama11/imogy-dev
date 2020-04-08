@@ -20,4 +20,5 @@ class LogPhoneDetail extends Model
 		'involved',
 		'details'
 	];
+
 }

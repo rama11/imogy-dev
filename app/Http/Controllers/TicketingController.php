@@ -1188,6 +1188,7 @@ class TicketingController extends Controller
 				"address" => $request->atmAddress,
 				"activation" =>  Carbon::createFromFormat('d/m/Y',$request->atmActivation)->formatLocalized('%Y-%m-%d'),
 				"note" => $request->atmNote,
+				"machine_type" => $request->atmType,
 			]);
 
 		$setAtm->save();
@@ -1695,7 +1696,8 @@ class TicketingController extends Controller
 
 		$name = 'Report_' . $client . '_-_' . Carbon::createFromDate( $req->year , $req->month + 1, 1)->format('F-Y') . '_(' . date("Y-m-d") . ')_' . Auth::user()->nickname . '.xlsx';
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-		$writer->save('report/' . $name);
+		$location = public_path() . '/report/' . $name;
+		$writer->save($location);
 		return $name;
 		// return response()->download($name);
 

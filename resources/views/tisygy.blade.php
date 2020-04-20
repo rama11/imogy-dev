@@ -1205,6 +1205,14 @@
 								</div>
 							</div>
 						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group">
+									<label>Mechine Type</label>
+									<input type="text" class="form-control" id="atmEditType">
+								</div>
+							</div>
+						</div>
 						<div class="form-group">
 							<label>Address</label>
 							<textarea type="text" class="form-control" id="atmEditAddress"></textarea>
@@ -1894,6 +1902,7 @@
 				atmLocation:$("#atmEditLocation").val(),
 				atmAddress:$("#atmEditAddress").val(),
 				atmActivation:$("#atmEditActivation").val(),
+				atmType:$("#atmEditType").val(),
 				atmNote:$("#atmEditNote").val(),
 			},
 			success: function (data){

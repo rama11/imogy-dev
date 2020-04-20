@@ -352,6 +352,12 @@
 										<input type="text" class="form-control" id="inputSerial" placeholder="">
 									</div>
 								</div>
+								<div class="form-group" id="typeDiv" style="display: none;">
+									<label for="inputType" class="col-sm-2 control-label">Machine Type</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="inputType" placeholder="">
+									</div>
+								</div>
 
 								<hr id="hrLine2" style="display: none">
 								<div class="form-group" id="reportDiv" style="display: none;">
@@ -434,6 +440,10 @@
 									<th class="bg-primary">Serial number</th>
 									<td id="holderSerial"></td>
 								</tr>
+								<tr id="holderIDATM3" style="display: none;">
+									<th class="bg-primary">Mechine Type</th>
+									<td id="holderType"></td>
+								</tr>
 								<tr>
 									<th class="bg-primary">Severity</th>
 									<td id="holderSeverity"></td>
@@ -451,7 +461,8 @@
 									<td id="holderNote"></td>
 								</tr>
 							</table>
-							<i class="btn btn-flat btn-info pull-right" id="createEmailBody" onclick="createEmailBody()">Create Email</i>
+							<i class="btn btn-flat btn-info pull-right" id="createEmailBodyNormal" onclick="createEmailBody('normal')">Create Email</i>
+							<i class="btn btn-flat btn-success pull-right" id="createEmailBodyWincor" onclick="createEmailBody('wincor')">Create Wincor Email</i>
 						</div>
 					</div>
 					<div class="row" id="sendTicket" style="display: none;">
@@ -1731,6 +1742,7 @@
 		$("#inputATMid").hide()
 		$("#locationDiv").hide()
 		$("#serialDiv").hide()
+		$("#typeDiv").hide()
 		$("#reportDiv").hide()
 		$("#dateDiv").hide()
 		$("#noteDiv").hide()
@@ -1746,12 +1758,14 @@
 		$("#holderEngineer").text('');
 		$("#holderDate").text('');
 		$("#holderSerial").text('');
+		$("#holderType").text('');
 		$("#holderSeverity").text('');
 		// $("#holderRoot").text($("#inputticket").val();
 		$("#holderNote").text('');
 		$("#holderStatus").html('');
 		$("#holderWaktu").html('');
 		$("#holderIDATM2").hide();
+		$("#holderIDATM3").hide();
 		$("#holderIDATM").text('');
 		
 		$("#tableTicket").hide();
@@ -2146,6 +2160,7 @@
 		if(this.value === "Select One"){
 			$("#inputLocation").val("");
 			$("#inputSerial").val("");
+			$("#inputType").val("");
 		} else {
 			$.ajax({
 				type:"GET",
@@ -2156,6 +2171,7 @@
 				success: function(result){
 					$("#inputLocation").val(result.location);
 					$("#inputSerial").val(result.serial_number);
+					$("#inputType").val(result.machine_type);
 				}
 			});
 		}
@@ -3090,6 +3106,12 @@
 	});
 
 	function sendOpenEmail(){
+		var customerAcronym = $("#inputID").val().split('/')[1];
+		if(customerAcronym == "BJBR" || customerAcronym == "BSBB" || customerAcronym == "BRKR"){
+			var id_atm = $("#inputATM").select2('data')[0].text.split(' -')[0]
+		} else {
+			var id_atm = $("#inputATM").val()
+		}
 
 		var typeAlert = 'warning'
 		var typeActivity = 'Open'
@@ -3106,7 +3128,7 @@
 				id:$("#inputID").val(),
 				client:$("#inputClient").val(),
 
-				id_atm:$("#inputATM").val(),
+				id_atm:id_atm,
 				refrence:$("#inputRefrence").val(),
 				pic:$("#inputPIC").val(),
 				contact_pic:$("#inputContact").val(),
@@ -3153,12 +3175,15 @@
 		}
 	}
 
-	function createEmailBody(){
+	function createEmailBody(type){
 		$("#sendTicket").show();
 		$("#formNewTicket").hide();
 		
 		$.ajax({
 			url:"{{url('tisygy/mail/getOpenMailTemplate')}}",
+			data:{
+				type:type
+			},
 			type:"GET",
 			success: function (result){
 				$("#bodyOpenMail").html(result);
@@ -3185,7 +3210,9 @@
 					$("#inputATM").val(" - ");
 				} else {
 					$(".holderIDATM2").show();
-					$(".holderIDATM").text($("#inputATM").val());
+					$(".holderIDATM3").show();
+					$(".holderIDATM").text($("#inputATM").select2('data')[0].text.split(' -')[0]);
+					$(".holderType").text($("#inputType").val());
 				}
 
 				if(!$("#inputSerial").val()){
@@ -3213,6 +3240,8 @@
 				$(".holderLocation").text($("#inputLocation").val());
 				$(".holderProblem").text($("#inputProblem").val());
 				$(".holderSerial").text($("#inputSerial").val());
+				$(".holderType").text($("#inputType").val());
+
 				$(".holderSeverity").text($("#inputSeverity").val());
 				$(".holderNote").text($("#inputNote").val());
 				
@@ -3266,7 +3295,7 @@
 		} else if($("#inputProblem").val() == "" ){
 			$("#problemDiv").addClass('has-error')
 			$("#problemDiv .col-sm-10 .help-block").show()
-		} else if($("#inputATMid").is(':visible') && $("#inputATM").val() === "Select One"){
+		} else if($("#inputATMid").is(':visible') && $("#inputATM").select2('data')[0].text === "Select One"){
 			$("#inputATMid").addClass('has-error')
 			$("#inputATMid .col-sm-10 .help-block").show()
 		} else if($("#inputLocation").val() == "" ){
@@ -3302,6 +3331,8 @@
 			$("#holderEngineer").text($("#inputEngineer").val());
 			$("#holderDate").text(waktu);
 			$("#holderSerial").text($("#inputSerial").val());
+			$("#holderType").text($("#inputType").val());
+			
 			$("#holderSeverity").text($("#inputSeverity").val());
 			// $("#holderRoot").text($("#inputticket").val();
 			$("#holderNote").text($("#inputNote").val());
@@ -3310,9 +3341,17 @@
 
 			if($("#inputClient").val() == "BJBR" || $("#inputClient").val() == "BSBB" || $("#inputClient").val() == "BRKR"){
 				$("#holderIDATM2").show();
-				$("#holderIDATM").text($("#inputATM").val());
+				$("#holderIDATM3").show();
+				$("#holderIDATM").text($("#inputATM").select2('data')[0].text.split(' -')[0]);
+				$("#holderType").text($("#inputType").val());
+				$("#createEmailBodyWincor").show()
+				$("#createEmailBodyNormal").hide()
 			} else {
+				$("#createEmailBodyWincor").hide()
+				$("#createEmailBodyNormal").show()
 				$("#holderIDATM2").hide();
+				$("#holderIDATM3").hide();
+
 			}
 			
 		}
@@ -3329,6 +3368,7 @@
 					acronym:$("#inputClient").val(),
 				},
 				success: function(result){
+					$("#typeDiv").show();
 					$("#inputATMid").show();
 					$("#categoryDiv").show();
 					if ($('#inputATM').hasClass("select2-hidden-accessible")) {

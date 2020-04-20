@@ -228,8 +228,12 @@ class TicketingController extends Controller
 		return $result;
 	}
 
-	public function getOpenMailTemplate(){
-		return view('mailOpenTicket');
+	public function getOpenMailTemplate(Request $req){
+		if($req->type == "normal") {
+			return view('mailOpenTicket');
+		} else if($req->type == "wincor") {
+			return view('mailOpenTicketWincor');
+		}
 	}
 
 	public function getCloseMailTemplate(){
@@ -1134,15 +1138,23 @@ class TicketingController extends Controller
 
 
 	public function getAtmId(Request $request){
-		$result = TicketingClient::with('client_atm')
-			->where('client_acronym',$request->acronym)
-			->first();
+		// $result = TicketingClient::with('client_atm')
+		// 	->where('client_acronym',$request->acronym)
+		// 	->first();
 
-		return $result->client_atm->pluck('atm_id');
+		// return $result->client_atm->pluck('atm_id');
+		// return collect($result->client_atm)->only('atm_id');
+			return TicketingATM::where('owner',TicketingClient::where('client_acronym',$request->acronym)->first()->id)
+				->select(
+					'id',
+					DB::raw('CONCAT(`atm_id`," - ", `location`) AS `text`')
+				)
+				->get()->all();
+			// return TicketingClient::where('client_acronym',$request->acronym)->first()->id;
 	}
 
 	public function getAtmDetail(Request $request){
-		return TicketingATM::where('atm_id',$request->id_atm)->first();
+		return TicketingATM::where('id',$request->id_atm)->first();
 	}
 
 	public function getParameterAddAtm(){

@@ -21,5 +21,6 @@ class TicketingATM extends Model
 		'address',
 		'activation',
 		'note',
+		'machine_type',
 	];
 }

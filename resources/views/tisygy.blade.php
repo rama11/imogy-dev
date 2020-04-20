@@ -3178,6 +3178,7 @@
 	function createEmailBody(type){
 		$("#sendTicket").show();
 		$("#formNewTicket").hide();
+
 		
 		$.ajax({
 			url:"{{url('tisygy/mail/getOpenMailTemplate')}}",
@@ -3194,13 +3195,20 @@
 						client:$("#inputClient").val()
 					},
 					success: function(result){
+						console.log(type)
+						if(type == "normal"){
+							var subject = "Open Tiket " + $("#inputLocation").val() + " [" + $("#inputProblem").val() +"]"
+						} else {
+							var subject = "Open Ticket " + $("#inputATM").select2('data')[0].text.split(' -')[0] + " " + result.client_name + " " + $("#inputLocation").val()
+						}
+
 						$('.emailMultiSelector').remove()
 						$("#emailOpenTo").val(result.open_to)
 						$("#emailOpenTo").emailinput({ onlyValidValue: true, delim: ';' });
 						$("#emailOpenCc").val(result.open_cc)
 						$("#emailOpenCc").emailinput({ onlyValidValue: true, delim: ';' });
 						
-						$("#emailOpenSubject").val("Open Tiket " + $("#inputLocation").val() + " [" + $("#inputProblem").val() +"]");
+						$("#emailOpenSubject").val(subject);
 						$("#emailOpenHeader").html("Dear <b>" + result.open_dear + "</b><br>Berikut terlampir Open Tiket untuk Problem <b>" + $("#inputLocation").val() + "</b> : ");
 						$(".holderCustomer").text(result.client_name);
 					}

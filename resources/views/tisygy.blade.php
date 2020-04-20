@@ -1999,6 +1999,7 @@
 				$("#atmEditAddress").val(result.atm.address);
 				$("#atmEditActivation").val(moment(result.atm.activation,'YYYY-MM-DD').format('DD/MM/YYYY'));
 				$("#atmEditNote").val(result.atm.note);
+				$("#atmEditType").val(result.atm.machine_type);
 
 				$("#modal-setting-atm").modal('toggle');
 			}

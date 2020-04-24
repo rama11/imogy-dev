@@ -2230,7 +2230,7 @@
 							$("#emailCloseHeader").html("Dear <b>" + result[0].close_dear + "</b><br>Berikut terlampir Close Tiket untuk Problem <b>" + $(".holderCloseLocation").text() + "</b> : ");
 							$(".holderCloseCustomer").text(result[0].client_name);
 
-							if(result[0].client_acronym  == "BJBR" || result[0].client_acronym  == "BSBB" || result[0].client_acronym  == "BRKR"){
+							if(result[0].client_acronym  == "BJBR" || result[0].client_acronym  == "BSBB" || result[0].client_acronym  == "BRKR" || result[0].client_acronym  == "BPRKS" || result[0].client_acronym  == "BDIY"){
 								$(".holderCloseIDATM2").show();
 								$(".holderNumberTicket2").show();
 							} else {
@@ -2342,7 +2342,7 @@
 							$("#emailCloseHeader").html("Dear <b>" + result.ticket_reciver.close_dear + "</b><br>Berikut terlampir Close Tiket untuk Problem <b>" + $(".holderCloseLocation").text() + "</b> : ");
 							$(".holderCloseCustomer").text(result.ticket_reciver.client_name);
 
-							if(result.ticket_reciver.client_acronym  == "BJBR" || result.ticket_reciver.client_acronym  == "BSBB" || result.ticket_reciver.client_acronym  == "BRKR"){
+							if(result.ticket_reciver.client_acronym  == "BJBR" || result.ticket_reciver.client_acronym  == "BSBB" || result.ticket_reciver.client_acronym  == "BRKR" || result.ticket_reciver.client_acronym  == "BPRKS"){
 								$(".holderCloseIDATM2").show();
 								$(".holderNumberTicket2").show();
 							} else {
@@ -2427,7 +2427,7 @@
 							$("#emailPendingHeader").html("Dear <b>" + result.ticket_reciver.close_dear + "</b><br>Berikut terlampir Pending Tiket untuk Problem <b>" + $(".holderPendingLocation").text() + "</b> : ");
 							$(".holderPendingCustomer").text(result.ticket_reciver.client_name);
 
-							if(result.ticket_reciver.client_acronym  == "BJBR" || result.ticket_reciver.client_acronym  == "BSBB" || result.ticket_reciver.client_acronym  == "BRKR"){
+							if(result.ticket_reciver.client_acronym  == "BJBR" || result.ticket_reciver.client_acronym  == "BSBB" || result.ticket_reciver.client_acronym  == "BRKR" || result.ticket_reciver.client_acronym  == "BPRKS"  || result.ticket_reciver.client_acronym  == "BDIY" ){
 								$(".holderPendingIDATM2").show();
 								$(".holderNumberTicket2").show();
 							} else {
@@ -2509,7 +2509,7 @@
 							$("#emailCancelHeader").html("Dear <b>" + result.ticket_reciver.close_dear + "</b><br>Berikut terlampir Cancel Tiket untuk Problem <b>" + $(".holderCancelLocation").text() + "</b> : ");
 							$(".holderCancelCustomer").text(result.ticket_reciver.client_name);
 
-							if(result.ticket_reciver.client_acronym  == "BJBR" || result.ticket_reciver.client_acronym  == "BSBB" || result.ticket_reciver.client_acronym  == "BRKR"){
+							if(result.ticket_reciver.client_acronym  == "BJBR" || result.ticket_reciver.client_acronym  == "BSBB" || result.ticket_reciver.client_acronym  == "BRKR" || result.ticket_reciver.client_acronym  == "BPRKS" || result.ticket_reciver.client_acronym  == "BDIY"){
 								$(".holderCancelIDATM2").show();
 								$(".holderNumberTicket2").show();
 							} else {
@@ -3106,8 +3106,8 @@
 	});
 
 	function sendOpenEmail(){
-		var customerAcronym = $("#inputID").val().split('/')[1];
-		if(customerAcronym == "BJBR" || customerAcronym == "BSBB" || customerAcronym == "BRKR"){
+		var customerAcronym = $("#inputticket").val().split('/')[1];
+		if(customerAcronym == "BJBR" || customerAcronym == "BSBB" || customerAcronym == "BRKR" || customerAcronym == "BJTG" || customerAcronym == "BDIY"){
 			var id_atm = $("#inputATM").select2('data')[0].text.split(' -')[0]
 		} else {
 			var id_atm = $("#inputATM").val()
@@ -3347,7 +3347,7 @@
 			$("#holderStatus").html("<b>OPEN</b>");
 			$("#holderWaktu").html("<b>" + waktu2 + "</b>");
 
-			if($("#inputClient").val() == "BJBR" || $("#inputClient").val() == "BSBB" || $("#inputClient").val() == "BRKR"){
+			if($("#inputClient").val() == "BJBR" || $("#inputClient").val() == "BSBB" || $("#inputClient").val() == "BRKR" || $("#inputClient").val() == "BPRKS"){
 				$("#holderIDATM2").show();
 				$("#holderIDATM3").show();
 				$("#holderIDATM").text($("#inputATM").select2('data')[0].text.split(' -')[0]);
@@ -3368,7 +3368,7 @@
 	}
 
 	function getBankAtm(){
-		if($("#inputClient").val() == "BJBR" || $("#inputClient").val() == "BSBB" || $("#inputClient").val() == "BRKR"){
+		if($("#inputClient").val() == "BJBR" || $("#inputClient").val() == "BSBB" || $("#inputClient").val() == "BRKR" || $("#inputClient").val() == "BPRKS" || $("#inputClient").val() == "BDIY"){
 			$.ajax({
 				type:"GET",
 				url:"{{url('tisygy/create/getAtmId')}}",

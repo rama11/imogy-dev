@@ -394,7 +394,7 @@
 										<input type="text" class="form-control" id="inputNote" placeholder=""></div>
 								</div>
 							</form>
-							<i class="btn btn-flat btn-info pull-right" id="createTicket"  style="display: none;" onclick="createTicket()">Create Ticket</i>
+							<i class="btn btn-flat btn-info pull-right" id="createTicket"  style="display: none;">Create Ticket</i>
 						</div>
 
 						<div class="col-md-4" id="tableTicket" style="display: none;">
@@ -436,7 +436,7 @@
 									<th class="bg-primary">Date</th>
 									<td id="holderDate"></td>
 								</tr>
-								<tr>
+								<tr id="holderSerial1">
 									<th class="bg-primary">Serial number</th>
 									<td id="holderSerial"></td>
 								</tr>
@@ -1243,6 +1243,17 @@
 								</div>
 							</div>
 						</div>
+						<div id="atmEditPeripheral" style="display: none;">
+							<div class="row">
+								<div class="col-sm-12" >
+									<div class="form-group">
+										<label>ATM Peripheral</label>
+										<ul id="atmEditPeripheralField">
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
 						<!-- <div class="form-group">
 							<label>Serial Number</label>
 							<input type="text" class="form-control" id="atmSerial">
@@ -1285,39 +1296,66 @@
 								<div class="form-group">
 									<label>ATM ID</label>
 									<input type="text" class="form-control" id="atmAddID">
+									<select class="form-control select2" id="ATMadd" style="width: 100%;display: none"></select>
 								</div>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-sm-4">
-								<div class="form-group">
-									<label>Serial Number</label>
-									<input type="text" class="form-control" id="atmAddSerial">
+						<div id="atmAddForm">
+							<div class="row">
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label>Serial Number</label>
+										<input type="text" class="form-control" id="atmAddSerial">
+									</div>
+								</div>
+								<div class="col-sm-8">
+									<div class="form-group">
+										<label>Location ATM</label>
+										<input type="text" class="form-control" id="atmAddLocation">
+									</div>
 								</div>
 							</div>
-							<div class="col-sm-8">
-								<div class="form-group">
-									<label>Location ATM</label>
-									<input type="text" class="form-control" id="atmAddLocation">
+							<div class="form-group">
+								<label>Address</label>
+								<textarea type="text" class="form-control" id="atmAddAddress"></textarea>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label>Activation Date</label>
+										<input type="text" class="form-control" id="atmAddActivation">
+									</div>
+								</div>
+								<div class="col-sm-8">
+									<div class="form-group">
+										<label>Note</label>
+										<input type="text" class="form-control" placeholder="ex : Kanwil II" id="atmAddNote">
+									</div>
 								</div>
 							</div>
 						</div>
-						<div class="form-group">
-							<label>Address</label>
-							<textarea type="text" class="form-control" id="atmAddAddress"></textarea>
-						</div>
-						<hr>
-						<div class="row">
-							<div class="col-sm-4">
-								<div class="form-group">
-									<label>Activation Date</label>
-									<input type="text" class="form-control" id="atmAddActivation">
+						<div id="peripheralAddForm" style="display: none;">
+							<div class="row">
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label>ID Peripheral</label>
+										<input type="text" class="form-control" id="atmAddPeripheralID">
+									</div>
+								</div>
+								<div class="col-sm-8">
+									<div class="form-group">
+										<label>Serial Number</label>
+										<input type="text" class="form-control" id="atmAddPeripheralSerial">
+									</div>
 								</div>
 							</div>
-							<div class="col-sm-8">
-								<div class="form-group">
-									<label>Note</label>
-									<input type="text" class="form-control" placeholder="ex : Kanwil II" id="atmAddNote">
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="form-group">
+										<label>Mechine Type</label>
+										<input type="text" class="form-control" id="atmAddPeripheralType">
+									</div>
 								</div>
 							</div>
 						</div>
@@ -1334,7 +1372,8 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-flat btn-default pull-left" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-flat btn-primary" onclick="newAtm()">Add</button>
+					<button type="button" class="btn btn-flat btn-success" onclick="newPeripheral()" id="peripheralAddFormButton" style="display: none;">Add Peripheral</button>
+					<button type="button" class="btn btn-flat btn-primary" onclick="newAtm()" id="atmAddFormButton">Add</button>
 				</div>
 			</div>
 		</div>
@@ -1851,8 +1890,60 @@
 	// });
 
 	
+	$("#atmAddOwner").change(function(){
+		if(this.value == 26 || this.value == 27){
+			$.ajax({
+				type:"GET",
+				url:"{{url('tisygy/create/getAtmId')}}",
+				data:{
+					acronym:$("#atmAddOwner option:selected").text().split("(")[1].split(")")[0],
+				},
+				success: function(result){
+					$("#ATMadd").show()
+					$("#ATMadd").select2({
+						data:result
+					});
+					
+					$("#atmAddID").hide()
+				}
+			});
+			$("#peripheralAddForm, #peripheralAddFormButton").show()
+			$("#atmAddForm, #atmAddFormButton").hide()
+		} else {
+			$("#peripheralAddForm, #peripheralAddFormButton").hide()
+			$("#atmAddForm, #atmAddFormButton").show()
+			$("#ATMadd").select2('destroy')
+			$("#ATMadd").hide()
+			$("#atmAddID").show()
 
+		}
+
+		
+	})
 	
+
+	function newPeripheral(){
+		$.ajax({
+			type:"GET",
+			url:"{{url('tisygy/setting/newAtmPeripheral')}}",
+			data:{
+				atmOwner:$("#atmAddOwner").val(),
+				atmID:$("#ATMadd").select2('data')[0].text.split(' -')[0],
+				peripheralID:$("#atmAddPeripheralID").val(),
+				peripheralMachineType:$("#atmAddPeripheralType").val(),
+				peripheralSerial:$("#atmAddPeripheralSerial").val(),
+			},
+			success: function (data){
+            	swalWithCustomClass.fire(
+					'Success',
+					'ATM Added',
+					'success'
+				)
+				$("#modal-setting-atm-add").modal('toggle');
+				$("#tableAtm").DataTable().ajax.url("tisygy/setting/getAllAtm").load();
+			},
+		})
+	}
 
 	function newAtm(){
 		$.ajax({
@@ -2015,6 +2106,22 @@
 				$("#atmEditNote").val(result.atm.note);
 				$("#atmEditType").val(result.atm.machine_type);
 
+				if(result.atm.owner == 19){
+					console.log("dasfasdfasd")
+					var append = ""
+					$.each(result.atm.peripheral,function (key,value){
+						append = append + "<li>"
+						append = append + "	<b>[" + value.type + "] - " + value.id_peripheral + " (" + value.machine_type + ")</b><br>"
+						append = append + "	Serial Number : " + value.serial_number
+						append = append + "</li>"
+					})
+					$("#atmEditPeripheralField").empty()
+					$("#atmEditPeripheralField").append(append)
+					$("#atmEditPeripheral").show()
+				} else {
+					$("#atmEditPeripheral").hide()
+				}
+
 				$("#modal-setting-atm").modal('toggle');
 			}
 		});
@@ -2162,18 +2269,40 @@
 			$("#inputSerial").val("");
 			$("#inputType").val("");
 		} else {
-			$.ajax({
-				type:"GET",
-				url:"{{url('tisygy/create/getAtmDetail')}}",
-				data:{
-					id_atm:this.value
-				},
-				success: function(result){
-					$("#inputLocation").val(result.location);
-					$("#inputSerial").val(result.serial_number);
-					$("#inputType").val(result.machine_type);
+			if($("#inputClient").val() == "BDIYCCTV" || $("#inputClient").val() == "BDIYUPS"){
+				if($("#inputClient").val() == "BDIYCCTV"){
+					var type = "CCTV"
+				} else if($("#inputClient").val() == "BDIYUPS") {
+					var type = "UPS"
 				}
-			});
+				$.ajax({
+					type:"GET",
+					url:"{{url('tisygy/create/getAtmPeripheralDetail')}}",
+					data:{
+						id_atm:this.value,
+						type:type
+					},
+					success: function(result){
+						$("#inputLocation").val("[" + result.type + "] " + result.id_peripheral + " - " + result.atm.location);
+						$("#inputSerial").val(result.serial_number);
+						$("#inputType").val(result.machine_type);
+					}
+				});
+			} else {
+				$.ajax({
+					type:"GET",
+					url:"{{url('tisygy/create/getAtmDetail')}}",
+					data:{
+						id_atm:this.value
+					},
+					success: function(result){
+						$("#inputLocation").val(result.location);
+						$("#inputSerial").val(result.serial_number);
+						$("#inputType").val(result.machine_type);
+					}
+				});
+			}
+
 		}
 	});
 	// $(".sidebar-toggle").click();
@@ -3240,6 +3369,22 @@
 				var waktu = moment(($("#inputDate").val()), "DD-MMM-YY HH:mm").format("D MMMM YYYY");
 				var waktu2 = moment(($("#inputDate").val()), "DD-MMM-YY HH:mm").format("HH:mm");
 
+				if($("#inputClient").val() == "BDIYCCTV"){
+					$(".holderIDATM2").insertAfter($(".holderIDATM2").next());
+					$(".holderIDATM2 th").text("CCTV ID");
+					$(".holderIDATM3 th").text("CCTV Type");
+					$(".holderSerial").prev().text("CCTV Serial")
+					$(".holderSerial").text($("#inputSerial").val());
+				} else if ($("#inputClient").val() == "BDIYUPS"){
+					$(".holderIDATM2").insertAfter($(".holderIDATM2").next());
+					$(".holderIDATM2 th").text("UPS ID");
+					$(".holderIDATM3 th").text("UPS Type");
+					$(".holderSerial").prev().text("UPS Serial")
+					$(".holderSerial").text($("#inputSerial").val());
+				} else {
+					$(".holderSerial").text($("#inputSerial").val());
+				}
+
 				$(".holderID").text($("#inputticket").val());
 				
 				$(".holderRefrence").text($("#inputRefrence").val());
@@ -3247,7 +3392,7 @@
 				$(".holderContact").text($("#inputContact").val());
 				$(".holderLocation").text($("#inputLocation").val());
 				$(".holderProblem").text($("#inputProblem").val());
-				$(".holderSerial").text($("#inputSerial").val());
+				
 				$(".holderType").text($("#inputType").val());
 
 				$(".holderSeverity").text($("#inputSeverity").val());
@@ -3292,7 +3437,84 @@
 	// 	}
 	// });
 
-	function createTicket(){
+	var firstTimeTicket = 0;
+	var clientBanking = 0;
+	var clientWincor = 0;
+
+	$("#inputClient").change(function(){
+		var acronym_client = this.value;
+		if(firstTimeTicket == 0){
+			$.ajax({
+				beforeSend: function(request) {
+					request.setRequestHeader("Accept", "application/json");
+				},
+				type:"GET",
+				url:"{{url('tisygy/create/setReserveIdTicket')}}",
+				data:{
+					id_ticket:$("#inputticket").val() + "/" + acronym_client + moment().format("/MMM/YYYY"),
+					acronym_client:acronym_client,
+					operator:"{{(Auth::check())?Auth::user()->nickname:'-'}}",
+				},
+				success: function(result){
+					console.log(result.banking)
+					clientBanking = result.banking
+					clientWincor = result.wincor
+					$("#inputticket").val($("#inputticket").val() + "/" + acronym_client + moment().format("/MMM/YYYY"));
+				}
+			});
+		} else {
+			var temp = $("#inputticket").val().split('/')
+			temp[1] = acronym_client
+			var changeResult = temp.join('/')
+
+			$.ajax({
+				type:"GET",
+				url:"{{url('tisygy/create/putReserveIdTicket')}}",
+				data:{
+					id_ticket_before:$("#inputticket").val(),
+					id_ticket_after:changeResult,
+					acronym_client:acronym_client,
+				},
+				success: function(result){
+					console.log(result.banking)
+					clientBanking = result.banking
+					clientWincor = result.wincor
+					$("#inputticket").val(changeResult);
+				}
+			});
+		}
+
+
+		if($("#inputSeverity").val() != "Chose the severity"){
+			getBankAtm(clientBanking);
+
+		}
+
+		firstTimeTicket = 1;
+	});
+
+
+	$("#inputSeverity").change(function(){
+		$("#hrLine").show();
+		$("#hrLine2").show();
+		$("#refrenceDiv").show();
+		$("#picDiv").show();
+		$("#contactDiv").show();
+		$("#problemDiv").show();
+		$("#locationDiv").show();
+		$("#dateDiv").show();
+		$("#noteDiv").show();
+		$("#serialDiv").show();
+		$("#reportDiv").show();
+		
+		$("#createTicket").show();
+		var onclick = "createTicket(" + clientBanking + ")"
+		$("#createTicket").attr("onclick",onclick);
+		
+		getBankAtm(clientBanking);
+	});
+
+	function createTicket(clientBanking){
 		$(".help-block").hide()
 		if($("#inputPIC").val() == "" ){
 			$("#picDiv").addClass('has-error')
@@ -3347,16 +3569,51 @@
 			$("#holderStatus").html("<b>OPEN</b>");
 			$("#holderWaktu").html("<b>" + waktu2 + "</b>");
 
-			if($("#inputClient").val() == "BJBR" || $("#inputClient").val() == "BSBB" || $("#inputClient").val() == "BRKR" || $("#inputClient").val() == "BPRKS"){
-				$("#holderIDATM2").show();
-				$("#holderIDATM3").show();
-				$("#holderIDATM").text($("#inputATM").select2('data')[0].text.split(' -')[0]);
-				$("#holderType").text($("#inputType").val());
-				$("#createEmailBodyWincor").show()
-				$("#createEmailBodyNormal").hide()
+			if(clientBanking){
+				if($("#inputClient").val() == "BDIYCCTV"){
+					$("#holderIDATM2").insertAfter($("#holderIDATM2").next())
+					$("#holderIDATM2").show();
+					$("#holderIDATM3").show();
+
+					$("#holderSerial").text($("#inputSerial").val());
+					$("#holderType").text($("#inputType").val());
+					$("#holderType").text($("#inputType").val());
+
+					$("#holderSerial1 th").text("CCTV Serial")
+					$("#holderIDATM2 th").text("ID CCTV")
+					$("#holderIDATM3 th").text("CCTV Mechine Type")
+					$("#holderIDATM").text($("#inputATM").select2('data')[0].text.split(' -')[0]);
+				} if($("#inputClient").val() == "BDIYUPS"){
+					$("#holderIDATM2").insertAfter($("#holderIDATM2").next())
+					$("#holderIDATM2").show();
+					$("#holderIDATM3").show();
+
+					$("#holderSerial").text($("#inputSerial").val());
+					$("#holderType").text($("#inputType").val());
+					$("#holderType").text($("#inputType").val());
+
+					$("#holderSerial1 th").text("UPS Serial")
+					$("#holderIDATM2 th").text("ID UPS")
+					$("#holderIDATM3 th").text("UPS Mechine Type")
+					$("#holderIDATM").text($("#inputATM").select2('data')[0].text.split(' -')[0]);
+				} else {
+					$("#holderIDATM2").show();
+					$("#holderIDATM3").show();
+					$("#holderIDATM").text($("#inputATM").select2('data')[0].text.split(' -')[0]);
+					$("#holderType").text($("#inputType").val());
+					
+				}
+
+
+				if(clientWincor == 1){
+					$("#createEmailBodyWincor").show()
+					$("#createEmailBodyNormal").hide()
+				} else {
+					$("#createEmailBodyWincor").hide()
+					$("#createEmailBodyNormal").show()
+				}
 			} else {
-				$("#createEmailBodyWincor").hide()
-				$("#createEmailBodyNormal").show()
+				
 				$("#holderIDATM2").hide();
 				$("#holderIDATM3").hide();
 
@@ -3367,8 +3624,9 @@
 
 	}
 
-	function getBankAtm(){
-		if($("#inputClient").val() == "BJBR" || $("#inputClient").val() == "BSBB" || $("#inputClient").val() == "BRKR" || $("#inputClient").val() == "BPRKS" || $("#inputClient").val() == "BDIY"){
+	function getBankAtm(clientBanking){
+		if(clientBanking){
+		// if($("#inputClient").val() == "BJBR" || $("#inputClient").val() == "BSBB" || $("#inputClient").val() == "BRKR" || $("#inputClient").val() == "BPRKS" || $("#inputClient").val() == "BDIY"){
 			$.ajax({
 				type:"GET",
 				url:"{{url('tisygy/create/getAtmId')}}",
@@ -3399,67 +3657,7 @@
 		}
 	}
 
-	var firstTimeTicket = 0;
-
-	$("#inputClient").change(function(){
-		var acronym_client = this.value;
-		if(firstTimeTicket == 0){
-			$.ajax({
-				type:"GET",
-				url:"{{url('tisygy/create/setReserveIdTicket')}}",
-				data:{
-					id_ticket:$("#inputticket").val() + "/" + acronym_client + moment().format("/MMM/YYYY"),
-					acronym_client:acronym_client,
-					operator:"{{(Auth::check())?Auth::user()->nickname:'-'}}",
-				},
-				success: function(result){
-					$("#inputticket").val($("#inputticket").val() + "/" + acronym_client + moment().format("/MMM/YYYY"));
-				}
-			});
-		} else {
-			var temp = $("#inputticket").val().split('/')
-			temp[1] = acronym_client
-			var changeResult = temp.join('/')
-
-			$.ajax({
-				type:"GET",
-				url:"{{url('tisygy/create/putReserveIdTicket')}}",
-				data:{
-					id_ticket_before:$("#inputticket").val(),
-					id_ticket_after:changeResult,
-					acronym_client:acronym_client,
-				},
-				success: function(result){
-					$("#inputticket").val(changeResult);
-				}
-			});
-		}
-
-
-		if($("#inputSeverity").val() != "Chose the severity"){
-			getBankAtm();
-		}
-
-		firstTimeTicket = 1;
-	});
-
-
-	$("#inputSeverity").change(function(){
-		$("#hrLine").show();
-		$("#hrLine2").show();
-		$("#refrenceDiv").show();
-		$("#picDiv").show();
-		$("#contactDiv").show();
-		$("#problemDiv").show();
-		$("#locationDiv").show();
-		$("#dateDiv").show();
-		$("#noteDiv").show();
-		$("#serialDiv").show();
-		$("#reportDiv").show();
-		
-		$("#createTicket").show();
-		getBankAtm();
-	});
+	
 
 	
 

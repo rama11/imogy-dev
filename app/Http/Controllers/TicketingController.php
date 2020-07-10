@@ -24,6 +24,7 @@ use App\Http\Models\TicketingActivity;
 use App\Http\Models\TicketingResolve;
 use App\Http\Models\TicketingClient;
 use App\Http\Models\TicketingATM;
+use App\Http\Models\TicketingATMPeripheral;
 use App\Http\Models\TicketingSeverity;
 
 use Carbon\Carbon;
@@ -301,10 +302,16 @@ class TicketingController extends Controller
 		$newTicketId = new Ticketing();
 		$newTicketId->id = $req->id;
 		$newTicketId->id_ticket = $req->id_ticket;
-		$newTicketId->id_client = TicketingClient::where('client_acronym',$req->acronym_client)->value('id');
+		$client = TicketingClient::where('client_acronym',$req->acronym_client);
+		$newTicketId->id_client = $client->value('id');
 		$newTicketId->operator = Auth::user()->nickname;
 
 		$newTicketId->save();
+		return collect([
+			"banking" => $client->value('banking'),
+			"wincor" => $client->value('wincor')
+		]);
+
 
 		// DB::table('ticketing__id')
 		// 	->insert([
@@ -322,9 +329,14 @@ class TicketingController extends Controller
 
 		$updateTicketId = Ticketing::where('id_ticket',$req->id_ticket_before)->first();
 		$updateTicketId->id_ticket = $req->id_ticket_after;
-		$updateTicketId->id_client = TicketingClient::where('client_acronym',$req->acronym_client)->value('id');
+		$client = TicketingClient::where('client_acronym',$req->acronym_client);
+		$updateTicketId->id_client = $client->value('id');
 
 		$updateTicketId->save();
+		return collect([
+			"banking" => $client->value('banking'),
+			"wincor" => $client->value('wincor')
+		]);
 
 		// DB::table('ticketing__id')
 		// 	->insert([
@@ -930,7 +942,7 @@ class TicketingController extends Controller
 	public function makeMailer($to, $cc, $subject, $body){
 		$mail = new PHPMailer\PHPMailer(true);
 
-		$email_type = "Yandex MSM01";
+		$email_type = "Gmail Hello";
 
 		if($email_type == "Yandex MSM01"){
 			$mail_host = env('YANDEX_MAIL_HOST_MSM01');
@@ -1144,7 +1156,12 @@ class TicketingController extends Controller
 
 		// return $result->client_atm->pluck('atm_id');
 		// return collect($result->client_atm)->only('atm_id');
-			return TicketingATM::where('owner',TicketingClient::where('client_acronym',$request->acronym)->first()->id)
+
+		$client_acronym = $request->acronym;
+		if($request->acronym == "BDIYCCTV" || $request->acronym == "BDIYUPS"){
+			$client_acronym = "BDIY";
+		}
+			return TicketingATM::where('owner',TicketingClient::where('client_acronym',$client_acronym)->first()->id)
 				->select(
 					'id',
 					DB::raw('CONCAT(`atm_id`," - ", `location`) AS `text`')
@@ -1157,6 +1174,13 @@ class TicketingController extends Controller
 		return TicketingATM::where('id',$request->id_atm)->first();
 	}
 
+	public function getAtmPeripheralDetail(Request $request){
+		return TicketingATMPeripheral::with('atm')
+			->where('id_atm',TicketingATM::where('id',$request->id_atm)->first()->id)
+			->where('type',$request->type)
+			->first();
+	}
+
 	public function getParameterAddAtm(){
 		return TicketingClient::select('id','client_acronym','client_name')
 			->where('banking','=',1)
@@ -1164,7 +1188,7 @@ class TicketingController extends Controller
 	}
 
 	public function getDetailAtm(Request $request){
-		$atm = TicketingATM::where('id',$request->id_atm)->first();
+		$atm = TicketingATM::with('peripheral')->where('id',$request->id_atm)->first();
 
 		$client = TicketingClient::select('id','client_acronym','client_name')
 			->where('banking','=',1)
@@ -1209,6 +1233,22 @@ class TicketingController extends Controller
 
 	public function deleteAtm(Request $request){
 		TicketingATM::where('id','=',$request->idAtm)->first()->delete();
+	}
+
+	public function newAtmPeripheral(Request $request){
+		if(TicketingClient::find($request->atmOwner)->client_acronym == "BDIYCCTV"){
+			$request->peripheralType = "CCTV";
+		} else if (TicketingClient::find($request->atmOwner)->client_acronym == "BDIYUPS"){
+			$request->peripheralType = "UPS";
+		}
+		$newAtmPeripheral = new TicketingATMPeripheral();
+		$newAtmPeripheral->id_atm = TicketingATM::where('atm_id',$request->atmID)->first()->id;
+		$newAtmPeripheral->id_peripheral = $request->peripheralID;
+		$newAtmPeripheral->type = $request->peripheralType;
+		$newAtmPeripheral->serial_number = $request->peripheralSerial;
+		$newAtmPeripheral->machine_type = $request->peripheralMachineType;
+		$newAtmPeripheral->save();
+		return $newAtmPeripheral;
 	}
 
 	public function newAtm(Request $request){

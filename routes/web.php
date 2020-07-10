@@ -24,29 +24,24 @@ Route::get('/', function () {
 // })->where('any', '.*');
 // Route::get('/test_cron','AdminController@test_cron');
 Route::get('maps', function () {
-	// return view('maps');
+	return view('maps');
 });
-use Telegram;
+// use Telegram;
 
 
-Route::get('testGetUpdate',function(){
+Route::get('testSendMassage','TelegramController@testSendMassage');
 
-	$response = Telegram::getMe();
-	$botId = $response->getId();
-	$firstName = $response->getFirstName();
-	$username = $response->getUsername();
+Route::post('telegramWebHook/' . env('TELEGRAM_BOT_TOKEN'),'TelegramController@getWebhookUpdate');
 
-	return array('response' => $response);
-});
-
-Route::post('testTelegram',function(){
-	// return 'Telegram WebHook Test';
-	return Telegram::getWebhookUpdates();
-	
-});
-	
-
-
+Route::get('telegram','TelegramViewController@index');
+Route::get('telegram/reporting','TelegramViewController@reporting');
+Route::get('telegram/setting/webhook','TelegramViewController@setting_webhook');
+Route::get('telegram/setting/user_sync','TelegramViewController@setting_user_sync');
+Route::get('telegram/setting/user_sync/getViewData','TelegramViewController@getViewData');
+Route::get('telegram/setting/user_sync/getTableData','TelegramViewController@getTableData');
+Route::get('telegram/setting/user_sync/revokeTelegramUser','TelegramViewController@revokeTelegramUser');
+Route::get('telegram/setting/notif_subscription','TelegramViewController@setting_notif_subscription');
+Route::get('telegram/setting/notif_subscription/getSyncData','TelegramViewController@getSyncData');
 
 	// Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
 
@@ -61,6 +56,9 @@ Route::get('tisygy/report/download','TicketingController@downloadReportTicket');
 
 Route::get('firebase','TestController@firebase');
 Route::get('administration','AdministrationController@index');
+Route::get('testLiteral',function(){
+	return App\Http\Models\TicketingClient::find(1)->value('banking');
+});
 
 
 // Engginer Route
@@ -286,6 +284,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('tisygy/create/getParameter','TicketingController@getCreateParameter');
 	Route::get('tisygy/create/getAtmId','TicketingController@getAtmId');
 	Route::get('tisygy/create/getAtmDetail','TicketingController@getAtmDetail');
+	Route::get('tisygy/create/getAtmPeripheralDetail','TicketingController@getAtmPeripheralDetail');
 	Route::get('tisygy/create/getReserveIdTicket','TicketingController@getReserveIdTicket');
 	Route::get('tisygy/create/setReserveIdTicket','TicketingController@setReserveIdTicket');
 	Route::get('tisygy/create/putReserveIdTicket','TicketingController@putReserveIdTicket');
@@ -314,6 +313,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('tisygy/setting/setAtm','TicketingController@setAtm');
 	Route::get('tisygy/setting/deleteAtm','TicketingController@deleteAtm');
 	Route::get('tisygy/setting/newAtm','TicketingController@newAtm');
+	Route::get('tisygy/setting/newAtmPeripheral','TicketingController@newAtmPeripheral');
 	Route::get('tisygy/setting/getSettingClient' , 'TicketingController@getSettingClient');
 	Route::post('tisygy/setting/setSettingClient' , 'TicketingController@setSettingClient');
 

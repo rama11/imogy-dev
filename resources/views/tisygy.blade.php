@@ -1389,7 +1389,7 @@
 									</div>
 								</div>
 							</div>
-							<label>CCTV Internal</label>
+							<label>CCTV Interna</label>
 							<div class="row">
 								<div class="col-sm-6">
 									<div class="form-group">
@@ -1955,8 +1955,10 @@
 			});
 			if(this.value == 26) {
 				$("#peripheralAddFormCCTV, #peripheralAddFormButton").show()
+				$("#peripheralAddForm").hide()
 			} else {
 				$("#peripheralAddForm, #peripheralAddFormButton").show()
+				$("#peripheralAddFormCCTV").hide()
 			}
 			$("#atmAddForm, #atmAddFormButton").hide()
 		} else {
@@ -2201,7 +2203,7 @@
 							append = append + "	Serial Number : " + value.cctv_besar_sn
 							append = append + "</li>"
 							append = append + "<li>"
-							append = append + "	<b>[" + value.type + " Internal] " + value.cctv_kecil_type + "</b><br>"
+							append = append + "	<b>[" + value.type + " Interna] " + value.cctv_kecil_type + "</b><br>"
 							append = append + "	Serial Number : " + value.cctv_kecil_sn
 							append = append + "</li>"
 						} else {

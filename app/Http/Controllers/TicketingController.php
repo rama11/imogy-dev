@@ -1180,8 +1180,8 @@ class TicketingController extends Controller
 				->where('id_atm',TicketingATM::where('id',$request->id_atm)->first()->id)
 				->where('type',$request->type)
 				->first();
-			$result->serial_number = "DVR : " . $result->cctv_dvr_sn . "<br>" . "CCTV Besar : " . $result->cctv_besar_sn . "<br>" . "CCTV Kecil : " . $result->cctv_kecil_sn . "<br>";
-			$result->machine_type = "DVR : " . $result->cctv_dvr_type . "<br>" . "CCTV Besar : " . $result->cctv_besar_type . "<br>" . "CCTV Kecil : " . $result->cctv_kecil_type . "<br>";
+			$result->serial_number = "DVR : " . $result->cctv_dvr_sn . "<br>" . "CCTV Eksternal : " . $result->cctv_besar_sn . "<br>" . "CCTV Internal : " . $result->cctv_kecil_sn . "<br>";
+			$result->machine_type = "DVR : " . $result->cctv_dvr_type . "<br>" . "CCTV Eksternal : " . $result->cctv_besar_type . "<br>" . "CCTV Internal : " . $result->cctv_kecil_type . "<br>";
 			
 			return $result;
 		} else {

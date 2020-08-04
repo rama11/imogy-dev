@@ -1374,7 +1374,7 @@
 									</div>
 								</div>
 							</div>
-							<label>CCTV Besar</label>
+							<label>CCTV Eksternal</label>
 							<div class="row">
 								<div class="col-sm-6">
 									<div class="form-group">
@@ -1389,7 +1389,7 @@
 									</div>
 								</div>
 							</div>
-							<label>CCTV Kecil</label>
+							<label>CCTV Internal</label>
 							<div class="row">
 								<div class="col-sm-6">
 									<div class="form-group">
@@ -2197,11 +2197,11 @@
 							append = append + "	Serial Number : " + value.cctv_dvr_sn
 							append = append + "</li>"
 							append = append + "<li>"
-							append = append + "	<b>[" + value.type + " Besar] " + value.cctv_besar_type + "</b><br>"
+							append = append + "	<b>[" + value.type + " Exsternal] " + value.cctv_besar_type + "</b><br>"
 							append = append + "	Serial Number : " + value.cctv_besar_sn
 							append = append + "</li>"
 							append = append + "<li>"
-							append = append + "	<b>[" + value.type + " Kecil] " + value.cctv_kecil_type + "</b><br>"
+							append = append + "	<b>[" + value.type + " Internal] " + value.cctv_kecil_type + "</b><br>"
 							append = append + "	Serial Number : " + value.cctv_kecil_sn
 							append = append + "</li>"
 						} else {

@@ -1175,10 +1175,21 @@ class TicketingController extends Controller
 	}
 
 	public function getAtmPeripheralDetail(Request $request){
-		return TicketingATMPeripheral::with('atm')
-			->where('id_atm',TicketingATM::where('id',$request->id_atm)->first()->id)
-			->where('type',$request->type)
-			->first();
+		if($request->type == "CCTV"){
+			$result = TicketingATMPeripheral::with('atm')
+				->where('id_atm',TicketingATM::where('id',$request->id_atm)->first()->id)
+				->where('type',$request->type)
+				->first();
+			$result->serial_number = "DVR : " . $result->cctv_dvr_sn . "<br>" . "CCTV Besar : " . $result->cctv_besar_sn . "<br>" . "CCTV Kecil : " . $result->cctv_kecil_sn . "<br>";
+			$result->machine_type = "DVR : " . $result->cctv_dvr_type . "<br>" . "CCTV Besar : " . $result->cctv_besar_type . "<br>" . "CCTV Kecil : " . $result->cctv_kecil_type . "<br>";
+			
+			return $result;
+		} else {
+			return TicketingATMPeripheral::with('atm')
+				->where('id_atm',TicketingATM::where('id',$request->id_atm)->first()->id)
+				->where('type',$request->type)
+				->first();
+		}
 	}
 
 	public function getParameterAddAtm(){
@@ -1245,8 +1256,16 @@ class TicketingController extends Controller
 		$newAtmPeripheral->id_atm = TicketingATM::where('atm_id',$request->atmID)->first()->id;
 		$newAtmPeripheral->id_peripheral = $request->peripheralID;
 		$newAtmPeripheral->type = $request->peripheralType;
-		$newAtmPeripheral->serial_number = $request->peripheralSerial;
-		$newAtmPeripheral->machine_type = $request->peripheralMachineType;
+		$newAtmPeripheral->serial_number = (isset($request->peripheralSerial) ? $request->peripheralSerial : "-");
+		$newAtmPeripheral->machine_type = (isset($request->peripheralMachineType) ? $request->peripheralMachineType : "-");
+
+		$newAtmPeripheral->cctv_dvr_sn = (isset($request->peripheral_cctv_dvr_sn) ? $request->peripheral_cctv_dvr_sn : "-");
+		$newAtmPeripheral->cctv_dvr_type = (isset($request->peripheral_cctv_dvr_type) ? $request->peripheral_cctv_dvr_type : "-");
+		$newAtmPeripheral->cctv_besar_sn = (isset($request->peripheral_cctv_besar_sn) ? $request->peripheral_cctv_besar_sn : "-");
+		$newAtmPeripheral->cctv_besar_type = (isset($request->peripheral_cctv_besar_type) ? $request->peripheral_cctv_besar_type : "-");
+		$newAtmPeripheral->cctv_kecil_sn = (isset($request->peripheral_cctv_kecil_sn) ? $request->peripheral_cctv_kecil_sn : "-");
+		$newAtmPeripheral->cctv_kecil_type = (isset($request->peripheral_cctv_kecil_type) ? $request->peripheral_cctv_kecil_type : "-");
+
 		$newAtmPeripheral->save();
 		return $newAtmPeripheral;
 	}

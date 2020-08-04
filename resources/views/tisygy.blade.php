@@ -1337,24 +1337,70 @@
 						</div>
 						<div id="peripheralAddForm" style="display: none;">
 							<div class="row">
-								<div class="col-sm-4">
+								<!-- <div class="col-sm-4">
 									<div class="form-group">
 										<label>ID Peripheral</label>
 										<input type="text" class="form-control" id="atmAddPeripheralID">
 									</div>
-								</div>
-								<div class="col-sm-8">
+								</div> -->
+								<div class="col-sm-6">
 									<div class="form-group">
 										<label>Serial Number</label>
 										<input type="text" class="form-control" id="atmAddPeripheralSerial">
 									</div>
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-sm-12">
+								<div class="col-sm-6">
 									<div class="form-group">
 										<label>Mechine Type</label>
 										<input type="text" class="form-control" id="atmAddPeripheralType">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="peripheralAddFormCCTV" style="display: none;">
+							<hr>
+							<label>DVR</label>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label>Serial Number</label>
+										<input type="text" class="form-control" id="atmAddPeripheralSerialCCTVDVR">
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label>Mechine Type</label>
+										<input type="text" class="form-control" id="atmAddPeripheralTypeCCTVDVR">
+									</div>
+								</div>
+							</div>
+							<label>CCTV Besar</label>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label>Serial Number</label>
+										<input type="text" class="form-control" id="atmAddPeripheralSerialCCTVBesar">
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label>Mechine Type</label>
+										<input type="text" class="form-control" id="atmAddPeripheralTypeCCTVBesar">
+									</div>
+								</div>
+							</div>
+							<label>CCTV Kecil</label>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label>Serial Number</label>
+										<input type="text" class="form-control" id="atmAddPeripheralSerialCCTVKecil">
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label>Mechine Type</label>
+										<input type="text" class="form-control" id="atmAddPeripheralTypeCCTVKecil">
 									</div>
 								</div>
 							</div>
@@ -1796,8 +1842,8 @@
 		$("#holderLocation").text('');
 		$("#holderEngineer").text('');
 		$("#holderDate").text('');
-		$("#holderSerial").text('');
-		$("#holderType").text('');
+		$("#holderSerial").html('');
+		$("#holderType").html('');
 		$("#holderSeverity").text('');
 		// $("#holderRoot").text($("#inputticket").val();
 		$("#holderNote").text('');
@@ -1907,10 +1953,14 @@
 					$("#atmAddID").hide()
 				}
 			});
-			$("#peripheralAddForm, #peripheralAddFormButton").show()
+			if(this.value == 26) {
+				$("#peripheralAddFormCCTV, #peripheralAddFormButton").show()
+			} else {
+				$("#peripheralAddForm, #peripheralAddFormButton").show()
+			}
 			$("#atmAddForm, #atmAddFormButton").hide()
 		} else {
-			$("#peripheralAddForm, #peripheralAddFormButton").hide()
+			$("#peripheralAddForm, #peripheralAddFormCCTV, #peripheralAddFormButton").hide()
 			$("#atmAddForm, #atmAddFormButton").show()
 			$("#ATMadd").select2('destroy')
 			$("#ATMadd").hide()
@@ -1923,26 +1973,56 @@
 	
 
 	function newPeripheral(){
-		$.ajax({
-			type:"GET",
-			url:"{{url('tisygy/setting/newAtmPeripheral')}}",
-			data:{
-				atmOwner:$("#atmAddOwner").val(),
-				atmID:$("#ATMadd").select2('data')[0].text.split(' -')[0],
-				peripheralID:$("#atmAddPeripheralID").val(),
-				peripheralMachineType:$("#atmAddPeripheralType").val(),
-				peripheralSerial:$("#atmAddPeripheralSerial").val(),
-			},
-			success: function (data){
-            	swalWithCustomClass.fire(
-					'Success',
-					'ATM Added',
-					'success'
-				)
-				$("#modal-setting-atm-add").modal('toggle');
-				$("#tableAtm").DataTable().ajax.url("tisygy/setting/getAllAtm").load();
-			},
-		})
+		if($("#atmAddOwner").val() == 26){
+			$.ajax({
+				type:"GET",
+				url:"{{url('tisygy/setting/newAtmPeripheral')}}",
+				data:{
+					atmOwner:$("#atmAddOwner").val(),
+					atmID:$("#ATMadd").select2('data')[0].text.split(' -')[0],
+					peripheralID:"-",
+					// peripheralMachineType:$("#atmAddPeripheralType").val(),
+					// peripheralSerial:$("#atmAddPeripheralSerial").val(),
+
+					peripheral_cctv_dvr_sn:$("#atmAddPeripheralSerialCCTVDVR").val(),
+					peripheral_cctv_dvr_type:$("#atmAddPeripheralTypeCCTVDVR").val(),
+					peripheral_cctv_besar_sn:$("#atmAddPeripheralSerialCCTVBesar").val(),
+					peripheral_cctv_besar_type:$("#atmAddPeripheralTypeCCTVBesar").val(),
+					peripheral_cctv_kecil_sn:$("#atmAddPeripheralSerialCCTVKecil").val(),
+					peripheral_cctv_kecil_type:$("#atmAddPeripheralTypeCCTVKecil").val()
+				},
+				success: function (data){
+	            	swalWithCustomClass.fire(
+						'Success',
+						'ATM CCTV Added',
+						'success'
+					)
+					$("#modal-setting-atm-add").modal('toggle');
+					$("#tableAtm").DataTable().ajax.url("tisygy/setting/getAllAtm").load();
+				},
+			})
+		} else {
+			$.ajax({
+				type:"GET",
+				url:"{{url('tisygy/setting/newAtmPeripheral')}}",
+				data:{
+					atmOwner:$("#atmAddOwner").val(),
+					atmID:$("#ATMadd").select2('data')[0].text.split(' -')[0],
+					peripheralID:"-",
+					peripheralMachineType:$("#atmAddPeripheralType").val(),
+					peripheralSerial:$("#atmAddPeripheralSerial").val(),
+				},
+				success: function (data){
+	            	swalWithCustomClass.fire(
+						'Success',
+						'ATM UPS Added',
+						'success'
+					)
+					$("#modal-setting-atm-add").modal('toggle');
+					$("#tableAtm").DataTable().ajax.url("tisygy/setting/getAllAtm").load();
+				},
+			})
+		}
 	}
 
 	function newAtm(){
@@ -1988,6 +2068,7 @@
 			type:"GET",
 			url:"{{url('tisygy/setting/getParameterAddAtm')}}",
 			success:function(result){
+				$("#atmAddOwner").empty()
 				$.each(result, function (key,value){
 					$("#atmAddOwner").append("<option value='" + value.id + "'>(" + value.client_acronym + ") " + value.client_name + "</option>")
 				});
@@ -2110,10 +2191,25 @@
 					console.log("dasfasdfasd")
 					var append = ""
 					$.each(result.atm.peripheral,function (key,value){
-						append = append + "<li>"
-						append = append + "	<b>[" + value.type + "] - " + value.id_peripheral + " (" + value.machine_type + ")</b><br>"
-						append = append + "	Serial Number : " + value.serial_number
-						append = append + "</li>"
+						if(value.type == "CCTV"){
+							append = append + "<li>"
+							append = append + "	<b>[" + value.type + " DVR] " + value.cctv_dvr_type + "</b><br>"
+							append = append + "	Serial Number : " + value.cctv_dvr_sn
+							append = append + "</li>"
+							append = append + "<li>"
+							append = append + "	<b>[" + value.type + " Besar] " + value.cctv_besar_type + "</b><br>"
+							append = append + "	Serial Number : " + value.cctv_besar_sn
+							append = append + "</li>"
+							append = append + "<li>"
+							append = append + "	<b>[" + value.type + " Kecil] " + value.cctv_kecil_type + "</b><br>"
+							append = append + "	Serial Number : " + value.cctv_kecil_sn
+							append = append + "</li>"
+						} else {
+							append = append + "<li>"
+							append = append + "	<b>[" + value.type + "] " + value.machine_type + "</b><br>"
+							append = append + "	Serial Number : " + value.serial_number
+							append = append + "</li>"
+						}
 					})
 					$("#atmEditPeripheralField").empty()
 					$("#atmEditPeripheralField").append(append)
@@ -3349,7 +3445,7 @@
 					$(".holderIDATM2").show();
 					$(".holderIDATM3").show();
 					$(".holderIDATM").text($("#inputATM").select2('data')[0].text.split(' -')[0]);
-					$(".holderType").text($("#inputType").val());
+					$(".holderType").html($("#inputType").val());
 				}
 
 				if(!$("#inputSerial").val()){
@@ -3374,15 +3470,15 @@
 					$(".holderIDATM2 th").text("CCTV ID");
 					$(".holderIDATM3 th").text("CCTV Type");
 					$(".holderSerial").prev().text("CCTV Serial")
-					$(".holderSerial").text($("#inputSerial").val());
+					$(".holderSerial").html($("#inputSerial").val());
 				} else if ($("#inputClient").val() == "BDIYUPS"){
 					$(".holderIDATM2").insertAfter($(".holderIDATM2").next());
 					$(".holderIDATM2 th").text("UPS ID");
 					$(".holderIDATM3 th").text("UPS Type");
 					$(".holderSerial").prev().text("UPS Serial")
-					$(".holderSerial").text($("#inputSerial").val());
+					$(".holderSerial").html($("#inputSerial").val());
 				} else {
-					$(".holderSerial").text($("#inputSerial").val());
+					$(".holderSerial").html($("#inputSerial").val());
 				}
 
 				$(".holderID").text($("#inputticket").val());
@@ -3393,7 +3489,7 @@
 				$(".holderLocation").text($("#inputLocation").val());
 				$(".holderProblem").text($("#inputProblem").val());
 				
-				$(".holderType").text($("#inputType").val());
+				$(".holderType").html($("#inputType").val());
 
 				$(".holderSeverity").text($("#inputSeverity").val());
 				$(".holderNote").text($("#inputNote").val());
@@ -3560,8 +3656,8 @@
 			$("#holderLocation").text($("#inputLocation").val());
 			$("#holderEngineer").text($("#inputEngineer").val());
 			$("#holderDate").text(waktu);
-			$("#holderSerial").text($("#inputSerial").val());
-			$("#holderType").text($("#inputType").val());
+			$("#holderSerial").html($("#inputSerial").val());
+			$("#holderType").html($("#inputType").val());
 			
 			$("#holderSeverity").text($("#inputSeverity").val());
 			// $("#holderRoot").text($("#inputticket").val();
@@ -3575,9 +3671,9 @@
 					$("#holderIDATM2").show();
 					$("#holderIDATM3").show();
 
-					$("#holderSerial").text($("#inputSerial").val());
-					$("#holderType").text($("#inputType").val());
-					$("#holderType").text($("#inputType").val());
+					$("#holderSerial").html($("#inputSerial").val());
+					$("#holderType").html($("#inputType").val());
+					$("#holderType").html($("#inputType").val());
 
 					$("#holderSerial1 th").text("CCTV Serial")
 					$("#holderIDATM2 th").text("ID CCTV")
@@ -3588,9 +3684,9 @@
 					$("#holderIDATM2").show();
 					$("#holderIDATM3").show();
 
-					$("#holderSerial").text($("#inputSerial").val());
-					$("#holderType").text($("#inputType").val());
-					$("#holderType").text($("#inputType").val());
+					$("#holderSerial").html($("#inputSerial").val());
+					$("#holderType").html($("#inputType").val());
+					$("#holderType").html($("#inputType").val());
 
 					$("#holderSerial1 th").text("UPS Serial")
 					$("#holderIDATM2 th").text("ID UPS")
@@ -3600,7 +3696,7 @@
 					$("#holderIDATM2").show();
 					$("#holderIDATM3").show();
 					$("#holderIDATM").text($("#inputATM").select2('data')[0].text.split(' -')[0]);
-					$("#holderType").text($("#inputType").val());
+					$("#holderType").html($("#inputType").val());
 					
 				}
 

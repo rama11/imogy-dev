@@ -18,7 +18,14 @@ class TicketingATMPeripheral extends Model
 		'id_peripheral',
 		'type',
 		'serial_number',
-		'machine_type'
+		'machine_type',
+
+		'cctv_dvr_sn',
+		'cctv_dvr_type',
+		'cctv_besar_sn',
+		'cctv_besar_type',
+		'cctv_kecil_sn',
+		'cctv_kecil_type'
 	];
 
 	public function atm(){

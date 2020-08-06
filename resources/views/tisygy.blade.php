@@ -764,7 +764,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label>Serial Number</label>
-									<input type="text" class="form-control" id="ticketSerial" readonly>
+									<textarea type="text" class="form-control" id="ticketSerial" rows="3" readonly></textarea> 
 								</div>
 							</div>
 						</div>
@@ -2381,7 +2381,7 @@
 						type:type
 					},
 					success: function(result){
-						$("#inputLocation").val("[" + result.type + "] " + result.id_peripheral + " - " + result.atm.location);
+						$("#inputLocation").val("[" + result.type + "] " + result.atm.atm_id + " - " + result.atm.location);
 						$("#inputSerial").val(result.serial_number);
 						$("#inputType").val(result.machine_type);
 					}
@@ -2457,7 +2457,13 @@
 							$("#emailCloseHeader").html("Dear <b>" + result[0].close_dear + "</b><br>Berikut terlampir Close Tiket untuk Problem <b>" + $(".holderCloseLocation").text() + "</b> : ");
 							$(".holderCloseCustomer").text(result[0].client_name);
 
-							if(result[0].client_acronym  == "BJBR" || result[0].client_acronym  == "BSBB" || result[0].client_acronym  == "BRKR" || result[0].client_acronym  == "BPRKS" || result[0].client_acronym  == "BDIY"){
+							if(
+								result[0].client_acronym  == "BJBR" 
+								|| result[0].client_acronym  == "BSBB" 
+								|| result[0].client_acronym  == "BRKR" 
+								|| result[0].client_acronym  == "BPRKS"
+								|| result[0].client_acronym  == "BDIY"
+								){
 								$(".holderCloseIDATM2").show();
 								$(".holderNumberTicket2").show();
 							} else {
@@ -3165,7 +3171,9 @@
 				$("#ticketStatus").attr('style','');
 
 				$("#ticketIDATM").val(result.id_atm);
-				$("#ticketSerial").val(result.serial_device);
+				var regex = /<br\s*[\/]?>/gi;
+				// $("#mydiv").html(str.replace(regex, "\n"));
+				$("#ticketSerial").val(result.serial_device.substring(0, result.serial_device.length - 4).replace(regex, "\n"));
 				$("#ticketProblem").val(result.problem);
 				$("#ticketPIC").val(result.pic + ' - ' + result.contact_pic);
 				$("#ticketLocation").val(result.location);
@@ -3477,13 +3485,13 @@
 
 				if($("#inputClient").val() == "BDIYCCTV"){
 					$(".holderIDATM2").insertAfter($(".holderIDATM2").next());
-					$(".holderIDATM2 th").text("CCTV ID");
+					$(".holderIDATM2 th").text("ATM ID");
 					$(".holderIDATM3 th").text("CCTV Type");
 					$(".holderSerial").prev().text("CCTV Serial")
 					$(".holderSerial").html($("#inputSerial").val());
 				} else if ($("#inputClient").val() == "BDIYUPS"){
 					$(".holderIDATM2").insertAfter($(".holderIDATM2").next());
-					$(".holderIDATM2 th").text("UPS ID");
+					$(".holderIDATM2 th").text("ATM ID");
 					$(".holderIDATM3 th").text("UPS Type");
 					$(".holderSerial").prev().text("UPS Serial")
 					$(".holderSerial").html($("#inputSerial").val());

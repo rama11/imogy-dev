@@ -764,7 +764,8 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label>Serial Number</label>
-									<textarea type="text" class="form-control" id="ticketSerial" rows="3" readonly></textarea> 
+									<input type="text" class="form-control" id="ticketSerial" style="display: none" readonly> 
+									<textarea type="text" class="form-control" id="ticketSerialArea" rows="3" style="display: none" readonly></textarea> 
 								</div>
 							</div>
 						</div>
@@ -3173,7 +3174,15 @@
 				$("#ticketIDATM").val(result.id_atm);
 				var regex = /<br\s*[\/]?>/gi;
 				// $("#mydiv").html(str.replace(regex, "\n"));
-				$("#ticketSerial").val(result.serial_device.substring(0, result.serial_device.length - 4).replace(regex, "\n"));
+				if(result.id_ticket.split("/")[1] == "BDIYCCTV"){
+					$("#ticketSerialArea").show()
+					$("#ticketSerial").hide()
+					$("#ticketSerialArea").val(result.serial_device.substring(0, result.serial_device.length - 4).replace(regex, "\n"));
+				} else {
+					$("#ticketSerial").show()
+					$("#ticketSerialArea").hide()
+					$("#ticketSerial").val(result.serial_device);
+				}
 				$("#ticketProblem").val(result.problem);
 				$("#ticketPIC").val(result.pic + ' - ' + result.contact_pic);
 				$("#ticketLocation").val(result.location);

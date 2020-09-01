@@ -1270,6 +1270,57 @@ class TicketingController extends Controller
 		return $newAtmPeripheral;
 	}
 
+	public function editAtmPeripheral(Request $request){
+		$peripheral = TicketingATMPeripheral::find($request->id);
+
+		if($peripheral->type == "CCTV"){
+			if($request->type == "1"){
+				$peripheral->cctv_dvr_type = $request->typeEdit;
+				$peripheral->cctv_dvr_sn = $request->serialEdit;
+				$peripheral->save();
+			} else if ($request->type == "2") {
+				$peripheral->cctv_besar_type = $request->typeEdit;
+				$peripheral->cctv_besar_sn = $request->serialEdit;
+				$peripheral->save();
+			} else {
+				$peripheral->cctv_kecil_type = $request->typeEdit;
+				$peripheral->cctv_kecil_sn = $request->serialEdit;
+				$peripheral->save();
+			}
+		} else {
+			$peripheral->machine_type = $request->typeEdit;
+			$peripheral->serial_number = $request->serialEdit;
+			$peripheral->save();
+		}
+		return $peripheral;
+	}
+
+	public function deleteAtmPeripheral(Request $request){
+		$peripheral = TicketingATMPeripheral::find($request->id);
+
+		if($peripheral->type == "CCTV"){
+			if($request->type == "1"){
+				$peripheral->cctv_dvr_type = "";
+				$peripheral->cctv_dvr_sn = "";
+				$peripheral->save();
+			} else if ($request->type == "2") {
+				$peripheral->cctv_besar_type = "";
+				$peripheral->cctv_besar_sn = "";
+				$peripheral->save();
+			} else {
+				$peripheral->cctv_kecil_type = "";
+				$peripheral->cctv_kecil_sn = "";
+				$peripheral->save();
+			}
+			if($peripheral->cctv_dvr_type == "" && $peripheral->cctv_besar_type == "" && $peripheral->cctv_kecil_type == ""){
+				$peripheral->delete();
+			}
+		} else {
+			$peripheral->delete();
+		}
+		return $peripheral;
+	}
+
 	public function newAtm(Request $request){
 		$newAtm = new TicketingATM();
 

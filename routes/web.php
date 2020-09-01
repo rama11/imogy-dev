@@ -234,6 +234,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('getReportHelpdesk2','TestController@getReportHelpdesk2');
 	// Testing Route
 	Route::get('testPerformance', 'TestController@performance');
+	Route::get('testLoading', 'TestController@testLoading');
 	Route::get('logging/{type}','TestController@logging_activity');
 	Route::get('testGetTicketingPerformance','TestController@getTicketingPerformance');
 	Route::get('testChunkQuery','TestController@testChunkQuery');
@@ -313,9 +314,11 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('tisygy/setting/setAtm','TicketingController@setAtm');
 	Route::get('tisygy/setting/deleteAtm','TicketingController@deleteAtm');
 	Route::get('tisygy/setting/newAtm','TicketingController@newAtm');
-	Route::get('tisygy/setting/newAtmPeripheral','TicketingController@newAtmPeripheral');
 	Route::get('tisygy/setting/getSettingClient' , 'TicketingController@getSettingClient');
 	Route::post('tisygy/setting/setSettingClient' , 'TicketingController@setSettingClient');
+	Route::get('tisygy/setting/newAtmPeripheral','TicketingController@newAtmPeripheral');
+	Route::get('tisygy/setting/editAtmPeripheral','TicketingController@editAtmPeripheral');
+	Route::get('tisygy/setting/deleteAtmPeripheral','TicketingController@deleteAtmPeripheral');
 
 	// Route::get('getPerformanceBySeverity','TicketingController@getPerformanceBySeverity');
 	// Route::get('getPerformanceByClient','TicketingController@getPerformanceByClient');

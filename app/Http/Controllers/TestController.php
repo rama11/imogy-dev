@@ -1034,4 +1034,9 @@ class TestController extends Controller
 		// return Datatables::of(User::all())->make(true);
 	}
 
+	public function testLoading(){
+		sleep(3);
+		return 0;
+	}
+
 }

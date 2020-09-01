@@ -54,6 +54,14 @@
 			}
 			
 			body { padding-right: 0 !important }
+			.button-edit-periperal {
+			 	/*display: none;*/
+			 }
+			.itemPeriperal:hover {
+				background-color: #eaeaea;
+				cursor: pointer;
+				display: block;
+			}
 		</style>
 		<!-- End of head section -->
 @endsection
@@ -2195,23 +2203,45 @@
 					var append = ""
 					$.each(result.atm.peripheral,function (key,value){
 						if(value.type == "CCTV"){
-							append = append + "<li>"
-							append = append + "	<b>[" + value.type + " DVR] " + value.cctv_dvr_type + "</b><br>"
-							append = append + "	Serial Number : " + value.cctv_dvr_sn
-							append = append + "</li>"
-							append = append + "<li>"
-							append = append + "	<b>[" + value.type + " Exsternal] " + value.cctv_besar_type + "</b><br>"
-							append = append + "	Serial Number : " + value.cctv_besar_sn
-							append = append + "</li>"
-							append = append + "<li>"
-							append = append + "	<b>[" + value.type + " Internal] " + value.cctv_kecil_type + "</b><br>"
-							append = append + "	Serial Number : " + value.cctv_kecil_sn
-							append = append + "</li>"
+							if(value.cctv_dvr_type != ""){
+								append = append + "<li class='itemPeriperal itemPeriperalEach" + value.id + "-" + 1 + "'>"
+								append = append + "<span class='pull-right button-edit-periperal'><button onclick='editAtmPeriperal(" + value.id + "," + 1 + ")' class='btn btn-primary btn-flat btn-xs' type='button'>Edit</button></span>"
+								append = append + "<span>"
+								append = append + "<b>[" + value.type + " DVR] <span class='itemPeriperalEach" + value.id + "-" + 1 + "-type'>" + value.cctv_dvr_type + "</span></b>"
+								append = append + "<br>"
+								append = append + "Serial Number : <span class='itemPeriperalEach" + value.id + "-" + 1 + "-sn'>" + value.cctv_dvr_sn + "</span>"
+								append = append + "</span>"
+							}
+
+							if(value.cctv_besar_type != ""){
+								append = append + "</li>"
+								append = append + "<li class='itemPeriperal itemPeriperalEach" + value.id + "-" + 2 + "'>"
+								append = append + "<span class='pull-right button-edit-periperal'><button onclick='editAtmPeriperal(" + value.id + "," + 2 + ")' class='btn btn-primary btn-flat btn-xs' type='button'>Edit</button></span>"
+								append = append + "<span>"
+								append = append + "<b>[" + value.type + " Exsternal] <span class='itemPeriperalEach" + value.id + "-" + 2 + "-type'>" + value.cctv_besar_type + "</span></b><br>"
+								append = append + "Serial Number : <span class='itemPeriperalEach" + value.id + "-" + 2 + "-sn'>" + value.cctv_besar_sn + "</span>"
+								append = append + "</span>"
+								append = append + "</li>"
+							}
+							if(value.cctv_kecil_type != ""){
+								append = append + "<li class='itemPeriperal itemPeriperalEach" + value.id + "-" + 3 + "'>"
+								append = append + "<span class='pull-right button-edit-periperal'><button onclick='editAtmPeriperal(" + value.id + "," + 3 + ")' class='btn btn-primary btn-flat btn-xs' type='button'>Edit</button></span>"
+								append = append + "<span>"
+								append = append + "<b>[" + value.type + " Internal] <span class='itemPeriperalEach" + value.id + "-" + 3 + "-type'>" + value.cctv_kecil_type + "</span></b><br>"
+								append = append + "Serial Number : <span class='itemPeriperalEach" + value.id + "-" + 3 + "-sn'>" + value.cctv_kecil_sn + "</span>"
+								append = append + "</span>"
+								append = append + "</li>"
+							}
 						} else {
-							append = append + "<li>"
-							append = append + "	<b>[" + value.type + "] " + value.machine_type + "</b><br>"
-							append = append + "	Serial Number : " + value.serial_number
-							append = append + "</li>"
+							if(value.machine_type != ""){
+								append = append + "<li class='itemPeriperal itemPeriperalEach" + value.id + "-" + 4 + "'>"
+								append = append + "<span class='pull-right button-edit-periperal'><button onclick='editAtmPeriperal(" + value.id + "," + 4 + ")' class='btn btn-primary btn-flat btn-xs' type='button'>Edit</button></span>"
+								append = append + "<span>"
+								append = append + "	<b>[" + value.type + "] <span class='itemPeriperalEach" + value.id + "-" + 4 + "-type'>" + value.machine_type + "</span></b><br>"
+								append = append + "	Serial Number : <span class='itemPeriperalEach" + value.id + "-" + 4 + "-sn'>" + value.serial_number + "</span>"
+								append = append + "</span>"
+								append = append + "</li>"
+							}
 						}
 					})
 					$("#atmEditPeripheralField").empty()
@@ -2286,6 +2316,139 @@
 			})
 		}
 
+	}
+
+	function editAtmPeriperal(id,type){
+		// console.log('this is from atm periperal')
+		var selector = ".itemPeriperalEach" + id + "-" + type
+		
+		var cancleHolderPeriperal = "$(selector).html()"
+
+		var append = ""
+		append = append + '<li class="itemPeriperalEachEdit' + id + '-' + type + '">'
+		append = append + '<span class="pull-right button-edit-periperal">'
+		selectorHolder = "'" + selector + "'" 
+		holder = "'.itemPeriperalEachEdit" + id + "-" + type + "'"
+		append = append + '	<button onclick="saveAtmPeriperal(' + selectorHolder +  ',' + holder + ',' + id + ',' + type +')" class="btn btn-success btn-flat btn-xs" type="button">Save</button>'
+		append = append + '	<button onclick="deleteAtmPeriperal(' + selectorHolder +  ',' + holder + ',' + id + ',' + type +')" class="btn btn-danger btn-flat btn-xs" type="button">Delete</button>'
+		append = append + '	<button onclick="cancelAtmPeriperal(' + selectorHolder +  ',' + holder + ',' + id + ',' + type +')" class="btn btn-default btn-flat btn-xs" type="button">Cancel</button>'
+		append = append + '</span>'
+		append = append + '<span>'
+		type = (type == 1 ? "CCTV DVR" : (type == 2 ? "CCTV Internal" : (type == 3 ? "CCTV Eksternal" : "UPS")))
+		append = append + '	<b>[' + type + ']</b> <input type="text" class="from-control editPeripheralType" value="' + $(selector + "-type").text() + '"><br>'
+		append = append + '	Serial Number : <input type="text" class="from-control editPeripheralSerial" value="' + $(selector + "-sn").text() + '">'
+		append = append + '</span>'
+		append = append + '</li>'
+		$(selector).hide()
+		$(append).insertAfter(selector)
+	}
+
+	function cancelAtmPeriperal(selector, holder){
+		$(selector).show()
+		$(holder).remove()
+	}
+
+	function saveAtmPeriperal(selector,holder,id,type){
+		console.log($(holder + " input.editPeripheralType").val())
+		console.log($(holder + " input.editPeripheralSerial").val())
+		swalWithCustomClass.fire({
+			title: 'Are you sure?',
+			text: "Make sure there is nothing wrong from editing this preriperal!",
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No'
+		}).then((result) => {
+			if (result.value){
+				Swal.fire({
+					title: 'Please Wait..!',
+					text: "It's editing..",
+					allowOutsideClick: false,
+					allowEscapeKey: false,
+					allowEnterKey: false,
+					customClass: {
+						popup: 'border-radius-0',
+					},
+					onOpen: () => {
+						Swal.showLoading()
+					}
+				})
+				$.ajax({
+					type: "GET",
+					url: "{{url('tisygy/setting/editAtmPeripheral')}}",
+					data: {
+						id:id,
+						type:type,
+						typeEdit:$(holder + " input.editPeripheralType").val(),
+						serialEdit:$(holder + " input.editPeripheralSerial").val(),
+					},
+					success: function(resultAjax){
+						Swal.hideLoading()
+						swalWithCustomClass.fire({
+							title: 'Success!',
+							text: "Periperal save.",
+							type: 'success',
+							confirmButtonText: 'Reload',
+						}).then((result) => {
+							$(selector).show()
+							$(selector + "-type").text($(holder + " input.editPeripheralType").val())
+							$(selector + "-sn").text($(holder + " input.editPeripheralSerial").val())
+							$(holder).remove()
+						})
+					}
+				});
+			}
+		})
+	}
+
+	function deleteAtmPeriperal(selector,holder,id,type){
+		console.log($(holder + " input.editPeripheralType").val())
+		console.log($(holder + " input.editPeripheralSerial").val())
+		swalWithCustomClass.fire({
+			title: 'Are you sure?',
+			text: "Make sure there is nothing wrong to delete this preriperal!",
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No'
+		}).then((result) => {
+			if (result.value){
+				Swal.fire({
+					title: 'Please Wait..!',
+					text: "It's deleting..",
+					allowOutsideClick: false,
+					allowEscapeKey: false,
+					allowEnterKey: false,
+					customClass: {
+						popup: 'border-radius-0',
+					},
+					onOpen: () => {
+						Swal.showLoading()
+					}
+				})
+				$.ajax({
+					type: "GET",
+					url: "{{url('tisygy/setting/deleteAtmPeripheral')}}",
+					data: {
+						id:id,
+						type:type
+					},
+					success: function(resultAjax){
+						Swal.hideLoading()
+						swalWithCustomClass.fire({
+							title: 'Success!',
+							text: "Periperal deleted.",
+							type: 'success',
+							confirmButtonText: 'Reload',
+						}).then((result) => {
+							$(selector).remove()
+							$(holder).remove()
+						})
+					}
+				});
+			}
+			
+		})
 	}
 
 	function severitySetting(){
@@ -3451,7 +3614,7 @@
 						if(type == "normal"){
 							var subject = "Open Tiket " + $("#inputLocation").val() + " [" + $("#inputProblem").val() +"]"
 						} else {
-							var subject = "Open Ticket " + $("#inputATM").select2('data')[0].text.split(' -')[0] + " " + result.client_name + " " + $("#inputLocation").val()
+							var subject = "#ATC - Open Ticket " + $("#inputATM").select2('data')[0].text.split(' -')[0] + " " + result.client_name + " " + $("#inputLocation").val()
 						}
 
 						$('.emailMultiSelector').remove()
@@ -3487,8 +3650,6 @@
 					$("#inputNote").val(" - ");
 				}
 				
-				$("#locationProblem").text($("#inputLocation").val());
-
 				var waktu = moment(($("#inputDate").val()), "DD-MMM-YY HH:mm").format("D MMMM YYYY");
 				var waktu2 = moment(($("#inputDate").val()), "DD-MMM-YY HH:mm").format("HH:mm");
 
@@ -3505,18 +3666,32 @@
 					$(".holderSerial").prev().text("UPS Serial")
 					$(".holderSerial").html($("#inputSerial").val());
 				} else {
-					$(".holderSerial").html($("#inputSerial").val());
+					if(type == "normal"){
+						$(".holderSerial").html($("#inputSerial").val());
+					} else {
+						$(".holderSerial").html($("#inputSerial").val() + ";");
+					}
 				}
 
 				$(".holderID").text($("#inputticket").val());
 				
 				$(".holderRefrence").text($("#inputRefrence").val());
-				$(".holderPIC").text($("#inputPIC").val());
-				$(".holderContact").text($("#inputContact").val());
-				$(".holderLocation").text($("#inputLocation").val());
-				$(".holderProblem").text($("#inputProblem").val());
+				if(type == "normal"){
+					$("#locationProblem").text($("#inputLocation").val())
+					$(".holderPIC").text($("#inputPIC").val());
+					$(".holderContact").text($("#inputContact").val());
+					$(".holderLocation").text($("#inputLocation").val());
+					$(".holderProblem").text($("#inputProblem").val());
+					$(".holderType").html($("#inputType").val());
+				} else {
+					$("#locationProblem").text($("#inputLocation").val() + ";")
+					$(".holderPIC").text($("#inputPIC").val() + ";");
+					$(".holderContact").text($("#inputContact").val() + ";");
+					$(".holderLocation").text($("#inputLocation").val() + ";");
+					$(".holderProblem").text($("#inputProblem").val() + ";");
+					$(".holderType").html($("#inputType").val() + ";");
+				}
 				
-				$(".holderType").html($("#inputType").val());
 
 				$(".holderSeverity").text($("#inputSeverity").val());
 				$(".holderNote").text($("#inputNote").val());

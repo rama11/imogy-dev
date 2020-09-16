@@ -70,19 +70,32 @@
             @if (Route::has('login'))
                 <div class="top-right links">
                     @if (Auth::check())
-                        <a href="{{ url('/home') }}">Home</a>
+                        <a class="normal" style="display: none" href="{{ url('/home') }}">Home</a>
                     @else
-                        <a href="{{ url('/login') }}">Login</a>
-                        
+                        <a class="normal" style="display: none" href="{{ url('/login') }}">Login</a>
                     @endif
                 </div>
             @endif
 
             <div class="content">
-                <div class="title m-b-md">
+                <div class="title m-b-md normal" style="display: none">
                   <img src="img/WIMOGY.png" style="position: relative;" width="80%">
-                </div> 
-
+                </div>
+                <div id="pengumuman" style="display: none">
+                    <h1>Pengumuman</h1>
+                    <p>
+                        Dikarenakan adanya pergantian teknis, untuk alamat Imogy yang semula https://sinergy-dev.xyz
+                        akan di rubah menjadi 
+                        <br>
+                        <h2><a href="https://sifoma.id">sifoma.id</a></h2>
+                        <br>
+                        Tidak ada perubahan lain yang perlu di lakukan.
+                        <br>
+                        Perubahan ini mulai berlaku pada tanggal <h2>17 September 2020 18:00</h2>
+                        Bagi temen-temen bisa mengunakan domain sifoma.id mulai pengumuman ini di terbitkan.
+                        <br>Terimakasih <small>Love You</small>
+                    </p>
+                </div>
                 <!-- <div class="links">
                     <a href="https://laravel.com/docs">OnTime</a>
                     <a href="https://laracasts.com">Excelent</a>
@@ -97,5 +110,17 @@
 		<img src="img/sip.png" style="position:fixed; right:0.1px; bottom:0.2px; align-items:right; text-align: right;" width="10%"></div>
         
 		</footer>
+        <script>
+            console.log(window.location.hostname)
+            if(window.location.hostname == "sinergy-dev.xyz"){
+                document.getElementById("pengumuman").style.display = "block"
+                document.getElementsByClassName("normal")[0].style.hide = "hide"
+                document.getElementsByClassName("normal")[1].style.hide = "hide"
+            } else {
+                document.getElementsByClassName("normal")[0].style.display = "block"
+                document.getElementsByClassName("normal")[1].style.display = "block"
+                document.getElementById("pengumuman").style.hide = "hide" 
+            }
+        </script>
     </body>
 </html>

@@ -661,7 +661,9 @@ class AdminController extends Controller
 				'id_absen' => $id_absen,
 				'condition_presence' => $request->condition,
 				'lat' => $request->lat,
-				'lng' => $request->lng
+				'lng' => $request->lng,
+				'http_user_agent' => $request->header('User-Agent'),
+				'ip_access' => $request->header('x-forwarded-for')
 			]);
 	}
 

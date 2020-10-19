@@ -1174,12 +1174,28 @@ class AdminController extends Controller
 		// return $datas;
 		
 		$datas2 = DB::table('waktu_absen')
+			->select(
+				DB::raw('`waktu_absen`.`id` AS `id`'),
+				DB::raw('`users`.`name` AS `user_name`'),
+				'waktu_absen.jam',
+				'waktu_absen.tanggal',
+				DB::raw('`location`.`name` AS `location_name`'),
+				DB::raw('IFNULL(`absen_location`.`ip_access`,"-") AS `ip_access`'),
+				DB::raw('IFNULL(`absen_location`.`http_user_agent`,"-") AS `http_user_agent`'),
+				'waktu_absen.late'
+			)
+			->join('users','users.id','=','waktu_absen.id_user')
+			->join('absen_location','waktu_absen.id','=','absen_location.id_absen')
 			->join('location','waktu_absen.location','=','location.id')
-			->orderBy('tanggal','ASC')
-			->orderBy('jam','ASC')
-			->get()
-			->toarray();
-		$datas2 = array_reverse($datas2);
+			->orderBy('waktu_absen.id','DESC')
+			// ->orderBy('tanggal','ASC')
+			// ->orderBy('jam','ASC')
+			->limit(100)
+			->get();
+			// ->toarray();
+		// $datas2 = array_reverse($datas2);
+
+		// return $datas2;
 
 		$users = DB::table('users')
 			->select('id','name','team')
@@ -1338,14 +1354,14 @@ class AdminController extends Controller
 			$var[$stat]["id"] = $IDUser[$key];
 		}
 
-		foreach ($datas2 as $data) {
-			// echo $user->location . "<br>";
-			for ($i=0; $i < sizeof($users); $i++) { 
-				if($data->id_user == $users[$i]->id){
-					$data->id_user = $users[$i]->name;
-				}
-			}
-		}
+		// foreach ($datas2 as $data) {
+		// 	// echo $user->location . "<br>";
+		// 	for ($i=0; $i < sizeof($users); $i++) { 
+		// 		if($data->id_user == $users[$i]->id){
+		// 			$data->id_user = $users[$i]->name;
+		// 		}
+		// 	}
+		// }
 
 		foreach ($datas as $data) {
 			// echo $user->location . "<br>";
@@ -1444,8 +1460,8 @@ class AdminController extends Controller
 		    ->get();
 
 		// return $summaryCounts;
-
-		return view('precense.teamHistory',compact('datas2','summaryCounts','status','late','injury','ontime','count','absen','attendance','absenToday','ids','problem'));
+	    $sidebar_collapse = true;
+		return view('precense.teamHistory',compact('datas2','summaryCounts','status','late','injury','ontime','count','absen','attendance','absenToday','ids','problem','sidebar_collapse'));
 	}
 
 	public function getUserHistory ($id,$start = 0,$end = 0){

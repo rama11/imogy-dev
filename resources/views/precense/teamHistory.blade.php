@@ -1,5 +1,9 @@
 @extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
 
+@section('head')
+	<link rel="stylesheet" href="{{ url('plugins/datatables/dataTables.bootstrap.css')}}">
+@endsection
+
 @section('content')
 <style>
 .loader {
@@ -283,28 +287,38 @@
 					<div class="box-header with-border">
 						<h3 class="box-title">All history attendance</h3>
 					</div>
-					<div class="box-body">
-						<p>This is all off your absent record. Check this history frequenly for futher, thanks</p>
-						<table class="table table-bordered" id="detail_table">
+					<div class="box-body table-responsive no-padding">
+						<!-- <p>This is all off your absent record. Check this history frequenly for futher, thanks</p> -->
+						<table class="table table-bordered dataTable" id="detail_table">
 							<thead>
 								<tr>
+									<th>Id</th>
 									<th>Name</th>
 									<th>Time</th>
 									<th>Date</th>
 									<th>Where</th>
+									<th>User Agent</th>
+									<th>IP Access</th>
 									<th style="width: 40px">Status</th>
 								</tr>
 							</thead>
 							<tbody>
 								@foreach($datas2 as $data)
 								<tr>
-									<td>{{$data->id_user}}</td>
+									<td>{{$data->id}}</td>
+									<td>{{$data->user_name}}</td>
 									<td>{{$data->jam}}</td>
 									<td>{{$data->tanggal}}</td>
-									<td>{{$data->name}}</td>
-									@if($data->late == "No")
+									<td>{{$data->location_name}}</td>
+									<td>{{$data->http_user_agent}}</td>
+									<td>{{$data->ip_access}}</td>
+									@if($data->late == "Late")
 									<td style="vertical-align: middle;">
 										<span class="label label-danger" >{{$data->late}}</span>
+									</td>
+									@elseif($data->late == "Injury-Time")
+									<td style="vertical-align: middle;">
+										<span class="label label-warning" >{{$data->late}}</span>
 									</td>
 									@else
 									<td style="vertical-align: middle;">
@@ -326,11 +340,21 @@
 </section>
 @endsection
 @section('script')
-<script src="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+<script src="{{ url('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
+
 <script>
 
-	$('#detail_table').dataTable();
+	$('#detail_table').DataTable({
+		"columnDefs": [
+            {
+                "targets": [ 0 ],
+                "visible": false,
+                "searchable": false
+            },
+        ],
+        "order": [[ 0, "desc" ]]
+	});
 
 	function modalDetail(id){
 		// alert('detail for : ' + id);
@@ -343,7 +367,7 @@
 				console.log("start");
 				$("#cover").show();
 			},
-			 complete: function() {
+			complete: function() {
 				$("#cover").hide();
 				console.log("complete");
 			},

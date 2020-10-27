@@ -140,6 +140,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('schedule/crateSchedule','AdminController@crateSchedule');
 		Route::get('schedule/deleteSchedule','AdminController@deleteSchedule');
 		Route::get('schedule/changeMonth','AdminController@changeMonth');
+		Route::get('schedule/getLogActivityShifting','AdminController@getLogActivityShifting');
 		
 		
 		Route::get('/usermanage', 'AdminController@usermanage');

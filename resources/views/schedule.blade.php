@@ -1,8 +1,9 @@
 @extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
 
 @section('head')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.5/fullcalendar.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.5/fullcalendar.print.css" media="print">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.5/fullcalendar.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.5/fullcalendar.print.css" media="print">
+	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
 @endsection
 @section('content')
 <style>
@@ -83,6 +84,18 @@
 	td.fc-day.fc-today {
 		background-color: #ffeaa7;
 	}
+
+	.display-none{
+		display: none;
+	}
+
+	.display-block{
+		display: block;
+	}
+
+	.padding-10{
+		padding: 10px;
+	}
 </style>
 
 <div class="content-wrapper">
@@ -113,6 +126,9 @@
 									<a href="#" onclick="showProject('{{$project->project}}','{{$project->id}}')">{{$project->project}}</a>
 								</li>
 							@endforeach
+							<li>
+								<a href="#" onclick="showLog()">Log Activity</a>
+							</li>
 						</ul>
 					</div>
 					<div class="box-body" id="listName" style="display: none;">
@@ -158,6 +174,20 @@
 				<div class="box box-default">
 					<div class="box-body no-padding">
 						<div id="calendar"></div>
+						<div id="log-activity" class="display-none table-responsive padding-10">
+							<table id="table-log" class="table DataTable table-stripped">
+								<thead>
+									<tr>
+										<th>No</th>
+										<th>Activity</th>
+										<th>Date/Time</th>
+										<th>Changed by</th>
+									</tr>
+								</thead>
+								<tbody id="log-content">
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>	
 			</section>			
@@ -208,10 +238,10 @@
 @endsection
 @section('script')
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js"></script>
-
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js"></script>
+	<script type="text/javascript" src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
 	var globalIdUser = 0;
 	var globalProject = 0;
@@ -253,6 +283,8 @@
 		$("#listProject").fadeOut(function (){
 			$("#listName").fadeIn();
 			$("#name").text("for " + name);
+			$("#calendar").removeClass('display-none').addClass('display-block');
+			$("#log-activity").removeClass('display-block').addClass('display-none');
 			$("#calendar").fullCalendar('removeEventSources');
 			$("#calendar").fullCalendar('addEventSource', "{{url('schedule/getThisProject')}}?project=" + idProject + "&month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
 			$("." + idProject).show();
@@ -260,6 +292,39 @@
 			$("#buttonBack").attr("onclick","backListProject(" + idProject + ")");
 		});
 	};
+
+	function showLog(){
+		$('#calendar').removeClass('display-block').addClass('display-none');
+		$('#log-activity').removeClass('display-none').addClass('display-block');
+
+		$('#table-log').DataTable({
+			"ajax": {
+			    "url": "schedule/getLogActivityShifting",
+			    "type": "GET"
+			},
+			"columns": [
+				{
+		            render: function ( data, type, row, meta ) {
+		               return  meta.row+1;
+		            }
+		        },
+		        {
+		            render: function ( data, type, row, meta ) {
+		            	if (row.status == 'create') {
+		            		return "Create Schedule " + row.title + "<br>[" + moment(row.start_before).format('MMMM Do YYYY, h:mm:ss a') + " - " + moment(row.end_before).format('MMMM Do YYYY, h:mm:ss a') + "]";
+		            	}else if (row.status == 'update') {
+		            		return  "Updated Schedule " + row.title + "<br>[" + moment(row.start_before).format('MMMM Do YYYY, h:mm:ss a')  + " - " + moment(row.end_before).format('MMMM Do YYYY, h:mm:ss a')  + "]" + "<br> menjadi <br>"+ row.className_updated + " [" + moment(row.start_updated).format('MMMM Do YYYY, h:mm:ss a')  + " - " + moment(row.end_updated).format('MMMM Do YYYY, h:mm:ss a')  + "]";
+		            	}else{
+		            		return  "Deleted Schedule " + row.title + "<br>[" + moment(row.start_before).format('MMMM Do YYYY, h:mm:ss a')  + " - " + moment(row.end_before).format('MMMM Do YYYY, h:mm:ss a')  + "]";
+		            	}
+		            }
+		        },
+	            { "data": "created_at" },
+	            { "data": "name" },
+        	]
+		});
+		// $("#log-activity").append(table);
+	}
 
 	function showDetail(name,nickname,idUser,idProject){
 		$("#listName").fadeOut(function (){
@@ -338,6 +403,8 @@
 			var day = moment(waktu).toISOString(true);
 			var startShift2 = moment(waktu).format('YYYY-MM-DD') + "T" + originalEventObject.startShift + ":00.000Z";
 			var endShift2 = moment(waktu).format('YYYY-MM-DD') + "T" + originalEventObject.endShift + ":00.000Z";
+			var start_before = moment(waktu).format('YYYY-MM-DD') + " " + originalEventObject.startShift + ":00";
+			var end_before = moment(waktu).format('YYYY-MM-DD') + " " + originalEventObject.endShift + ":00";
 			
 			var ketemu = 0;
 
@@ -373,6 +440,8 @@
 								name:name3,
 								start: startShift2,
 								end: endShift2,
+								start_before:start_before,
+								end_before:end_before,
 								shift: originalEventObject.Shift,
 								id_project: globalProject
 

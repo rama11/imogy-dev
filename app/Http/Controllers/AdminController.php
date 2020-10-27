@@ -1763,6 +1763,31 @@ class AdminController extends Controller
 
 	}
 
+	function getLogActivityShifting(Request $req){
+		return array("data"=>DB::table('shiftingLog')
+			->join('users','users.id','=','shiftingLog.id_users')
+			->select('title','shiftingLog.created_at','users.name','start_before','end_before','start_updated','end_updated','className_updated','className_before','status')
+			->orderBy('created_at','desc')
+			->get());
+		// $user = DB::table('users')->where("nickname",$req->name)->first();
+
+		// DB::table('shifting')
+		// 	->insert(
+		// 		[
+		// 			'id' => NULL,
+		// 			'id_user' => $user->id,
+		// 			'title' => $req->title,
+		// 			'start' => $req->start,
+		// 			'end' => $req->end,
+		// 			'className' => $req->shift,
+		// 			'hadir' => "00:00:00",
+		// 			'tanggal' => date('Y-m-d h:i:s'),
+		// 			'id_project' => $req->id_project,
+					
+		// 		]
+		// 	);
+	}
+
 	function getScheduleThisMonth(Request $req){
 		return DB::table('shifting')
 			->orderBy('start','DESC')
@@ -1814,13 +1839,45 @@ class AdminController extends Controller
 				]
 			);
 
+		DB::table('shiftingLog')
+			->insert(
+					[
+						'id_users' => Auth::user()->id,
+						'title' => $req->title,
+						'start_before' => $req->start_before,
+						'end_before' => $req->end_before,
+						'className_before' => $req->shift,	
+						'created_at' => date('Y-m-d h:i:s'),
+						'status' => 'create',					
+					]
+				);
+
 		return DB::table('shifting')->orderBy('id','DESC')->first()->id;
 	}
 
 	public function deleteSchedule (Request $req) {
+		$shifting = DB::table('shifting')->select('start','end','title','className')->where('id','=',$req->id)->first();
+
+		DB::table('shiftingLog')
+			->insert(
+					[
+						'id_users' => Auth::user()->id,
+						'title' => $shifting->title,
+						'start_before' => date('Y-m-d h:i:s', strtotime($shifting->start)),
+						'end_before' => date('Y-m-d h:i:s', strtotime($shifting->end)),
+						'className_before' => $shifting->className,	
+						'created_at' => date('Y-m-d h:i:s'),
+						'status' => 'delete',					
+					]
+				);
+
 		DB::table('shifting')
 			->where('id','=',$req->id)
 			->delete();
+
+		
+
+		return "success";
 	}
 
 	function changeAbsent(Request $req,$id){

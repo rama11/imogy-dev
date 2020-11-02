@@ -1750,7 +1750,8 @@ class AdminController extends Controller
 			->toArray();
 
 		if($month == ""){
-			return view('schedule',compact('users','projects','nameUsers','nameUsersShif','nameUsersShif2'));
+			$sidebar_collapse = true;
+			return view('schedule',compact('users','projects','nameUsers','nameUsersShif','nameUsersShif2','sidebar_collapse'));
 		} else {
 			return $users;
 		}

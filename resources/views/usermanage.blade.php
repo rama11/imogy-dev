@@ -1,5 +1,7 @@
 @extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
-
+@section('head')
+<link rel="stylesheet" href="{{ url('plugins/timepicker/bootstrap-timepicker.min.css')}}">
+@endsection
 @section('content')
 <div class="content-wrapper">
 	<section class="content-header">
@@ -118,20 +120,25 @@
 							</div>
 							<div class="col-md-6">
 								<input id="userID" type="hidden" name="id" value="">
-								<div class="form-group">
-									<label>After</label>
-									<select name="masuk" class="form-control" id="afterEdit">
-										@foreach($presents_timing as $value)
-											<option value="{{$value->id}}">{{$value->name}}</option>
-										@endforeach
-									</select>
+								<div class="bootstrap-timepicker">
+									<div class="form-group">
+										<label>After</label>
+
+										<div class="input-group">
+											<input type="text" class="form-control timepicker" name="masuk" id="afterEdit">
+
+											<div class="input-group-addon">
+												<i class="fa fa-clock-o"></i>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary" >Save changes</button>
+						<button type="submit" class="btn btn-primary">Save changes</button>
 					</div>
 				</div>
 			</form>
@@ -309,7 +316,16 @@
 </div>
 @endsection
 @section('script')
+<script src="{{ url('plugins/timepicker/bootstrap-timepicker.min.js')}}"></script>
+
 <script type="text/javascript">
+	$(".timepicker").timepicker({
+		showInputs: false,
+		minuteStep: 1,
+		maxHours: 24,
+		showMeridian: false,
+		showSeconds:true,
+	});
 	function getMasuk(id){
 		// console.log(id);
 		$.ajax({

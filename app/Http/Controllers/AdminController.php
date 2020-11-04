@@ -358,12 +358,28 @@ class AdminController extends Controller
 	}
 
 	public function setMasuk(Request $request){
-
 		if(isset($request->masuk)){
+			$data = DB::table('present_timing')
+				->where('on_time','=',$request->masuk)
+				->first();
+
+			if ($data === null) {
+				DB::table('present_timing')
+					->insert([
+						"name" => "Jam " . $request->masuk,
+						"on_time" => $request->masuk,
+						"injury_time" => date('H:i:s',strtotime('+15 minutes +15 seconds',strtotime($request->masuk))),
+						"late_time" => date('H:i:s',strtotime('+15 minutes +16 seconds',strtotime($request->masuk)))
+					]);
+				$request->masuk = DB::table('present_timing')->orderBy('id','DESC')->first()->id;
+			} else {
+				$request->masuk = $data->id;
+			}
+		
 			DB::table('users')
 			->where('id','=',$request->id)
 			->update([
-				'present_timing' => $request->masuk,
+				'present_timing' => $request->masuk
 			]);
 		}
 

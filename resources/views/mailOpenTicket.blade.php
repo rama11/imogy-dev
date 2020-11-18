@@ -55,7 +55,7 @@
 			<td  style=" border:1px solid; padding: 3px;" class="holderDate"></td>
 		</tr>
 		<tr>
-			<th style=" border:1px solid #fff;  padding: 3px;width:120px;color: #fff;background-color: #337ab7;text-align: left;" class="bg-primary">Serial number</th>
+			<th style=" border:1px solid #fff;  padding: 3px;width:120px;color: #fff;background-color: #337ab7;text-align: left;" class="bg-primary">Serial Number</th>
 			<td  style=" border:1px solid; padding: 3px;" class="holderSerial"></td>
 		</tr>
 		<tr style="display: none" class="holderIDATM3">
@@ -63,7 +63,7 @@
 			<td  style=" border:1px solid; padding: 3px;" class="holderType"></td>
 		</tr>
 		<tr style="display: none" class="holderIPMechine3">
-			<th style=" border:1px solid #fff;  padding: 3px;width:120px;color: #fff;background-color: #337ab7;text-align: left;" class="bg-primary">Ip Machine</th>
+			<th style=" border:1px solid #fff;  padding: 3px;width:120px;color: #fff;background-color: #337ab7;text-align: left;" class="bg-primary">IP Machine</th>
 			<td  style=" border:1px solid; padding: 3px;" class="holderIPMechine4"></td>
 		</tr>
 		<tr style="display: none" class="holderIPServer3">

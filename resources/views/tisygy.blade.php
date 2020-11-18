@@ -4054,7 +4054,11 @@
 					success: function(result){
 						console.log(type)
 						if(type == "normal"){
-							var subject = "Open Tiket " + $("#inputLocation").val() + " [" + $("#inputProblem").val() +"]"
+							if($("#inputClient").val() == "BTNI"){
+								var subject = "Open Tiket " + $("#inputAbsenLocation").select2('data')[0].text + " [" + $("#inputProblem").val() +"]"
+							} else {
+								var subject = "Open Tiket " + $("#inputLocation").val() + " [" + $("#inputProblem").val() +"]"
+							}
 						} else {
 							var subject = "#ATC - Open Ticket " + $("#inputATM").select2('data')[0].text.split(' -')[0] + " " + result.client_name + " " + $("#inputLocation").val()
 						}
@@ -4066,7 +4070,11 @@
 						$("#emailOpenCc").emailinput({ onlyValidValue: true, delim: ';' });
 						
 						$("#emailOpenSubject").val(subject);
-						$("#emailOpenHeader").html("Dear <b>" + result.open_dear + "</b><br>Berikut terlampir Open Tiket untuk Problem <b>" + $("#inputLocation").val() + "</b> : ");
+						if($("#inputClient").val() == "BTNI"){
+							$("#emailOpenHeader").html("Dear <b>" + result.open_dear + "</b><br>Berikut terlampir Open Tiket untuk Problem <b>" + $("#inputAbsenLocation").select2('data')[0].text + "</b> : ");
+						} else {
+							$("#emailOpenHeader").html("Dear <b>" + result.open_dear + "</b><br>Berikut terlampir Open Tiket untuk Problem <b>" + $("#inputLocation").val() + "</b> : ");
+						}
 						$(".holderCustomer").text(result.client_name);
 					}
 				});

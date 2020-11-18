@@ -26,6 +26,7 @@ use App\Http\Models\TicketingClient;
 use App\Http\Models\TicketingATM;
 use App\Http\Models\TicketingATMPeripheral;
 use App\Http\Models\TicketingSeverity;
+use App\Http\Models\TicketingAbsen;
 
 use Carbon\Carbon;
 use Validator;
@@ -415,7 +416,11 @@ class TicketingController extends Controller
 
 		$detailTicketOpen = new TicketingDetail();
 		$detailTicketOpen->id_ticket = $request->id_ticket;
-		$detailTicketOpen->id_atm = $request->id_atm;
+		if($request->absen == "-"){
+			$detailTicketOpen->id_atm = $request->id_atm;
+		} else {
+			$detailTicketOpen->id_atm = $request->absen;
+		}
 		$detailTicketOpen->refrence = $request->refrence;
 		$detailTicketOpen->pic = $request->pic;
 		$detailTicketOpen->contact_pic = $request->contact_pic;
@@ -896,7 +901,13 @@ class TicketingController extends Controller
 			])
 			->first();
 
-		return $result;
+		if(Ticketing::where('id',$idTicket)->first()->id_client == "29"){
+			$result->machine_absen = TicketingAbsen::find($result->id_atm);
+			return $result;
+		} else {
+			return $result;
+		}
+
 	}
 
 	public function setUpdateTicket(Request $req){
@@ -1149,6 +1160,10 @@ class TicketingController extends Controller
 	}
 
 
+	public function getAllAbsenSetting(){
+		return array('data' => TicketingAbsen::get());
+	}
+
 	public function getAtmId(Request $request){
 		// $result = TicketingClient::with('client_atm')
 		// 	->where('client_acronym',$request->acronym)
@@ -1170,8 +1185,20 @@ class TicketingController extends Controller
 			// return TicketingClient::where('client_acronym',$request->acronym)->first()->id;
 	}
 
+	public function getAbsenId(Request $req){
+		return TicketingAbsen::select(
+				'id',
+				DB::raw('CONCAT(`nama_cabang`," - ", `nama_kantor`) AS `text`')
+			)
+			->get()->all();
+	}
+
 	public function getAtmDetail(Request $request){
 		return TicketingATM::where('id',$request->id_atm)->first();
+	}
+
+	public function getAbsenDetail(Request $request){
+		return TicketingAbsen::where('id',$request->id_absen)->first();
 	}
 
 	public function getAtmPeripheralDetail(Request $request){
@@ -1211,6 +1238,14 @@ class TicketingController extends Controller
 		);
 	}
 
+	public function getDetailAbsen(Request $request){
+		$absen = TicketingAbsen::where('id',$request->id_absen)->first();
+
+		return array(
+			'absen' => $absen
+		);
+	}
+
 	public function setAtm(Request $request){
 		$setAtm = TicketingATM::where('id','=',$request->idAtm)->first();
 		 $messages = [
@@ -1242,8 +1277,25 @@ class TicketingController extends Controller
 
 	}
 
+	public function setAbsen(Request $request){
+		$setAbsen = TicketingAbsen::where('id','=',$request->idAbsen)->first();
+
+		$setAbsen->nama_cabang = $request->absenEditNamaCabang;
+		$setAbsen->nama_kantor = $request->absenEditNamaKantor;
+		$setAbsen->type_machine = $request->absenEditMachineType;
+		$setAbsen->ip_machine = $request->absenEditIPMachine;
+		$setAbsen->ip_server = $request->absenEditIPServer;
+
+		$setAbsen->save();
+
+	}
+
 	public function deleteAtm(Request $request){
 		TicketingATM::where('id','=',$request->idAtm)->first()->delete();
+	}
+
+	public function deleteAbsen(Request $request){
+		TicketingAbsen::where('id','=',$request->idAbsen)->first()->delete();
 	}
 
 	public function newAtmPeripheral(Request $request){
@@ -1357,6 +1409,19 @@ class TicketingController extends Controller
 			]);
 
 		$newAtm->save();
+
+	}
+
+	public function newAbsen(Request $request){
+		$newAbsen = new TicketingAbsen();
+
+		$newAbsen->nama_cabang = $request->absenAddNamaCabang;
+		$newAbsen->nama_kantor = $request->absenAddNamaKantor;
+		$newAbsen->type_machine = $request->absenAddMachineType;
+		$newAbsen->ip_machine = $request->absenAddIPMachine;
+		$newAbsen->ip_server = $request->absenAddIPServer;
+
+        $newAbsen->save();
 
 	}
 

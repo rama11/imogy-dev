@@ -350,6 +350,7 @@
 								<div class="form-group" id="locationDiv" style="display: none;">
 									<label for="inputEmail" class="col-sm-2 control-label">Location*</label>
 									<div class="col-sm-10">
+										<select class="form-control select2" id="inputAbsenLocation" style="width: 100%" required></select>
 										<input type="text" class="form-control" id="inputLocation" placeholder="" required>
 										<span class="help-block" style="margin-bottom: 0px; display: none;">Location Must be fill!</span>
 									</div>
@@ -366,7 +367,18 @@
 										<input type="text" class="form-control" id="inputType" placeholder="">
 									</div>
 								</div>
-
+								<div class="form-group" id="ipMechineDiv" style="display: none;">
+									<label for="inputType" class="col-sm-2 control-label">IP Mechine</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="inputIpMechine" placeholder="">
+									</div>
+								</div>
+								<div class="form-group" id="ipServerDiv" style="display: none;">
+									<label for="inputType" class="col-sm-2 control-label">IP Server</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="inputIpServer" placeholder="">
+									</div>
+								</div>
 								<hr id="hrLine2" style="display: none">
 								<div class="form-group" id="reportDiv" style="display: none;">
 									<label for="inputEmail" class="col-sm-2 control-label">Report Time*</label>
@@ -451,6 +463,14 @@
 								<tr id="holderIDATM3" style="display: none;">
 									<th class="bg-primary">Mechine Type</th>
 									<td id="holderType"></td>
+								</tr>
+								<tr id="holderIPMechine" style="display: none;">
+									<th class="bg-primary">IP Mechine</th>
+									<td id="holderIPMechine2"></td>
+								</tr>
+								<tr id="holderIPServer" style="display: none;">
+									<th class="bg-primary">IP Server</th>
+									<td id="holderIPServer2"></td>
 								</tr>
 								<tr>
 									<th class="bg-primary">Severity</th>
@@ -603,6 +623,9 @@
 							<button class="btn btn-flat btn-default" onclick="atmSetting()">
 								ATM Setting
 							</button>
+							<button class="btn btn-flat btn-default" onclick="absenSetting()">
+								Absen Setting
+							</button>
 							<button class="btn btn-flat btn-default" onclick="severitySetting()">
 								Severity Setting
 							</button>
@@ -621,6 +644,19 @@
 									</button>
 									<button class="btn btn-flat btn-primary" onclick="atmAdd()" id="addAtm" style="margin-left: 10px;">
 										Add ATM
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="col-sm-3 settingComponent" style="display: none" id="addAbsen2">
+							<div class="input-group">	
+								<input id="searchBarAbsen" type="text" class="form-control" placeholder="Search Absen Machine">
+								<span class="input-group-btn">
+									<button id="applyFilterTableAbsen" type="button" class="btn btn-default btn-flat">
+										<i class="fa fa-fw fa-search"></i>
+									</button>
+									<button class="btn btn-flat btn-primary" onclick="absenAdd()" id="addAbsen" style="margin-left: 10px;">
+										Add
 									</button>
 								</span>
 							</div>
@@ -674,6 +710,22 @@
 										<th style="vertical-align: middle;text-align: center;">Serial Number</th>
 										<th style="vertical-align: middle;text-align: center;">Location</th>
 										<th style="vertical-align: middle;text-align: center;">Activation</th>
+										<th style="vertical-align: middle;text-align: center;"></th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+					<div style="display: none" id="absenSetting" class="row form-group settingComponent">
+						<div class="col-md-12">
+							<table class="table table-striped" id="tableAbsen">
+								<thead>
+									<tr>
+										<th style="vertical-align: middle;text-align: center;">Nama Cabang</th>
+										<th style="vertical-align: middle;text-align: center;">Nama Kantor</th>
+										<th style="vertical-align: middle;text-align: center;">Type Machine</th>
+										<th style="vertical-align: middle;text-align: center;">IP Machine</th>
+										<th style="vertical-align: middle;text-align: center;">IP Server</th>
 										<th style="vertical-align: middle;text-align: center;"></th>
 									</tr>
 								</thead>
@@ -762,7 +814,7 @@
 					<form role="form">
 						<input type="hidden" class="form-control" id="ticketID">
 						<input type="hidden" class="form-control" id="ticketOpen">
-						<div class="row">
+						<div class="row" id="rowGeneral">
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label>ID ATM</label>
@@ -774,6 +826,26 @@
 									<label>Serial Number</label>
 									<input type="text" class="form-control" id="ticketSerial" style="display: none" readonly> 
 									<textarea type="text" class="form-control" id="ticketSerialArea" rows="3" style="display: none" readonly></textarea> 
+								</div>
+							</div>
+						</div>
+						<div class="row" id="rowAbsen" style="display: none;">
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>IP Machine</label>
+									<input type="text" class="form-control" id="ticketIPMachine" readonly>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>IP Server</label>
+									<input type="text" class="form-control" id="ticketIPServer" readonly> 
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>Machine Type</label>
+									<input type="text" class="form-control" id="ticketMachineType" readonly> 
 								</div>
 							</div>
 						</div>
@@ -1282,6 +1354,63 @@
 		</div>
 	</div>
 
+	<div class="modal fade" id="modal-setting-absen">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="modal-setting-title">Change Absen Detail</h4>
+				</div>
+				<div class="modal-body">
+					<form role="form">
+						<input type="hidden" id="idEditAbsen">
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label>Nama Cabang</label>
+									<input type="text" class="form-control" id="absenEditNamaCabang">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label>Nama Kantor</label>
+									<input type="text" class="form-control" id="absenEditNamaKantor">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>Machine Type</label>
+									<input class="form-control" id="absenEditMachineType">
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>IP Machine</label>
+									<input type="text" class="form-control" id="absenEditIPMachine">
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>IP Server</label>
+									<input type="text" class="form-control" id="absenEditIPServer">
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-flat btn-default pull-left" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-flat btn-danger pull-left" onclick="deleteAbsen()">Delete</button>
+					<button type="button" class="btn btn-flat btn-primary" onclick="saveAbsen()">Save changes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="modal fade" id="modal-setting-atm-add">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -1433,6 +1562,61 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="modal fade" id="modal-setting-absen-add">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="modal-setting-title">Absen Add</h4>
+				</div>
+				<div class="modal-body">
+					<form role="form">
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label>Nama Cabang</label>
+									<input type="text" class="form-control" id="absenAddNamaCabang">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label>Nama Kantor</label>
+									<input type="text" class="form-control" id="absenAddNamaKantor">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>Machine Type</label>
+									<input class="form-control" id="absenAddMachineType">
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>IP Machine</label>
+									<input type="text" class="form-control" id="absenAddIPMachine">
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label>IP Server</label>
+									<input type="text" class="form-control" id="absenAddIPServer">
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-flat btn-default pull-left" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-flat btn-primary" onclick="newAbsen()" id="atmAddFormButton">Add</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 <footer class="main-footer">
 	<div class="pull-right hidden-xs">
@@ -1481,8 +1665,18 @@
 			}
 		});
 
+		$('#searchBarAbsen').keypress(function(e){
+			if(e.keyCode == 13){
+				$("#tableAbsen").DataTable().search($('#searchBarAbsen').val()).draw();
+			}
+		});
+
 		$('#applyFilterTableATM').click(function(){
 			$("#tableAtm").DataTable().search($('#searchBarATM').val()).draw();
+		})
+
+		$('#applyFilterTableAbsen').click(function(){
+			$("#tableAbsen").DataTable().search($('#searchBarAbsen').val()).draw();
 		})
 		
 		$('#searchBarTicket').keypress(function(e){
@@ -1853,6 +2047,9 @@
 		$("#holderDate").text('');
 		$("#holderSerial").html('');
 		$("#holderType").html('');
+		$("#holderIPServer2").html('');
+		$("#holderIPMechine2").html('');
+		$("#holderType").html('');
 		$("#holderSeverity").text('');
 		// $("#holderRoot").text($("#inputticket").val();
 		$("#holderNote").text('');
@@ -1860,6 +2057,8 @@
 		$("#holderWaktu").html('');
 		$("#holderIDATM2").hide();
 		$("#holderIDATM3").hide();
+		$("#holderIPMechine").hide();
+		$("#holderIPServer").hide();
 		$("#holderIDATM").text('');
 		
 		$("#tableTicket").hide();
@@ -2073,6 +2272,41 @@
 		})
 	}
 
+	function newAbsen(){
+		$.ajax({
+			type:"GET",
+			url:"{{url('tisygy/setting/newAbsen')}}",
+			data:{
+				absenAddNamaCabang:$("#absenAddNamaCabang").val(),
+				absenAddNamaKantor:$("#absenAddNamaKantor").val(),
+				absenAddMachineType:$("#absenAddMachineType").val(),
+				absenAddIPMachine:$("#absenAddIPMachine").val(),
+				absenAddIPServer:$("#absenAddIPServer").val()
+			},
+			success: function (data){
+				if(!$.isEmptyObject(data.error)){
+					var errorMessage = ""
+					data.error.forEach(function(data,index){
+						errorMessage = errorMessage + data + "<br>";
+					})
+                    swalWithCustomClass.fire(
+						'Error',
+						errorMessage,
+						'error'
+					)
+                } else {
+                	 swalWithCustomClass.fire(
+						'Success',
+						'Absen Added',
+						'success'
+					)
+					$("#modal-setting-absen-add").modal('toggle');
+					$("#tableAbsen").DataTable().ajax.url("tisygy/setting/getAllAbsen").load();
+                }
+			},
+		})
+	}
+
 	function atmAdd(){
 		$("#modal-setting-atm-add").modal('toggle');
 		$.ajax({
@@ -2085,6 +2319,10 @@
 				});
 			}
 		});
+	}
+
+	function absenAdd(){
+		$("#modal-setting-absen-add").modal('toggle');
 	}
 
 	function saveAtm(){
@@ -2121,6 +2359,42 @@
 					)
 					$("#modal-setting-atm").modal('toggle');
 					$("#tableAtm").DataTable().ajax.url("tisygy/setting/getAllAtm").load();
+                }
+			}
+		})
+	}
+
+	function saveAbsen(){
+		$.ajax({
+			type:"GET",
+			url:"{{url('tisygy/setting/setAbsen')}}",
+			data:{
+				idAbsen:$("#idEditAbsen").val(),
+				absenEditNamaCabang:$("#absenEditNamaCabang").val(),
+				absenEditNamaKantor:$("#absenEditNamaKantor").val(),
+				absenEditMachineType:$("#absenEditMachineType").val(),
+				absenEditIPMachine:$("#absenEditIPMachine").val(),
+				absenEditIPServer:$("#absenEditIPServer").val()
+			},
+			success: function (data){
+				if(!$.isEmptyObject(data.error)){
+					var errorMessage = ""
+					data.error.forEach(function(data,index){
+						errorMessage = errorMessage + data + "<br>";
+					})
+                    swalWithCustomClass.fire(
+						'Error',
+						errorMessage,
+						'error'
+					)
+                } else {
+                	 swalWithCustomClass.fire(
+						'Success',
+						'Absen Changed',
+						'success'
+					)
+					$("#modal-setting-absen").modal('toggle');
+					$("#tableAbsen").DataTable().ajax.url("tisygy/setting/getAllAbsen").load();
                 }
 			}
 		})
@@ -2169,6 +2443,57 @@
 							}).then((result) => {
 								$("#modal-setting-atm").modal('toggle');
 								$("#tableAtm").DataTable().ajax.url("tisygy/setting/getAllAtm").load();
+							})
+						}
+					});
+				}
+			}
+		);
+	}
+
+	function deleteAbsen(){
+		swalWithCustomClass.fire({
+			title: 'Are you sure?',
+			text: "To delete this Absen?",
+			type: "warning",
+			showCancelButton: true,
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			allowEnterKey: false,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value){
+					Swal.fire({
+						title: 'Please Wait..!',
+						text: "It's Deleting",
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false,
+						customClass: {
+							popup: 'border-radius-0',
+						},
+						onOpen: () => {
+							Swal.showLoading()
+						}
+					})
+
+					$.ajax({
+						type:"GET",
+						url:"{{url('tisygy/setting/deleteAbsen')}}",
+						data:{
+							idAbsen:$("#idEditAbsen").val(),
+						},
+						success: function(resultAjax){
+							Swal.hideLoading()
+							swalWithCustomClass.fire({
+								title: 'Success!',
+								text: "Absen Deleted",
+								type: 'success',
+								confirmButtonText: 'Reload',
+							}).then((result) => {
+								$("#modal-setting-absen").modal('toggle');
+								$("#tableAbsen").DataTable().ajax.url("tisygy/setting/getAllAbsen").load();
 							})
 						}
 					});
@@ -2256,6 +2581,26 @@
 		});
 	}
 
+	function editAbsen(absen_id){
+		$.ajax({
+			type:"GET",
+			url:"{{url('tisygy/setting/getDetailAbsen')}}",
+			data:{
+				id_absen:absen_id
+			},
+			success:function(result){
+				$("#idEditAbsen").val(result.absen.id)
+				$("#absenEditNamaCabang").val(result.absen.nama_cabang)
+				$("#absenEditNamaKantor").val(result.absen.nama_kantor)
+				$("#absenEditMachineType").val(result.absen.type_machine)
+				$("#absenEditIPMachine").val(result.absen.ip_machine)
+				$("#absenEditIPServer").val(result.absen.ip_server)
+
+				$("#modal-setting-absen").modal('toggle');
+			}
+		});
+	}
+
 	function emailSetting(){
 		$(".settingComponent").hide()
 		$("#emailSetting").show()
@@ -2300,6 +2645,63 @@
 					},
 					{ 
 						data:'activation',
+						className:'text-center',
+					},
+					{
+						data:'action',
+						className:'text-center',
+						orderable: false,
+						searchable: true,
+					}
+				],
+				// order: [[10, "DESC" ]],
+				autoWidth:false,
+				lengthChange: false,
+				searching:true,
+			})
+		}
+
+	}
+
+	function absenSetting(){
+		$(".settingComponent").hide()
+		$("#absenSetting").show()
+		$("#addAbsen").show()
+		$("#addAbsen2").show()
+
+		if($.fn.dataTable.isDataTable("#tableAbsen")){
+
+		} else {
+			$("#tableAbsen").DataTable({
+				ajax:{
+					type:"GET",
+					url:"{{url('tisygy/setting/getAllAbsen')}}",
+					dataSrc: function (json){
+						json.data.forEach(function(data,idex){
+							data.action = '<button type="button" class="btn btn-flat btn-block btn-default" onclick="editAbsen(' + data.id + ')">Edit</button>'
+						})
+						return json.data
+					}
+				},
+				columns:[
+					{
+						data:'nama_cabang',
+						className:'text-center',
+					},
+					{ 	
+						data:'nama_kantor',
+						className:'text-center',
+					},
+					{
+						data:'type_machine',
+						className:'text-center',
+					},
+					{ 
+						data:'ip_machine',
+						className:'text-center',
+					},
+					{ 
+						data:'ip_server',
 						className:'text-center',
 					},
 					{
@@ -2567,6 +2969,27 @@
 
 		}
 	});
+
+	$("#inputAbsenLocation").change(function(){
+		if(this.value === "Select One"){
+			$("#inputType").val("");
+			$("#inputIpMechine").val("");
+			$("#inputIpServer").val("");
+		} else {
+			$.ajax({
+				type:"GET",
+				url:"{{url('tisygy/create/getAbsenDetail')}}",
+				data:{
+					id_absen:this.value
+				},
+				success: function(result){
+					$("#inputType").val(result.type_machine);
+					$("#inputIpMechine").val(result.ip_machine);
+					$("#inputIpServer").val(result.ip_server);
+				}
+			});
+		}
+	})
 	// $(".sidebar-toggle").click();
 	//Timepicker
 	$(".timepicker").timepicker({
@@ -3337,10 +3760,24 @@
 				$("#ticketIDATM").val(result.id_atm);
 				var regex = /<br\s*[\/]?>/gi;
 				// $("#mydiv").html(str.replace(regex, "\n"));
+				$("#rowGeneral").show()
+				$("#ticketLocation").val(result.location);
+
 				if(result.id_ticket.split("/")[1] == "BDIYCCTV"){
 					$("#ticketSerialArea").show()
 					$("#ticketSerial").hide()
 					$("#ticketSerialArea").val(result.serial_device.substring(0, result.serial_device.length - 4).replace(regex, "\n"));
+				} else if (result.id_ticket.split("/")[1] == "BTNI") {
+					// $("#ticketSerialArea").show()
+					$("#rowAbsen").show()
+					$("#rowGeneral").hide()
+					$("#ticketIPMachine").val(result.machine_absen.ip_machine)
+					$("#ticketIPServer").val(result.machine_absen.ip_server)
+					$("#ticketMachineType").val(result.machine_absen.type_machine)
+					$("#ticketLocation").val(result.machine_absen.nama_cabang + " - " + result.machine_absen.nama_kantor)
+
+
+					// $("#ticketSerialArea").val(result.serial_device.substring(0, result.serial_device.length - 4).replace(regex, "\n"));
 				} else {
 					$("#ticketSerial").show()
 					$("#ticketSerialArea").hide()
@@ -3348,7 +3785,6 @@
 				}
 				$("#ticketProblem").val(result.problem);
 				$("#ticketPIC").val(result.pic + ' - ' + result.contact_pic);
-				$("#ticketLocation").val(result.location);
 
 				$("#ticketNote").val("");
 
@@ -3517,7 +3953,7 @@
 		if(
 			customerAcronym == "BJBR" 
 			|| customerAcronym == "BSBB" 
-			|| customerAcronym == "BRKR" 
+			// || customerAcronym == "BRKR" 
 			|| customerAcronym == "BJTG" 
 			|| customerAcronym == "BDIY"
 			|| customerAcronym == "BDIYCCTV"
@@ -3532,28 +3968,34 @@
 		var typeActivity = 'Open'
 		var typeAjax = "GET"
 		var urlAjax = "{{url('tisygy/mail/sendEmailOpen')}}"
+		if ($('#inputAbsenLocation').hasClass("select2-hidden-accessible")) {
+			var absen = $("#inputAbsenLocation").select2('data')[0].id
+		} else {
+			var absen = "-";
+		}
 		var dataAjax = {
-				body:$("#bodyOpenMail").html(),
-				subject: $("#emailOpenSubject").val(),
-				to: $("#emailOpenTo").val(),
-				cc: $("#emailOpenCc").val(),
-				attachment: $("#emailOpenAttachment").val(),
-				id_ticket:$("#inputticket").val(),
+			body:$("#bodyOpenMail").html(),
+			subject: $("#emailOpenSubject").val(),
+			to: $("#emailOpenTo").val(),
+			cc: $("#emailOpenCc").val(),
+			attachment: $("#emailOpenAttachment").val(),
+			id_ticket:$("#inputticket").val(),
 
-				id:$("#inputID").val(),
-				client:$("#inputClient").val(),
+			id:$("#inputID").val(),
+			client:$("#inputClient").val(),
 
-				id_atm:id_atm,
-				refrence:$("#inputRefrence").val(),
-				pic:$("#inputPIC").val(),
-				contact_pic:$("#inputContact").val(),
-				location:$("#inputLocation").val(),
-				problem:$("#inputProblem").val(),
-				serial_device:$("#inputSerial").val(),
-				note:$("#inputNote").val(),
-				report:moment($("#inputReportingDate").val(),'DD/MM/YYYY').format("YYYY-MM-DD") + " " + moment($("#inputReportingTime").val(),'HH:mm:ss').format("HH:mm:ss.000000"),
-				severity:$("#inputSeverity").val()
-			}
+			id_atm:id_atm,
+			refrence:$("#inputRefrence").val(),
+			pic:$("#inputPIC").val(),
+			contact_pic:$("#inputContact").val(),
+			location:$("#inputLocation").val(),
+			absen:absen,
+			problem:$("#inputProblem").val(),
+			serial_device:$("#inputSerial").val(),
+			note:$("#inputNote").val(),
+			report:moment($("#inputReportingDate").val(),'DD/MM/YYYY').format("YYYY-MM-DD") + " " + moment($("#inputReportingTime").val(),'HH:mm:ss').format("HH:mm:ss.000000"),
+			severity:$("#inputSeverity").val()
+		}
 
 		swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,function(){
 			$("#performance").click();
@@ -3691,6 +4133,16 @@
 					$(".holderProblem").text($("#inputProblem").val() + ";");
 					$(".holderType").html($("#inputType").val() + ";");
 				}
+
+				if($("#inputClient").val() == "BTNI"){
+					$(".holderIDATM3").show();
+					$(".holderType").html($("#inputType").val());
+					$(".holderIPMechine3").show();
+					$(".holderIPMechine4").text($("#inputIpMechine").val());
+					$(".holderLocation").text($("#inputAbsenLocation").select2('data')[0].text);
+					$(".holderIPServer3").show();
+					$(".holderIPServer4").text($("#inputIpServer").val());
+				}
 				
 
 				$(".holderSeverity").text($("#inputSeverity").val());
@@ -3804,6 +4256,15 @@
 		$("#noteDiv").show();
 		$("#serialDiv").show();
 		$("#reportDiv").show();
+
+		if($("#inputClient").val() == "BTNI"){
+			$("#serialDiv").hide();
+			$("#typeDiv").show();
+			$("#inputAbsenLocation").show();
+			$("#inputLocation").remove();
+			$("#ipMechineDiv").show();
+			$("#ipServerDiv").show();
+		}
 		
 		$("#createTicket").show();
 		var onclick = "createTicket(" + clientBanking + ")"
@@ -3901,20 +4362,28 @@
 					$("#holderType").html($("#inputType").val());
 					
 				}
-
-
-				if(clientWincor == 1){
-					$("#createEmailBodyWincor").show()
-					$("#createEmailBodyNormal").hide()
-				} else {
-					$("#createEmailBodyWincor").hide()
-					$("#createEmailBodyNormal").show()
-				}
 			} else {
-				
-				$("#holderIDATM2").hide();
-				$("#holderIDATM3").hide();
 
+				if($("#inputClient").val() == "BTNI"){
+					$("#holderIDATM2").hide();
+					$("#holderSerial1").hide();
+					$("#holderIDATM3").show();
+					$("#holderIPMechine").show();
+					$("#holderIPMechine2").text($("#inputIpMechine").val());
+					$("#holderIPServer").show();
+					$("#holderIPServer2").text($("#inputIpServer").val());
+					$("#holderLocation").text($("#inputAbsenLocation").select2('data')[0].text);
+				} else {
+					$("#holderIDATM2").hide();
+					$("#holderIDATM3").hide();
+				}
+			}
+			if(clientWincor == 1){
+				$("#createEmailBodyWincor").show()
+				$("#createEmailBodyNormal").hide()
+			} else {
+				$("#createEmailBodyWincor").hide()
+				$("#createEmailBodyNormal").show()
 			}
 			
 		}
@@ -3947,11 +4416,32 @@
 				}
 			});
 		} else {
-			$("#locationDiv .col-sm-2").text('Location*')
-			$("#inputATM").val("");
-			$("#inputSerial").val("");
-			$("#inputLocation").val("");
-			$("#inputATMid").hide();
+			if($("#inputClient").val() == "BTNI"){
+				$.ajax({
+					type:"GET",
+					url:"{{url('tisygy/create/getAbsenId')}}",
+					success: function(result){
+						// $("#typeDiv").show();
+						// $("#inputATMid").show();
+						// $("#categoryDiv").show();
+						if ($('#inputAbsenLocation').hasClass("select2-hidden-accessible")) {
+							$("#inputAbsenLocation").select2('destroy');
+						}
+						result.unshift('Select One')
+						// console.log(result);
+						$("#inputAbsenLocation").select2({
+							data:result
+						});
+						// $("#locationDiv .col-sm-2").text('Location')
+					}
+				});
+			} else {
+				$("#locationDiv .col-sm-2").text('Location*')
+				$("#inputATM").val("");
+				$("#inputSerial").val("");
+				$("#inputLocation").val("");
+				$("#inputATMid").hide();
+			}
 		}
 	}
 

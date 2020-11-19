@@ -3624,6 +3624,13 @@
 	}
 
 	function getPerformanceByClient(client){
+		if(client == "BTNI"){
+			$("#tablePerformance").DataTable().column(1).visible(false)
+			$("#tablePerformance").DataTable().column(2).visible(false)
+		} else {
+			$("#tablePerformance").DataTable().column(1).visible(true)
+		}
+		
 		$('#clientList').find(".buttonFilter" + client).removeClass('btn-default').addClass('btn-primary')
 		$('#clientList').find(":not(.buttonFilter" + client + ")").removeClass('btn-primary').addClass('btn-default')
 		$("#tablePerformance").DataTable().clear().draw();

@@ -350,7 +350,7 @@
 								<div class="form-group" id="locationDiv" style="display: none;">
 									<label for="inputEmail" class="col-sm-2 control-label">Location*</label>
 									<div class="col-sm-10">
-										<select class="form-control select2" id="inputAbsenLocation" style="width: 100%" required></select>
+										<select class="form-control select2" id="inputAbsenLocation" style="width: 100%; display: none"></select>
 										<input type="text" class="form-control" id="inputLocation" placeholder="" required>
 										<span class="help-block" style="margin-bottom: 0px; display: none;">Location Must be fill!</span>
 									</div>
@@ -3960,7 +3960,7 @@
 		if(
 			customerAcronym == "BJBR" 
 			|| customerAcronym == "BSBB" 
-			// || customerAcronym == "BRKR" 
+			|| customerAcronym == "BRKR" 
 			|| customerAcronym == "BJTG" 
 			|| customerAcronym == "BDIY"
 			|| customerAcronym == "BDIYCCTV"
@@ -4279,6 +4279,9 @@
 			$("#inputLocation").remove();
 			$("#ipMechineDiv").show();
 			$("#ipServerDiv").show();
+		} else {
+			$("#inputAbsenLocation").remove();
+			$("#inputLocation").show();
 		}
 		
 		$("#createTicket").show();

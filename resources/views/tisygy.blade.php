@@ -3977,8 +3977,10 @@
 		var urlAjax = "{{url('tisygy/mail/sendEmailOpen')}}"
 		if ($('#inputAbsenLocation').hasClass("select2-hidden-accessible")) {
 			var absen = $("#inputAbsenLocation").select2('data')[0].id
+			var location = $("#inputAbsenLocation").select2('data')[0].text
 		} else {
 			var absen = "-";
+			var location = $("#inputLocation").val();
 		}
 		var dataAjax = {
 			body:$("#bodyOpenMail").html(),
@@ -3995,7 +3997,7 @@
 			refrence:$("#inputRefrence").val(),
 			pic:$("#inputPIC").val(),
 			contact_pic:$("#inputContact").val(),
-			location:$("#inputLocation").val(),
+			location:location,
 			absen:absen,
 			problem:$("#inputProblem").val(),
 			serial_device:$("#inputSerial").val(),

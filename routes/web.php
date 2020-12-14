@@ -11,9 +11,11 @@
 */
 // Route yang di panggil pertama sendiri atau sebelum login
 Route::get('/', function () {
-	return view('welcome2');
+	return view('welcome2');    
 	//return view('welcome3');
 });
+
+// Test commit -d
 
 // Route::get('/', function(){ 
 //     return Redirect::to('https://sinergy-dev.xyz', 301); 
@@ -26,7 +28,7 @@ Route::get('/', function () {
 Route::get('maps', function () {
 	return view('maps');
 });
-// use Telegram;
+// use Telegram;       
 
 
 Route::get('testSendMassage','TelegramController@testSendMassage');

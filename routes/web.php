@@ -13,7 +13,7 @@
 Route::get('/', function () {
 	return view('welcome2');
 	//return view('welcome3');
-});   
+});    
 
 // Route::get('/', function(){ 
 //     return Redirect::to('https://sinergy-dev.xyz', 301); 

@@ -239,6 +239,8 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('logging/{type}','TestController@logging_activity');
 	Route::get('testGetTicketingPerformance','TestController@getTicketingPerformance');
 	Route::get('testChunkQuery','TestController@testChunkQuery');
+	Route::get('notif_test','TestController@notif_test');
+	Route::get('notif_test_store','TestController@notif_test_store');
 	Route::get('testingATMMaps','TestController@testingATMMaps');
 	// testChunkQuery
 	

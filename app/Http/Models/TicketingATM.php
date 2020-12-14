@@ -18,5 +18,13 @@ class TicketingATM extends Model
 		'atm_id',
 		'serial_number',
 		'location',
+		'address',
+		'activation',
+		'note',
+		'machine_type',
 	];
+
+	public function peripheral(){
+		return $this->hasMany('App\Http\Models\TicketingATMPeripheral','id_atm','id')->orderBy('type');
+	}
 }

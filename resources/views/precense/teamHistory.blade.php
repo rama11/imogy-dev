@@ -1,5 +1,9 @@
 @extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
 
+@section('head')
+	<link rel="stylesheet" href="{{ url('plugins/datatables/dataTables.bootstrap.css')}}">
+@endsection
+
 @section('content')
 <style>
 .loader {
@@ -149,15 +153,12 @@
 	<section class="content">
 		<div class="row">
 
-			<!-- Panel Kiri -->
 			<section class="col-lg-4 col-xs-6" id="panel_simple">
 				
-				<!-- Box For Chart -->
 				<div class="box box-default">
 					<div class="box-header with-border">
 						<h3 class="box-title">Presentase</h3>
 					</div>
-					<!-- /.box-header -->
 					<div class="box-body ">
 						<div class="row">
 							<div class="col-md-8 text-center">
@@ -167,28 +168,23 @@
 											<span class="sr-only">{{$ontime}}%</span>
 										</div>
 									</div>
-									<!-- ./col -->
 									<div class="progress vertical">
 										<div class="progress-bar progress-bar-yellow" role="progressbar" aria-valuenow="{{$injury}}" aria-valuemin="0" aria-valuemax="100" style="height: {{$injury}}%">
 											<span class="sr-only">{{$injury}}%</span>
 										</div>
 									</div>
-									<!-- ./col -->
 									<div class="progress vertical">
 										<div class="progress-bar progress-bar-red" role="progressbar" aria-valuenow="{{$late}}" aria-valuemin="0" aria-valuemax="100" style="height: {{$late}}%">
 											<span class="sr-only">{{$late}}%</span>
 										</div>
 									</div>
-									<!-- ./col -->
 									<div class="progress vertical">
 										<div class="progress-bar progress-bar-blue" role="progressbar" aria-valuenow="{{$absen}}" aria-valuemin="0" aria-valuemax="100" style="height: {{$absen}}%">
 											<span class="sr-only">{{$absen}}%</span>
 										</div>
 									</div>
 								</div>
-								<!-- ./chart-responsive -->
 							</div>
-							<!-- /.col -->
 							<div class="col-md-4">
 								<ul class="chart-legend">
 									<li><i class="fa fa-circle-o text-yellow"></i> Injury</li>
@@ -196,18 +192,12 @@
 									<li><i class="fa fa-circle-o text-red"></i> Late</li>
 									<li><i class="fa fa-circle-o text-blue"></i> Absent</li>
 								</ul>
-
-								<!-- /.col -->
 							</div>
-							<!-- /.row -->
 						</div>
 					</div>
-					<!-- /.box-body -->
 				</div>
 
-				<!-- Box For Counting Attandence -->
 				<div class="box box-default">
-					<!-- /.box-header -->
 					<div class="box-body ">
 						<ul class="nav nav-pills nav-stacked">
 							<li>
@@ -215,7 +205,6 @@
 									<span class="pull-right text-green">+{{$ontime}}%</span>
 								</a>
 							</li>
-
 							<li>
 								<a href="#">Injury Time ({{$count[1]}})
 									<span class="pull-right text-yellow">+{{$injury}}%</span>
@@ -226,7 +215,6 @@
 									<span class="pull-right text-red">+{{$late}}%</span>
 								</a>
 							</li>
-
 							<li>
 								<a href="#">Absent ({{$count[4]}})
 									<span class="pull-right text-blue">-{{$absen}}%</span>
@@ -239,24 +227,18 @@
 							</li>
 						</ul>
 					</div>
-					<!-- /.box-body -->
 				</div>
 
-				<!-- Box For Detail -->
 				<div class="box box-default">
-					<!-- /.box-header -->
 					<div class="box-body ">
 						<p>For more other history information. Click <b id="detail" style="cursor:pointer">here</b></p>
 					</div>
-					<!-- /.box-body -->
 				</div>
 
 			</section>
 
-			<!-- Panel Kanan -->
 			<section class="col-lg-8 col-xs-6" id="panel_simple2">
 				
-				<!-- Box For Information -->
 				<div class="box box-default">
 					<div class="box-header with-border">
 						<h3 class="box-title">Team Attendence</h3>
@@ -271,47 +253,23 @@
 									<th style="width: 70px;" class="text-center">On Time</th>
 									<th style="width: 50px;" class="text-center">Tolerance</th>
 									<th style="width: 50px;" class="text-center">Late</th>
-									<!-- <th>Absent today</th> -->
 									<th class="text-center">Detail</th>
 								</tr>
 							</thead>
 							<tbody>
 								<?php $i = 1;?>
-								@foreach($var as $key => $variable)
+								@foreach($summaryCounts as $summaryCount)
 								<tr>
 									<td>{{$i}}.</td>
-									<td>{{$key}}</td>
-									<td>{{$variable['where']}}</td>
+									<td>{{$summaryCount->name}}</td>
+									<td>{{$summaryCount->location}}</td>
 
-									<td class="text-center"><span class="badge bg-green">{{$variable['ontime']}}</span></td>
-									<td class="text-center"><span class="badge bg-yellow">{{$variable['injury']}}</span></td>
-									<td class="text-center"><span class="badge bg-red">{{$variable['late']}}</span></td>
+									<td class="text-center"><span class="badge bg-green">{{$summaryCount->on_time}}</span></td>
+									<td class="text-center"><span class="badge bg-yellow">{{$summaryCount->tolerance}}</span></td>
+									<td class="text-center"><span class="badge bg-red">{{$summaryCount->late}}</span></td>
 
-									<!-- @foreach($absenToday as $key => $absen)
-										@if($absen == $variable['id'])
-										<form method="GET" action="{{url('changeAbsent',$variable['id'])}}">
-										<td class="form-group">
-											<select class="form-control" name="alasan" onchange="clickSubmit()">
-												<option value="Alfa">Alfa</option>
-												<option value="Sakit">Sakit</option>
-												<option value="Cuti">Cuti</option>
-												<option value="Izin">Izin</option>
-												<option value="Libur">Libur</option>
-											</select>
-											<input id="change" style="display: none;" type="submit" name="submit">
-										</td>
-										</form>
-										@endif
-									@endforeach
-									@foreach($ids as $key => $absen)
-										@if($absen == $variable['id'])
-										<td class="form-group">
-											{{$problem[$key]}}
-										</td>
-										@endif
-									@endforeach -->
 									<td class="text-center">
-										<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-detail" onclick="modalDetail('{{$variable['id']}}')"><i class="fa fa-align-left"></i></button>
+										<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-detail" onclick="modalDetail('{{$summaryCount->id_user}}')"><i class="fa fa-align-left"></i></button>
 									</td>
 
 								</tr>
@@ -320,39 +278,47 @@
 							</tbody>
 						</table>
 					</div>
-					<!-- /.box-body -->
 				</div>
 
 			</section>
 
-			<!-- Panel Hidden -->
 			<section class="col-lg-12 col-xs-12" id="panel_detail" style="display: none;">
 				<div class="box box-default">
 					<div class="box-header with-border">
 						<h3 class="box-title">All history attendance</h3>
 					</div>
-					<div class="box-body">
-						<p>This is all off your absent record. Check this history frequenly for futher, thanks</p>
-						<table class="table table-bordered" id="detail_table">
+					<div class="box-body table-responsive no-padding">
+						<!-- <p>This is all off your absent record. Check this history frequenly for futher, thanks</p> -->
+						<table class="table table-bordered dataTable" id="detail_table">
 							<thead>
 								<tr>
+									<th>Id</th>
 									<th>Name</th>
 									<th>Time</th>
 									<th>Date</th>
 									<th>Where</th>
+									<th>User Agent</th>
+									<th>IP Access</th>
 									<th style="width: 40px">Status</th>
 								</tr>
 							</thead>
 							<tbody>
 								@foreach($datas2 as $data)
 								<tr>
-									<td>{{$data->id_user}}</td>
+									<td>{{$data->id}}</td>
+									<td>{{$data->user_name}}</td>
 									<td>{{$data->jam}}</td>
 									<td>{{$data->tanggal}}</td>
-									<td>{{$data->name}}</td>
-									@if($data->late == "No")
+									<td>{{$data->location_name}}</td>
+									<td>{{$data->http_user_agent}}</td>
+									<td>{{$data->ip_access}}</td>
+									@if($data->late == "Late")
 									<td style="vertical-align: middle;">
 										<span class="label label-danger" >{{$data->late}}</span>
+									</td>
+									@elseif($data->late == "Injury-Time")
+									<td style="vertical-align: middle;">
+										<span class="label label-warning" >{{$data->late}}</span>
 									</td>
 									@else
 									<td style="vertical-align: middle;">
@@ -364,11 +330,9 @@
 							</tbody>
 						</table>
 					</div>
-					<!-- /.box-body -->
 					<div class="box-footer clearfix">
 						<p class="pull-right">For more other history information. Click <b id="simple" style="cursor:pointer">here</b></p>
 					</div>
-					<!-- /.box-footer-->
 				</div>
 			</section>
 		</div>
@@ -376,11 +340,21 @@
 </section>
 @endsection
 @section('script')
-<script src="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+<script src="{{ url('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
+
 <script>
 
-	$('#detail_table').dataTable();
+	$('#detail_table').DataTable({
+		"columnDefs": [
+            {
+                "targets": [ 0 ],
+                "visible": false,
+                "searchable": false
+            },
+        ],
+        "order": [[ 0, "desc" ]]
+	});
 
 	function modalDetail(id){
 		// alert('detail for : ' + id);
@@ -393,7 +367,7 @@
 				console.log("start");
 				$("#cover").show();
 			},
-			 complete: function() {
+			complete: function() {
 				$("#cover").hide();
 				console.log("complete");
 			},

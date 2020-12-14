@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-
+use DB;
 
 
 
@@ -137,6 +137,60 @@ class BudgetController extends Controller
 
     }
 
+    public function getAllParameterFilter(){
+        return collect([
+            "issuer" => BudgetNote::select('issuer')->groupBy('issuer')->pluck('issuer'),
+            "customer" => BudgetAccount::select('customer')->groupBy('customer')->pluck('customer'),
+        ]);
+    }
+
+    public function getFilteredData(Request $req){
+        $result = BudgetNote::join('budget__account','budget__account.id','=','budget__note.id_account')
+        	->join(DB::raw('(SELECT
+				    `id_note`,`activity`
+				FROM
+				    `budget__activity`
+				WHERE
+				    `id` IN(
+				    SELECT
+				        MAX(`id`) AS `id`
+				    FROM
+				        `budget__activity`
+				    GROUP BY
+				        `id_note`
+				)) `budget__activity`'),'budget__activity.id_note','=','budget__note.id')
+            ->select(
+                'budget__note.id',
+                'budget__note.date',
+                'budget__note.document',
+                'budget__note.issuer',
+                'budget__note.purpose',
+                'budget__note.detail',
+                'budget__note.nominal',
+                'budget__account.PID',
+                'budget__account.customer',
+                'budget__activity.activity'
+            )->orderBy('id','DESC');
+
+        if($req->has('issuer')){
+            $result->where('budget__note.issuer',$req->issuer);
+        }
+        if($req->has('date')){
+            $result->where('budget__note.date','>',Carbon::parse('-' . $req->date)->toDateString());
+        }
+        if($req->has('customer')){
+            $result->where('budget__account.customer',$req->customer);
+        }
+        if($req->has('status')){
+        	if($req->status == "Done"){
+	            $result->where('budget__activity.activity','=','Success');
+        	} else {
+	            $result->where('budget__activity.activity','<>',$req->status);
+        	}
+        }
+        return array("data" => $result->get());
+    }
+
     public function makeReportBudget(Request $req){
         $spreadsheet = new Spreadsheet();
 
@@ -146,31 +200,67 @@ class BudgetController extends Controller
             ->setLastModifiedBy(Auth::user()->name)
             ->setTitle($title);
 
-        $spreadsheet->getActiveSheet()->setTitle('All');
+        // $spreadsheet->getActiveSheet()->setTitle('All');
 
-        $spreadsheet->getActiveSheet()->setCellValue('A1', 'ID ');
-        $spreadsheet->getActiveSheet()->setCellValue('B1', 'Account ');
-        $spreadsheet->getActiveSheet()->setCellValue('C1', 'Date ');
-        $spreadsheet->getActiveSheet()->setCellValue('D1', 'Document ');
-        $spreadsheet->getActiveSheet()->setCellValue('E1', 'Issuer ');
-        $spreadsheet->getActiveSheet()->setCellValue('F1', 'Purpose ');
-        $spreadsheet->getActiveSheet()->setCellValue('G1', 'Detail ');
-        $spreadsheet->getActiveSheet()->setCellValue('H1', 'Nominal ');
-        $spreadsheet->getActiveSheet()->setCellValue('I1', 'Procced ');
+        // $spreadsheet->getActiveSheet()->setCellValue('A1', 'ID ');
+        // $spreadsheet->getActiveSheet()->setCellValue('B1', 'Account ');
+        // $spreadsheet->getActiveSheet()->setCellValue('C1', 'Project');
+        // $spreadsheet->getActiveSheet()->setCellValue('D1', 'Customer ');
+        // $spreadsheet->getActiveSheet()->setCellValue('E1', 'Date ');
+        // $spreadsheet->getActiveSheet()->setCellValue('F1', 'Document ');
+        // $spreadsheet->getActiveSheet()->setCellValue('G1', 'Issuer ');
+        // $spreadsheet->getActiveSheet()->setCellValue('H1', 'Purpose ');
+        // $spreadsheet->getActiveSheet()->setCellValue('I1', 'Detail ');
+        // $spreadsheet->getActiveSheet()->setCellValue('J1', 'Nominal ');
+        // $spreadsheet->getActiveSheet()->setCellValue('K1', 'Procced ');
 
-        $notes = BudgetNote::all();
-        foreach ($notes as $key => $note) {
-            $key = $key + 1;
-            $spreadsheet->getActiveSheet()->setCellValue("A" . ($key + 1), $note->id);
-            $spreadsheet->getActiveSheet()->setCellValue("B" . ($key + 1), $note->id_account);
-            $spreadsheet->getActiveSheet()->setCellValue("C" . ($key + 1), $note->date);
-            $spreadsheet->getActiveSheet()->setCellValue("D" . ($key + 1), $note->document);
-            $spreadsheet->getActiveSheet()->setCellValue("E" . ($key + 1), $note->issuer);
-            $spreadsheet->getActiveSheet()->setCellValue("F" . ($key + 1), $note->purpose);
-            $spreadsheet->getActiveSheet()->setCellValue("G" . ($key + 1), $note->detail);
-            $spreadsheet->getActiveSheet()->setCellValue("H" . ($key + 1), $note->nominal);
-            $spreadsheet->getActiveSheet()->setCellValue("I" . ($key + 1), $note->procced);
+        // $notes = BudgetNote::all();
+        // $notes = BudgetNote::with('account_note')
+        //     ->orderBy('issuer','ASC')
+        //     ->get();
+
+        // Per User
+        $users = BudgetNote::groupBy('issuer')
+            ->select('issuer')
+            ->get();
+
+        foreach ($users as $index_user => $user) {
+            $spreadsheet->createSheet($index_user+1)->setTitle($user->issuer);
+            $spreadsheet->setActiveSheetIndex($index_user+1);
+
+            $spreadsheet->getActiveSheet()->setCellValue('A1', 'ID ');
+            $spreadsheet->getActiveSheet()->setCellValue('B1', 'Account ');
+            $spreadsheet->getActiveSheet()->setCellValue('C1', 'Project');
+            $spreadsheet->getActiveSheet()->setCellValue('D1', 'Customer ');
+            $spreadsheet->getActiveSheet()->setCellValue('E1', 'Date ');
+            $spreadsheet->getActiveSheet()->setCellValue('F1', 'Document ');
+            $spreadsheet->getActiveSheet()->setCellValue('G1', 'Issuer ');
+            $spreadsheet->getActiveSheet()->setCellValue('H1', 'Purpose ');
+            $spreadsheet->getActiveSheet()->setCellValue('I1', 'Detail ');
+            $spreadsheet->getActiveSheet()->setCellValue('J1', 'Nominal ');
+            $spreadsheet->getActiveSheet()->setCellValue('K1', 'Procced ');
+
+            $notes = BudgetNote::with('account_note')
+                ->where('issuer','=',$user->issuer)
+                ->orderBy('issuer','ASC')
+                ->get();
+
+            foreach ($notes as $key => $note) {
+                $key = $key + 1;
+                $spreadsheet->getActiveSheet()->setCellValue("A" . ($key + 1), $note->id);
+                $spreadsheet->getActiveSheet()->setCellValue("B" . ($key + 1), $note->account_note->PID);
+                $spreadsheet->getActiveSheet()->setCellValue("C" . ($key + 1), $note->account_note->project_name);
+                $spreadsheet->getActiveSheet()->setCellValue("D" . ($key + 1), $note->account_note->customer);
+                $spreadsheet->getActiveSheet()->setCellValue("E" . ($key + 1), Carbon::parse($note->date)->format('d/m/Y'));
+                $spreadsheet->getActiveSheet()->setCellValue("F" . ($key + 1), $note->document);
+                $spreadsheet->getActiveSheet()->setCellValue("G" . ($key + 1), $note->issuer);
+                $spreadsheet->getActiveSheet()->setCellValue("H" . ($key + 1), $note->purpose);
+                $spreadsheet->getActiveSheet()->setCellValue("I" . ($key + 1), $note->detail);
+                $spreadsheet->getActiveSheet()->setCellValue("J" . ($key + 1), $note->nominal);
+                $spreadsheet->getActiveSheet()->setCellValue("K" . ($key + 1), $note->procced);
+            }
         }
+        
 
         $name = 'Report_Budget_by_' . Auth::user()->nickname . '_' . date('Y-m-d') . '.xlsx';
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');

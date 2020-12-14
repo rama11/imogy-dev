@@ -10,6 +10,7 @@ use DB;
 use Auth;
 use PDF;
 use Mail;
+use Log;
 use App\Mail\Ticket;
 use App\Mail\TicketMail;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -357,12 +358,28 @@ class AdminController extends Controller
 	}
 
 	public function setMasuk(Request $request){
-
 		if(isset($request->masuk)){
+			$data = DB::table('present_timing')
+				->where('on_time','=',$request->masuk)
+				->first();
+
+			if ($data === null) {
+				DB::table('present_timing')
+					->insert([
+						"name" => "Jam " . $request->masuk,
+						"on_time" => $request->masuk,
+						"injury_time" => date('H:i:s',strtotime('+15 minutes +15 seconds',strtotime($request->masuk))),
+						"late_time" => date('H:i:s',strtotime('+15 minutes +16 seconds',strtotime($request->masuk)))
+					]);
+				$request->masuk = DB::table('present_timing')->orderBy('id','DESC')->first()->id;
+			} else {
+				$request->masuk = $data->id;
+			}
+		
 			DB::table('users')
 			->where('id','=',$request->id)
 			->update([
-				'present_timing' => $request->masuk,
+				'present_timing' => $request->masuk
 			]);
 		}
 
@@ -385,7 +402,7 @@ class AdminController extends Controller
 			->where('id','=',$request->id)
 			->update(['location' => $request->location]);
 
-		return redirect('location')->with('status', "Change location for " . $request->name . "success.");
+		return redirect('location')->with('status', "Change location for " . $request->name . " success.");
 	}
 
 	public function addLocation(Request $request){
@@ -660,7 +677,9 @@ class AdminController extends Controller
 				'id_absen' => $id_absen,
 				'condition_presence' => $request->condition,
 				'lat' => $request->lat,
-				'lng' => $request->lng
+				'lng' => $request->lng,
+				'http_user_agent' => $request->header('User-Agent'),
+				'ip_access' => $request->header('x-forwarded-for')
 			]);
 	}
 
@@ -814,6 +833,13 @@ class AdminController extends Controller
 			echo "<br>" . $late;
 
 		} else {
+			if(Auth::check()){
+				$user = "{userId:" . Auth::id() . " email:" . Auth::user()->email . "}";
+			} else {
+				// $user = "{userId:" . Auth::id() . " email:" . Auth::user()->mail . "}";
+				$user = "{userId:NaN email:NaN}";
+			}
+			Log::info("Try to absen pulang " . $user);
 
 			echo "Anda sudah absen hari ini ";
 			$pulang = DB::table('waktu_absen')
@@ -1160,14 +1186,32 @@ class AdminController extends Controller
 			->get()
 			->toarray();
 		$datas = array_slice(array_reverse($datas), 0, 9);
+
+		// return $datas;
 		
 		$datas2 = DB::table('waktu_absen')
+			->select(
+				DB::raw('`waktu_absen`.`id` AS `id`'),
+				DB::raw('`users`.`name` AS `user_name`'),
+				'waktu_absen.jam',
+				'waktu_absen.tanggal',
+				DB::raw('`location`.`name` AS `location_name`'),
+				DB::raw('IFNULL(`absen_location`.`ip_access`,"-") AS `ip_access`'),
+				DB::raw('IFNULL(`absen_location`.`http_user_agent`,"-") AS `http_user_agent`'),
+				'waktu_absen.late'
+			)
+			->join('users','users.id','=','waktu_absen.id_user')
+			->join('absen_location','waktu_absen.id','=','absen_location.id_absen')
 			->join('location','waktu_absen.location','=','location.id')
-			->orderBy('tanggal','ASC')
-			->orderBy('jam','ASC')
-			->get()
-			->toarray();
-		$datas2 = array_reverse($datas2);
+			->orderBy('waktu_absen.id','DESC')
+			// ->orderBy('tanggal','ASC')
+			// ->orderBy('jam','ASC')
+			->limit(100)
+			->get();
+			// ->toarray();
+		// $datas2 = array_reverse($datas2);
+
+		// return $datas2;
 
 		$users = DB::table('users')
 			->select('id','name','team')
@@ -1326,14 +1370,14 @@ class AdminController extends Controller
 			$var[$stat]["id"] = $IDUser[$key];
 		}
 
-		foreach ($datas2 as $data) {
-			// echo $user->location . "<br>";
-			for ($i=0; $i < sizeof($users); $i++) { 
-				if($data->id_user == $users[$i]->id){
-					$data->id_user = $users[$i]->name;
-				}
-			}
-		}
+		// foreach ($datas2 as $data) {
+		// 	// echo $user->location . "<br>";
+		// 	for ($i=0; $i < sizeof($users); $i++) { 
+		// 		if($data->id_user == $users[$i]->id){
+		// 			$data->id_user = $users[$i]->name;
+		// 		}
+		// 	}
+		// }
 
 		foreach ($datas as $data) {
 			// echo $user->location . "<br>";
@@ -1405,15 +1449,50 @@ class AdminController extends Controller
 		// print_r($users);
 		// print_r($datas2);
 		// echo "</pre>";
-		return view('precense.teamHistory',compact('datas','datas2','var','status','late','injury','ontime','count','absen','attendance','absenToday','ids','problem'));
+		// return view('precense.teamHistory',compact('datas','datas2','var','status','late','injury','ontime','count','absen','attendance','absenToday','ids','problem'));
+
+		// return $var;
+
+		if(date('m') == 1){
+			$dateRange = [(string)(date('Y') - 1) . "-12-25", date('Y-m-25')];
+		} else {
+			$dateRange = [date('Y-') . (string)(date('m') - 1) . "-25", date('Y-m-25')];
+		}
+
+		$summaryCounts = DB::table('waktu_absen')
+		    ->selectRaw('`users`.`id` AS `id_user`')
+		    ->selectRaw('`users`.`name` AS `name`')
+	    	->selectRaw('`location`.`name` AS `location`')
+		    ->selectRaw('COUNT(IF(`waktu_absen`.`late` = "On-Time", 1, NULL)) AS `on_time`')
+		    ->selectRaw('COUNT(IF(`waktu_absen`.`late` = "Injury-Time", 1, NULL)) AS `tolerance`')
+		    ->selectRaw('COUNT(IF(`waktu_absen`.`late` = "Late", 1, NULL)) AS `late`')
+		    ->selectRaw('COUNT(*) AS `All`')
+		    // ->where('waktu_absen.tanggal','LIKE',date('Y-m') . "%")
+		    ->whereBetween('waktu_absen.tanggal', $dateRange)
+		    ->join('users','users.id','=','waktu_absen.id_user')
+		    ->join('location','users.location','=','location.id')
+		    ->groupBy('waktu_absen.id_user')
+		    ->orderBy('location.name','ASC')
+		    ->get();
+
+		// return $summaryCounts;
+	    $sidebar_collapse = true;
+		return view('precense.teamHistory',compact('datas2','summaryCounts','status','late','injury','ontime','count','absen','attendance','absenToday','ids','problem','sidebar_collapse'));
 	}
 
 	public function getUserHistory ($id,$start = 0,$end = 0){
 	
+		if(date('m') == 1){
+			$dateRange = [(string)(date('Y') - 1) . "-12-25", date('Y-m-25')];
+		} else {
+			$dateRange = [date('Y-') . (string)(date('m') - 1) . "-25", date('Y-m-25')];
+		}
+	
 		if($start == 0 && $end == 0){
 			$datas = DB::table('waktu_absen')
 				->where('id_user','=',$id)
-				->where('tanggal','like','%' . date('y') . '-' . date('m') .'-%')
+				// ->where('tanggal','like','%' . date('y') . '-' . date('m') .'-%')
+			    ->whereBetween('waktu_absen.tanggal', $dateRange)
 				->orderBy('tanggal','ASC')
 				->orderBy('jam','ASC')
 				->get()
@@ -1687,7 +1766,8 @@ class AdminController extends Controller
 			->toArray();
 
 		if($month == ""){
-			return view('schedule',compact('users','projects','nameUsers','nameUsersShif','nameUsersShif2'));
+			$sidebar_collapse = true;
+			return view('schedule',compact('users','projects','nameUsers','nameUsersShif','nameUsersShif2','sidebar_collapse'));
 		} else {
 			return $users;
 		}
@@ -1698,6 +1778,31 @@ class AdminController extends Controller
 		// echo "</pre>";
 
 
+	}
+
+	function getLogActivityShifting(Request $req){
+		return array("data"=>DB::table('shiftingLog')
+			->join('users','users.id','=','shiftingLog.id_users')
+			->select('title','shiftingLog.created_at','users.name','start_before','end_before','start_updated','end_updated','className_updated','className_before','status')
+			->orderBy('created_at','desc')
+			->get());
+		// $user = DB::table('users')->where("nickname",$req->name)->first();
+
+		// DB::table('shifting')
+		// 	->insert(
+		// 		[
+		// 			'id' => NULL,
+		// 			'id_user' => $user->id,
+		// 			'title' => $req->title,
+		// 			'start' => $req->start,
+		// 			'end' => $req->end,
+		// 			'className' => $req->shift,
+		// 			'hadir' => "00:00:00",
+		// 			'tanggal' => date('Y-m-d h:i:s'),
+		// 			'id_project' => $req->id_project,
+					
+		// 		]
+		// 	);
 	}
 
 	function getScheduleThisMonth(Request $req){
@@ -1751,13 +1856,45 @@ class AdminController extends Controller
 				]
 			);
 
+		DB::table('shiftingLog')
+			->insert(
+					[
+						'id_users' => Auth::user()->id,
+						'title' => $req->title,
+						'start_before' => $req->start_before,
+						'end_before' => $req->end_before,
+						'className_before' => $req->shift,	
+						'created_at' => date('Y-m-d h:i:s'),
+						'status' => 'create',					
+					]
+				);
+
 		return DB::table('shifting')->orderBy('id','DESC')->first()->id;
 	}
 
 	public function deleteSchedule (Request $req) {
+		$shifting = DB::table('shifting')->select('start','end','title','className')->where('id','=',$req->id)->first();
+
+		DB::table('shiftingLog')
+			->insert(
+					[
+						'id_users' => Auth::user()->id,
+						'title' => $shifting->title,
+						'start_before' => date('Y-m-d h:i:s', strtotime($shifting->start)),
+						'end_before' => date('Y-m-d h:i:s', strtotime($shifting->end)),
+						'className_before' => $shifting->className,	
+						'created_at' => date('Y-m-d h:i:s'),
+						'status' => 'delete',					
+					]
+				);
+
 		DB::table('shifting')
 			->where('id','=',$req->id)
 			->delete();
+
+		
+
+		return "success";
 	}
 
 	function changeAbsent(Request $req,$id){
@@ -1917,7 +2054,8 @@ class AdminController extends Controller
 	public function getUserToReport(){
 		return DB::table('users')
 			->select('users.nickname','privilege.privilege_name','users.id as value')
-			->whereNotIn('users.id',[3,32,35,74,76,82,83,84])
+			// ->whereNotIn('users.id',[3,32,35,74,76,82,83,84])
+			->where('users.activition','=',1)
 			->join('privilege','users.jabatan','=','privilege.id')
 			->get()
 			->groupBy('privilege_name')
@@ -2013,7 +2151,10 @@ class AdminController extends Controller
 		// return $var;
 
 		foreach ($IDUser as $key => $value) {
-			$details [] = $this->getUserHistory($value,$req->start,$req->end);
+			$temp = $this->getUserHistory($value,$req->start,$req->end);
+			$temp[6] = collect($this->getUserHistory($value,$req->start,$req->end)[6])->sortBy('tanggal')->values()->all();
+			$details [] = $temp;
+
 			foreach ($details as $detail) {
 				if($detail[6] != NULL){
 					foreach($detail[6] as $detail2){

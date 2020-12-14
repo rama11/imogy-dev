@@ -24,9 +24,13 @@ use App\Http\Models\TicketingActivity;
 use App\Http\Models\TicketingResolve;
 use App\Http\Models\TicketingClient;
 use App\Http\Models\TicketingATM;
+use App\Http\Models\TicketingATMPeripheral;
 use App\Http\Models\TicketingSeverity;
+use App\Http\Models\TicketingAbsen;
 
 use Carbon\Carbon;
+use Validator;
+use Illuminate\Validation\Rule;;
 
 class TicketingController extends Controller
 {
@@ -226,8 +230,12 @@ class TicketingController extends Controller
 		return $result;
 	}
 
-	public function getOpenMailTemplate(){
-		return view('mailOpenTicket');
+	public function getOpenMailTemplate(Request $req){
+		if($req->type == "normal") {
+			return view('mailOpenTicket');
+		} else if($req->type == "wincor") {
+			return view('mailOpenTicketWincor');
+		}
 	}
 
 	public function getCloseMailTemplate(){
@@ -272,7 +280,7 @@ class TicketingController extends Controller
 
 
 	public function getCreateParameter(){
-		$client = TicketingClient::all();
+		$client = TicketingClient::where('situation','=',1)->orderBy('client_acronym')->get();
 		$severity = TicketingSeverity::all();
 		
 		return array(
@@ -295,10 +303,16 @@ class TicketingController extends Controller
 		$newTicketId = new Ticketing();
 		$newTicketId->id = $req->id;
 		$newTicketId->id_ticket = $req->id_ticket;
-		$newTicketId->id_client = TicketingClient::where('client_acronym',$req->acronym_client)->value('id');
+		$client = TicketingClient::where('client_acronym',$req->acronym_client);
+		$newTicketId->id_client = $client->value('id');
 		$newTicketId->operator = Auth::user()->nickname;
 
 		$newTicketId->save();
+		return collect([
+			"banking" => $client->value('banking'),
+			"wincor" => $client->value('wincor')
+		]);
+
 
 		// DB::table('ticketing__id')
 		// 	->insert([
@@ -316,9 +330,14 @@ class TicketingController extends Controller
 
 		$updateTicketId = Ticketing::where('id_ticket',$req->id_ticket_before)->first();
 		$updateTicketId->id_ticket = $req->id_ticket_after;
-		$updateTicketId->id_client = TicketingClient::where('client_acronym',$req->acronym_client)->value('id');
+		$client = TicketingClient::where('client_acronym',$req->acronym_client);
+		$updateTicketId->id_client = $client->value('id');
 
 		$updateTicketId->save();
+		return collect([
+			"banking" => $client->value('banking'),
+			"wincor" => $client->value('wincor')
+		]);
 
 		// DB::table('ticketing__id')
 		// 	->insert([
@@ -397,7 +416,11 @@ class TicketingController extends Controller
 
 		$detailTicketOpen = new TicketingDetail();
 		$detailTicketOpen->id_ticket = $request->id_ticket;
-		$detailTicketOpen->id_atm = $request->id_atm;
+		if($request->absen == "-"){
+			$detailTicketOpen->id_atm = $request->id_atm;
+		} else {
+			$detailTicketOpen->id_atm = $request->absen;
+		}
 		$detailTicketOpen->refrence = $request->refrence;
 		$detailTicketOpen->pic = $request->pic;
 		$detailTicketOpen->contact_pic = $request->contact_pic;
@@ -873,11 +896,18 @@ class TicketingController extends Controller
 			->with([
 				'lastest_activity_ticket:id_ticket,date,activity,operator',
 				'resolve',
-				'all_activity_ticket'
+				'all_activity_ticket',
+				'first_activity_ticket'
 			])
 			->first();
 
-		return $result;
+		if(Ticketing::where('id',$idTicket)->first()->id_client == "29"){
+			$result->machine_absen = TicketingAbsen::find($result->id_atm);
+			return $result;
+		} else {
+			return $result;
+		}
+
 	}
 
 	public function setUpdateTicket(Request $req){
@@ -923,7 +953,7 @@ class TicketingController extends Controller
 	public function makeMailer($to, $cc, $subject, $body){
 		$mail = new PHPMailer\PHPMailer(true);
 
-		$email_type = "Yandex MSM01";
+		$email_type = "Gmail Hello";
 
 		if($email_type == "Yandex MSM01"){
 			$mail_host = env('YANDEX_MAIL_HOST_MSM01');
@@ -1122,59 +1152,277 @@ class TicketingController extends Controller
 				DB::raw('`ticketing__client`.`client_acronym` AS `owner`'),
 				'ticketing__atm.atm_id',
 				'ticketing__atm.serial_number',
-				'ticketing__atm.location'
+				'ticketing__atm.location',
+				'ticketing__atm.activation'
 			)
+			->orderBy('ticketing__atm.id','DESC')
 			->get());
 	}
 
 
-	public function getAtmId(Request $request){
-		$result = TicketingClient::with('client_atm')
-			->where('client_acronym',$request->acronym)
-			->first();
+	public function getAllAbsenSetting(){
+		return array('data' => TicketingAbsen::get());
+	}
 
-		return $result->client_atm->pluck('atm_id');
+	public function getAtmId(Request $request){
+		// $result = TicketingClient::with('client_atm')
+		// 	->where('client_acronym',$request->acronym)
+		// 	->first();
+
+		// return $result->client_atm->pluck('atm_id');
+		// return collect($result->client_atm)->only('atm_id');
+
+		$client_acronym = $request->acronym;
+		if($request->acronym == "BDIYCCTV" || $request->acronym == "BDIYUPS"){
+			$client_acronym = "BDIY";
+		}
+			return TicketingATM::where('owner',TicketingClient::where('client_acronym',$client_acronym)->first()->id)
+				->select(
+					'id',
+					DB::raw('CONCAT(`atm_id`," - ", `location`) AS `text`')
+				)
+				->get()->all();
+			// return TicketingClient::where('client_acronym',$request->acronym)->first()->id;
+	}
+
+	public function getAbsenId(Request $req){
+		return TicketingAbsen::select(
+				'id',
+				DB::raw('CONCAT(`nama_cabang`," - ", `nama_kantor`) AS `text`')
+			)
+			->get()->all();
 	}
 
 	public function getAtmDetail(Request $request){
-		return TicketingATM::where('atm_id',$request->id_atm)->first();
+		return TicketingATM::where('id',$request->id_atm)->first();
+	}
+
+	public function getAbsenDetail(Request $request){
+		return TicketingAbsen::where('id',$request->id_absen)->first();
+	}
+
+	public function getAtmPeripheralDetail(Request $request){
+		if($request->type == "CCTV"){
+			$result = TicketingATMPeripheral::with('atm')
+				->where('id_atm',TicketingATM::where('id',$request->id_atm)->first()->id)
+				->where('type',$request->type)
+				->first();
+			$result->serial_number = "DVR : " . $result->cctv_dvr_sn . "<br>" . "CCTV Eksternal : " . $result->cctv_besar_sn . "<br>" . "CCTV Internal : " . $result->cctv_kecil_sn . "<br>";
+			$result->machine_type = "DVR : " . $result->cctv_dvr_type . "<br>" . "CCTV Eksternal : " . $result->cctv_besar_type . "<br>" . "CCTV Internal : " . $result->cctv_kecil_type . "<br>";
+			
+			return $result;
+		} else {
+			return TicketingATMPeripheral::with('atm')
+				->where('id_atm',TicketingATM::where('id',$request->id_atm)->first()->id)
+				->where('type',$request->type)
+				->first();
+		}
 	}
 
 	public function getParameterAddAtm(){
-		return TicketingClient::select('id','client_acronym','client_name')->get();
+		return TicketingClient::select('id','client_acronym','client_name')
+			->where('banking','=',1)
+			->get();
 	}
 
-	public function getDetailAtm($id_atm){
-		$client = DB::table('ticketing__client')
-			->select('id','client_acronym','client_name')
+	public function getDetailAtm(Request $request){
+		$atm = TicketingATM::with('peripheral')->where('id',$request->id_atm)->first();
+
+		$client = TicketingClient::select('id','client_acronym','client_name')
+			->where('banking','=',1)
 			->get();
 
-		$return = DB::table('ticketing__atm')
-			->where('id','=',$id_atm)
-			->get();
+		return array(
+			'atm' => $atm,
+			'client' => $client
+		);
+	}
 
-		return array($return,$client);
+	public function getDetailAbsen(Request $request){
+		$absen = TicketingAbsen::where('id',$request->id_absen)->first();
+
+		return array(
+			'absen' => $absen
+		);
 	}
 
 	public function setAtm(Request $request){
-		return DB::table('ticketing__atm')
-			->where('id','=',$request->idAtm)
-			->update([
+		$setAtm = TicketingATM::where('id','=',$request->idAtm)->first();
+		 $messages = [
+		    'atmID.unique' => 'The ATM ID has already been taken!',
+		    'atmSerial.unique' => 'The Serial Number has already been taken!',
+		];
+
+    	$validator = Validator::make($request->all(), [
+			'atmID' => Rule::unique('ticketing__atm','atm_id')->ignore($setAtm->id),
+			'atmSerial' => Rule::unique('ticketing__atm','serial_number')->ignore($setAtm->id),
+        ],$messages);
+
+        if (!$validator->passes()) {
+			return response()->json(['error'=>$validator->errors()->all()]);
+        }
+
+		$setAtm->fill([
 				"owner" => $request->atmOwner,
 				"atm_id" => $request->atmID, 
 				"serial_number" => $request->atmSerial,
 				"location" => $request->atmLocation,
+				"address" => $request->atmAddress,
+				"activation" =>  Carbon::createFromFormat('d/m/Y',$request->atmActivation)->formatLocalized('%Y-%m-%d'),
+				"note" => $request->atmNote,
+				"machine_type" => $request->atmType,
 			]);
+
+		$setAtm->save();
+
+	}
+
+	public function setAbsen(Request $request){
+		$setAbsen = TicketingAbsen::where('id','=',$request->idAbsen)->first();
+
+		$setAbsen->nama_cabang = $request->absenEditNamaCabang;
+		$setAbsen->nama_kantor = $request->absenEditNamaKantor;
+		$setAbsen->type_machine = $request->absenEditMachineType;
+		$setAbsen->ip_machine = $request->absenEditIPMachine;
+		$setAbsen->ip_server = $request->absenEditIPServer;
+
+		$setAbsen->save();
+
+	}
+
+	public function deleteAtm(Request $request){
+		TicketingATM::where('id','=',$request->idAtm)->first()->delete();
+	}
+
+	public function deleteAbsen(Request $request){
+		TicketingAbsen::where('id','=',$request->idAbsen)->first()->delete();
+	}
+
+	public function newAtmPeripheral(Request $request){
+		if(TicketingClient::find($request->atmOwner)->client_acronym == "BDIYCCTV"){
+			$request->peripheralType = "CCTV";
+		} else if (TicketingClient::find($request->atmOwner)->client_acronym == "BDIYUPS"){
+			$request->peripheralType = "UPS";
+		}
+		$newAtmPeripheral = new TicketingATMPeripheral();
+		$newAtmPeripheral->id_atm = TicketingATM::where('atm_id',$request->atmID)->first()->id;
+		$newAtmPeripheral->id_peripheral = $request->peripheralID;
+		$newAtmPeripheral->type = $request->peripheralType;
+		$newAtmPeripheral->serial_number = (isset($request->peripheralSerial) ? $request->peripheralSerial : "-");
+		$newAtmPeripheral->machine_type = (isset($request->peripheralMachineType) ? $request->peripheralMachineType : "-");
+
+		$newAtmPeripheral->cctv_dvr_sn = (isset($request->peripheral_cctv_dvr_sn) ? $request->peripheral_cctv_dvr_sn : "-");
+		$newAtmPeripheral->cctv_dvr_type = (isset($request->peripheral_cctv_dvr_type) ? $request->peripheral_cctv_dvr_type : "-");
+		$newAtmPeripheral->cctv_besar_sn = (isset($request->peripheral_cctv_besar_sn) ? $request->peripheral_cctv_besar_sn : "-");
+		$newAtmPeripheral->cctv_besar_type = (isset($request->peripheral_cctv_besar_type) ? $request->peripheral_cctv_besar_type : "-");
+		$newAtmPeripheral->cctv_kecil_sn = (isset($request->peripheral_cctv_kecil_sn) ? $request->peripheral_cctv_kecil_sn : "-");
+		$newAtmPeripheral->cctv_kecil_type = (isset($request->peripheral_cctv_kecil_type) ? $request->peripheral_cctv_kecil_type : "-");
+
+		$newAtmPeripheral->save();
+		return $newAtmPeripheral;
+	}
+
+	public function editAtmPeripheral(Request $request){
+		$peripheral = TicketingATMPeripheral::find($request->id);
+
+		if($peripheral->type == "CCTV"){
+			if($request->type == "1"){
+				$peripheral->cctv_dvr_type = $request->typeEdit;
+				$peripheral->cctv_dvr_sn = $request->serialEdit;
+				$peripheral->save();
+			} else if ($request->type == "2") {
+				$peripheral->cctv_besar_type = $request->typeEdit;
+				$peripheral->cctv_besar_sn = $request->serialEdit;
+				$peripheral->save();
+			} else {
+				$peripheral->cctv_kecil_type = $request->typeEdit;
+				$peripheral->cctv_kecil_sn = $request->serialEdit;
+				$peripheral->save();
+			}
+		} else {
+			$peripheral->machine_type = $request->typeEdit;
+			$peripheral->serial_number = $request->serialEdit;
+			$peripheral->save();
+		}
+		return $peripheral;
+	}
+
+	public function deleteAtmPeripheral(Request $request){
+		$peripheral = TicketingATMPeripheral::find($request->id);
+
+		if($peripheral->type == "CCTV"){
+			if($request->type == "1"){
+				$peripheral->cctv_dvr_type = "";
+				$peripheral->cctv_dvr_sn = "";
+				$peripheral->save();
+			} else if ($request->type == "2") {
+				$peripheral->cctv_besar_type = "";
+				$peripheral->cctv_besar_sn = "";
+				$peripheral->save();
+			} else {
+				$peripheral->cctv_kecil_type = "";
+				$peripheral->cctv_kecil_sn = "";
+				$peripheral->save();
+			}
+			if($peripheral->cctv_dvr_type == "" && $peripheral->cctv_besar_type == "" && $peripheral->cctv_kecil_type == ""){
+				$peripheral->delete();
+			}
+		} else {
+			$peripheral->delete();
+		}
+		return $peripheral;
 	}
 
 	public function newAtm(Request $request){
-		DB::table('ticketing__atm')
-			->insert([
+		$newAtm = new TicketingATM();
+
+        $messages = [
+		    'atmID.unique' => 'The ATM ID has already been taken!',
+		    'atmSerial.unique' => 'The Serial Number has already been taken!',
+		    'atmOwner.required' => 'You must select ATM Owner!',
+		    'atmLocation.required' => 'You must set ATM Location!',
+		    'atmAddress.required' => 'You must select ATM Address!',
+		    'atmActivation.required' => 'You must set ATM Activation date!',
+		];
+
+    	$validator = Validator::make($request->all(), [
+			'atmID' => 'unique:ticketing__atm,atm_id',
+			'atmSerial' => 'unique:ticketing__atm,serial_number',
+			'atmOwner' => 'required',
+			'atmLocation' => 'required',
+			'atmAddress' => 'required',
+			'atmActivation' => 'required',
+        ],$messages);
+
+        if (!$validator->passes()) {
+			return response()->json(['error'=>$validator->errors()->all()]);
+        }
+
+		$newAtm->fill([
 				"owner" => $request->atmOwner,
 				"atm_id" => $request->atmID, 
 				"serial_number" => $request->atmSerial,
-				"location" => $request->atmLocation
+				"location" => $request->atmLocation,
+				"address" => $request->atmAddress,
+				"activation" =>  Carbon::createFromFormat('d/m/Y',$request->atmActivation)->formatLocalized('%Y-%m-%d'),
+				"note" => $request->atmNote,
 			]);
+
+		$newAtm->save();
+
+	}
+
+	public function newAbsen(Request $request){
+		$newAbsen = new TicketingAbsen();
+
+		$newAbsen->nama_cabang = $request->absenAddNamaCabang;
+		$newAbsen->nama_kantor = $request->absenAddNamaKantor;
+		$newAbsen->type_machine = $request->absenAddMachineType;
+		$newAbsen->ip_machine = $request->absenAddIPMachine;
+		$newAbsen->ip_server = $request->absenAddIPServer;
+
+        $newAbsen->save();
+
 	}
 
 	public function getReport($client){
@@ -1252,10 +1500,10 @@ class TicketingController extends Controller
 		// Create new Spreadsheet object
 		$spreadsheet = new Spreadsheet();
 		$client = TicketingClient::find($req->client)->client_acronym;
-		$bulan = Carbon::createFromDate(2018, $req->month + 1, 1)->format('M');
+		$bulan = Carbon::createFromDate($req->year, $req->month + 1, 1)->format('M');
 
 		// Set document properties
-		$title = 'Laporan Bulanan '. $client . ' '. $bulan . date(" Y");
+		$title = 'Laporan Bulanan '. $client . ' '. $bulan . " " . $req->year;
 
 		$spreadsheet->getProperties()->setCreator('SIP')
 			->setLastModifiedBy('Rama Agastya')
@@ -1361,7 +1609,7 @@ class TicketingController extends Controller
 			->setCellValue('P4','CONTERMASURE')
 			->setCellValue('Q4','ENGINEER');
 		
-		$value1 = $this->getPerformanceByFinishTicket($client,$bulan . "/" . date("Y"));
+		$value1 = $this->getPerformanceByFinishTicket($client,$bulan . "/" . $req->year);
 		// return $value1;
 
 		foreach ($value1 as $key => $value) {
@@ -1477,7 +1725,7 @@ class TicketingController extends Controller
 		$spreadsheet->getActiveSheet()->getStyle("I5")->getAlignment()->setWrapText(true);
 		$spreadsheet->getActiveSheet()->getStyle("J5")->getAlignment()->setWrapText(true);
 
-		$value1 = $this->getPerformance5($client,$bulan . "/" . date("Y"));
+		$value1 = $this->getPerformance5($client,$bulan . "/" . $req->year);
 
 		$middle = [
 			'alignment' => [
@@ -1633,9 +1881,10 @@ class TicketingController extends Controller
 		
 
 
-		$name = 'Report_' . $client . '_-_' . Carbon::createFromDate(2018, $req->month + 1, 1)->format('F') . '_(' . date("Y-m-d") . ')_' . Auth::user()->nickname . '.xlsx';
+		$name = 'Report_' . $client . '_-_' . Carbon::createFromDate( $req->year , $req->month + 1, 1)->format('F-Y') . '_(' . date("Y-m-d") . ')_' . Auth::user()->nickname . '.xlsx';
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-		$writer->save('report/' . $name);
+		$location = public_path() . '/report/' . $name;
+		$writer->save($location);
 		return $name;
 		// return response()->download($name);
 
@@ -1648,11 +1897,11 @@ class TicketingController extends Controller
 	}
 
 
-	public function controll(){
-		$user = DB::table('users')
-			->get();
-		return view('controllPage');
-	}
+	// public function controll(){
+	// 	$user = DB::table('users')
+	// 		->get();
+	// 	return view('controllPage');
+	// }
 
 	public function testEmail1(){
 		return view('testEmail');
@@ -1676,9 +1925,23 @@ class TicketingController extends Controller
 	}
 
 	public function getReportParameter(){
-		return array('client_data' => TicketingClient::select('id','client_acronym','client_name')
-			->where('situation','=','1')
-			->get());
+		return array(
+			'client_data' => TicketingClient::select('id','client_acronym','client_name')
+				->where('situation','=','1')
+				->get(),
+			'ticket_year' => DB::table('ticketing__detail')
+				->selectRaw("SUBSTRING_INDEX(`id_ticket`, '/', -1) AS `year`")
+				->orderBy('year','DESC')
+				->groupBy('year')
+				->get()
+			);
+	}
+
+	public function controll(){
+		// echo "asdfasdf";
+		if(Auth::user()->id == 4 || Auth::user()->id == 6){
+			return view('tisygyControll');
+		}
 	}
 
 }

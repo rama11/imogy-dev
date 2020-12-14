@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>  
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -8,7 +8,7 @@
 		
 		<link href="{{url('img/imoicon.png')}}" rel="icon" type="image/x-icon">
 		
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 		
@@ -17,54 +17,6 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/css/AdminLTE.min.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/css/skins/_all-skins.min.css">
 		
-		<style type="text/css">
-			.switch {
-				position: relative;
-				display: inline-block;
-				width: 60px;
-				height: 34px;
-			}
-			.switch input {display:none;}
-			.slider {
-				position: absolute;
-				cursor: pointer;
-				top: 0;
-				left: 0;
-				right: 0;
-				bottom: 0;
-				background-color: #ccc;
-				-webkit-transition: .4s;
-				transition: .4s;
-			}
-			.slider:before {
-				position: absolute;
-				content: "";
-				height: 26px;
-				width: 26px;
-				left: 4px;
-				bottom: 4px;
-				background-color: white;
-				-webkit-transition: .4s;
-				transition: .4s;
-			}
-			input:checked + .slider {
-				background-color: #2196F3;
-			}
-			input:focus + .slider {
-				box-shadow: 0 0 1px #2196F3;
-			}
-			input:checked + .slider:before {
-				-webkit-transform: translateX(26px);
-				-ms-transform: translateX(26px);
-				transform: translateX(26px);
-			}
-			.slider.round {
-				border-radius: 34px;
-			}
-			.slider.round:before {
-				border-radius: 50%;
-			}
-		</style>
 	</head>
 	@if(isset($sidebar_collapse))
 	<body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
@@ -87,41 +39,45 @@
 						<ul class="nav navbar-nav">
 							<li class="dropdown user user-menu">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									@if(Auth::user()->foto == "0")
-										<img src="{{url('img/no-image.png')}}" class="user-image" alt="User Image">
+									@if(Auth::check())
+										@if(Auth::user()->foto != "0")
+											<img src="{{url(Auth::user()->foto)}}" class="user-image" alt="User Image">
+										@else
+											<img src="{{url('img/no-image.png')}}" class="user-image" alt="User Image">
+										@endif
+										<span class="hidden-xs">{{Auth::user()->name}}</span>
 									@else
-										<img src="{{url(Auth::user()->foto)}}" class="user-image" alt="User Image">
+										<img src="{{url('img/no-image.png')}}" class="user-image" alt="User Image">
+										<span class="hidden-xs">-</span>
 									@endif
-									<span class="hidden-xs">{{Auth::user()->name}}</span>
 								</a>
 								<ul class="dropdown-menu">
 									<li class="user-header" style="background-color:#222d32">
-										@if(Auth::user()->foto == "0")
-											<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
+										@if(Auth::check())
+											@if(Auth::user()->foto != "0")
+												<img src="{{url(Auth::user()->foto)}}" class="img-circle" alt="User Image">
+											@else
+												<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
+											@endif
+											<p>
+												{{Auth::user()->name}} 
+												<small><i class="fa fa-circle text-success"></i> Super Users</small>
+											</p>
 										@else
-											<img src="{{url(Auth::user()->foto)}}" class="img-circle" alt="User Image">
+											<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
+											<p>
+												- 
+												<small><i class="fa fa-circle text-success"></i> Super Users</small>
+											</p>
 										@endif
 
-										<p>
-											{{Auth::user()->name}} 
-											<small><i class="fa fa-circle text-success"></i> Super Users</small>
-										</p>
 									</li>
 									
 									<li class="user-footer">
-										@if(Auth::user()->id != 4)
-											<div class="pull-left">
-												<a href="{{ url('profile')}}" class="btn btn-default btn-flat">Profile</a>
-											</div>
-										@else
-											<div class="pull-left">
-												@if(isset($debug))
-													<a href="{{ url('debugMode')}}" class="btn btn-danger btn-flat">Active</a>
-												@else
-													<a href="{{ url('debugMode')}}" class="btn btn-success btn-flat">Passive</a>
-												@endif
-											</div>
-										@endif
+										<div class="pull-left">
+											<a href="{{ url('profile')}}" class="btn btn-default btn-flat">Profile</a>
+										</div>
+										
 										
 										<div class="pull-right">
 											<a class="btn btn-default btn-flat"  href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">{{ __('Logout') }}</a>
@@ -141,14 +97,22 @@
 				<section class="sidebar">
 					<div class="user-panel">
 						<a href="{{ url('profile')}}" class="pull-left image">
-							@if(Auth::user()->foto == "0")
-								<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
+							@if(Auth::check())
+								@if(Auth::user()->foto != "0")
+									<img src="{{url(Auth::user()->foto)}}" class="img-circle" alt="User Image">
+								@else
+									<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
+								@endif
 							@else
-								<img src="{{url(Auth::user()->foto)}}" class="img-circle" alt="User Image">
+								<img src="{{url('img/no-image.png')}}" class="img-circle" alt="User Image">
 							@endif
 						</a>
 						<div class="pull-left info">
-							<p>{{Auth::user()->name}}</p>
+							@if(Auth::check())
+								<p>{{Auth::user()->name}}</p>
+							@else
+								<p>-</p>
+							@endif
 								<small><i class="fa fa-circle text-success"> </i>  Super Users</small>					
 						</div>
 					</div>

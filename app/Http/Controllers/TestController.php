@@ -16,6 +16,11 @@ use Kreait\Firebase\Database;
 use Carbon\Carbon;
 
 use App\Http\Models\Ticketing;
+use App\Mail\MailOpenProject;
+
+use DataTables;
+use App\User;
+use App\Http\Models\TicketingDetail;
 
 class TestController extends Controller
 {
@@ -76,6 +81,14 @@ class TestController extends Controller
 			$mail_auth = env('GMAIL_MAIL_ENCRYPTION');
 			$mail_from = env('GMAIL_MAIL_FROM');
 			$mail_name = env('GMAIL_MAIL_NAME');
+		} else if ($email_type == "MailTrap Testing"){
+			$mail_host = env('MAILTRAP_MAIL_HOST');
+			$mail_port = env('MAILTRAP_MAIL_PORT');
+			$mail_user = env('MAILTRAP_MAIL_USERNAME');
+			$mail_pass = env('MAILTRAP_MAIL_PASSWORD');
+			$mail_auth = env('MAILTRAP_MAIL_ENCRYPTION');
+			$mail_from = env('MAILTRAP_MAIL_FROM');
+			$mail_name = env('MAILTRAP_MAIL_NAME');
 		}
 		
 		try {
@@ -99,25 +112,46 @@ class TestController extends Controller
 		}
 	}
 
-	public function performance(){
+	public function performance(Request $req){
 		echo "<h1>Test Performance</h1><br>";
-		try {
-			$mail = $this->buildEmail("Yandex MSM01");
+		if(isset($req->type) == "mailtrap"){
+			try {
+				$mail = $this->buildEmail("MailTrap Testing");
 
-			$mail->Subject =  "Testing Performance for Email Gmail";
-			$mail->MsgHTML("testPerformance");
+				$mail->Subject =  "Testing Performance for MailTrap Testing";
+				$mail->MsgHTML("testPerformance");
 
-			$mail->addAddress("aqsharidho@gmail.com");
-			$mail->addCC("prof.agastyo@gmail.com");
-			$mail->send();
+				$mail->addAddress("agastya@sinergy.co.id");
+				$mail->addCC("prof.agastyo@gmail.com");
+				$mail->send();
 
-			return "Testing Performance for Email : Success";
+				return "Testing Performance for Email : Success";
 
-		} catch (phpmailerException $e) {
-			
-			return dd($e);
-		} catch (Exception $e) {
-			return dd($e);
+			} catch (phpmailerException $e) {
+				
+				return dd($e);
+			} catch (Exception $e) {
+				return dd($e);
+			}
+		} else {
+			try {
+				$mail = $this->buildEmail("Yandex MSM01");
+
+				$mail->Subject =  "Testing Performance for Email Gmail";
+				$mail->MsgHTML("testPerformance");
+
+				$mail->addAddress("aqsharidho@gmail.com");
+				$mail->addCC("prof.agastyo@gmail.com");
+				$mail->send();
+
+				return "Testing Performance for Email : Success";
+
+			} catch (phpmailerException $e) {
+				
+				return dd($e);
+			} catch (Exception $e) {
+				return dd($e);
+			}
 		}
 	}
 
@@ -905,6 +939,125 @@ class TestController extends Controller
 			->push([
 				"date" => Carbon::now()->formatLocalized('%d %B %Y')
 			]);
+
+	public function testingATMMaps(){
+		return view('mapsAtm');
+	}
+
+	public function testEmailReturn(){
+		$data = array(
+			"to" => array(
+				"agastya@sinergy.co.id",
+				'prof.agastyo@gmail.com',
+
+				// "siwi@sinergy.co.id",
+				// "johan@sinergy.co.id",
+				// "dicky@sinergy.co.id",
+				// "ferdinand@sinergy.co.id",
+				// "wisnu.darman@sinergy.co.id"
+			),
+			"cc" => array(
+				// "endraw@sinergy.co.id",
+				// "msm@sinergy.co.id",
+
+				'imogy@sinergy.co.id',
+				'hellosinergy@gmail.com'
+			),
+			// "subject" => "Open Project - " . $req->CustomerName,
+			"subject" => "Open Project - PT. Bussan Auto Finance",
+			'name' => Auth::user()->name,
+			'phone' => Auth::user()->phone,
+
+			"customer" => "PT. Bussan Auto Finance",
+			// "customer" => $req->CustomerName,
+			"name_project" => "Cisco IP Phone Branch Denpasar",
+			// "name_project" => $req->Name,
+			"project_id" => "244/SOMPO/478/SIP/IX/2018",
+			// "project_id" => $req->PID,
+			"period" => "4x",
+			// "period" => $req->Period . "x",
+			"duration" => "3 Bulan",
+			// "duration" => $req->Duration . " Bulan",
+			"start" => "1 August 2019",
+			// "start" => $startPeriod,
+			"end" => "31 October 2019",
+			// "end" => $endPeriod,
+			
+			"coordinatorName" => "Wisnu Darman",
+			// "coordinatorName" => DB::table('users')->where('id',$req->Coordinator)->value('name'),
+			"coordinatorEmail" => "wisnu.darman@sinergy.co.id",
+			// "coordinatorEmail" => DB::table('users')->where('id',$req->Coordinator)->value('email'),
+			
+			"teamLeadName" => "Johan Ardi Wibisono",
+			// "teamLeadName" => DB::table('users')->where('id',$req->Lead)->value('name'),
+			"teamLeadEmail" => "johan@sinergy.co.id",
+			// "teamLeadEmail" => DB::table('users')->where('id',$req->Lead)->value('email'),
+
+			"teamMemberName" => array("Rama Agastya","Siwi Karuniawati","M Dicky Ardiansyah","Yohanis Ferdinand"),
+			// "teamMemberName" => $teamMemberName,
+			"teamMemberEmail" => array("agastya@sinergy.co.id","siwi@sinergy.co.id","dicky@sinergy.co.id","yohanis@sinergy.co.id")
+			// "teamMemberEmail" => $teamMemberEmail
+		);
+
+
+		return new MailOpenProject($data);
+
+	}
+
+	public function testingServerSideDatatables(){
+		return view('testingServerSideDatatables');
+	}
+
+	public function testingGetDataServerSide(){
+		$occurring_ticket = DB::table('ticketing__activity')
+			->select('id_ticket','activity')
+			->whereIn('id',function ($query) {
+				$query->select(DB::raw("MAX(id) AS activity"))
+					->from('ticketing__activity')
+					->groupBy('id_ticket');
+				})
+			->where('activity','<>','CANCEL')
+			->where('activity','<>','CLOSE')
+			->get()
+			->pluck('id_ticket');
+
+		$occurring_ticket_result = TicketingDetail::with([
+				'first_activity_ticket:id_ticket,date,operator',
+				'lastest_activity_ticket',
+				'id_detail:id_ticket,id',
+			])
+			->whereIn('id_ticket',$occurring_ticket)
+			->orderBy('id','DESC')
+			->get();
+
+		// $residual_ticket_result = TicketingDetail::with([
+		// 		'first_activity_ticket:id_ticket,date,operator',
+		// 		'lastest_activity_ticket',
+		// 		'id_detail:id_ticket,id',
+		// 	])
+		// 	->whereNotIn('id_ticket',$occurring_ticket)
+		// 	// ->limit((100 - $occurring_ticket->count()))
+		// 	// ->limit((200 - $occurring_ticket->count()))
+		// 	// ->limit((300 - $occurring_ticket->count()))
+		// 	// ->limit((400 - $occurring_ticket->count()))
+		// 	// ->limit((500 - $occurring_ticket->count()))
+		// 	// ->limit((600 - $occurring_ticket->count()))
+		// 	// ->limit((700 - $occurring_ticket->count()))
+		// 	// ->limit((800 - $occurring_ticket->count()))
+		// 	// ->limit((900 - $occurring_ticket->count()))
+		// 	->limit((1000 - $occurring_ticket->count()))
+		// 	->orderBy('id','DESC')
+		// 	->get();
+
+		$result = $occurring_ticket_result;
+		// $result = $occurring_ticket_result->merge($residual_ticket_result);
+		return Datatables::of($result)->make(true);
+		// return Datatables::of(User::all())->make(true);
+	}
+
+	public function testLoading(){
+		sleep(3);
+		return 0;
 	}
 
 }

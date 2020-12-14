@@ -12,6 +12,7 @@
 // Route yang di panggil pertama sendiri atau sebelum login
 Route::get('/', function () {
 	return view('welcome2');
+	//return view('welcome3');
 });
 
 // Route::get('/', function(){ 
@@ -23,8 +24,25 @@ Route::get('/', function () {
 // })->where('any', '.*');
 // Route::get('/test_cron','AdminController@test_cron');
 Route::get('maps', function () {
-	// return view('maps');
+	return view('maps');
 });
+// use Telegram;
+
+
+Route::get('testSendMassage','TelegramController@testSendMassage');
+
+Route::post('telegramWebHook/' . env('TELEGRAM_BOT_TOKEN'),'TelegramController@getWebhookUpdate');
+
+Route::get('telegram','TelegramViewController@index');
+Route::get('telegram/reporting','TelegramViewController@reporting');
+Route::get('telegram/setting/webhook','TelegramViewController@setting_webhook');
+Route::get('telegram/setting/user_sync','TelegramViewController@setting_user_sync');
+Route::get('telegram/setting/user_sync/getViewData','TelegramViewController@getViewData');
+Route::get('telegram/setting/user_sync/getTableData','TelegramViewController@getTableData');
+Route::get('telegram/setting/user_sync/revokeTelegramUser','TelegramViewController@revokeTelegramUser');
+Route::get('telegram/setting/notif_subscription','TelegramViewController@setting_notif_subscription');
+Route::get('telegram/setting/notif_subscription/getSyncData','TelegramViewController@getSyncData');
+
 	// Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
 
 // Dibawah adalah route yang hanya bisa di pangil jika sudah terAuthentification (login)
@@ -38,6 +56,9 @@ Route::get('tisygy/report/download','TicketingController@downloadReportTicket');
 
 Route::get('firebase','TestController@firebase');
 Route::get('administration','AdministrationController@index');
+Route::get('testLiteral',function(){
+	return App\Http\Models\TicketingClient::find(1)->value('banking');
+});
 
 
 // Engginer Route
@@ -57,7 +78,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('/ehistory', 'HomeController@ehistory');
 	// Route::get('/etisygy', 'HomeController@etisygy');
 	Route::get('/eannoun', 'HomeController@eannoun');
-	Route::get('/eteamhistory', 'HomeController@eteamhistory');
+	// Route::get('/eteamhistory', 'HomeController@eteamhistory');
 	// Helpdesk Route
 	Route::get('/helpdesk', 'HelpdeskController2@index');
 	Route::get('/raw2/{id}','HelpdeskController2@raw');
@@ -70,14 +91,14 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('/hannouncement', 'HelpdeskController2@hannouncement');
 	// Route::get('/husermanage', 'HelpdeskController2@husermanage');
 	Route::get('/hhistory', 'HelpdeskController2@hhistory');
-	Route::get('/hteamhistory', 'HelpdeskController2@hteamhistory');
+	// Route::get('/hteamhistory', 'HelpdeskController2@hteamhistory');
 	// User Manage Oleh Helpdesk
 	// Route::get('/getMasuk/{id}', 'HelpdeskController2@getMasuk');
 	Route::get('/getProfile/{id}', 'HelpdeskController2@getProfile');
 	// Route::get('/setMasuk', 'HelpdeskController2@setMasuk');
 	Route::get('/user', 'HelpdeskController2@user');
 	Route::get('/hhistory', 'HelpdeskController2@history');
-	Route::get('/hteamhistory', 'HelpdeskController2@teamhistory');
+	// Route::get('/hteamhistory', 'HelpdeskController2@teamhistory');
 	Route::get('/huserhistory/{id}', 'HelpdeskController2@huserhistory');
 	// Location Controll oleh Helpdesk
 	Route::get('/hlocation', 'HelpdeskController2@location');
@@ -119,6 +140,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('schedule/crateSchedule','AdminController@crateSchedule');
 		Route::get('schedule/deleteSchedule','AdminController@deleteSchedule');
 		Route::get('schedule/changeMonth','AdminController@changeMonth');
+		Route::get('schedule/getLogActivityShifting','AdminController@getLogActivityShifting');
 		
 		
 		Route::get('/usermanage', 'AdminController@usermanage');
@@ -172,7 +194,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	// Ticketing Route
 
 
-	Route::get('tisygy', 'TicketingController@tisygy');
+	// Route::get('tisygy', 'TicketingController@tisygy');
 	Route::get('tisygy/controll', 'TicketingController@controll');
 	Route::middleware(['tisygy.role'])->group(function () {
 
@@ -209,18 +231,25 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		// });
 		
 	Route::get('controll','TicketingController@controll');
-	Route::get('getReportHelpdesk','TestController@getReportHelpdesk');
+	Route::get('getReportHelpdesk','TestController@getReportHelpsdesk');
 	Route::get('getReportHelpdesk2','TestController@getReportHelpdesk2');
 	// Testing Route
 	Route::get('testPerformance', 'TestController@performance');
+	Route::get('testLoading', 'TestController@testLoading');
 	Route::get('logging/{type}','TestController@logging_activity');
 	Route::get('testGetTicketingPerformance','TestController@getTicketingPerformance');
 	Route::get('testChunkQuery','TestController@testChunkQuery');
 	Route::get('notif_test','TestController@notif_test');
 	Route::get('notif_test_store','TestController@notif_test_store');
+	Route::get('testingATMMaps','TestController@testingATMMaps');
 	// testChunkQuery
 	
-	// Route::get('testGetHadir', 'AdminController@getAbsen');
+	Route::get('testGetHadir/{start}/{end}/{id}', 'AdminController@getAbsen');
+	Route::get('testEmailReturn', 'TestController@testEmailReturn');
+	Route::get('testingServerSideDatatables', 'TestController@testingServerSideDatatables');
+	Route::get('testingGetDataServerSide', 'TestController@testingGetDataServerSide');
+
+	
 	// Route::get('testGetHadir2', 'AdminController@getAbsen2');
 	// Route::get('testCount', 'TicketingController@count_query');
 	// Route::get('testPage', 'HomeController@testPage');
@@ -245,7 +274,10 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	// 	echo sprintf("iki adalah sebuah format %02d", $date);
 	// });
 //Auth::routes();
+	// Route::get('tisygy/getDashboard','TicketingController@getDashboard');
+	Route::get('tisygy', 'TicketingController@tisygy');
 	Route::get('tisygy/getDashboard','TicketingController@getDashboard');
+	Route::get('tisygy/report/getParameter','TicketingController@getReportParameter');
 	Route::get('tisygy/getPerformanceAll','TicketingController@getPerformanceAll');
 	Route::get('tisygy/getPerformanceByClient','TicketingController@getPerformanceByClient');
 	Route::get('tisygy/getPerformanceByTicket','TicketingController@getPerformanceByTicket');
@@ -255,7 +287,10 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	
 	Route::get('tisygy/create/getParameter','TicketingController@getCreateParameter');
 	Route::get('tisygy/create/getAtmId','TicketingController@getAtmId');
+	Route::get('tisygy/create/getAbsenId','TicketingController@getAbsenId');
 	Route::get('tisygy/create/getAtmDetail','TicketingController@getAtmDetail');
+	Route::get('tisygy/create/getAbsenDetail','TicketingController@getAbsenDetail');
+	Route::get('tisygy/create/getAtmPeripheralDetail','TicketingController@getAtmPeripheralDetail');
 	Route::get('tisygy/create/getReserveIdTicket','TicketingController@getReserveIdTicket');
 	Route::get('tisygy/create/setReserveIdTicket','TicketingController@setReserveIdTicket');
 	Route::get('tisygy/create/putReserveIdTicket','TicketingController@putReserveIdTicket');
@@ -279,17 +314,30 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('tisygy/mail/getReciver', 'TicketingController@getEmailReciver');
 
 	Route::get('tisygy/setting/getAllAtm', 'TicketingController@getAllAtmSetting');
-	Route::get('tisygy/setting/getDetailAtm/{id}','TicketingController@getDetailAtm');
+	Route::get('tisygy/setting/getDetailAtm','TicketingController@getDetailAtm');
+
+	Route::get('tisygy/setting/getAllAbsen', 'TicketingController@getAllAbsenSetting');
+	Route::get('tisygy/setting/getDetailAbsen','TicketingController@getDetailAbsen');
+	
+
 	Route::get('tisygy/setting/getParameterAddAtm','TicketingController@getParameterAddAtm');
 	Route::get('tisygy/setting/setAtm','TicketingController@setAtm');
+	Route::get('tisygy/setting/setAbsen','TicketingController@setAbsen');
+	Route::get('tisygy/setting/deleteAtm','TicketingController@deleteAtm');
+	Route::get('tisygy/setting/deleteAbsen','TicketingController@deleteAbsen');
 	Route::get('tisygy/setting/newAtm','TicketingController@newAtm');
+	Route::get('tisygy/setting/newAbsen','TicketingController@newAbsen');
+
 	Route::get('tisygy/setting/getSettingClient' , 'TicketingController@getSettingClient');
 	Route::post('tisygy/setting/setSettingClient' , 'TicketingController@setSettingClient');
+	Route::get('tisygy/setting/newAtmPeripheral','TicketingController@newAtmPeripheral');
+	Route::get('tisygy/setting/editAtmPeripheral','TicketingController@editAtmPeripheral');
+	Route::get('tisygy/setting/deleteAtmPeripheral','TicketingController@deleteAtmPeripheral');
 
 	// Route::get('getPerformanceBySeverity','TicketingController@getPerformanceBySeverity');
 	// Route::get('getPerformanceByClient','TicketingController@getPerformanceByClient');
 	
-	Route::get('getPerformance','TicketingController@getPerformance');
+	// Route::get('getPerformance','TicketingController@getPerformance');
 	// Route::get('getDashboard','TicketingController@getDashboard');
 	// Route::get('getClientTest','TestController@getSettingClient');
 	// Route::get('/home', 'HomeController@index')->name('home');
@@ -336,6 +384,10 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('budget/note/getDataParameterNote','BudgetController@getDataParameterNote');
 	Route::post('budget/note/setNote','BudgetController@setNote');
 	Route::get('budget/note/getIndividualNote','BudgetController@getIndividualNote');
+	
+	Route::get('budget/note/filter/getAllParameterFilter','BudgetController@getAllParameterFilter');
+	Route::get('budget/note/filter/getFilteredData','BudgetController@getFilteredData')->name('getFilteredData');
+
 	
 	Route::post('budget/note/updateNote','BudgetController@updateNote');
 	Route::post('budget/note/editNote','BudgetController@editNote');

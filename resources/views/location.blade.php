@@ -1,6 +1,11 @@
 @extends((Auth::user()->jabatan == "1") ? 'layouts.admin.layout' : ((Auth::user()->jabatan == "2") ? 'layouts.helpdesk.hlayout' : ((Auth::user()->jabatan == "3") ? 'layouts.engineer.elayout' : ((Auth::user()->jabatan == "4") ? 'layouts.projectcor.playout' : ((Auth::user()->jabatan == "5") ? 'layouts.superuser.slayout' :'layouts.engineer.elayout')))))
 @section('head')
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
+	<style type="text/css">
+		.pac-container {
+			z-index: 1100 !important;
+		}
+	</style>
 @endsection
 @section('content')
 <div class="content-wrapper">
@@ -106,29 +111,18 @@
 							<h4 class="modal-title">Add Location</h4>
 						</div>
 						<div class="modal-body">
-							<div class="row">
-								<dir class="col-md-12">
-									<div class="form-group">
-										<label>Search Location</label>
-										<input class="form-control" placeholder="Location" type="text" id="search">
-									</div>
-								</dir>
+							<div class="form-group">
+								<label>Search Location</label>
+								<input class="form-control" placeholder="Location" type="text" id="search">
 							</div>
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-group">
-										<div id="map" style="height: 350px;width: 800px;margin:auto;display: block;background-color: #000;"></div>
-									</div>
-								</div>
+							<div class="form-group">
+								<div id="map" style="height: 350px;width: 100%;margin:auto;display: block;background-color: #000;"></div>
 							</div>
-							<div class="row">
-								<dir class="col-md-12">
-									<div class="form-group">
-										<label>Name </label>
-										<input class="form-control" placeholder="Yout Must Give Name This Location" type="text" name="pleace" required>
-									</div>
-								</dir>
+							<div class="form-group">
+								<label>Name </label>
+								<input class="form-control" placeholder="Yout Must Give Name This Location" type="text" name="pleace" required>
 							</div>
+								
 							<div class="row">
 								<dir class="col-md-6">
 									<div class="form-group">
@@ -190,13 +184,25 @@
 	function initMap(){
 		map = new google.maps.Map(document.getElementById('map'), {
 			center: {lat: -6.2297419, lng: 106.759478},
-			zoom: 10
+			zoom: 10,
+			// zoomControl: false,
+			mapTypeControl: false,
+			scaleControl: false,
+			streetViewControl: false,
+			rotateControl: false,
+			fullscreenControl: false
 		});
 
-		var input = document.getElementById('search');
-		var autocomplete = new google.maps.places.Autocomplete(input);
+		var autocomplete = new google.maps.places.Autocomplete((document.getElementById('search')));
 
-		autocomplete.bindTo('bounds', map);
+		 map.addListener('click', function(result) {
+			console.log(result.latLng)
+			marker.setVisible(false);
+			marker.setPosition(result.latLng);
+			marker.setVisible(true);
+			$("#lat").val(result.latLng.lat());
+			$("#lng").val(result.latLng.lng());
+		});
 
 		var marker = new google.maps.Marker({
 			map: map,
@@ -209,7 +215,7 @@
 			marker.setVisible(false);
 			var place = autocomplete.getPlace();
 			if (!place.geometry) {
-				window.alert("No details available for input: '" + place.name + "'");
+				window.alert("No details available for input: " + place.name);
 				return;
 			}
 

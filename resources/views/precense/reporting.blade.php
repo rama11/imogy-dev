@@ -182,6 +182,7 @@
 					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
 					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
 					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'This Period': [moment("26 " + moment().subtract(1,'months').format("MM YYYY"),"DD MM YYYY"), moment("25 " + moment().format("MM YYYY"),"DD MM YYYY")],
 					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
 				},
 				startDate: moment().subtract(29, 'days'),

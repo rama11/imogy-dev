@@ -26,7 +26,7 @@ Route::get('/', function () {
 Route::get('maps', function () {
 	return view('maps');
 });
-// use Telegram;   
+// use Telegram;       
 
 
 Route::get('testSendMassage','TelegramController@testSendMassage');

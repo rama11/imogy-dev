@@ -15,6 +15,8 @@ Route::get('/', function () {
 	//return view('welcome3');
 });
 
+// Test commit -d
+
 // Route::get('/', function(){ 
 //     return Redirect::to('https://sinergy-dev.xyz', 301); 
 // });

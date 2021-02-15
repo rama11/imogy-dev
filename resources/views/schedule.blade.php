@@ -147,7 +147,7 @@
 							<div style="display: none;" class="external-event bg-red project-1">Pagi <span class="pull-right">07:00 - 15:00</span></div>
 							<div style="display: none;" class="external-event bg-red project-2">Pagi <span class="pull-right">07:00 - 15:30</span></div>
 							<div style="display: none;" class="external-event bg-red project-3">Pagi <span class="pull-right">07:00 - 16:00</span></div>
-							<div style="display: none;" class="external-event bg-maroon-active project-3">Pagi(Helpdesk)<span class="pull-right">07:00 - 17:00</span></div>
+							<div style="display: none;" class="external-event bg-maroon-active project-3">Pagi(Helpdesk)<span class="pull-right">08:00 - 17:00</span></div>
 							<div style="display: none;" class="external-event bg-yellow project-1">Sore <span class="pull-right">14:00 - 22:00</span></div>
 							<div style="display: none;" class="external-event bg-yellow project-2">Sore <span class="pull-right">14:00 - 22:30</span></div>
 							<div style="display: none;" class="external-event bg-yellow project-3">Sore <span class="pull-right">14:00 - 22:00</span></div>

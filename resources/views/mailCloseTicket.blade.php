@@ -62,12 +62,20 @@
 			<th style=" border:1px solid #fff;  padding: 3px;width:120px;color: #fff;background-color: #337ab7;text-align: left;" class="bg-primary">Severity</th>
 			<td  style=" border:1px solid; padding: 3px;" class="holderCloseSeverity"></td>
 		</tr>
+		<tr style="display: none" class="holderCloseUPSSerial2">
+			<th style=" border:1px solid #fff;  padding: 3px;width:120px;color: #fff;background-color: #337ab7;text-align: left;" class="bg-primary">UPS Serial</th>
+			<td  style=" border:1px solid; padding: 3px;" class="holderCloseUPSSerial"></td>
+		</tr>
+		<tr style="display: none" class="holderCloseUPSType2">
+			<th style=" border:1px solid #fff;  padding: 3px;width:120px;color: #fff;background-color: #337ab7;text-align: left;" class="bg-primary">UPS Type</th>
+			<td  style=" border:1px solid; padding: 3px;" class="holderCloseUPSType"></td>
+		</tr>
 		<tr>
-			<th style=" border:1px solid #fff;  padding: 3px;width:120px;color: #fff;background-color: #337ab7;text-align: left;"" class="bg-primary">Counter Measure</th>
+			<th style=" border:1px solid #fff;  padding: 3px;width:120px;color: #fff;background-color: #337ab7;text-align: left;" class="bg-primary">Counter Measure</th>
 			<td  style=" border:1px solid; padding: 3px;" class="holderCloseCounter"></td>
 		</tr>
 		<tr>
-			<th style=" border:1px solid #fff;  padding: 3px;width:120px;color: #fff;background-color: #337ab7;text-align: left;"" class="bg-primary">Root Cause</th>
+			<th style=" border:1px solid #fff;  padding: 3px;width:120px;color: #fff;background-color: #337ab7;text-align: left;" class="bg-primary">Root Cause</th>
 			<td  style=" border:1px solid; padding: 3px;" class="holderCloseRoot"></td>
 		</tr>
 		<tr>
@@ -75,11 +83,11 @@
 			<td  style=" border:1px solid; padding: 3px;" class="holderCloseDate"></td>
 		</tr>
 		<tr>
-			<th style=" border:1px solid #fff;  padding: 3px;width:120px;color: #fff;background-color: #337ab7;text-align: left;"" class="bg-success">Status</th>
+			<th style=" border:1px solid #fff;  padding: 3px;width:120px;color: #fff;background-color: #337ab7;text-align: left;" class="bg-success">Status</th>
 			<td  style=" border:1px solid; padding: 3px; text-align: center; background-color: #008d4c;border-bottom: none;color:#FFFFFF;" class="holderCloseStatus text-center bg-green-active"></td>
 		</tr>
 		<tr>
-			<th style=" border:1px solid #fff; padding: 3px; width:120px;color: #fff;background-color: #337ab7;text-align: left;"" class="bg-primary">Waktu</th>
+			<th style=" border:1px solid #fff; padding: 3px; width:120px;color: #fff;background-color: #337ab7;text-align: left;" class="bg-primary">Waktu</th>
 			<td style=" border:1px solid; padding: 3px; text-align: center; background-color: #008d4c; border-top: none; color:#FFFFFF;" class="holderCloseWaktu text-center bg-green-active" ></td>
 		</tr>
 	</table>

@@ -267,10 +267,18 @@ class TicketingController extends Controller
 				])
 				->first();
 
+
 			$ticket_reciver = Ticketing::where('id',$idTicket)
 				->first()
 				->client_ticket;
 
+			if(isset($ticket_data->id_atm)){
+				if($ticket_reciver->client_acronym == "BDIYUPS"){
+					$ticket_data->atm_detail = TicketingATMPeripheral::where('id_atm',TicketingATM::where('atm_id',$ticket_data->id_atm)->first()->id)->where('type','UPS')->first();
+				}
+			} else {
+				$ticket_data->atm_detail = null;
+			}
 			return collect([
 				"ticket_data" => $ticket_data,
 				"ticket_reciver" => $ticket_reciver
@@ -461,78 +469,83 @@ class TicketingController extends Controller
 				->where('ticketing__detail.id_ticket','LIKE','%' . $period . '%')
 				->where('ticketing__detail.id_ticket','LIKE','%' . $acronym_client . '%')
 				->join('ticketing__detail','ticketing__detail.id_ticket','=','ticketing__id.id_ticket')
-				->orderBy('ticketing__detail.id_atm','ASC')
-				->get();
+				->orderBy('ticketing__detail.id_atm','ASC');
 		} else {
 			$result = DB::table('ticketing__id')
 				->where('ticketing__detail.id_ticket','LIKE','%' . $period . '%')
 				->where('ticketing__detail.id_ticket','LIKE','%' . $acronym_client . '%')
 				->join('ticketing__detail','ticketing__detail.id_ticket','=','ticketing__id.id_ticket')
-				->orderBy('ticketing__detail.id_ticket','ASC')
-				->get();
+				->orderBy('ticketing__detail.id_ticket','ASC');
 		}
 
 		$final = [];
 
-		$atm_before = $result[0]->id_atm; 
+		if($result->count() == 0){
+			return 0;
+		}else{
+			$result = $result->get();
+			$atm_before = $result[0]->id_atm; 
 
-		foreach ($result as $key => $value) {
+			foreach ($result as $key => $value) {
 
-			$check = DB::table('ticketing__activity')
-				->where('id_ticket','=',$value->id_ticket)
-				->orderBy('id','DESC')
-				->value('activity');
-
-			$downtime = 0;
-
-			if($check == "CLOSE" || $check == "CANCEL"){
-				$value->open = DB::table('ticketing__activity')
-					->where('id_ticket','=',$value->id_ticket)
-					->where('activity','=','OPEN')
-					->value('date');
-
-				$value->id_open = DB::table('ticketing__id')
-					->where('id_ticket','=',$value->id_ticket)
-					->value('id');
-
-				$value->last_status = array(
-					$check,
-					DB::table('ticketing__activity')
-						->where('id_ticket','=',$value->id_ticket)
-						->orderBy('id','DESC')
-						->value('date')
-					);
-
-				if($value->id_atm == $atm_before){
-					
-				}
-
-				if($check == "CLOSE"){
-					$value->root_couse = DB::table('ticketing__resolve')
-						->where('id_ticket','=',$value->id_ticket)
-						->value('root_couse');
-
-					$value->counter_measure = DB::table('ticketing__resolve')
-						->where('id_ticket','=',$value->id_ticket)
-						->value('counter_measure');
-
-				} else {
-					$value->root_couse = '-';
-					$value->counter_measure = '-';
-				}
-
-
-				$value->operator = DB::table('ticketing__activity')
+				$check = DB::table('ticketing__activity')
 					->where('id_ticket','=',$value->id_ticket)
 					->orderBy('id','DESC')
-					->value('operator');
+					->value('activity');
 
-				$final[] = $value;
+				$downtime = 0;
 
+				if($check == "CLOSE" || $check == "CANCEL"){
+					$value->open = DB::table('ticketing__activity')
+						->where('id_ticket','=',$value->id_ticket)
+						->where('activity','=','OPEN')
+						->value('date');
+
+					$value->id_open = DB::table('ticketing__id')
+						->where('id_ticket','=',$value->id_ticket)
+						->value('id');
+
+					$value->last_status = array(
+						$check,
+						DB::table('ticketing__activity')
+							->where('id_ticket','=',$value->id_ticket)
+							->orderBy('id','DESC')
+							->value('date')
+						);
+
+					if($value->id_atm == $atm_before){
+						
+					}
+
+					if($check == "CLOSE"){
+						$value->root_couse = DB::table('ticketing__resolve')
+							->where('id_ticket','=',$value->id_ticket)
+							->value('root_couse');
+
+						$value->counter_measure = DB::table('ticketing__resolve')
+							->where('id_ticket','=',$value->id_ticket)
+							->value('counter_measure');
+
+					} else {
+						$value->root_couse = '-';
+						$value->counter_measure = '-';
+					}
+
+
+					$value->operator = DB::table('ticketing__activity')
+						->where('id_ticket','=',$value->id_ticket)
+						->orderBy('id','DESC')
+						->value('operator');
+
+					$final[] = $value;
+
+				}
 			}
+
+			return $final;
 		}
 
-		return $final;
+		
 	}
 
 	public function getPerformanceByFinishTicket($acronym_client,$period){
@@ -1502,6 +1515,11 @@ class TicketingController extends Controller
 		$client = TicketingClient::find($req->client)->client_acronym;
 		$bulan = Carbon::createFromDate($req->year, $req->month + 1, 1)->format('M');
 
+		// return $client . "/" . $bulan . "/" . $req->year;
+		// return $bulan . "/" . $req->year;
+		// $value1 = $this->getPerformance5($client,$bulan . "/" . $req->year);
+		// return $value1;
+
 		// Set document properties
 		$title = 'Laporan Bulanan '. $client . ' '. $bulan . " " . $req->year;
 
@@ -1726,169 +1744,174 @@ class TicketingController extends Controller
 		$spreadsheet->getActiveSheet()->getStyle("J5")->getAlignment()->setWrapText(true);
 
 		$value1 = $this->getPerformance5($client,$bulan . "/" . $req->year);
+		if($value1 == 0){
+			return 0;
+		} else {
+			$middle = [
+				'alignment' => [
+					'horizontal' => Alignment::HORIZONTAL_LEFT,
+					'vertical' => Alignment::VERTICAL_CENTER,
+				]
+			];
 
-		$middle = [
-			'alignment' => [
-				'horizontal' => Alignment::HORIZONTAL_LEFT,
-				'vertical' => Alignment::VERTICAL_CENTER,
-			]
-		];
+			$index = 0;
 
-		$index = 0;
+			// $atm_id = $value1[0]->id_atm;
+			$atm_id = "";
+			$repeat = 0;
+			foreach ($value1 as $key => $value) {
+				if($value->last_status[0] == "CLOSE"){
+					
 
-		// $atm_id = $value1[0]->id_atm;
-		$atm_id = "";
-		$repeat = 0;
-		foreach ($value1 as $key => $value) {
-			if($value->last_status[0] == "CLOSE"){
-				
-
-				$spreadsheet->getActiveSheet()->getStyle('B' . (7 + $index))->getFill()->setFillType(Fill::FILL_SOLID);
-				$spreadsheet->getActiveSheet()->getStyle('B' . (7 + $index))->getFill()->getStartColor()->setARGB('FF2E75B6');
-				$spreadsheet->getActiveSheet()->getStyle('B' . (7 + $index) .  ':K' . (7 + $index))->applyFromArray($border);
-				$spreadsheet->getActiveSheet()->setCellValue('B' . (7 + $index),$index + 1);
-				$spreadsheet->getActiveSheet()->setCellValue('D' . (7 + $index),$value->location);
-				$spreadsheet->getActiveSheet()->setCellValue('E' . (7 + $index),date_format(date_create($bulan),"01/m/Y"));
-				$spreadsheet->getActiveSheet()->setCellValue('F' . (7 + $index),date_format(date_create($value->open),'d/m/Y h:i A'));
-				$spreadsheet->getActiveSheet()->setCellValue('G' . (7 + $index),date_format(date_create($value->last_status[1]),'d/m/Y h:i A'));
-				$spreadsheet->getActiveSheet()->setCellValue('H' . (7 + $index),date_format(date_create($bulan),"t/m/Y"));
-				
-				$close_ticket_time = (int)strtotime($value->last_status[1]);
-				$open_ticket_time = (int)strtotime($value->open);
-				if ($close_ticket_time > $open_ticket_time){
-					if($open_ticket_time == NULL){
-						$operasional = round(($close_ticket_time - (int)strtotime($value->reporting_time))/3600,2);
-					} else {
-						$operasional = round(($close_ticket_time - $open_ticket_time)/3600,2);
-					}
-				} else {
-					if($open_ticket_time == NULL){
-						$operasional = round(((int)strtotime($value->reporting_time) - $close_ticket_time)/3600,2);
-					} else {
-						$operasional = round(($open_ticket_time - $close_ticket_time)/3600,2);
-					}
-				}
-
-				$spreadsheet->getActiveSheet()->setCellValue('I' . (7 + $index),$operasional);
-				$spreadsheet->getActiveSheet()->setCellValue('J' . (7 + $index),(int)date_format(date_create($bulan),"t") * 24);
-				$sla_result = 100 - round(($operasional / ((int)date_format(date_create($bulan),"t") * 24)) * 100 , 2);
-				$spreadsheet->getActiveSheet()->setCellValue('K' . (7 + $index),($sla_result < 0 ? 0 : $sla_result));
-				
-				if($client != "TTNI"){
-					$spreadsheet->getActiveSheet()->setCellValue('C' . (7 + $index),$value->id_atm);
-					$spreadsheet->getActiveSheet()->setCellValue('C' . (7 + $index),$value->id_atm);
-					if($atm_id == $value->id_atm){
-						$atm_id = $atm_id;
-						$repeat++;
-					} else {
-						// $spreadsheet->getActiveSheet()->getStyle('C' . (7 + $index))->getFill()->setFillType(Fill::FILL_SOLID);
-						// $spreadsheet->getActiveSheet()->getStyle('C' . (7 + $index))->getFill()->getStartColor()->setARGB('FFFF0000');
-						if($repeat != 0){
-							// $spreadsheet->getActiveSheet()->getStyle('C' . ((6 + $index) - $repeat))->getFill()->setFillType(Fill::FILL_SOLID);
-							// $spreadsheet->getActiveSheet()->getStyle('C' . ((6 + $index) - $repeat))->getFill()->getStartColor()->setARGB('FF00FF00');
-							$spreadsheet->getActiveSheet()->mergeCells('C' . ((6 + $index) - $repeat) . ':C' . (((6 + $index) - $repeat) + $repeat));
-							$spreadsheet->getActiveSheet()->mergeCells('D' . ((6 + $index) - $repeat) . ':D' . (((6 + $index) - $repeat) + $repeat));
-							$spreadsheet->getActiveSheet()->getStyle('C' . ((6 + $index) - $repeat) . ':C' . (((6 + $index) - $repeat) + $repeat))->applyFromArray($middle);
-							$spreadsheet->getActiveSheet()->getStyle('D' . ((6 + $index) - $repeat) . ':D' . (((6 + $index) - $repeat) + $repeat))->applyFromArray($middle);
+					$spreadsheet->getActiveSheet()->getStyle('B' . (7 + $index))->getFill()->setFillType(Fill::FILL_SOLID);
+					$spreadsheet->getActiveSheet()->getStyle('B' . (7 + $index))->getFill()->getStartColor()->setARGB('FF2E75B6');
+					$spreadsheet->getActiveSheet()->getStyle('B' . (7 + $index) .  ':K' . (7 + $index))->applyFromArray($border);
+					$spreadsheet->getActiveSheet()->setCellValue('B' . (7 + $index),$index + 1);
+					$spreadsheet->getActiveSheet()->setCellValue('D' . (7 + $index),$value->location);
+					$spreadsheet->getActiveSheet()->setCellValue('E' . (7 + $index),date_format(date_create($bulan),"01/m/Y"));
+					$spreadsheet->getActiveSheet()->setCellValue('F' . (7 + $index),date_format(date_create($value->open),'d/m/Y h:i A'));
+					$spreadsheet->getActiveSheet()->setCellValue('G' . (7 + $index),date_format(date_create($value->last_status[1]),'d/m/Y h:i A'));
+					$spreadsheet->getActiveSheet()->setCellValue('H' . (7 + $index),date_format(date_create($bulan),"t/m/Y"));
+					
+					$close_ticket_time = (int)strtotime($value->last_status[1]);
+					$open_ticket_time = (int)strtotime($value->open);
+					if ($close_ticket_time > $open_ticket_time){
+						if($open_ticket_time == NULL){
+							$operasional = round(($close_ticket_time - (int)strtotime($value->reporting_time))/3600,2);
+						} else {
+							$operasional = round(($close_ticket_time - $open_ticket_time)/3600,2);
 						}
-
-						$repeat = 0;
-						$atm_id = $value->id_atm;
+					} else {
+						if($open_ticket_time == NULL){
+							$operasional = round(((int)strtotime($value->reporting_time) - $close_ticket_time)/3600,2);
+						} else {
+							$operasional = round(($open_ticket_time - $close_ticket_time)/3600,2);
+						}
 					}
-				} else {
-					$spreadsheet->getActiveSheet()->setCellValue('C' . (7 + $index),'-');
-					$spreadsheet->getActiveSheet()->setCellValue('C' . (7 + $index),'-');
+
+					$spreadsheet->getActiveSheet()->setCellValue('I' . (7 + $index),$operasional);
+					$spreadsheet->getActiveSheet()->setCellValue('J' . (7 + $index),(int)date_format(date_create($bulan),"t") * 24);
+					$sla_result = 100 - round(($operasional / ((int)date_format(date_create($bulan),"t") * 24)) * 100 , 2);
+					$spreadsheet->getActiveSheet()->setCellValue('K' . (7 + $index),($sla_result < 0 ? 0 : $sla_result));
+					
+					if($client != "TTNI"){
+						$spreadsheet->getActiveSheet()->setCellValue('C' . (7 + $index),$value->id_atm);
+						$spreadsheet->getActiveSheet()->setCellValue('C' . (7 + $index),$value->id_atm);
+						if($atm_id == $value->id_atm){
+							$atm_id = $atm_id;
+							$repeat++;
+						} else {
+							// $spreadsheet->getActiveSheet()->getStyle('C' . (7 + $index))->getFill()->setFillType(Fill::FILL_SOLID);
+							// $spreadsheet->getActiveSheet()->getStyle('C' . (7 + $index))->getFill()->getStartColor()->setARGB('FFFF0000');
+							if($repeat != 0){
+								// $spreadsheet->getActiveSheet()->getStyle('C' . ((6 + $index) - $repeat))->getFill()->setFillType(Fill::FILL_SOLID);
+								// $spreadsheet->getActiveSheet()->getStyle('C' . ((6 + $index) - $repeat))->getFill()->getStartColor()->setARGB('FF00FF00');
+								$spreadsheet->getActiveSheet()->mergeCells('C' . ((6 + $index) - $repeat) . ':C' . (((6 + $index) - $repeat) + $repeat));
+								$spreadsheet->getActiveSheet()->mergeCells('D' . ((6 + $index) - $repeat) . ':D' . (((6 + $index) - $repeat) + $repeat));
+								$spreadsheet->getActiveSheet()->getStyle('C' . ((6 + $index) - $repeat) . ':C' . (((6 + $index) - $repeat) + $repeat))->applyFromArray($middle);
+								$spreadsheet->getActiveSheet()->getStyle('D' . ((6 + $index) - $repeat) . ':D' . (((6 + $index) - $repeat) + $repeat))->applyFromArray($middle);
+							}
+
+							$repeat = 0;
+							$atm_id = $value->id_atm;
+						}
+					} else {
+						$spreadsheet->getActiveSheet()->setCellValue('C' . (7 + $index),'-');
+						$spreadsheet->getActiveSheet()->setCellValue('C' . (7 + $index),'-');
+					}
+
+					$index++;
 				}
-
-				$index++;
 			}
+
+			$bold = [
+				'font' => [
+					'name' => 'Calibri',
+					'bold' => TRUE,
+					'size' => 11,
+				]
+			];
+
+			$spreadsheet->getActiveSheet()->getStyle('J' . (7 + $index) .  ':K' . (7 + $index))->applyFromArray($border);
+			$spreadsheet->getActiveSheet()->getStyle('J' . (7 + $index) .  ':K' . (7 + $index))->applyFromArray($bold);
+			$spreadsheet->getActiveSheet()->setCellValue('J' . (7 + $index),"TOTAL");
+			$spreadsheet->getActiveSheet()->setCellValue('K' . (7 + $index),"=ROUND(AVERAGE(K7:K" . (6 + $index) . "),3)");
+
+			// echo (int)strtotime($value1[0]->open) . "<br>";
+			// echo (int)strtotime($value1[0]->last_status[1]) . "<br>";
+			// echo ((int)strtotime($value1[0]->last_status[1]) - (int)strtotime($value1[0]->open)) . "<br>";
+			// echo round(((int)strtotime($value1[0]->last_status[1]) - (int)strtotime($value1[0]->open))/3600,2) . "<br>";
+
+			$spreadsheet->getActiveSheet()->getStyle('E5')->getFill()->setFillType(Fill::FILL_SOLID);
+			$spreadsheet->getActiveSheet()->getStyle('E5')->getFill()->getStartColor()->setARGB('FF2E75B6');
+
+			$spreadsheet->getActiveSheet()->getStyle('E6')->getFill()->setFillType(Fill::FILL_SOLID);
+			$spreadsheet->getActiveSheet()->getStyle('E6')->getFill()->getStartColor()->setARGB('FFFF0000');
+
+			$spreadsheet->getActiveSheet()->getStyle('F6')->getFill()->setFillType(Fill::FILL_SOLID);
+			$spreadsheet->getActiveSheet()->getStyle('F6')->getFill()->getStartColor()->setARGB('FFFFFF00');
+
+			$spreadsheet->getActiveSheet()->getStyle('H6')->getFill()->setFillType(Fill::FILL_SOLID);
+			$spreadsheet->getActiveSheet()->getStyle('H6')->getFill()->getStartColor()->setARGB('FF00B050');
+
+			$spreadsheet->getActiveSheet()->getStyle('B5:K6')->applyFromArray($Colom_Header2);
+
+			$spreadsheet->getActiveSheet()->mergeCells('B5:B6');
+			$spreadsheet->getActiveSheet()->mergeCells('C5:C6');
+			$spreadsheet->getActiveSheet()->mergeCells('D5:D6');
+			$spreadsheet->getActiveSheet()->mergeCells('E5:H5');
+			$spreadsheet->getActiveSheet()->mergeCells('I5:I6');
+			$spreadsheet->getActiveSheet()->mergeCells('J5:J6');
+			$spreadsheet->getActiveSheet()->mergeCells('K5:K6');
+			$spreadsheet->getActiveSheet()->mergeCells('F6:G6');
+
+			$spreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(5);
+			$spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(10);
+			$spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(40);
+			$spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(15);
+			$spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(20);
+			$spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(20);
+			$spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(15);
+			$spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(20);
+			$spreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth(15);
+			$spreadsheet->getActiveSheet()->getColumnDimension('K')->setWidth(15);
+
+			$spreadsheet->getActiveSheet()->getRowDimension('5')->setRowHeight(20);
+			$spreadsheet->getActiveSheet()->getRowDimension('6')->setRowHeight(20);
+
+
+			
+
+
+			$spreadsheet->setActiveSheetIndex(1);
+			$spreadsheet->getActiveSheet()->getSheetView()->setZoomScale(98);
+
+			// Redirect output to a client’s web browser (Xlsx)
+			// header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+			// header('Content-Disposition: attachment;filename="' . $title . '.xlsx"');
+			// header('Cache-Control: max-age=0');
+			// // If you're serving to IE 9, then the following may be needed
+			// header('Cache-Control: max-age=1');
+
+			// // If you're serving to IE over SSL, then the following may be needed
+			// header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+			// header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+			// header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+			// header('Pragma: public'); // HTTP/1.0
+			
+
+
+			$name = 'Report_' . $client . '_-_' . Carbon::createFromDate( $req->year , $req->month + 1, 1)->format('F-Y') . '_(' . date("Y-m-d") . ')_' . Auth::user()->nickname . '.xlsx';
+			$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+			$location = public_path() . '/report/' . $name;
+			$writer->save($location);
+			return $name;
+			// return response()->download($name);
+
+			// return $value1;
 		}
-
-		$bold = [
-			'font' => [
-				'name' => 'Calibri',
-				'bold' => TRUE,
-				'size' => 11,
-			]
-		];
-
-		$spreadsheet->getActiveSheet()->getStyle('J' . (7 + $index) .  ':K' . (7 + $index))->applyFromArray($border);
-		$spreadsheet->getActiveSheet()->getStyle('J' . (7 + $index) .  ':K' . (7 + $index))->applyFromArray($bold);
-		$spreadsheet->getActiveSheet()->setCellValue('J' . (7 + $index),"TOTAL");
-		$spreadsheet->getActiveSheet()->setCellValue('K' . (7 + $index),"=ROUND(AVERAGE(K7:K" . (6 + $index) . "),3)");
-
-		// echo (int)strtotime($value1[0]->open) . "<br>";
-		// echo (int)strtotime($value1[0]->last_status[1]) . "<br>";
-		// echo ((int)strtotime($value1[0]->last_status[1]) - (int)strtotime($value1[0]->open)) . "<br>";
-		// echo round(((int)strtotime($value1[0]->last_status[1]) - (int)strtotime($value1[0]->open))/3600,2) . "<br>";
-
-		$spreadsheet->getActiveSheet()->getStyle('E5')->getFill()->setFillType(Fill::FILL_SOLID);
-		$spreadsheet->getActiveSheet()->getStyle('E5')->getFill()->getStartColor()->setARGB('FF2E75B6');
-
-		$spreadsheet->getActiveSheet()->getStyle('E6')->getFill()->setFillType(Fill::FILL_SOLID);
-		$spreadsheet->getActiveSheet()->getStyle('E6')->getFill()->getStartColor()->setARGB('FFFF0000');
-
-		$spreadsheet->getActiveSheet()->getStyle('F6')->getFill()->setFillType(Fill::FILL_SOLID);
-		$spreadsheet->getActiveSheet()->getStyle('F6')->getFill()->getStartColor()->setARGB('FFFFFF00');
-
-		$spreadsheet->getActiveSheet()->getStyle('H6')->getFill()->setFillType(Fill::FILL_SOLID);
-		$spreadsheet->getActiveSheet()->getStyle('H6')->getFill()->getStartColor()->setARGB('FF00B050');
-
-		$spreadsheet->getActiveSheet()->getStyle('B5:K6')->applyFromArray($Colom_Header2);
-
-		$spreadsheet->getActiveSheet()->mergeCells('B5:B6');
-		$spreadsheet->getActiveSheet()->mergeCells('C5:C6');
-		$spreadsheet->getActiveSheet()->mergeCells('D5:D6');
-		$spreadsheet->getActiveSheet()->mergeCells('E5:H5');
-		$spreadsheet->getActiveSheet()->mergeCells('I5:I6');
-		$spreadsheet->getActiveSheet()->mergeCells('J5:J6');
-		$spreadsheet->getActiveSheet()->mergeCells('K5:K6');
-		$spreadsheet->getActiveSheet()->mergeCells('F6:G6');
-
-		$spreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(5);
-		$spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(10);
-		$spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(40);
-		$spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(15);
-		$spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(20);
-		$spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(20);
-		$spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(15);
-		$spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(20);
-		$spreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth(15);
-		$spreadsheet->getActiveSheet()->getColumnDimension('K')->setWidth(15);
-
-		$spreadsheet->getActiveSheet()->getRowDimension('5')->setRowHeight(20);
-		$spreadsheet->getActiveSheet()->getRowDimension('6')->setRowHeight(20);
-
-
 		
 
-
-		$spreadsheet->setActiveSheetIndex(1);
-		$spreadsheet->getActiveSheet()->getSheetView()->setZoomScale(98);
-
-		// Redirect output to a client’s web browser (Xlsx)
-		// header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		// header('Content-Disposition: attachment;filename="' . $title . '.xlsx"');
-		// header('Cache-Control: max-age=0');
-		// // If you're serving to IE 9, then the following may be needed
-		// header('Cache-Control: max-age=1');
-
-		// // If you're serving to IE over SSL, then the following may be needed
-		// header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-		// header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
-		// header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-		// header('Pragma: public'); // HTTP/1.0
-		
-
-
-		$name = 'Report_' . $client . '_-_' . Carbon::createFromDate( $req->year , $req->month + 1, 1)->format('F-Y') . '_(' . date("Y-m-d") . ')_' . Auth::user()->nickname . '.xlsx';
-		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-		$location = public_path() . '/report/' . $name;
-		$writer->save($location);
-		return $name;
-		// return response()->download($name);
-
-		// return $value1;
 
 	}
 

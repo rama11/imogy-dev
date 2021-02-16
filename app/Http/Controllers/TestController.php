@@ -13,6 +13,8 @@ use Kreait\Firebase\Factory;
 use Kreait\Firebase\ServiceAccount;
 use Kreait\Firebase\Database;
 
+use Carbon\Carbon;
+
 use App\Http\Models\Ticketing;
 use App\Mail\MailOpenProject;
 
@@ -918,6 +920,25 @@ class TestController extends Controller
 			$count_ticket_by_client,
 		]);
 	}
+
+	public function notif_test(){
+		return view('testing.notif');
+	}
+
+	public function notif_test_store(){
+		$serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firebase-key.json');
+		$firebase = (new Factory)
+			->withServiceAccount($serviceAccount)
+			->withDatabaseUri('https://test-project-64a66.firebaseio.com/')
+			->create();
+
+		$database = $firebase->getDatabase();
+
+		$updateChart = $database
+			->getReference('/test/')
+			->push([
+				"date" => Carbon::now()->formatLocalized('%d %B %Y')
+			]);
 
 	public function testingATMMaps(){
 		return view('mapsAtm');

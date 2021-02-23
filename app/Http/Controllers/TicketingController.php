@@ -1152,6 +1152,25 @@ class TicketingController extends Controller
 
 		$activityTicketUpdate->save();
 
+		$checkLatestReminderPending = TicketingPendingReminder::where('id_ticket',$request->id_ticket)
+				->where('remind_success','FALSE');
+
+		if($checkLatestReminderPending->count() > 0){
+			foreach ($checkLatestReminderPending->get() as $key => $value) {
+				$value->remind_success = 'INVALID';
+				$value->save();
+			}
+		}
+
+		$remainder = new TicketingPendingReminder();
+		$remainder->id_pending = $activityTicketUpdate->id;
+		$remainder->id_ticket = $request->id_ticket;
+		$remainder->remind_create = Carbon::now()->toDateTimeString();
+		$remainder->remind_time = Carbon::parse($request->estimationPending)->toDateTimeString();
+		$remainder->remind_success = "FALSE";
+
+		$remainder->save();
+
 		$clientAcronymFilter = Ticketing::with('client_ticket')
 			->where('id_ticket',$request->id_ticket)
 			->first()

@@ -3078,12 +3078,21 @@
 	})
 	// $(".sidebar-toggle").click();
 	//Timepicker
-	$(".timepicker").timepicker({
+	$("#timeClose").timepicker({
 		showInputs: false,
 		minuteStep: 1,
 		maxHours: 24,
 		showMeridian: false,
-		showSeconds:true,
+		// showSeconds:true,
+	});
+
+	$("#timePending").timepicker({
+		snapToStep: true,
+		showInputs: false,
+		minuteStep: 15,
+		maxHours: 24,
+		showMeridian: false,
+		// showSeconds:true,
 	});
 
 	

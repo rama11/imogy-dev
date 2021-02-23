@@ -1222,6 +1222,58 @@
 		</div>
 	</div>
 
+	<div class="modal fade" id="modal-next-on-progress">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-center modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title" id="modal-ticket-title">Send On Progress Ticket </h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-horizontal">
+							<div class="form-group">
+								<label class="col-sm-2 control-label">
+									Email To : 
+								</label>
+								<div class="col-sm-10">
+									<input class="form-control" name="emailTo" id="emailOnProgressTo">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">
+									Email Cc :
+								</label>
+								<div class="col-sm-10">
+									<input class="form-control" name="emailCc" id="emailOnProgressCc">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">
+									Subject :
+								</label>
+								<div class="col-sm-10">
+									<input class="form-control" name="emailSubject" id="emailOnProgressSubject">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-12">
+									<div contenteditable="true" class="form-control" style="height: 600px;overflow: auto;" id="bodyOnProgressMail">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<i class="btn btn-flat btn-primary" id="sendOnProgressEmail"><i class="fa fa-envelope-o"></i> Send</i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="modal fade" id="modal-setting">
 		<div class="modal-dialog">
 			<div class="modal-content">

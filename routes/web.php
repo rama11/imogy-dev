@@ -240,6 +240,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('testGetTicketingPerformance','TestController@getTicketingPerformance');
 	Route::get('testChunkQuery','TestController@testChunkQuery');
 	Route::get('testingATMMaps','TestController@testingATMMaps');
+	Route::get('testMailOnProgress','TestController@testMailOnProgress');
 	// testChunkQuery
 	
 	Route::get('testGetHadir/{start}/{end}/{id}', 'AdminController@getAbsen');
@@ -282,6 +283,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('tisygy/getPerformanceBySeverity','TicketingController@getPerformanceBySeverity');
 	
 	Route::get('tisygy/setUpdateTicket','TicketingController@setUpdateTicket');
+	Route::get('tisygy/setUpdateTicketPending','TicketingController@setUpdateTicketPending');
 	
 	Route::get('tisygy/create/getParameter','TicketingController@getCreateParameter');
 	Route::get('tisygy/create/getAtmId','TicketingController@getAtmId');
@@ -306,6 +308,10 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('tisygy/mail/getCancelMailTemplate','TicketingController@getCancelMailTemplate');
 	Route::get('tisygy/mail/sendEmailCancel','TicketingController@sendEmailCancel');
 
+	Route::get('tisygy/mail/getOnProgressMailTemplate','TicketingController@getOnProgressMailTemplate');
+	Route::get('tisygy/mail/sendEmailOnProgress','TicketingController@sendEmailOnProgress');
+
+	Route::get('tisygy/getPendingTicketData','TicketingController@getPendingTicketData');
 	Route::get('tisygy/mail/getPendingMailTemplate','TicketingController@getPendingMailTemplate');
 	Route::get('tisygy/mail/sendEmailPending','TicketingController@sendEmailPending');
 

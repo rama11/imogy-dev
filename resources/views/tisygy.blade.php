@@ -1789,6 +1789,7 @@
 			customClass: {
 				confirmButton: 'btn btn-flat btn-primary swal2-margin',
 				cancelButton: 'btn btn-flat btn-danger swal2-margin',
+				denyButton: 'btn btn-flat btn-danger swal2-margin',
 				popup: 'border-radius-0',
 			},
 			buttonsStyling: false,

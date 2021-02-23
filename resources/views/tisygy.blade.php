@@ -1853,7 +1853,7 @@
 		swalWithCustomClass.fire({
 			title: 'Are you sure?',
 			text: "Make sure there is nothing wrong to send this " + typeActivity + " ticket!",
-			type: typeAlert,
+			icon: typeAlert,
 			showCancelButton: true,
 			allowOutsideClick: false,
 			allowEscapeKey: false,
@@ -1885,7 +1885,7 @@
 							swalWithCustomClass.fire({
 								title: 'Success!',
 								text: typeActivity + " Ticket Sended.",
-								type: 'success',
+								icon: 'success',
 								confirmButtonText: 'Reload',
 							}).then((result) => {
 								// console.log(resultAjax)
@@ -2164,7 +2164,7 @@
 			swalWithCustomClass.fire({
 				title: 'Are you sure?',
 				text: "This information of create ticket will be reset!",
-				type: 'warning',
+				icon: 'warning',
 				showCancelButton: true,
 			}).then((result) => {
 				firstTimeTicket = 0
@@ -2489,7 +2489,7 @@
 		swalWithCustomClass.fire({
 			title: 'Are you sure?',
 			text: "To delete this ATM?",
-			type: "warning",
+			icon: "warning",
 			showCancelButton: true,
 			allowOutsideClick: false,
 			allowEscapeKey: false,
@@ -2523,7 +2523,7 @@
 							swalWithCustomClass.fire({
 								title: 'Success!',
 								text: "ATM Deleted",
-								type: 'success',
+								icon: 'success',
 								confirmButtonText: 'Reload',
 							}).then((result) => {
 								$("#modal-setting-atm").modal('toggle');
@@ -2540,7 +2540,7 @@
 		swalWithCustomClass.fire({
 			title: 'Are you sure?',
 			text: "To delete this Absen?",
-			type: "warning",
+			icon: "warning",
 			showCancelButton: true,
 			allowOutsideClick: false,
 			allowEscapeKey: false,
@@ -2574,7 +2574,7 @@
 							swalWithCustomClass.fire({
 								title: 'Success!',
 								text: "Absen Deleted",
-								type: 'success',
+								icon: 'success',
 								confirmButtonText: 'Reload',
 							}).then((result) => {
 								$("#modal-setting-absen").modal('toggle');
@@ -2841,7 +2841,7 @@
 		swalWithCustomClass.fire({
 			title: 'Are you sure?',
 			text: "Make sure there is nothing wrong from editing this preriperal!",
-			type: "warning",
+			icon: "warning",
 			showCancelButton: true,
 			confirmButtonText: 'Yes',
 			cancelButtonText: 'No'
@@ -2874,7 +2874,7 @@
 						swalWithCustomClass.fire({
 							title: 'Success!',
 							text: "Periperal save.",
-							type: 'success',
+							icon: 'success',
 							confirmButtonText: 'Reload',
 						}).then((result) => {
 							$(selector).show()
@@ -2894,7 +2894,7 @@
 		swalWithCustomClass.fire({
 			title: 'Are you sure?',
 			text: "Make sure there is nothing wrong to delete this preriperal!",
-			type: "warning",
+			icon: "warning",
 			showCancelButton: true,
 			confirmButtonText: 'Yes',
 			cancelButtonText: 'No'
@@ -2925,7 +2925,7 @@
 						swalWithCustomClass.fire({
 							title: 'Success!',
 							text: "Periperal deleted.",
-							type: 'success',
+							icon: 'success',
 							confirmButtonText: 'Reload',
 						}).then((result) => {
 							$(selector).remove()
@@ -3194,7 +3194,7 @@
 			swalWithCustomClass.fire({
 				title: 'Are you sure?',
 				text: "Are you sure to close this ticket?",
-				type: 'warning',
+				icon: 'warning',
 				showCancelButton: true,
 			}).then((result) => {
 				if (result.value) {
@@ -3362,7 +3362,7 @@
 			swalWithCustomClass.fire({
 				title: 'Are you sure?',
 				text: "Are you sure to cancel this ticket?",
-				type: 'warning',
+				icon: 'warning',
 				showCancelButton: true,
 			}).then((result) => {
 				if (result.value) {
@@ -4580,7 +4580,7 @@
 		swalWithCustomClass.fire({
 			title: 'Are you sure?',
 			text: "Make sure there is nothing wrong to get this report ticket!",
-			type: "warning",
+			icon: "warning",
 			showCancelButton: true,
 			allowOutsideClick: false,
 			allowEscapeKey: false,
@@ -4611,7 +4611,7 @@
 							swalWithCustomClass.fire({
 								title: 'Success!',
 								text: "You can get your file now",
-								type: 'success',
+								icon: 'success',
 								confirmButtonText: '<a style="color:#fff;" href="report/' + result.slice(1) + '">Get Report</a>',
 							})
 						}

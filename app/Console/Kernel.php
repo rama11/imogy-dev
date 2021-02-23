@@ -6,6 +6,8 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Artisan;
 use DB;
+// use App\Http\Controllers\Telegram\TelegramSalesingRemainder;
+use App\Http\Models\TicketingPendingReminder;
 
 class Kernel extends ConsoleKernel
 {
@@ -26,15 +28,23 @@ class Kernel extends ConsoleKernel
 	 */
 	protected function schedule(Schedule $schedule)
 	{
-		$schedule->call(function() {
-			Artisan::call('SendAllProjectRemainder:send_all');
-		})->dailyAt('08:00')->timezone('Asia/Jakarta');
+		// $schedule->call(function() {
+		// 	Artisan::call('SendAllProjectRemainder:send_all');
+		// })->dailyAt('08:00')->timezone('Asia/Jakarta');
 
 		$schedule->call(function () {
 			DB::table('users')
 				->update(['condition' => "off"]);
 		})->dailyAt('1:00');
 
+		// $schedule->call(function() {
+		// 	$test = new TelegramSalesingRemainder();
+		// 	$test->weekly_reminder();
+
+		// //})->weekly()->thursdays()->at('16:00');
+		// })->weekly()->saturdays()->at('08:00');
+		// })->daily()at('16:55');
+		// })->everyMinute();
 
 		// $schedule->call(function() {
 		// 	$text = "Test Text";
@@ -364,6 +374,9 @@ class Kernel extends ConsoleKernel
 		// })->hourly();
 
 		// Schedule untuk merubah status menjadi offwork nya orang itu
+
+
+		$schedule->command('pending:remind')->everyMinute();
 
 	}
 

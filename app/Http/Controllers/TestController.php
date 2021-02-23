@@ -112,6 +112,25 @@ class TestController extends Controller
 
 	public function performance(Request $req){
 		echo "<h1>Test Performance</h1><br>";
+		try {
+				$mail = $this->buildEmail("Gmail Hello");
+
+				$mail->Subject =  "Testing Performance for MailTrap Testing";
+				$mail->MsgHTML("testPerformance");
+
+				$mail->addAddress("agastya@sinergy.co.id");
+				$mail->addCC("prof.agastyo@gmail.com");
+				$mail->send();
+
+				return "Testing Performance for Email : Success";
+
+			} catch (phpmailerException $e) {
+				
+				return dd($e);
+			} catch (Exception $e) {
+				return dd($e);
+			}
+			return;
 		if(isset($req->type) == "mailtrap"){
 			try {
 				$mail = $this->buildEmail("MailTrap Testing");

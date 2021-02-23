@@ -250,6 +250,10 @@ class TicketingController extends Controller
 		return view('mailCancelTicket');
 	}
 
+	public function getOnProgressMailTemplate(){
+		return view('mailOnProgressTicket');
+	}
+
 	public function getEmailData(Request $req){
 		if(isset($req->client)){
 			return $result = TicketingClient::where('client_acronym',$req->client)

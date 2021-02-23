@@ -891,7 +891,7 @@
 							<textarea class="form-control" rows="1" id="ticketNote"></textarea>
 						</div>
 						<div class="form-group" style="display: none" id="ticketRoute" >
-							<label>Route Cause</label>
+							<label>Root Cause</label>
 							<textarea type="text" class="form-control" id="ticketRouteTxt"  readonly></textarea>
 						</div>
 						<div class="form-group" style="display: none" id="ticketCouter">
@@ -3033,7 +3033,7 @@
 						type:type
 					},
 					success: function(result){
-						$("#inputLocation").val("[" + result.type + "] " + result.atm.atm_id + " - " + result.atm.location);
+						$("#inputLocation").val("[" + result.type + "] " + result.atm.location);
 						$("#inputSerial").val(result.serial_number);
 						$("#inputType").val(result.machine_type);
 					}
@@ -3263,6 +3263,17 @@
 							} else {
 								$(".holderCloseIDATM2").hide();
 								$(".holderNumberTicket2").hide();
+							}
+
+							if(result.ticket_reciver.client_acronym  == "BDIYUPS") {
+								$(".holderCloseIDATM2").show();
+								$(".holderCloseUPSSerial2").show()
+								$(".holderCloseUPSSerial").text(result.ticket_data.atm_detail.serial_number)
+								$(".holderCloseUPSType2").show()
+								$(".holderCloseUPSType").text(result.ticket_data.atm_detail.machine_type)
+								$(".holderCloseSerial").parent().hide()	
+							} else if (result.ticket_reciver.client_acronym  == "BDIYCCTV") {
+
 							}
 
 							$(".holderCloseCounter").text($("#saveCloseCouter").val());
@@ -3927,6 +3938,7 @@
 			$("#tablePerformance").DataTable().column(2).visible(false)
 		} else {
 			$("#tablePerformance").DataTable().column(1).visible(true)
+			$("#tablePerformance").DataTable().column(2).visible(true)
 		}
 		
 		$('#clientList').find(".buttonFilter" + client).removeClass('btn-default').addClass('btn-primary')
@@ -4836,12 +4848,22 @@
 						url: urlAjax,
 						success: function(result){
 							Swal.hideLoading()
-							swalWithCustomClass.fire({
-								title: 'Success!',
-								text: "You can get your file now",
-								icon: 'success',
-								confirmButtonText: '<a style="color:#fff;" href="report/' + result.slice(1) + '">Get Report</a>',
-							})
+							if(result == 0){
+								swalWithCustomClass.fire({
+									//icon: 'error',
+									title: 'Success!',
+									text: "The file is unavailable",
+									type: 'error',
+									//confirmButtonText: '<a style="color:#fff;" href="report/' + result.slice(1) + '">Get Report</a>',
+								})
+							}else{
+								swalWithCustomClass.fire({
+									title: 'Success!',
+									text: "You can get your file now",
+									type: 'success',
+									confirmButtonText: '<a style="color:#fff;" href="report/' + result.slice(1) + '">Get Report</a>',
+								})
+							}
 						}
 					});
 				}

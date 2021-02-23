@@ -11,9 +11,11 @@
 */
 // Route yang di panggil pertama sendiri atau sebelum login
 Route::get('/', function () {
-	return view('welcome2');
+	return view('welcome2');    
 	//return view('welcome3');
-});
+});    
+
+// Test commit -d
 
 // Route::get('/', function(){ 
 //     return Redirect::to('https://sinergy-dev.xyz', 301); 
@@ -26,7 +28,7 @@ Route::get('/', function () {
 Route::get('maps', function () {
 	return view('maps');
 });
-// use Telegram;
+// use Telegram;       
 
 
 Route::get('testSendMassage','TelegramController@testSendMassage');
@@ -239,6 +241,8 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('logging/{type}','TestController@logging_activity');
 	Route::get('testGetTicketingPerformance','TestController@getTicketingPerformance');
 	Route::get('testChunkQuery','TestController@testChunkQuery');
+	Route::get('notif_test','TestController@notif_test');
+	Route::get('notif_test_store','TestController@notif_test_store');
 	Route::get('testingATMMaps','TestController@testingATMMaps');
 	Route::get('testMailOnProgress','TestController@testMailOnProgress');
 	// testChunkQuery

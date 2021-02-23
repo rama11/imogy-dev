@@ -969,6 +969,29 @@ class TicketingController extends Controller
 		return $activityTicketUpdate;
 	}
 
+	public function setUpdateTicketPending(Request $request){
+		$activityTicketUpdate = new TicketingActivity();
+		$activityTicketUpdate->id_ticket = $request->id_ticket;
+		$activityTicketUpdate->date = date("Y-m-d H:i:s.000000");
+		$activityTicketUpdate->activity = "PENDING";
+		$activityTicketUpdate->operator = Auth::user()->nickname;
+		$activityTicketUpdate->note = "Update Pending - " . $request->updatePending;
+
+		$activityTicketUpdate->save();
+
+		return Ticketing::with('client_ticket')
+			->where('id_ticket',$request->id_ticket)
+			->first()
+			->client_ticket
+			->client_acronym;
+	}
+
+	public function getPendingTicketData(Request $request){
+		return TicketingPendingReminder::where('id_ticket',$request->id_ticket)
+			->orderBy('id','DESC')
+			->first();
+	}
+
 	public function attachmentCloseTicket(Request $request){
 		// $file = $request->attachment;
 		if(isset($req->attachment)){

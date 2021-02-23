@@ -917,6 +917,12 @@ class TicketingController extends Controller
 	}
 
 	public function setUpdateTicket(Request $req){
+
+		if(isset($req->email)){
+			$mail = $this->makeMailer($req->to,$req->cc,$req->subject,$req->body);
+			$mail->send();
+		}
+
 		$detailTicketUpdate = TicketingDetail::where('id_ticket',$req->id_ticket)
 			->first();
 
@@ -925,14 +931,32 @@ class TicketingController extends Controller
 
 		$detailTicketUpdate->save();
 
+		$checkLatestActivity = TicketingActivity::where('id_ticket',$req->id_ticket)
+			->orderBy('id','DSEC')
+			->first();
+
 		$activityTicketUpdate = new TicketingActivity();
 		$activityTicketUpdate->id_ticket = $req->id_ticket;
-		$activityTicketUpdate->date = date("Y-m-d H:i:s.000000");
+		// $activityTicketUpdate->date = date("Y-m-d H:i:s.000000");
+		$activityTicketUpdate->date = $req->timeOnProgress;
 		$activityTicketUpdate->activity = "ON PROGRESS";
 		$activityTicketUpdate->operator = Auth::user()->nickname;
 		$activityTicketUpdate->note = $req->note;
 
 		$activityTicketUpdate->save();
+
+		if ($checkLatestActivity->activity == "PENDING"){
+			$checkLatestReminderPending = TicketingPendingReminder::where('id_ticket',$req->id_ticket)
+				->where('remind_success','FALSE');
+
+			if($checkLatestReminderPending->count() > 0){
+				foreach ($checkLatestReminderPending->get() as $key => $value) {
+					$value->remind_success = 'SKIPPED';
+					$value->save();
+				}
+			}
+
+		}
 
 		$clientAcronymFilter = Ticketing::with('client_ticket')
 			->where('id_ticket',$req->id_ticket)

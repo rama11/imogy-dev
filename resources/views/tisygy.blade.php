@@ -891,7 +891,7 @@
 							<textarea class="form-control" rows="1" id="ticketNote"></textarea>
 						</div>
 						<div class="form-group" style="display: none" id="ticketRoute" >
-							<label>Route Cause</label>
+							<label>Root Cause</label>
 							<textarea type="text" class="form-control" id="ticketRouteTxt"  readonly></textarea>
 						</div>
 						<div class="form-group" style="display: none" id="ticketCouter">

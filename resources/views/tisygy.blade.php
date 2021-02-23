@@ -3285,11 +3285,29 @@
 				'You must fill pending reason!',
 				'error'
 			)
+		} else if($("#datePending").val() == "" || $("#timePending").val() == ""){
+			swalWithCustomClass.fire(
+				'Error',
+				'You must fill Estimation pending!',
+				'error'
+			)
+		} else if (moment($("#datePending").val() + " " + $("#timePending").val() + ":00", "DD/MM/YYYY hh:mm:ss").isBefore(moment())){
+			$("#labelPending").addClass('has-error')
+			$("#datePending").parent().parent().addClass('has-error')
+			$("#timePending").parent().parent().addClass('has-error')
+			swalWithCustomClass.fire(
+				'Error',
+				'You set time before now!',
+				'error'
+			)
 		} else {
+			$("#labelPending").removeClass('has-error')
+			$("#datePending").parent().parent().removeClass('has-error')
+			$("#timePending").parent().parent().removeClass('has-error')
 			swalWithCustomClass.fire({
 				title: 'Are you sure?',
 				text: "Are you sure to pending this ticket?",
-				type: 'warning',
+				icon: 'warning',
 				showCancelButton: true,
 			}).then((result) => {
 				if (result.value) {

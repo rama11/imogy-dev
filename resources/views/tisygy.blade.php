@@ -1043,10 +1043,43 @@
 								<label>Reason</label>
 								<textarea type="text" class="form-control" id="saveReasonPending"></textarea>
 							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group" style="margin-bottom: 0;" id="labelPending">
+										<label class="control-label">Estimation pending</label>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group">
+										<div class="input-group date">
+											<div class="input-group-addon">
+												<i class="fa fa-calendar"></i>
+											</div>
+											<input type="text" class="form-control pull-right" id="datePending">
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="bootstrap-timepicker">
+										<div class="form-group">
+											<div class="input-group">
+												<input type="text" class="form-control timepicker" id="timePending">
+
+												<div class="input-group-addon">
+													<i class="fa fa-clock-o"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 						</form>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-flat btn-warning " onclick="preparePendingEmail()">Pending</button>
+						<button type="button" class="btn btn-flat btn-warning" onclick="preparePendingEmail()">Pending</button>
+						<button type="button" id="updatePendingBtn" class="btn btn-flat btn-primary pull-left" onclick="updatePending()">Update Pending</button>
 					</div>
 				</div>
 			</div>

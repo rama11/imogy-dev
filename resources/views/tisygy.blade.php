@@ -3379,6 +3379,49 @@
 		}
 	}
 
+	function updatePending(){
+		if($("#saveReasonPending").val() == ""){
+			swalWithCustomClass.fire(
+				'Error',
+				'You must fill pending reason!',
+				'error'
+			)
+		} else {
+			swalWithCustomClass.fire({
+				title: 'Are you sure?',
+				text: "Are you sure to update this pending?",
+				icon: 'warning',
+				showCancelButton: true,
+			}).then((result) => {
+				$.ajax({
+					url:"{{url('tisygy/setUpdateTicketPending')}}",
+					data:{
+						updatePending:$("#saveReasonPending").val(),
+						id_ticket:$('#ticketID').val()
+					},
+					success:function(resultAjax){
+						// swalWithCustomClass.fire(
+						// 	'Success',
+						// 	'Update Completed!',
+						// 	'success'
+						// )
+						swalWithCustomClass.fire({
+							title: 'Success!',
+							text: 'Update pending success',
+							icon: 'success',
+							confirmButtonText: 'Reload',
+						}).then((result) => {
+							$('#modal-pending').modal('toggle');
+							$("#modal-ticket").modal('toggle');
+							getPerformanceByClient(resultAjax)
+						})
+						
+					}
+				})
+			})
+		}
+	}
+
 	function prepareCancelEmail() {
 		if($("#saveReasonCancel").val() == ""){
 			swalWithCustomClass.fire(
@@ -3495,6 +3538,7 @@
 				cc: $("#emailPendingCc").val(),
 				note_pending: $("#saveReasonPending").val(),
 				body:$("#bodyPendingMail").html(),
+				estimationPending:moment($("#datePending").val(),"DD/MM/YYYY").format("DD-MM-YYYY") + " " + $("#timePending").val() + ":00",
 			}
 
 		swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,function(){
@@ -3526,6 +3570,31 @@
 		})
 	}
 
+	function sendOnProgressEmail(timeOnProgress){
+
+		var typeAlert = 'warning'
+		var typeActivity = 'On Progress'
+		var typeAjax = "GET"
+		var urlAjax = "{{url('tisygy/setUpdateTicket')}}"
+		var dataAjax = {
+				email:"true",
+				id_ticket:$('#ticketID').val(),
+				ticket_number_3party:$("#ticketNumber").val(),
+				engineer:$("#ticketEngineer").val(),
+				note:$("#ticketNote").val(),
+				timeOnProgress:timeOnProgress,
+				subject: $("#emailOnProgressSubject").val(),
+				to: $("#emailOnProgressTo").val(),
+				cc: $("#emailOnProgressCc").val(),
+				body:$("#bodyOnProgressMail").html(),
+			}
+
+		swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,function(){
+			$("#modal-next-on-progress").modal('toggle');
+			$("#modal-ticket").modal('toggle');
+		})
+	}
+
 	function exitTicket(){
 		$("#modal-ticket").modal('toggle');
 	}
@@ -3539,12 +3608,126 @@
 
 	function pendingTicket(id){
 		$("#saveReasonPending").val('')
-		$('#modal-pending').modal('toggle');
+		if($("#ticketStatus").text() == "PENDING"){
+			$.ajax({
+				url:"{{'tisygy/getPendingTicketData'}}",
+				data:{
+					id_ticket:$('#ticketID').val()
+				},
+				success:function(result){
+					$("#timePending").val(moment(result.remind_time).format("hh:mm"))	
+					$("#datePending").val(moment(result.remind_time).format("DD/MM/YYYY"))
+					$('#modal-pending').modal('toggle');
+				}
+			})
+		} else {
+			$('#modal-pending').modal('toggle');
+		}
 	}
 
 	function cancelTicket(id){
 		$('#saveReasonCancel').val('')
 		$('#modal-cancel').modal('toggle');
+	}
+
+	function onProgressTicket(){
+		$.ajax({
+			url:"{{url('tisygy/mail/getOnProgressMailTemplate')}}",
+			type:"GET",
+			success: function (result){
+				$("#bodyOnProgressMail").html(result);
+			}
+		})
+
+		$.ajax({
+			url:"{{url('tisygy/mail/getEmailData')}}",
+			type:"GET",
+			data:{
+				id_ticket:$('#ticketID').val()
+			},
+			success: function (result){
+				// Holder Cancel
+				$(".holderOnProgressID").text($('#ticketID').val());
+				$(".holderOnProgressRefrence").text(result.ticket_data.refrence);
+				$(".holderOnProgressPIC").text(result.ticket_data.pic);
+				$(".holderOnProgressContact").text(result.ticket_data.contact_pic);
+				$(".holderOnProgressLocation").text(result.ticket_data.location);
+				$(".holderOnProgressProblem").text(result.ticket_data.problem);
+				$(".holderOnProgressSerial").text(result.ticket_data.serial_device);
+				$(".holderOnProgressSeverity").text(result.ticket_data.severity_detail.id + " (" + result.ticket_data.severity_detail.name + ")")
+
+				$(".holderOnProgressIDATM").text(result.ticket_data.id_atm);
+
+				$(".holderOnProgressNote").text("");
+				$(".holderOnProgressEngineer").text(result.ticket_data.engineer);
+
+				var waktu = moment((result.ticket_data.first_activity_ticket.date), "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY (HH:mm)");
+
+				$(".holderOnProgressDate").text(waktu);
+
+				$(".holderOnProgressStatus").html("<b>ON PROGRESS</b>");
+				$(".holderOnProgressStatus").html("<b>ON PROGRESS</b>");
+
+				$(".holderNumberTicket").text($("#ticketNumber").val());
+
+				// Email Reciver
+				$('.emailMultiSelector ').remove()
+				$("#emailOnProgressTo").val(result.ticket_reciver.close_to)
+				$("#emailOnProgressTo").emailinput({ onlyValidValue: true, delim: ';' });
+				$("#emailOnProgressCc").val(result.ticket_reciver.close_cc)
+				$("#emailOnProgressCc").emailinput({ onlyValidValue: true, delim: ';' });
+
+				$("#emailOnProgressSubject").val("On Progress Tiket " + $(".holderOnProgressLocation").text() + " [" + $(".holderOnProgressProblem").text() +"]");
+				$("#emailOnProgressHeader").html("Dear <b>" + result.ticket_reciver.close_dear + "</b><br>Berikut terlampir On Progress Tiket untuk Problem <b>" + $(".holderOnProgressLocation").text() + "</b> : ");
+				$(".holderOnProgressCustomer").text(result.ticket_reciver.client_name);
+				var timeOnProgress = moment()
+				$(".holderOnProgressWaktu").html("<b>" + timeOnProgress.format("DD MMMM YYYY (HH:mm)") + "</b>");
+				
+				if(result.ticket_reciver.client_acronym  == "BJBR" || result.ticket_reciver.client_acronym  == "BSBB" || result.ticket_reciver.client_acronym  == "BRKR" || result.ticket_reciver.client_acronym  == "BPRKS" || result.ticket_reciver.client_acronym  == "BDIY"){
+					$(".holderOnProgressIDATM2").show();
+					$(".holderNumberTicket2").show();
+				} else {
+					$(".holderOnProgressIDATM2").hide();
+					$(".holderNumberTicket2").hide();
+				}
+				$(".holderOnProgressNote").text($("#ticketNote").val());
+				$("#sendOnProgressEmail").attr('onclick','sendOnProgressEmail("' + timeOnProgress.format("YYYY-MM-DD HH:mm:ss") + '")')
+			},
+			complete: function(){
+				$("#modal-next-on-progress").modal('toggle');
+			}
+		})
+	}
+
+	function updateTicketAjax(timeOnProgress){
+		$.ajax({
+			type:"GET",
+			url:"{{url('tisygy/setUpdateTicket')}}",
+			data:{
+				id_ticket:$('#ticketID').val(),
+				ticket_number_3party:$("#ticketNumber").val(),
+				engineer:$("#ticketEngineer").val(),
+				note:$("#ticketNote").val(),
+				timeOnProgress:timeOnProgress
+			},
+			success: function(result){
+				$("#ticketActivity").prepend('<li>' + moment(result.date).format("DD MMMM - HH:mm") + ' [' + result.operator + '] - ' + result.note + '</li>');
+				$("#ticketNote").val("")
+				$("#ticketStatus").attr('class','label label-info');
+				$("#ticketStatus").text('ON PROGRESS')
+				$("#updateButton").prop('disabled',false);
+				$("#closeButton").prop('disabled',false);
+				$("#cancelButton").prop('disabled',false);
+				$("#pendingButton").prop('disabled',false);
+				$("#modal-ticket").modal('toggle')
+				getPerformanceByClient(result.client_acronym_filter)
+				swalWithCustomClass.fire(
+					'Success',
+					'Update Completed!',
+					'success'
+				)
+			}
+		});
 	}
 
 	function updateTicket(id){
@@ -3556,42 +3739,44 @@
 				'error'
 			)
 		} else {
-			swalWithCustomClass.fire({
-				title: 'Are you sure?',
-				text: "Are you sure to update this ticket?",
-				type: 'warning',
-				showCancelButton: true,
-			}).then((result) => {
-				if(result.value){
-					$.ajax({
-						type:"GET",
-						url:"{{url('tisygy/setUpdateTicket')}}",
-						data:{
-							id_ticket:id,
-							ticket_number_3party:$("#ticketNumber").val(),
-							engineer:$("#ticketEngineer").val(),
-							note:$("#ticketNote").val(),
-						},
-						success: function(result){
-							$("#ticketActivity").prepend('<li>' + moment(result.date).format("DD MMMM - HH:mm") + ' [' + result.operator + '] - ' + result.note + '</li>');
-							$("#ticketNote").val("")
-							$("#ticketStatus").attr('class','label label-info');
-							$("#ticketStatus").text('ON PROGRESS')
-							$("#updateButton").prop('disabled',false);
-							$("#closeButton").prop('disabled',false);
-							$("#cancelButton").prop('disabled',false);
-							$("#pendingButton").prop('disabled',false);
-							$("#modal-ticket").modal('toggle')
-							getPerformanceByClient(result.client_acronym_filter)
-							swalWithCustomClass.fire(
-								'Success',
-								'Update Completed!',
-								'success'
-							)
-						}
-					});
-				}
-			})
+			if($("#ticketStatus").text() == "PENDING"){
+				swalWithCustomClass.fire({
+					title: 'Are you sure?',
+					text: "to continue this ticket from pending?",
+					icon: 'warning',
+					showCancelButton: true,
+				}).then((result) => {
+					if(result.value){
+						swalWithCustomClass.fire({
+							title: 'Would you like?',
+							text: "to send an on-progress email to notify the user?",
+							icon: 'warning',
+							showDenyButton: true,
+							denyButton: 'btn btn-flat btn-danger swal2-margin',
+							confirmButton: 'btn btn-flat btn-success swal2-margin',
+							confirmButtonText: 'Yes',
+						}).then((result) => {
+							if (result.isConfirmed) {
+								$("#ticketNote").val("Continue from pending - " + $("#ticketNote").val())
+								onProgressTicket()
+							} else if (result.isDenied) {
+								updateTicketAjax(moment().format("YYYY-MM-DD HH:mm:ss"))
+							}
+						})
+					}
+				})
+			} else {
+				swalWithCustomClass.fire({
+					title: 'Are you sure?',
+					text: "Are you sure to update this ticket?",
+					icon: 'warning',
+					showCancelButton: true,
+				}).then((result) => {
+					if(result.value){
+						updateTicketAjax(moment().format("YYYY-MM-DD HH:mm:ss"))
+					}
+				})
+			}
 		}
 	}
 
@@ -3881,6 +4066,7 @@
 				var regex = /<br\s*[\/]?>/gi;
 				// $("#mydiv").html(str.replace(regex, "\n"));
 				$("#rowGeneral").show()
+				$("#rowAbsen").hide()
 				$("#ticketLocation").val(result.location);
 
 				if(result.id_ticket.split("/")[1] == "BDIYCCTV"){
@@ -3931,6 +4117,7 @@
 				$("#ticketCouter").hide();
 				$("#ticketRoute").hide();
 
+				$("#updatePendingBtn").prop('disabled',true);
 				if(result.lastest_activity_ticket.activity == "OPEN"){
 					$("#ticketStatus").attr('class','label label-danger');
 					
@@ -3942,6 +4129,13 @@
 					
 					$("#pendingButton").prop('disabled',false);
 					$("#closeButton").prop('disabled',false);
+					$("#updatePendingBtn").prop('disabled',false);
+					$('#datePending').datepicker({
+						autoclose: true,
+						startDate: moment().format("MM/DD/YYYY")
+					}).on('hide',function(result){
+						$('#datePending').val(moment(result.date).format("DD/MM/YYYY"))
+					});
 					$('#dateClose').datepicker({
 						autoclose: true,
 						startDate: moment(result.first_activity_ticket.date).format("MM/DD/YYYY"),
@@ -3969,6 +4163,12 @@
 					$("#closeButton").prop('disabled',false);
 					$("#cancelButton").prop('disabled',false);
 					$("#pendingButton").prop('disabled',false);
+					$('#datePending').datepicker({
+						autoclose: true,
+						startDate: moment().format("MM/DD/YYYY")
+					}).on('hide',function(result){
+						$('#datePending').val(moment(result.date).format("DD/MM/YYYY"))
+					});
 					$('#dateClose').datepicker({
 						autoclose: true,
 						startDate: moment(result.first_activity_ticket.date).format("MM/DD/YYYY"),
@@ -4290,7 +4490,7 @@
 	// $("#inputPIC").change(function(){
 	// 	if($(this).val() == ""){
 	// 		$(this).closest('.form-group').addClass('has-error')
-	// 	} else {
+	// 	} else {f
 	// 		$(this).closest('.form-group').removeClass('has-error')
 	// 	}
 	// });

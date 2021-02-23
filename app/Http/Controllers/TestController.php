@@ -1039,4 +1039,9 @@ class TestController extends Controller
 		return 0;
 	}
 
+	public function testMailOnProgress(){
+		return view('mailOnProgressTicket');
+	}
+
+
 }

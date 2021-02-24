@@ -15,6 +15,7 @@ use App\Mail\Ticket;
 use App\Mail\TicketMail;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Carbon\Carbon;
 
 
 class AdminController extends Controller
@@ -285,6 +286,7 @@ class AdminController extends Controller
 		$location = DB::table('location')
 			->orderBy('name','ASC')
 			->selectRaw('`id`,`name` AS `text`')
+			->where('status','=','ACTIVE')
 			->get()->toArray();
 
 		$location = array("result" => $location);
@@ -412,7 +414,9 @@ class AdminController extends Controller
 				'name' => $request->pleace,
 				'lat' => $request->lat,
 				'lang' => $request->lng,
-				'radius' => '500'
+				'radius' => '500',
+				'status' => "ACTIVE",
+				'create_date' => Carbon::now()->toDateTimeString()
 				]);
 
 		return redirect('location')->with('status', "Add location for " . $request->pleace . " success.");

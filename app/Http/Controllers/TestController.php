@@ -958,6 +958,7 @@ class TestController extends Controller
 			->push([
 				"date" => Carbon::now()->formatLocalized('%d %B %Y')
 			]);
+	}
 
 	public function testingATMMaps(){
 		return view('mapsAtm');

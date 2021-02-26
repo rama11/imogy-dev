@@ -22,6 +22,12 @@ Durasi sampai due date = H+36
 Kondisi = Major
 
 
+perubahan a
+perubahan b
+perubahan c
+perubahan d
+perubahan e
+
 perubahan 1
 perubahan 2
 perubahan 3

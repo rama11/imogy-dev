@@ -24,3 +24,4 @@ Kondisi = Major
 
 perubahan a
 perubahan b
+perubahan c

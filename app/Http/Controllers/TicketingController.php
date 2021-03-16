@@ -929,6 +929,25 @@ class TicketingController extends Controller
 
 	}
 
+	private function checkPendingReminder($id_ticket){
+		$checkLatestActivity = TicketingActivity::where('id_ticket',$id_ticket)
+			->orderBy('id','DSEC')
+			->first();
+
+		if ($checkLatestActivity->activity == "PENDING"){
+			$checkLatestReminderPending = TicketingPendingReminder::where('id_ticket',$id_ticket)
+				->where('remind_success','FALSE');
+
+			if($checkLatestReminderPending->count() > 0){
+				foreach ($checkLatestReminderPending->get() as $key => $value) {
+					$value->remind_success = 'SKIPPED';
+					$value->save();
+				}
+			}
+
+		}
+	}
+
 	public function setUpdateTicket(Request $req){
 
 		if(isset($req->email)){

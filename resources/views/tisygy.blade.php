@@ -1039,13 +1039,13 @@
 					</div>
 					<div class="modal-body">
 						<form role="form">
-							<div class="form-group">
+							<div class="form-group" id="labelPendingReason">
 								<label>Reason</label>
 								<textarea type="text" class="form-control" id="saveReasonPending"></textarea>
 							</div>
 							<div class="row">
 								<div class="col-md-12">
-									<div class="form-group" style="margin-bottom: 0;" id="labelPending">
+									<div class="form-group" style="margin-bottom: 0;" id="labelPendingEstimation">
 										<label class="control-label">Estimation pending</label>
 									</div>
 								</div>
@@ -1073,6 +1073,14 @@
 											</div>
 										</div>
 									</div>
+								</div>
+							</div>
+							<div class="row" style="display: none" id="estimationPendingHolder">
+								<div class="col-sm-12">
+									<p>
+										The pending estimate for this ticket has been set to the previous pending on 
+										<br><b id="estimationPendingText"></b>
+									</p>
 								</div>
 							</div>
 						</form>
@@ -3294,29 +3302,42 @@
 	}
 
 	function preparePendingEmail(){
-		if($("#saveReasonPending").val() == ""){
-			swalWithCustomClass.fire(
-				'Error',
-				'You must fill pending reason!',
-				'error'
-			)
-		} else if($("#datePending").val() == "" || $("#timePending").val() == ""){
-			swalWithCustomClass.fire(
-				'Error',
-				'You must fill Estimation pending!',
-				'error'
-			)
-		} else if (moment($("#datePending").val() + " " + $("#timePending").val() + ":00", "DD/MM/YYYY hh:mm:ss").isBefore(moment())){
-			$("#labelPending").addClass('has-error')
+		if($("#saveReasonPending").val() == "" && $("#datePending").val() == "" && $("#timePending").val() == ""){
+			$("#labelPendingReason, #labelPendingEstimation").addClass('has-error')
 			$("#datePending").parent().parent().addClass('has-error')
 			$("#timePending").parent().parent().addClass('has-error')
 			swalWithCustomClass.fire(
 				'Error',
-				'You set time before now!',
+				'You must fill in reason and estimation for make this Pending Ticket!',
+				'error'
+			)
+		} else if($("#saveReasonPending").val() == ""){
+			$("#labelPendingReason").addClass('has-error')
+			swalWithCustomClass.fire(
+				'Error',
+				'You must fill in reason for make this Pending Ticket!',
+				'error'
+			)
+		} else if($("#datePending").val() == "" || $("#timePending").val() == ""){
+			$("#labelPendingEstimation").addClass('has-error')
+			$("#datePending").parent().parent().addClass('has-error')
+			$("#timePending").parent().parent().addClass('has-error')
+			swalWithCustomClass.fire(
+				'Error',
+				'You must fill in estimation for make this Pending Ticket!',
+				'error'
+			)
+		} else if (moment($("#datePending").val() + " " + $("#timePending").val() + ":00", "DD/MM/YYYY hh:mm:ss").isBefore(moment())){
+			$("#labelPendingEstimation").addClass('has-error')
+			$("#datePending").parent().parent().addClass('has-error')
+			$("#timePending").parent().parent().addClass('has-error')
+			swalWithCustomClass.fire(
+				'Error',
+				"You set time before now! (Can't backdate)",
 				'error'
 			)
 		} else {
-			$("#labelPending").removeClass('has-error')
+			$("#labelPendingReason, #labelPendingEstimation").removeClass('has-error')
 			$("#datePending").parent().parent().removeClass('has-error')
 			$("#timePending").parent().parent().removeClass('has-error')
 			swalWithCustomClass.fire({
@@ -3642,8 +3663,10 @@
 					id_ticket:$('#ticketID').val()
 				},
 				success:function(result){
+					$("#estimationPendingHolder").show()
 					$("#timePending").val(moment(result.remind_time).format("hh:mm"))	
 					$("#datePending").val(moment(result.remind_time).format("DD/MM/YYYY"))
+					$("#estimationPendingText").text(moment(result.remind_time).format("D MMMM YYYY") + " at " + moment(result.remind_time).format("HH:mm"))
 					$('#modal-pending').modal('toggle');
 				}
 			})

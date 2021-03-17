@@ -929,6 +929,25 @@ class TicketingController extends Controller
 
 	}
 
+	private function checkPendingReminder($id_ticket){
+		$checkLatestActivity = TicketingActivity::where('id_ticket',$id_ticket)
+			->orderBy('id','DSEC')
+			->first();
+
+		if ($checkLatestActivity->activity == "PENDING"){
+			$checkLatestReminderPending = TicketingPendingReminder::where('id_ticket',$id_ticket)
+				->where('remind_success','FALSE');
+
+			if($checkLatestReminderPending->count() > 0){
+				foreach ($checkLatestReminderPending->get() as $key => $value) {
+					$value->remind_success = 'SKIPPED';
+					$value->save();
+				}
+			}
+
+		}
+	}
+
 	public function setUpdateTicket(Request $req){
 
 		if(isset($req->email)){
@@ -944,9 +963,7 @@ class TicketingController extends Controller
 
 		$detailTicketUpdate->save();
 
-		$checkLatestActivity = TicketingActivity::where('id_ticket',$req->id_ticket)
-			->orderBy('id','DSEC')
-			->first();
+		$this->checkPendingReminder($req->id_ticket);
 
 		$activityTicketUpdate = new TicketingActivity();
 		$activityTicketUpdate->id_ticket = $req->id_ticket;
@@ -957,19 +974,6 @@ class TicketingController extends Controller
 		$activityTicketUpdate->note = $req->note;
 
 		$activityTicketUpdate->save();
-
-		if ($checkLatestActivity->activity == "PENDING"){
-			$checkLatestReminderPending = TicketingPendingReminder::where('id_ticket',$req->id_ticket)
-				->where('remind_success','FALSE');
-
-			if($checkLatestReminderPending->count() > 0){
-				foreach ($checkLatestReminderPending->get() as $key => $value) {
-					$value->remind_success = 'SKIPPED';
-					$value->save();
-				}
-			}
-
-		}
 
 		$clientAcronymFilter = Ticketing::with('client_ticket')
 			->where('id_ticket',$req->id_ticket)
@@ -1098,6 +1102,8 @@ class TicketingController extends Controller
 
 		$mail->send();
 
+		$this->checkPendingReminder($request->id_ticket);
+
 		$activityTicketUpdate = new TicketingActivity();
 		$activityTicketUpdate->id_ticket = $request->id_ticket;
 		$activityTicketUpdate->date = $request->finish;
@@ -1131,6 +1137,8 @@ class TicketingController extends Controller
 
 		$mail->send();
 
+		$this->checkPendingReminder($request->id_ticket);
+
 		$activityTicketUpdate = new TicketingActivity();
 		$activityTicketUpdate->id_ticket = $request->id_ticket;
 		$activityTicketUpdate->date = date("Y-m-d H:i:s.000000");
@@ -1161,7 +1169,7 @@ class TicketingController extends Controller
 		$activityTicketUpdate->date = date("Y-m-d H:i:s.000000");
 		$activityTicketUpdate->activity = "PENDING";
 		$activityTicketUpdate->operator = Auth::user()->nickname;
-		$activityTicketUpdate->note = "Panding Ticket - " . $request->note_pending;
+		$activityTicketUpdate->note = "Pending Ticket - " . $request->note_pending;
 
 		$activityTicketUpdate->save();
 

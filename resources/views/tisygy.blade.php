@@ -3257,7 +3257,11 @@
 							$("#emailCloseHeader").html("Dear <b>" + result.ticket_reciver.close_dear + "</b><br>Berikut terlampir Close Tiket untuk Problem <b>" + $(".holderCloseLocation").text() + "</b> : ");
 							$(".holderCloseCustomer").text(result.ticket_reciver.client_name);
 
-							if(result.ticket_reciver.client_acronym  == "BJBR" || result.ticket_reciver.client_acronym  == "BSBB" || result.ticket_reciver.client_acronym  == "BRKR" || result.ticket_reciver.client_acronym  == "BPRKS"){
+							if(result.ticket_reciver.client_acronym  == "BJBR" || 
+								result.ticket_reciver.client_acronym  == "BSBB" || 
+								result.ticket_reciver.client_acronym  == "BRKR" || 
+								result.ticket_reciver.client_acronym  == "BPRKS"
+								){
 								$(".holderCloseIDATM2").show();
 								$(".holderNumberTicket2").show();
 							} else {
@@ -3371,7 +3375,13 @@
 							$("#emailPendingHeader").html("Dear <b>" + result.ticket_reciver.close_dear + "</b><br>Berikut terlampir Pending Tiket untuk Problem <b>" + $(".holderPendingLocation").text() + "</b> : ");
 							$(".holderPendingCustomer").text(result.ticket_reciver.client_name);
 
-							if(result.ticket_reciver.client_acronym  == "BJBR" || result.ticket_reciver.client_acronym  == "BSBB" || result.ticket_reciver.client_acronym  == "BRKR" || result.ticket_reciver.client_acronym  == "BPRKS"  || result.ticket_reciver.client_acronym  == "BDIY" ){
+							if(
+								result.ticket_reciver.client_acronym  == "BJBR" || 
+								result.ticket_reciver.client_acronym  == "BSBB" || 
+								result.ticket_reciver.client_acronym  == "BRKR" || 
+								result.ticket_reciver.client_acronym  == "BPRKS"  || 
+								result.ticket_reciver.client_acronym  == "BDIY" 
+								){
 								$(".holderPendingIDATM2").show();
 								$(".holderNumberTicket2").show();
 							} else {
@@ -3496,7 +3506,13 @@
 							$("#emailCancelHeader").html("Dear <b>" + result.ticket_reciver.close_dear + "</b><br>Berikut terlampir Cancel Tiket untuk Problem <b>" + $(".holderCancelLocation").text() + "</b> : ");
 							$(".holderCancelCustomer").text(result.ticket_reciver.client_name);
 
-							if(result.ticket_reciver.client_acronym  == "BJBR" || result.ticket_reciver.client_acronym  == "BSBB" || result.ticket_reciver.client_acronym  == "BRKR" || result.ticket_reciver.client_acronym  == "BPRKS" || result.ticket_reciver.client_acronym  == "BDIY"){
+							if(
+								result.ticket_reciver.client_acronym  == "BJBR" || 
+								result.ticket_reciver.client_acronym  == "BSBB" || 
+								result.ticket_reciver.client_acronym  == "BRKR" || 
+								result.ticket_reciver.client_acronym  == "BPRKS" || 
+								result.ticket_reciver.client_acronym  == "BDIY"
+								){
 								$(".holderCancelIDATM2").show();
 								$(".holderNumberTicket2").show();
 							} else {
@@ -3694,7 +3710,13 @@
 				var timeOnProgress = moment()
 				$(".holderOnProgressWaktu").html("<b>" + timeOnProgress.format("DD MMMM YYYY (HH:mm)") + "</b>");
 				
-				if(result.ticket_reciver.client_acronym  == "BJBR" || result.ticket_reciver.client_acronym  == "BSBB" || result.ticket_reciver.client_acronym  == "BRKR" || result.ticket_reciver.client_acronym  == "BPRKS" || result.ticket_reciver.client_acronym  == "BDIY"){
+				if(
+					result.ticket_reciver.client_acronym  == "BJBR" || 
+					result.ticket_reciver.client_acronym  == "BSBB" || 
+					result.ticket_reciver.client_acronym  == "BRKR" || 
+					result.ticket_reciver.client_acronym  == "BPRKS" || 
+					result.ticket_reciver.client_acronym  == "BDIY"
+					){
 					$(".holderOnProgressIDATM2").show();
 					$(".holderNumberTicket2").show();
 				} else {

@@ -1078,14 +1078,16 @@ class TicketingController extends Controller
 			$mail->MsgHTML($body);
 
 			$to = explode(";", $to);
-			$cc = explode(";", $cc);
 			
 			for($i = 0;$i < sizeof($to);$i++){
 				$mail->addAddress($to[$i]);
 			}
 
-			for($i = 0;$i < sizeof($cc);$i++){
-				$mail->addCC($cc[$i]);
+			if($cc != ""){
+				$cc = explode(";", $cc);
+				for($i = 0;$i < sizeof($cc);$i++){
+					$mail->addCC($cc[$i]);
+				}
 			}
 			
 			return $mail;

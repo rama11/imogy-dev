@@ -2298,7 +2298,9 @@
 		} else {
 			$("#peripheralAddForm, #peripheralAddFormCCTV, #peripheralAddFormButton").hide()
 			$("#atmAddForm, #atmAddFormButton").show()
-			$("#ATMadd").select2('destroy')
+			if($('#ATMadd').hasClass("select2-hidden-accessible")){
+				$("#ATMadd").select2('destroy')
+			}
 			$("#ATMadd").hide()
 			$("#atmAddID").show()
 

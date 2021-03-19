@@ -3582,11 +3582,18 @@
 	}
 
 	function sendCloseEmail(){
-		var typeAlert = 'warning'
-		var typeActivity = 'Close'
-		var typeAjax = "GET"
-		var urlAjax = "{{url('tisygy/mail/sendEmailClose')}}"
-		var dataAjax = {
+		if($("#emailCloseTo").val() == ""){
+			$("#emailCloseTo").parent().parent().addClass("has-error")
+			$("#emailCloseTo").parent().siblings().last().show()
+			swalWithCustomClass.fire('Error',"You have to fill in the email to to close a ticket!",'error');
+		} else {
+			$("#emailCloseTo").parent().parent().removeClass("has-error")
+			$("#emailCloseTo").parent().siblings().last().hide()
+			var typeAlert = 'warning'
+			var typeActivity = 'Close'
+			var typeAjax = "GET"
+			var urlAjax = "{{url('tisygy/mail/sendEmailClose')}}"
+			var dataAjax = {
 				id_ticket:$('#ticketID').val(),
 				root_cause:$("#saveCloseRoute").val(),
 				couter_measure:$("#saveCloseCouter").val(),

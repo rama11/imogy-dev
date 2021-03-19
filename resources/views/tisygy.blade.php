@@ -4386,6 +4386,7 @@
 				$("#clientTitle").val("");
 				$("#clientAcronym").val("");
 				$("#openDear").val("");
+				$('.emailMultiSelector ').remove()
 				$("#openTo").val("");
 				$("#openCc").val("");
 				$("#closeDear").val("");

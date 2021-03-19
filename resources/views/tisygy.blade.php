@@ -3244,6 +3244,7 @@
 				showCancelButton: true,
 			}).then((result) => {
 				if (result.value) {
+					$(".help-block").hide()
 					$.ajax({
 						url:"{{url('tisygy/mail/getCloseMailTemplate')}}",
 						type:"GET",
@@ -3507,6 +3508,7 @@
 				showCancelButton: true,
 			}).then((result) => {
 				if (result.value) {
+					$(".help-block").hide()
 					$.ajax({
 						url:"{{url('tisygy/mail/getCancelMailTemplate')}}",
 						type:"GET",
@@ -3684,6 +3686,7 @@
 
 	function pendingTicket(id){
 		$("#saveReasonPending").val('')
+		$(".help-block").hide()
 		if($("#ticketStatus").text() == "PENDING"){
 			$.ajax({
 				url:"{{'tisygy/getPendingTicketData'}}",
@@ -3709,6 +3712,7 @@
 	}
 
 	function onProgressTicket(){
+		$(".help-block").hide()
 		$.ajax({
 			url:"{{url('tisygy/mail/getOnProgressMailTemplate')}}",
 			type:"GET",

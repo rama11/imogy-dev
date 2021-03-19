@@ -1120,6 +1120,9 @@
 								<div class="col-sm-10">
 									<input class="form-control" name="emailTo" id="emailPendingTo">
 								</div>
+								<div class="col-sm-10 col-sm-offset-2 help-block" style="margin-bottom: 0px;">
+									Enter the recipient of this pending email!
+								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">

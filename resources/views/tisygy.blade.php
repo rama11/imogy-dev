@@ -2438,7 +2438,6 @@
 	}
 
 	function atmAdd(){
-		$("#modal-setting-atm-add").modal('toggle');
 		$.ajax({
 			type:"GET",
 			url:"{{url('tisygy/setting/getParameterAddAtm')}}",
@@ -2447,11 +2446,16 @@
 				$.each(result, function (key,value){
 					$("#atmAddOwner").append("<option value='" + value.id + "'>(" + value.client_acronym + ") " + value.client_name + "</option>")
 				});
+			},
+			complete: function(){
+				$("#modal-setting-atm-add input.form-control, #modal-setting-atm-add textarea.form-control").val("")
+				$("#modal-setting-atm-add").modal('toggle');
 			}
 		});
 	}
 
 	function absenAdd(){
+		$("#modal-setting-absen-add input.form-control").val("")
 		$("#modal-setting-absen-add").modal('toggle');
 	}
 

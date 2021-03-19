@@ -3604,19 +3604,34 @@
 				cc: $("#emailCloseCc").val(),
 			}
 
-		swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,function(){
-			$("#modal-next-close").modal('toggle');
-			$("#modal-close").modal('toggle');
-			$("#modal-ticket").modal('toggle');
-		})
+			var textSwal = ""
+			if($("#emailCloseCc").val() == ""){
+				textSwal = "This ticket does not have a CC on the email recipient for this " + typeActivity + " ticket!"
+			} else {
+				textSwal = "Make sure there is nothing wrong to send this " + typeActivity + " ticket!"
+			}
+
+			swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,textSwal,function(){
+				$("#modal-next-close").modal('toggle');
+				$("#modal-close").modal('toggle');
+				$("#modal-ticket").modal('toggle');
+			})
+		}
 	}
 
 	function sendPendingEmail(){
-		var typeAlert = 'warning'
-		var typeActivity = 'Pending'
-		var typeAjax = "GET"
-		var urlAjax = "{{url('tisygy/mail/sendEmailPending')}}"
-		var dataAjax = {
+		if($("#emailPendingTo").val() == ""){
+			$("#emailPendingTo").parent().parent().addClass("has-error")
+			$("#emailPendingTo").parent().siblings().last().show()
+			swalWithCustomClass.fire('Error',"You have to fill in the email to to pending a ticket!",'error');
+		} else {
+			$("#emailPendingTo").parent().parent().removeClass("has-error")
+			$("#emailPendingTo").parent().siblings().last().hide()
+			var typeAlert = 'warning'
+			var typeActivity = 'Pending'
+			var typeAjax = "GET"
+			var urlAjax = "{{url('tisygy/mail/sendEmailPending')}}"
+			var dataAjax = {
 				id_ticket:$('#ticketID').val(),
 				subject: $("#emailPendingSubject").val(),
 				to: $("#emailPendingTo").val(),

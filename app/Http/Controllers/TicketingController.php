@@ -1510,6 +1510,7 @@ class TicketingController extends Controller
 				"address" => $request->atmAddress,
 				"activation" =>  Carbon::createFromFormat('d/m/Y',$request->atmActivation)->formatLocalized('%Y-%m-%d'),
 				"note" => $request->atmNote,
+				"machine_type" => $request->atmType,
 			]);
 
 		$newAtm->save();

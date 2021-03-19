@@ -1563,6 +1563,10 @@
 								</div>
 							</div>
 							<div class="form-group">
+								<label>Machine Type</label>
+								<input type="text" class="form-control" id="atmAddType">
+							</div>
+							<div class="form-group">
 								<label>Address</label>
 								<textarea type="text" class="form-control" id="atmAddAddress"></textarea>
 							</div>
@@ -2294,7 +2298,9 @@
 		} else {
 			$("#peripheralAddForm, #peripheralAddFormCCTV, #peripheralAddFormButton").hide()
 			$("#atmAddForm, #atmAddFormButton").show()
-			$("#ATMadd").select2('destroy')
+			if($('#ATMadd').hasClass("select2-hidden-accessible")){
+				$("#ATMadd").select2('destroy')
+			}
 			$("#ATMadd").hide()
 			$("#atmAddID").show()
 
@@ -2358,6 +2364,7 @@
 	}
 
 	function newAtm(){
+		var atmType = ($("#atmAddType").val() == "" ? "-" : $("#atmAddType").val())
 		$.ajax({
 			type:"GET",
 			url:"{{url('tisygy/setting/newAtm')}}",
@@ -2366,6 +2373,7 @@
 				atmID:$("#atmAddID").val(),
 				atmSerial:$("#atmAddSerial").val(),
 				atmLocation:$("#atmAddLocation").val(),
+				atmType:atmType,
 				atmAddress:$("#atmAddAddress").val(),
 				atmActivation:$("#atmAddActivation").val(),
 				atmNote:$("#atmAddNote").val(),

@@ -3715,11 +3715,17 @@
 				cc: $("#emailOnProgressCc").val(),
 				body:$("#bodyOnProgressMail").html(),
 			}
-
-		swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,function(){
-			$("#modal-next-on-progress").modal('toggle');
-			$("#modal-ticket").modal('toggle');
-		})
+			var textSwal = ""
+			if($("#emailOnProgressCc").val() == ""){
+				textSwal = "This ticket does not have a CC on the email recipient for this " + typeActivity + " ticket!"
+			} else {
+				textSwal = "Make sure there is nothing wrong to send this " + typeActivity + " ticket!"
+			}
+			swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,textSwal,function(){
+				$("#modal-next-on-progress").modal('toggle');
+				$("#modal-ticket").modal('toggle');
+			})
+		}
 	}
 
 	function exitTicket(){

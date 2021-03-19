@@ -1874,10 +1874,10 @@
 
 	})
 
-	function swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,callback){
+	function swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,textSwal,callback){
 		swalWithCustomClass.fire({
 			title: 'Are you sure?',
-			text: "Make sure there is nothing wrong to send this " + typeActivity + " ticket!",
+			text: textSwal,
 			icon: typeAlert,
 			showCancelButton: true,
 			allowOutsideClick: false,

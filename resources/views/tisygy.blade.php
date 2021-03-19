@@ -1887,24 +1887,25 @@
 			cancelButtonText: 'No',
 			}).then((result) => {
 				if (result.value){
-					Swal.fire({
-						title: 'Please Wait..!',
-						text: "It's sending..",
-						allowOutsideClick: false,
-						allowEscapeKey: false,
-						allowEnterKey: false,
-						customClass: {
-							popup: 'border-radius-0',
-						},
-						onOpen: () => {
-							Swal.showLoading()
-						}
-					})
-
 					$.ajax({
 						type: typeAjax,
 						url: urlAjax,
 						data: dataAjax,
+						beforeSend: function(){
+							Swal.fire({
+								title: 'Please Wait..!',
+								text: "It's sending..",
+								allowOutsideClick: false,
+								allowEscapeKey: false,
+								allowEnterKey: false,
+								customClass: {
+									popup: 'border-radius-0',
+								},
+								didOpen: () => {
+									Swal.showLoading()
+								}
+							})
+						},
 						success: function(resultAjax){
 							Swal.hideLoading()
 							swalWithCustomClass.fire({
@@ -1916,6 +1917,17 @@
 								// console.log(resultAjax)
 								callback()
 								getPerformanceByClient(resultAjax.client_acronym_filter)
+							})
+						},
+						error: function(resultAjax,errorStatus,errorMessage){
+							Swal.hideLoading()
+							swalWithCustomClass.fire({
+								title: 'Error!',
+								text: "Something went wrong, please try again!",
+								icon: 'error',
+								confirmButtonText: 'Try Again',
+							}).then((result) => {
+								$.ajax(this)
 							})
 						}
 					});

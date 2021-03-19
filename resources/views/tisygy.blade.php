@@ -4413,66 +4413,80 @@
 	});
 
 	function sendOpenEmail(){
-		var customerAcronym = $("#inputticket").val().split('/')[1];
-		if(
-			customerAcronym == "BJBR" 
-			|| customerAcronym == "BSBB" 
-			|| customerAcronym == "BRKR" 
-			|| customerAcronym == "BJTG" 
-			|| customerAcronym == "BDIY"
-			|| customerAcronym == "BDIYCCTV"
-			|| customerAcronym == "BDIYUPS"
-			){
-			var id_atm = $("#inputATM").select2('data')[0].text.split(' -')[0]
+		if($("#emailOpenTo").val() == ""){
+			$("#emailOpenTo").parent().parent().addClass("has-error")
+			$("#emailOpenTo").parent().siblings().last().show()
+			swalWithCustomClass.fire('Error',"You have to fill in the email to to open a ticket!",'error');
 		} else {
-			var id_atm = $("#inputATM").val()
+			$("#emailOpenTo").parent().parent().removeClass("has-error")
+			$("#emailOpenTo").parent().siblings().last().hide()
+			var customerAcronym = $("#inputticket").val().split('/')[1];
+			if(
+				customerAcronym == "BJBR" 
+				|| customerAcronym == "BSBB" 
+				|| customerAcronym == "BRKR" 
+				|| customerAcronym == "BJTG" 
+				|| customerAcronym == "BDIY"
+				|| customerAcronym == "BDIYCCTV"
+				|| customerAcronym == "BDIYUPS"
+				){
+				var id_atm = $("#inputATM").select2('data')[0].text.split(' -')[0]
+			} else {
+				var id_atm = $("#inputATM").val()
+			}
+
+			var typeAlert = 'warning'
+			var typeActivity = 'Open'
+			var typeAjax = "GET"
+			var urlAjax = "{{url('tisygy/mail/sendEmailOpen')}}"
+			if ($('#inputAbsenLocation').hasClass("select2-hidden-accessible")) {
+				var absen = $("#inputAbsenLocation").select2('data')[0].id
+				var location = $("#inputAbsenLocation").select2('data')[0].text
+			} else {
+				var absen = "-";
+				var location = $("#inputLocation").val();
+			}
+			var dataAjax = {
+				body:$("#bodyOpenMail").html(),
+				subject: $("#emailOpenSubject").val(),
+				to: $("#emailOpenTo").val(),
+				cc: $("#emailOpenCc").val(),
+				attachment: $("#emailOpenAttachment").val(),
+				id_ticket:$("#inputticket").val(),
+
+				id:$("#inputID").val(),
+				client:$("#inputClient").val(),
+
+				id_atm:id_atm,
+				refrence:$("#inputRefrence").val(),
+				pic:$("#inputPIC").val(),
+				contact_pic:$("#inputContact").val(),
+				location:location,
+				absen:absen,
+				problem:$("#inputProblem").val(),
+				serial_device:$("#inputSerial").val(),
+				note:$("#inputNote").val(),
+				report:moment($("#inputReportingDate").val(),'DD/MM/YYYY').format("YYYY-MM-DD") + " " + moment($("#inputReportingTime").val(),'HH:mm:ss').format("HH:mm:ss.000000"),
+				severity:$("#inputSeverity").val()
+			}
+			var textSwal = ""
+			if($("#emailOpenCc").val() == ""){
+				textSwal = "This ticket does not have a CC on the email recipient for this " + typeActivity + " ticket!"
+			} else {
+				textSwal = "Make sure there is nothing wrong to send this " + typeActivity + " ticket!"
+			}
+			swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,textSwal,function(){
+				$("#performance").click();
+				// $("#modal-cancel").modal('toggle');
+				// $("#modal-next-cancel").modal('toggle');
+				// $("#modal-ticket").modal('toggle');
+			})
+
+			// if(confirm("Are you sure to send this ticket?")){
+			// 	console.log("Yes");
+			// 	var body = $("#bodyOpenMail").html();
+
 		}
-
-		var typeAlert = 'warning'
-		var typeActivity = 'Open'
-		var typeAjax = "GET"
-		var urlAjax = "{{url('tisygy/mail/sendEmailOpen')}}"
-		if ($('#inputAbsenLocation').hasClass("select2-hidden-accessible")) {
-			var absen = $("#inputAbsenLocation").select2('data')[0].id
-			var location = $("#inputAbsenLocation").select2('data')[0].text
-		} else {
-			var absen = "-";
-			var location = $("#inputLocation").val();
-		}
-		var dataAjax = {
-			body:$("#bodyOpenMail").html(),
-			subject: $("#emailOpenSubject").val(),
-			to: $("#emailOpenTo").val(),
-			cc: $("#emailOpenCc").val(),
-			attachment: $("#emailOpenAttachment").val(),
-			id_ticket:$("#inputticket").val(),
-
-			id:$("#inputID").val(),
-			client:$("#inputClient").val(),
-
-			id_atm:id_atm,
-			refrence:$("#inputRefrence").val(),
-			pic:$("#inputPIC").val(),
-			contact_pic:$("#inputContact").val(),
-			location:location,
-			absen:absen,
-			problem:$("#inputProblem").val(),
-			serial_device:$("#inputSerial").val(),
-			note:$("#inputNote").val(),
-			report:moment($("#inputReportingDate").val(),'DD/MM/YYYY').format("YYYY-MM-DD") + " " + moment($("#inputReportingTime").val(),'HH:mm:ss').format("HH:mm:ss.000000"),
-			severity:$("#inputSeverity").val()
-		}
-
-		swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,function(){
-			$("#performance").click();
-			// $("#modal-cancel").modal('toggle');
-			// $("#modal-next-cancel").modal('toggle');
-			// $("#modal-ticket").modal('toggle');
-		})
-
-		// if(confirm("Are you sure to send this ticket?")){
-		// 	console.log("Yes");
-		// 	var body = $("#bodyOpenMail").html();
 		
 	}
 

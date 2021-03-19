@@ -503,6 +503,10 @@
 									<div class="col-sm-11">
 										<input class="form-control" name="emailTo" id="emailOpenTo">
 									</div>
+									<div class="col-sm-11 col-sm-offset-1 help-block" style="margin-bottom: 0px;">
+										Enter the recipient of this open email!
+									</div>
+									
 								</div>
 								<div class="form-group">
 									<label class="col-sm-1 control-label">

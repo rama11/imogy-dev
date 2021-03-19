@@ -1563,6 +1563,10 @@
 								</div>
 							</div>
 							<div class="form-group">
+								<label>Machine Type</label>
+								<input type="text" class="form-control" id="atmAddType">
+							</div>
+							<div class="form-group">
 								<label>Address</label>
 								<textarea type="text" class="form-control" id="atmAddAddress"></textarea>
 							</div>

@@ -2193,7 +2193,7 @@ class AdminController extends Controller
 			}
 			$summary[4] = $summary[0] + $summary[1] + $summary[2];
 	
-			$tittle = 'Attandance Report All Member [' . $req->startDate . ' to ' . $req->endDate . "] by " . Auth::user()->nickname;
+			$tittle = 'Attandance Report All Member [' . $req->startDate . ' to ' . $req->endDate . "] by " . Auth::user()->nickname . " at (" . Carbon::now()->format("d-m-y h:i") . ")";
 			$pdf = PDF::loadView('precense.getAllReportPDF',compact('var','summary','data','details','tittle'));
 			// return $pdf->stream($tittle . ".pdf");
 			Storage::put("public/report_attandance/" .$tittle . ".pdf", $pdf->output());

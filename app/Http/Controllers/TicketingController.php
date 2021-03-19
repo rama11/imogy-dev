@@ -1051,6 +1051,15 @@ class TicketingController extends Controller
 			$mail_auth = env('GMAIL_MAIL_ENCRYPTION');
 			$mail_from = env('GMAIL_MAIL_FROM');
 			$mail_name = env('GMAIL_MAIL_NAME');
+		} else if ($email_type == "Mailtrap"){
+			// Mailtrap Configuration
+			$mail_host = env('MAILTRAP_MAIL_HOST');
+			$mail_port = env('MAILTRAP_MAIL_PORT');
+			$mail_user = env('MAILTRAP_MAIL_USERNAME');
+			$mail_pass = env('MAILTRAP_MAIL_PASSWORD');
+			$mail_auth = env('MAILTRAP_MAIL_ENCRYPTION');
+			$mail_from = env('MAILTRAP_MAIL_FROM');
+			$mail_name = env('MAILTRAP_MAIL_NAME');
 		}
 
 		try {
@@ -1069,14 +1078,16 @@ class TicketingController extends Controller
 			$mail->MsgHTML($body);
 
 			$to = explode(";", $to);
-			$cc = explode(";", $cc);
 			
 			for($i = 0;$i < sizeof($to);$i++){
 				$mail->addAddress($to[$i]);
 			}
 
-			for($i = 0;$i < sizeof($cc);$i++){
-				$mail->addCC($cc[$i]);
+			if($cc != ""){
+				$cc = explode(";", $cc);
+				for($i = 0;$i < sizeof($cc);$i++){
+					$mail->addCC($cc[$i]);
+				}
 			}
 			
 			return $mail;

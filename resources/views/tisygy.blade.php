@@ -503,6 +503,10 @@
 									<div class="col-sm-11">
 										<input class="form-control" name="emailTo" id="emailOpenTo">
 									</div>
+									<div class="col-sm-11 col-sm-offset-1 help-block" style="margin-bottom: 0px;">
+										Enter the recipient of this open email!
+									</div>
+									
 								</div>
 								<div class="form-group">
 									<label class="col-sm-1 control-label">
@@ -988,6 +992,9 @@
 								<div class="col-sm-10">
 									<input class="form-control" name="emailTo" id="emailCloseTo">
 								</div>
+								<div class="col-sm-10 col-sm-offset-2 help-block" style="margin-bottom: 0px;">
+									Enter the recipient of this close email!
+								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">
@@ -1113,6 +1120,9 @@
 								<div class="col-sm-10">
 									<input class="form-control" name="emailTo" id="emailPendingTo">
 								</div>
+								<div class="col-sm-10 col-sm-offset-2 help-block" style="margin-bottom: 0px;">
+									Enter the recipient of this pending email!
+								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">
@@ -1197,6 +1207,9 @@
 								<div class="col-sm-10">
 									<input class="form-control" name="emailTo" id="emailCancelTo">
 								</div>
+								<div class="col-sm-10 col-sm-offset-2 help-block" style="margin-bottom: 0px;">
+									Enter the recipient of this cancel email!
+								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">
@@ -1238,7 +1251,7 @@
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
-						<h4 class="modal-title" id="modal-ticket-title">Send On Progress Ticket </h4>
+						<h4 class="modal-title" id="modal-ticket-title">Send On Progress Ticket</h4>
 					</div>
 					<div class="modal-body">
 						<div class="form-horizontal">
@@ -1248,6 +1261,9 @@
 								</label>
 								<div class="col-sm-10">
 									<input class="form-control" name="emailTo" id="emailOnProgressTo">
+								</div>
+								<div class="col-sm-10 col-sm-offset-2 help-block" style="margin-bottom: 0px;">
+									Enter the recipient of this on progress email!
 								</div>
 							</div>
 							<div class="form-group">
@@ -1858,10 +1874,10 @@
 
 	})
 
-	function swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,callback){
+	function swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,textSwal,callback){
 		swalWithCustomClass.fire({
 			title: 'Are you sure?',
-			text: "Make sure there is nothing wrong to send this " + typeActivity + " ticket!",
+			text: textSwal,
 			icon: typeAlert,
 			showCancelButton: true,
 			allowOutsideClick: false,
@@ -1871,24 +1887,25 @@
 			cancelButtonText: 'No',
 			}).then((result) => {
 				if (result.value){
-					Swal.fire({
-						title: 'Please Wait..!',
-						text: "It's sending..",
-						allowOutsideClick: false,
-						allowEscapeKey: false,
-						allowEnterKey: false,
-						customClass: {
-							popup: 'border-radius-0',
-						},
-						onOpen: () => {
-							Swal.showLoading()
-						}
-					})
-
 					$.ajax({
 						type: typeAjax,
 						url: urlAjax,
 						data: dataAjax,
+						beforeSend: function(){
+							Swal.fire({
+								title: 'Please Wait..!',
+								text: "It's sending..",
+								allowOutsideClick: false,
+								allowEscapeKey: false,
+								allowEnterKey: false,
+								customClass: {
+									popup: 'border-radius-0',
+								},
+								didOpen: () => {
+									Swal.showLoading()
+								}
+							})
+						},
 						success: function(resultAjax){
 							Swal.hideLoading()
 							swalWithCustomClass.fire({
@@ -1900,6 +1917,17 @@
 								// console.log(resultAjax)
 								callback()
 								getPerformanceByClient(resultAjax.client_acronym_filter)
+							})
+						},
+						error: function(resultAjax,errorStatus,errorMessage){
+							Swal.hideLoading()
+							swalWithCustomClass.fire({
+								title: 'Error!',
+								text: "Something went wrong, please try again!",
+								icon: 'error',
+								confirmButtonText: 'Try Again',
+							}).then((result) => {
+								$.ajax(this)
 							})
 						}
 					});
@@ -3216,6 +3244,7 @@
 				showCancelButton: true,
 			}).then((result) => {
 				if (result.value) {
+					$(".help-block").hide()
 					$.ajax({
 						url:"{{url('tisygy/mail/getCloseMailTemplate')}}",
 						type:"GET",
@@ -3479,6 +3508,7 @@
 				showCancelButton: true,
 			}).then((result) => {
 				if (result.value) {
+					$(".help-block").hide()
 					$.ajax({
 						url:"{{url('tisygy/mail/getCancelMailTemplate')}}",
 						type:"GET",
@@ -3552,11 +3582,18 @@
 	}
 
 	function sendCloseEmail(){
-		var typeAlert = 'warning'
-		var typeActivity = 'Close'
-		var typeAjax = "GET"
-		var urlAjax = "{{url('tisygy/mail/sendEmailClose')}}"
-		var dataAjax = {
+		if($("#emailCloseTo").val() == ""){
+			$("#emailCloseTo").parent().parent().addClass("has-error")
+			$("#emailCloseTo").parent().siblings().last().show()
+			swalWithCustomClass.fire('Error',"You have to fill in the email to to close a ticket!",'error');
+		} else {
+			$("#emailCloseTo").parent().parent().removeClass("has-error")
+			$("#emailCloseTo").parent().siblings().last().hide()
+			var typeAlert = 'warning'
+			var typeActivity = 'Close'
+			var typeAjax = "GET"
+			var urlAjax = "{{url('tisygy/mail/sendEmailClose')}}"
+			var dataAjax = {
 				id_ticket:$('#ticketID').val(),
 				root_cause:$("#saveCloseRoute").val(),
 				couter_measure:$("#saveCloseCouter").val(),
@@ -3567,19 +3604,34 @@
 				cc: $("#emailCloseCc").val(),
 			}
 
-		swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,function(){
-			$("#modal-next-close").modal('toggle');
-			$("#modal-close").modal('toggle');
-			$("#modal-ticket").modal('toggle');
-		})
+			var textSwal = ""
+			if($("#emailCloseCc").val() == ""){
+				textSwal = "This ticket does not have a CC on the email recipient for this " + typeActivity + " ticket!"
+			} else {
+				textSwal = "Make sure there is nothing wrong to send this " + typeActivity + " ticket!"
+			}
+
+			swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,textSwal,function(){
+				$("#modal-next-close").modal('toggle');
+				$("#modal-close").modal('toggle');
+				$("#modal-ticket").modal('toggle');
+			})
+		}
 	}
 
 	function sendPendingEmail(){
-		var typeAlert = 'warning'
-		var typeActivity = 'Pending'
-		var typeAjax = "GET"
-		var urlAjax = "{{url('tisygy/mail/sendEmailPending')}}"
-		var dataAjax = {
+		if($("#emailPendingTo").val() == ""){
+			$("#emailPendingTo").parent().parent().addClass("has-error")
+			$("#emailPendingTo").parent().siblings().last().show()
+			swalWithCustomClass.fire('Error',"You have to fill in the email to to pending a ticket!",'error');
+		} else {
+			$("#emailPendingTo").parent().parent().removeClass("has-error")
+			$("#emailPendingTo").parent().siblings().last().hide()
+			var typeAlert = 'warning'
+			var typeActivity = 'Pending'
+			var typeAjax = "GET"
+			var urlAjax = "{{url('tisygy/mail/sendEmailPending')}}"
+			var dataAjax = {
 				id_ticket:$('#ticketID').val(),
 				subject: $("#emailPendingSubject").val(),
 				to: $("#emailPendingTo").val(),
@@ -3589,20 +3641,35 @@
 				estimationPending:moment($("#datePending").val(),"DD/MM/YYYY").format("DD-MM-YYYY") + " " + $("#timePending").val() + ":00",
 			}
 
-		swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,function(){
-			$("#modal-next-pending").modal('toggle');
-			$("#modal-pending").modal('toggle');
-			$("#modal-ticket").modal('toggle');
-		})
+			var textSwal = ""
+			if($("#emailPendingCc").val() == ""){
+				textSwal = "This ticket does not have a CC on the email recipient for this " + typeActivity + " ticket!"
+			} else {
+				textSwal = "Make sure there is nothing wrong to send this " + typeActivity + " ticket!"
+			}
+
+			swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,textSwal,function(){
+				$("#modal-next-pending").modal('toggle');
+				$("#modal-pending").modal('toggle');
+				$("#modal-ticket").modal('toggle');
+			})
+		}
 	}
 
 	function sendCancelEmail(id){
+		if($("#emailCancelTo").val() == ""){
+			$("#emailCancelTo").parent().parent().addClass("has-error")
+			$("#emailCancelTo").parent().siblings().last().show()
+			swalWithCustomClass.fire('Error',"You have to fill in the email to to cancel a ticket!",'error');
+		} else {
+			$("#emailCancelTo").parent().parent().removeClass("has-error")
+			$("#emailCancelTo").parent().siblings().last().hide()
 
-		var typeAlert = 'warning'
-		var typeActivity = 'Cancel'
-		var typeAjax = "GET"
-		var urlAjax = "{{url('tisygy/mail/sendEmailCancel')}}"
-		var dataAjax = {
+			var typeAlert = 'warning'
+			var typeActivity = 'Cancel'
+			var typeAjax = "GET"
+			var urlAjax = "{{url('tisygy/mail/sendEmailCancel')}}"
+			var dataAjax = {
 				id_ticket:$('#ticketID').val(),
 				subject: $("#emailCancelSubject").val(),
 				to: $("#emailCancelTo").val(),
@@ -3610,21 +3677,33 @@
 				note_cancel: $("#saveReasonCancel").val(),
 				body:$("#bodyCancelMail").html(),
 			}
-
-		swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,function(){
-			$("#modal-cancel").modal('toggle');
-			$("#modal-next-cancel").modal('toggle');
-			$("#modal-ticket").modal('toggle');
-		})
+			var textSwal = ""
+			if($("#emailCancelCc").val() == ""){
+				textSwal = "This ticket does not have a CC on the email recipient for this " + typeActivity + " ticket!"
+			} else {
+				textSwal = "Make sure there is nothing wrong to send this " + typeActivity + " ticket!"
+			}
+			swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,textSwal,function(){
+				$("#modal-cancel").modal('toggle');
+				$("#modal-next-cancel").modal('toggle');
+				$("#modal-ticket").modal('toggle');
+			})
+		}
 	}
 
 	function sendOnProgressEmail(timeOnProgress){
-
-		var typeAlert = 'warning'
-		var typeActivity = 'On Progress'
-		var typeAjax = "GET"
-		var urlAjax = "{{url('tisygy/setUpdateTicket')}}"
-		var dataAjax = {
+		if($("#emailOnProgressTo").val() == ""){
+			$("#emailOnProgressTo").parent().parent().addClass("has-error")
+			$("#emailOnProgressTo").parent().siblings().last().show()
+			swalWithCustomClass.fire('Error',"You have to fill in the email to to on progress a ticket!",'error');
+		} else {
+			$("#emailOnProgressTo").parent().parent().removeClass("has-error")
+			$("#emailOnProgressTo").parent().siblings().last().hide()
+			var typeAlert = 'warning'
+			var typeActivity = 'On Progress'
+			var typeAjax = "GET"
+			var urlAjax = "{{url('tisygy/setUpdateTicket')}}"
+			var dataAjax = {
 				email:"true",
 				id_ticket:$('#ticketID').val(),
 				ticket_number_3party:$("#ticketNumber").val(),
@@ -3636,11 +3715,17 @@
 				cc: $("#emailOnProgressCc").val(),
 				body:$("#bodyOnProgressMail").html(),
 			}
-
-		swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,function(){
-			$("#modal-next-on-progress").modal('toggle');
-			$("#modal-ticket").modal('toggle');
-		})
+			var textSwal = ""
+			if($("#emailOnProgressCc").val() == ""){
+				textSwal = "This ticket does not have a CC on the email recipient for this " + typeActivity + " ticket!"
+			} else {
+				textSwal = "Make sure there is nothing wrong to send this " + typeActivity + " ticket!"
+			}
+			swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,textSwal,function(){
+				$("#modal-next-on-progress").modal('toggle');
+				$("#modal-ticket").modal('toggle');
+			})
+		}
 	}
 
 	function exitTicket(){
@@ -3656,6 +3741,7 @@
 
 	function pendingTicket(id){
 		$("#saveReasonPending").val('')
+		$(".help-block").hide()
 		if($("#ticketStatus").text() == "PENDING"){
 			$.ajax({
 				url:"{{'tisygy/getPendingTicketData'}}",
@@ -3681,6 +3767,7 @@
 	}
 
 	function onProgressTicket(){
+		$(".help-block").hide()
 		$.ajax({
 			url:"{{url('tisygy/mail/getOnProgressMailTemplate')}}",
 			type:"GET",
@@ -4326,66 +4413,80 @@
 	});
 
 	function sendOpenEmail(){
-		var customerAcronym = $("#inputticket").val().split('/')[1];
-		if(
-			customerAcronym == "BJBR" 
-			|| customerAcronym == "BSBB" 
-			|| customerAcronym == "BRKR" 
-			|| customerAcronym == "BJTG" 
-			|| customerAcronym == "BDIY"
-			|| customerAcronym == "BDIYCCTV"
-			|| customerAcronym == "BDIYUPS"
-			){
-			var id_atm = $("#inputATM").select2('data')[0].text.split(' -')[0]
+		if($("#emailOpenTo").val() == ""){
+			$("#emailOpenTo").parent().parent().addClass("has-error")
+			$("#emailOpenTo").parent().siblings().last().show()
+			swalWithCustomClass.fire('Error',"You have to fill in the email to to open a ticket!",'error');
 		} else {
-			var id_atm = $("#inputATM").val()
+			$("#emailOpenTo").parent().parent().removeClass("has-error")
+			$("#emailOpenTo").parent().siblings().last().hide()
+			var customerAcronym = $("#inputticket").val().split('/')[1];
+			if(
+				customerAcronym == "BJBR" 
+				|| customerAcronym == "BSBB" 
+				|| customerAcronym == "BRKR" 
+				|| customerAcronym == "BJTG" 
+				|| customerAcronym == "BDIY"
+				|| customerAcronym == "BDIYCCTV"
+				|| customerAcronym == "BDIYUPS"
+				){
+				var id_atm = $("#inputATM").select2('data')[0].text.split(' -')[0]
+			} else {
+				var id_atm = $("#inputATM").val()
+			}
+
+			var typeAlert = 'warning'
+			var typeActivity = 'Open'
+			var typeAjax = "GET"
+			var urlAjax = "{{url('tisygy/mail/sendEmailOpen')}}"
+			if ($('#inputAbsenLocation').hasClass("select2-hidden-accessible")) {
+				var absen = $("#inputAbsenLocation").select2('data')[0].id
+				var location = $("#inputAbsenLocation").select2('data')[0].text
+			} else {
+				var absen = "-";
+				var location = $("#inputLocation").val();
+			}
+			var dataAjax = {
+				body:$("#bodyOpenMail").html(),
+				subject: $("#emailOpenSubject").val(),
+				to: $("#emailOpenTo").val(),
+				cc: $("#emailOpenCc").val(),
+				attachment: $("#emailOpenAttachment").val(),
+				id_ticket:$("#inputticket").val(),
+
+				id:$("#inputID").val(),
+				client:$("#inputClient").val(),
+
+				id_atm:id_atm,
+				refrence:$("#inputRefrence").val(),
+				pic:$("#inputPIC").val(),
+				contact_pic:$("#inputContact").val(),
+				location:location,
+				absen:absen,
+				problem:$("#inputProblem").val(),
+				serial_device:$("#inputSerial").val(),
+				note:$("#inputNote").val(),
+				report:moment($("#inputReportingDate").val(),'DD/MM/YYYY').format("YYYY-MM-DD") + " " + moment($("#inputReportingTime").val(),'HH:mm:ss').format("HH:mm:ss.000000"),
+				severity:$("#inputSeverity").val()
+			}
+			var textSwal = ""
+			if($("#emailOpenCc").val() == ""){
+				textSwal = "This ticket does not have a CC on the email recipient for this " + typeActivity + " ticket!"
+			} else {
+				textSwal = "Make sure there is nothing wrong to send this " + typeActivity + " ticket!"
+			}
+			swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,textSwal,function(){
+				$("#performance").click();
+				// $("#modal-cancel").modal('toggle');
+				// $("#modal-next-cancel").modal('toggle');
+				// $("#modal-ticket").modal('toggle');
+			})
+
+			// if(confirm("Are you sure to send this ticket?")){
+			// 	console.log("Yes");
+			// 	var body = $("#bodyOpenMail").html();
+
 		}
-
-		var typeAlert = 'warning'
-		var typeActivity = 'Open'
-		var typeAjax = "GET"
-		var urlAjax = "{{url('tisygy/mail/sendEmailOpen')}}"
-		if ($('#inputAbsenLocation').hasClass("select2-hidden-accessible")) {
-			var absen = $("#inputAbsenLocation").select2('data')[0].id
-			var location = $("#inputAbsenLocation").select2('data')[0].text
-		} else {
-			var absen = "-";
-			var location = $("#inputLocation").val();
-		}
-		var dataAjax = {
-			body:$("#bodyOpenMail").html(),
-			subject: $("#emailOpenSubject").val(),
-			to: $("#emailOpenTo").val(),
-			cc: $("#emailOpenCc").val(),
-			attachment: $("#emailOpenAttachment").val(),
-			id_ticket:$("#inputticket").val(),
-
-			id:$("#inputID").val(),
-			client:$("#inputClient").val(),
-
-			id_atm:id_atm,
-			refrence:$("#inputRefrence").val(),
-			pic:$("#inputPIC").val(),
-			contact_pic:$("#inputContact").val(),
-			location:location,
-			absen:absen,
-			problem:$("#inputProblem").val(),
-			serial_device:$("#inputSerial").val(),
-			note:$("#inputNote").val(),
-			report:moment($("#inputReportingDate").val(),'DD/MM/YYYY').format("YYYY-MM-DD") + " " + moment($("#inputReportingTime").val(),'HH:mm:ss').format("HH:mm:ss.000000"),
-			severity:$("#inputSeverity").val()
-		}
-
-		swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,function(){
-			$("#performance").click();
-			// $("#modal-cancel").modal('toggle');
-			// $("#modal-next-cancel").modal('toggle');
-			// $("#modal-ticket").modal('toggle');
-		})
-
-		// if(confirm("Are you sure to send this ticket?")){
-		// 	console.log("Yes");
-		// 	var body = $("#bodyOpenMail").html();
 		
 	}
 

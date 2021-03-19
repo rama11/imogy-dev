@@ -2362,6 +2362,7 @@
 	}
 
 	function newAtm(){
+		var atmType = ($("#atmAddType").val() == "" ? "-" : $("#atmAddType").val())
 		$.ajax({
 			type:"GET",
 			url:"{{url('tisygy/setting/newAtm')}}",
@@ -2370,6 +2371,7 @@
 				atmID:$("#atmAddID").val(),
 				atmSerial:$("#atmAddSerial").val(),
 				atmLocation:$("#atmAddLocation").val(),
+				atmType:atmType,
 				atmAddress:$("#atmAddAddress").val(),
 				atmActivation:$("#atmAddActivation").val(),
 				atmNote:$("#atmAddNote").val(),

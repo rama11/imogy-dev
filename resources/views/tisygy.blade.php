@@ -3641,20 +3641,35 @@
 				estimationPending:moment($("#datePending").val(),"DD/MM/YYYY").format("DD-MM-YYYY") + " " + $("#timePending").val() + ":00",
 			}
 
-		swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,function(){
-			$("#modal-next-pending").modal('toggle');
-			$("#modal-pending").modal('toggle');
-			$("#modal-ticket").modal('toggle');
-		})
+			var textSwal = ""
+			if($("#emailPendingCc").val() == ""){
+				textSwal = "This ticket does not have a CC on the email recipient for this " + typeActivity + " ticket!"
+			} else {
+				textSwal = "Make sure there is nothing wrong to send this " + typeActivity + " ticket!"
+			}
+
+			swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,textSwal,function(){
+				$("#modal-next-pending").modal('toggle');
+				$("#modal-pending").modal('toggle');
+				$("#modal-ticket").modal('toggle');
+			})
+		}
 	}
 
 	function sendCancelEmail(id){
+		if($("#emailCancelTo").val() == ""){
+			$("#emailCancelTo").parent().parent().addClass("has-error")
+			$("#emailCancelTo").parent().siblings().last().show()
+			swalWithCustomClass.fire('Error',"You have to fill in the email to to cancel a ticket!",'error');
+		} else {
+			$("#emailCancelTo").parent().parent().removeClass("has-error")
+			$("#emailCancelTo").parent().siblings().last().hide()
 
-		var typeAlert = 'warning'
-		var typeActivity = 'Cancel'
-		var typeAjax = "GET"
-		var urlAjax = "{{url('tisygy/mail/sendEmailCancel')}}"
-		var dataAjax = {
+			var typeAlert = 'warning'
+			var typeActivity = 'Cancel'
+			var typeAjax = "GET"
+			var urlAjax = "{{url('tisygy/mail/sendEmailCancel')}}"
+			var dataAjax = {
 				id_ticket:$('#ticketID').val(),
 				subject: $("#emailCancelSubject").val(),
 				to: $("#emailCancelTo").val(),
@@ -3662,21 +3677,33 @@
 				note_cancel: $("#saveReasonCancel").val(),
 				body:$("#bodyCancelMail").html(),
 			}
-
-		swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,function(){
-			$("#modal-cancel").modal('toggle');
-			$("#modal-next-cancel").modal('toggle');
-			$("#modal-ticket").modal('toggle');
-		})
+			var textSwal = ""
+			if($("#emailCancelCc").val() == ""){
+				textSwal = "This ticket does not have a CC on the email recipient for this " + typeActivity + " ticket!"
+			} else {
+				textSwal = "Make sure there is nothing wrong to send this " + typeActivity + " ticket!"
+			}
+			swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,textSwal,function(){
+				$("#modal-cancel").modal('toggle');
+				$("#modal-next-cancel").modal('toggle');
+				$("#modal-ticket").modal('toggle');
+			})
+		}
 	}
 
 	function sendOnProgressEmail(timeOnProgress){
-
-		var typeAlert = 'warning'
-		var typeActivity = 'On Progress'
-		var typeAjax = "GET"
-		var urlAjax = "{{url('tisygy/setUpdateTicket')}}"
-		var dataAjax = {
+		if($("#emailOnProgressTo").val() == ""){
+			$("#emailOnProgressTo").parent().parent().addClass("has-error")
+			$("#emailOnProgressTo").parent().siblings().last().show()
+			swalWithCustomClass.fire('Error',"You have to fill in the email to to on progress a ticket!",'error');
+		} else {
+			$("#emailOnProgressTo").parent().parent().removeClass("has-error")
+			$("#emailOnProgressTo").parent().siblings().last().hide()
+			var typeAlert = 'warning'
+			var typeActivity = 'On Progress'
+			var typeAjax = "GET"
+			var urlAjax = "{{url('tisygy/setUpdateTicket')}}"
+			var dataAjax = {
 				email:"true",
 				id_ticket:$('#ticketID').val(),
 				ticket_number_3party:$("#ticketNumber").val(),

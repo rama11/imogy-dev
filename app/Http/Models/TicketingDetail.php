@@ -55,4 +55,8 @@ class TicketingDetail extends Model
 	public function severity_detail(){
 		return $this->hasOne('App\Http\Models\TicketingSeverity','id','severity');
 	}
+
+	public function absen_machine(){
+		return $this->hasOne('App\Http\Models\TicketingAbsen','id','id_atm');
+	}
 }

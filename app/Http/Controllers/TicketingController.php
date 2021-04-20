@@ -470,7 +470,7 @@ class TicketingController extends Controller
 	public function getPerformance5($acronym_client,$period){
 
 
-		if($acronym_client != "TTNI"){
+		if($acronym_client != "TTNI" && $acronym_client != "BTNI"){
 			$result = DB::table('ticketing__id')
 				->where('ticketing__detail.id_ticket','LIKE','%' . $period . '%')
 				->where('ticketing__detail.id_ticket','LIKE','%' . $acronym_client . '%')
@@ -573,6 +573,7 @@ class TicketingController extends Controller
 				'lastest_activity_ticket',
 				'id_detail:id_ticket,id',
 				'resolve',
+				'absen_machine'
 			])
 			->whereNotIn('id_ticket',$occurring_ticket)
 			->whereRaw("`id_ticket` LIKE '%/" . $acronym_client . "/" . $period . "'")
@@ -1699,67 +1700,132 @@ class TicketingController extends Controller
 		$spreadsheet->getActiveSheet()->getColumnDimension('P')->setWidth(100);
 		$spreadsheet->getActiveSheet()->getColumnDimension('Q')->setWidth(20);
 
-		// Colom Header
-		$spreadsheet->getActiveSheet(0)
-			->setCellValue('A4','NO')
-			->setCellValue('B4','ID tiket SIP')
-			->setCellValue('C4','ID ATM')
-			->setCellValue('D4','LOKASI ')
-			->setCellValue('E4','SN ATM')
-			->setCellValue('F4','NUMBER TIKET')
-			->setCellValue('G4','PROBLEM')
-			->setCellValue('H4','TIKET WINCOR')
-			->setCellValue('I4','JAM OPEN')
-			->setCellValue('J4','TGL. OPEN TIKET')
-			->setCellValue('K4','TGL. SELESAI')
-			->setCellValue('L4','SELESAI')
-			->setCellValue('M4','PIC')
-			->setCellValue('N4','NO TLP')
-			->setCellValue('O4','ROOTCOSE')
-			->setCellValue('P4','CONTERMASURE')
-			->setCellValue('Q4','ENGINEER');
+		if($client == "BTNI"){
+			// Colom Header
+			$spreadsheet->getActiveSheet(0)
+				->setCellValue('A4','NO')
+				->setCellValue('B4','ID tiket SIP')
+				->setCellValue('C4','LOKASI')
+				->setCellValue('D4','TYPE MACHINE')
+				->setCellValue('E4','IP MACHINE')
+				->setCellValue('F4','IP SERVER')
+				->setCellValue('G4','PROBLEM')
+				->setCellValue('H4','JAM OPEN')
+				->setCellValue('I4','TGL. OPEN TIKET')
+				->setCellValue('J4','TGL. SELESAI')
+				->setCellValue('K4','SELESAI')
+				->setCellValue('L4','PIC')
+				->setCellValue('M4','NO TLP')
+				->setCellValue('N4','ROOTCOSE')
+				->setCellValue('O4','CONTERMASURE')
+				->setCellValue('P4','ENGINEER');
+		} else {
+			$spreadsheet->getActiveSheet(0)
+				->setCellValue('A4','NO')
+				->setCellValue('B4','ID tiket SIP')
+				->setCellValue('C4','ID ATM')
+				->setCellValue('D4','LOKASI ')
+				->setCellValue('E4','SN ATM')
+				->setCellValue('F4','NUMBER TIKET')
+				->setCellValue('G4','PROBLEM')
+				->setCellValue('H4','TIKET WINCOR')
+				->setCellValue('I4','JAM OPEN')
+				->setCellValue('J4','TGL. OPEN TIKET')
+				->setCellValue('K4','TGL. SELESAI')
+				->setCellValue('L4','SELESAI')
+				->setCellValue('M4','PIC')
+				->setCellValue('N4','NO TLP')
+				->setCellValue('O4','ROOTCOSE')
+				->setCellValue('P4','CONTERMASURE')
+				->setCellValue('Q4','ENGINEER');
+		}
+		
+
+		
 		
 		$value1 = $this->getPerformanceByFinishTicket($client,$bulan . "/" . $req->year);
 		// return $value1;
 
-		foreach ($value1 as $key => $value) {
-			$spreadsheet->getActiveSheet()->getStyle('A' . (5 + $key))->applyFromArray($Colom_Header);
-			$spreadsheet->getActiveSheet()->getStyle('B' . (5 + $key) .  ':Q' . (5 + $key))->applyFromArray($border);
-			$spreadsheet->getActiveSheet()->setCellValue('A' . (5 + $key),$key + 1);
-			$spreadsheet->getActiveSheet()->setCellValue('B' . (5 + $key),$value->id_ticket);
-			$spreadsheet->getActiveSheet()->setCellValue('C' . (5 + $key),$value->id_atm);
-			$spreadsheet->getActiveSheet()->setCellValue('D' . (5 + $key),$value->location);
-			$spreadsheet->getActiveSheet()->setCellValue('E' . (5 + $key),$value->serial_device);
-			$spreadsheet->getActiveSheet()->setCellValue('F' . (5 + $key),$value->refrence);
-			$spreadsheet->getActiveSheet()->setCellValue('G' . (5 + $key),$value->problem);
-			$spreadsheet->getActiveSheet()->setCellValue('H' . (5 + $key),$value->ticket_number_3party);
-			if($value->open == NULL){
-				// $spreadsheet->getActiveSheet()->setCellValue('I' . (5 + $key),"NULL");
-				// $spreadsheet->getActiveSheet()->setCellValue('J' . (5 + $key),"NULL");
-				if($value->reporting_time != "Invalid date"){
-					$spreadsheet->getActiveSheet()->setCellValue('I' . (5 + $key),date_format(date_create($value->reporting_time),'G:i:s'));
-					$spreadsheet->getActiveSheet()->setCellValue('J' . (5 + $key),date_format(date_create($value->reporting_time),'d F Y'));
+		if($client == "BTNI"){
+			foreach ($value1 as $key => $value) {
+				$spreadsheet->getActiveSheet()->getStyle('A' . (5 + $key))->applyFromArray($Colom_Header);
+				$spreadsheet->getActiveSheet()->getStyle('B' . (5 + $key) .  ':Q' . (5 + $key))->applyFromArray($border);
+				$spreadsheet->getActiveSheet()->setCellValue('A' . (5 + $key),$key + 1);
+				$spreadsheet->getActiveSheet()->setCellValue('B' . (5 + $key),$value->id_ticket);
+				$spreadsheet->getActiveSheet()->setCellValue('C' . (5 + $key),$value->location);
+				$spreadsheet->getActiveSheet()->setCellValue('D' . (5 + $key),$value->absen_machine->type_machine);
+				$spreadsheet->getActiveSheet()->setCellValue('E' . (5 + $key),$value->absen_machine->ip_machine);
+				$spreadsheet->getActiveSheet()->setCellValue('F' . (5 + $key),$value->absen_machine->ip_server);
+				$spreadsheet->getActiveSheet()->setCellValue('G' . (5 + $key),$value->problem);
+				$spreadsheet->getActiveSheet()->setCellValue('H' . (5 + $key),$value->ticket_number_3party);
+				if($value->open == NULL){
+					// $spreadsheet->getActiveSheet()->setCellValue('I' . (5 + $key),"NULL");
+					// $spreadsheet->getActiveSheet()->setCellValue('J' . (5 + $key),"NULL");
+					if($value->reporting_time != "Invalid date"){
+						$spreadsheet->getActiveSheet()->setCellValue('I' . (5 + $key),date_format(date_create($value->reporting_time),'G:i:s'));
+						$spreadsheet->getActiveSheet()->setCellValue('J' . (5 + $key),date_format(date_create($value->reporting_time),'d F Y'));
+					}
+				} else {
+					$spreadsheet->getActiveSheet()->setCellValue('I' . (5 + $key),date_format(date_create($value->open),'G:i:s'));
+					$spreadsheet->getActiveSheet()->setCellValue('J' . (5 + $key),date_format(date_create($value->open),'d F Y'));
 				}
-			} else {
-				$spreadsheet->getActiveSheet()->setCellValue('I' . (5 + $key),date_format(date_create($value->open),'G:i:s'));
-				$spreadsheet->getActiveSheet()->setCellValue('J' . (5 + $key),date_format(date_create($value->open),'d F Y'));
-			}
-			if($value->lastest_activity_ticket->activity == "CANCEL"){
-				$spreadsheet->getActiveSheet()->setCellValue('K' . (5 + $key),'-');
-				$spreadsheet->getActiveSheet()->setCellValue('L' . (5 + $key),'-');
-				$spreadsheet->getActiveSheet()->getStyle('B' . (5 + $key) .  ':Q' . (5 + $key))->applyFromArray($cancel_row);
-			} else {
-				$spreadsheet->getActiveSheet()->setCellValue('K' . (5 + $key),date_format(date_create($value->lastest_activity_ticket->date),'G:i:s'));
-				$spreadsheet->getActiveSheet()->setCellValue('L' . (5 + $key),date_format(date_create($value->lastest_activity_ticket->date),'d F Y'));
-				if(isset($value->resolve)){
-					$spreadsheet->getActiveSheet()->setCellValue('O' . (5 + $key),$value->resolve->root_couse);
-					$spreadsheet->getActiveSheet()->setCellValue('P' . (5 + $key),$value->resolve->counter_measure);
+				if($value->lastest_activity_ticket->activity == "CANCEL"){
+					$spreadsheet->getActiveSheet()->setCellValue('K' . (5 + $key),'-');
+					$spreadsheet->getActiveSheet()->setCellValue('L' . (5 + $key),'-');
+					$spreadsheet->getActiveSheet()->getStyle('B' . (5 + $key) .  ':Q' . (5 + $key))->applyFromArray($cancel_row);
+				} else {
+					$spreadsheet->getActiveSheet()->setCellValue('K' . (5 + $key),date_format(date_create($value->lastest_activity_ticket->date),'G:i:s'));
+					$spreadsheet->getActiveSheet()->setCellValue('L' . (5 + $key),date_format(date_create($value->lastest_activity_ticket->date),'d F Y'));
+					if(isset($value->resolve)){
+						$spreadsheet->getActiveSheet()->setCellValue('O' . (5 + $key),$value->resolve->root_couse);
+						$spreadsheet->getActiveSheet()->setCellValue('P' . (5 + $key),$value->resolve->counter_measure);
+					}
 				}
+				$spreadsheet->getActiveSheet()->setCellValue('M' . (5 + $key),$value->pic);
+				$spreadsheet->getActiveSheet()->setCellValue('N' . (5 + $key),$value->contact_pic);
+				$spreadsheet->getActiveSheet()->setCellValue('Q' . (5 + $key),$value->engineer);
+				// $spreadsheet->getActiveSheet()->setCellValue('R' . (5 + $key),$value->id_ticket);
 			}
-			$spreadsheet->getActiveSheet()->setCellValue('M' . (5 + $key),$value->pic);
-			$spreadsheet->getActiveSheet()->setCellValue('N' . (5 + $key),$value->contact_pic);
-			$spreadsheet->getActiveSheet()->setCellValue('Q' . (5 + $key),$value->engineer);
-			// $spreadsheet->getActiveSheet()->setCellValue('R' . (5 + $key),$value->id_ticket);
+		} else {
+			foreach ($value1 as $key => $value) {
+				$spreadsheet->getActiveSheet()->getStyle('A' . (5 + $key))->applyFromArray($Colom_Header);
+				$spreadsheet->getActiveSheet()->getStyle('B' . (5 + $key) .  ':Q' . (5 + $key))->applyFromArray($border);
+				$spreadsheet->getActiveSheet()->setCellValue('A' . (5 + $key),$key + 1);
+				$spreadsheet->getActiveSheet()->setCellValue('B' . (5 + $key),$value->id_ticket);
+				$spreadsheet->getActiveSheet()->setCellValue('C' . (5 + $key),$value->id_atm);
+				$spreadsheet->getActiveSheet()->setCellValue('D' . (5 + $key),$value->location);
+				$spreadsheet->getActiveSheet()->setCellValue('E' . (5 + $key),$value->serial_device);
+				$spreadsheet->getActiveSheet()->setCellValue('F' . (5 + $key),$value->refrence);
+				$spreadsheet->getActiveSheet()->setCellValue('G' . (5 + $key),$value->problem);
+				$spreadsheet->getActiveSheet()->setCellValue('H' . (5 + $key),$value->ticket_number_3party);
+				if($value->open == NULL){
+					// $spreadsheet->getActiveSheet()->setCellValue('I' . (5 + $key),"NULL");
+					// $spreadsheet->getActiveSheet()->setCellValue('J' . (5 + $key),"NULL");
+					if($value->reporting_time != "Invalid date"){
+						$spreadsheet->getActiveSheet()->setCellValue('I' . (5 + $key),date_format(date_create($value->reporting_time),'G:i:s'));
+						$spreadsheet->getActiveSheet()->setCellValue('J' . (5 + $key),date_format(date_create($value->reporting_time),'d F Y'));
+					}
+				} else {
+					$spreadsheet->getActiveSheet()->setCellValue('I' . (5 + $key),date_format(date_create($value->open),'G:i:s'));
+					$spreadsheet->getActiveSheet()->setCellValue('J' . (5 + $key),date_format(date_create($value->open),'d F Y'));
+				}
+				if($value->lastest_activity_ticket->activity == "CANCEL"){
+					$spreadsheet->getActiveSheet()->setCellValue('K' . (5 + $key),'-');
+					$spreadsheet->getActiveSheet()->setCellValue('L' . (5 + $key),'-');
+					$spreadsheet->getActiveSheet()->getStyle('B' . (5 + $key) .  ':Q' . (5 + $key))->applyFromArray($cancel_row);
+				} else {
+					$spreadsheet->getActiveSheet()->setCellValue('K' . (5 + $key),date_format(date_create($value->lastest_activity_ticket->date),'G:i:s'));
+					$spreadsheet->getActiveSheet()->setCellValue('L' . (5 + $key),date_format(date_create($value->lastest_activity_ticket->date),'d F Y'));
+					if(isset($value->resolve)){
+						$spreadsheet->getActiveSheet()->setCellValue('O' . (5 + $key),$value->resolve->root_couse);
+						$spreadsheet->getActiveSheet()->setCellValue('P' . (5 + $key),$value->resolve->counter_measure);
+					}
+				}
+				$spreadsheet->getActiveSheet()->setCellValue('M' . (5 + $key),$value->pic);
+				$spreadsheet->getActiveSheet()->setCellValue('N' . (5 + $key),$value->contact_pic);
+				$spreadsheet->getActiveSheet()->setCellValue('Q' . (5 + $key),$value->engineer);
+				// $spreadsheet->getActiveSheet()->setCellValue('R' . (5 + $key),$value->id_ticket);
+			}
 		}
 
 		
@@ -1836,6 +1902,7 @@ class TicketingController extends Controller
 		$spreadsheet->getActiveSheet()->getStyle("J5")->getAlignment()->setWrapText(true);
 
 		$value1 = $this->getPerformance5($client,$bulan . "/" . $req->year);
+		// return $value1;
 		if($value1 == 0){
 			return 0;
 		} else {

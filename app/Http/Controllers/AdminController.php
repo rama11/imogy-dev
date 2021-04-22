@@ -16,6 +16,7 @@ use App\Mail\TicketMail;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Carbon\Carbon;
+use App\User;
 
 
 class AdminController extends Controller

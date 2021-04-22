@@ -41,9 +41,13 @@
 											<img class="img-circle img-bordered-sm" src="{{url($user->foto)}}" >
 											<span class="username">
 												<a href="#">{{$user->name}}</a>
-												<a href="#" class="pull-right btn-box-tool text-red">
+												<span style="cursor: pointer;" onclick="event.preventDefault(); document.getElementById('remove-user{{$user->id}}').submit();" href="" class="pull-right btn-box-tool text-red">
 													<i class="fa fa-remove"></i> Remove
-												</a>
+												</span>
+												<form id="remove-user{{$user->id}}" action="{{ url('removeUser') }}" method="POST" style="display: none;">
+													{{ csrf_field() }}
+													<input type="hidden" name="id" value="{{$user->id}}">
+												</form>
 												<a href="#" class="pull-right btn-box-tool text-green" data-toggle="modal" data-target="#modal-default" onclick="getMasuk('{{$user->id}}')" >
 													<i class="fa fa-edit"></i> Edit Schedule
 												</a>

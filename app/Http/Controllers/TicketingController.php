@@ -257,6 +257,10 @@ class TicketingController extends Controller
 		return view('mailOnProgressTicket');
 	}
 
+	public function getEscalateMailTemplate(){
+		return view('mailEscalateTicket');
+	}
+
 	public function getEmailData(Request $req){
 		if(isset($req->client)){
 			return $result = TicketingClient::where('client_acronym',$req->client)

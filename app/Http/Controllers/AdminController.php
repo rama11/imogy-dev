@@ -493,7 +493,8 @@ class AdminController extends Controller
 				'address' => $request->address,
 				'hadir' => "00:00:00",
 				'foto' => 'img/user.png',
-				'present_timing' => '1'
+				'present_timing' => '1',
+				'activition' => '1'
 				]);
 
 		return redirect('usermanage')->with('status', "Add User for " . $request->name . " success.");

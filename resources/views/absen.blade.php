@@ -204,7 +204,7 @@
 										<h4 class="modal-title">Absen Location</h4>
 									</div>
 									<div class="modal-body">
-										<p>Please go to your area, and login on there</p>
+										<p>Please go to your area ({{DB::table('location')->find(Auth::user()->location)->name}}), and login on there</p>
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn btn-success" id="absenLocation">Absen Location</button>

@@ -116,6 +116,8 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 	Route::get('/admin', 'AdminController@index');
 	Route::get('/test_page', 'AdminController@test_page');
 	Route::get('/announcement', 'AdminController@announcement');
+
+	Route::post('/removeUser', 'AdminController@removeUser');
 	Route::post('/addUser', 'AdminController@addUser');
 	Route::post('/addUserShifting', 'AdminController@addUserShifting');
 	Route::post('/editUser', 'AdminController@editUser');

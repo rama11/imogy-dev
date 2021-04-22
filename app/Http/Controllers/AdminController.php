@@ -441,6 +441,15 @@ class AdminController extends Controller
 	// 		->firs();
 	// }
 	
+	public function removeUser(Request $request){
+		$user = User::find($request->id);
+
+		$user->activition = 0;
+		$user->password = Hash::make('Imogy@sip!');
+		$user->save();
+
+		return redirect('usermanage')->with('status', "Delete User for " . $user->name . " success.");
+	}
 
 	public function addUser(Request $request){
 		date_default_timezone_set('Asia/Jakarta');

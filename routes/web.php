@@ -323,6 +323,10 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 
 	Route::get('tisygy/mail/getReciver', 'TicketingController@getEmailReciver');
 
+	Route::get('tisygy/mail/getEscalateMailTemplate', 'TicketingController@getEscalateMailTemplate');
+	Route::get('tisygy/mail/sendEmailEscalate', 'TicketingController@sendEmailEscalate');
+	Route::get('tisygy/saveEscalate', 'TicketingController@saveEscalate');
+
 	Route::get('tisygy/setting/getAllAtm', 'TicketingController@getAllAtmSetting');
 	Route::get('tisygy/setting/getDetailAtm','TicketingController@getDetailAtm');
 

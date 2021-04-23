@@ -4027,6 +4027,10 @@
 		$("#modal-ticket").modal('toggle');
 	}
 
+	function escalateTicket(id){
+		$("#modal-escalate").modal('toggle');
+	}
+
 	function closeTicket(id){
 		$("#saveCloseRoute").val('')
 		$("#saveCloseCouter").val('')

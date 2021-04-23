@@ -906,6 +906,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-flat btn-default pull-left" onclick="exitTicket()">Exit</button>
+					<button type="button" class="btn btn-flat btn-danger pull-left" id="escalateButton">Escalate</button>
 					<button type="button" class="btn btn-flat btn-success" id="closeButton">Close</button>
 					<button type="button" class="btn btn-flat btn-warning" id="pendingButton">Pending</button>
 					<button type="button" class="btn btn-flat bg-purple" id="cancelButton" >Cancel</button>

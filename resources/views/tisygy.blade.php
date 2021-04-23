@@ -4472,6 +4472,7 @@
 				idTicket:id,
 			},
 			success: function(result){
+				$("#escalateButton").attr("onclick","escalateTicket('" + result.id_ticket + "')")
 				$("#updateButton").attr("onclick","updateTicket('" + result.id_ticket + "')");
 				$("#cancelButton").attr("onclick","cancelTicket('" + result.id_ticket + "')");
 				$("#pendingButton").attr("onclick","pendingTicket('" + result.id_ticket + "')");
@@ -4630,11 +4631,6 @@
 					$("#cancelButton").prop('disabled',true);
 				}
 
-				
-
-				
-
-				
 				$('#modal-ticket').modal('toggle');
 			}
 		});

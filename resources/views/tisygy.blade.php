@@ -953,7 +953,6 @@
 						</form>
 					</div>
 					<div class="modal-footer">
-						{{-- <button type="button" class="btn btn-flat btn-danger" onclick="escalateTicketSave()">Escalate</button> --}}
 						<button type="button" class="btn btn-flat btn-danger" onclick="prepareEscalateEmail()">Escalate</button>
 					</div>
 				</div>

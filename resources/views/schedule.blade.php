@@ -144,15 +144,15 @@
 							<p id="name2"></p>
 							<input type="hidden" id="nickname">
 							<br>
-							<div style="display: none;" class="external-event bg-red project-1">Pagi <span class="pull-right">07:00 - 15:00</span></div>
-							<div style="display: none;" class="external-event bg-red project-2">Pagi <span class="pull-right">07:00 - 15:30</span></div>
-							<div style="display: none;" class="external-event bg-red project-3">Pagi <span class="pull-right">07:00 - 16:00</span></div>
-							<div style="display: none;" class="external-event bg-maroon-active project-3">Pagi(Helpdesk)<span class="pull-right">08:00 - 17:00</span></div>
-							<div style="display: none;" class="external-event bg-yellow project-1">Sore <span class="pull-right">14:00 - 22:00</span></div>
-							<div style="display: none;" class="external-event bg-yellow project-2">Sore <span class="pull-right">14:00 - 22:30</span></div>
-							<div style="display: none;" class="external-event bg-yellow project-3">Sore <span class="pull-right">14:00 - 22:00</span></div>
-							<div style="display: none;" class="external-event bg-blue project-1">Malam <span class="pull-right">22:00 - 07:00</span></div>
-							<div style="display: none;" class="external-event bg-green project-1 project-3 	project-2">Libur </div>
+							<div style="display: none; cursor: default;" class="external-event bg-red project-1">Pagi <span class="pull-right">07:00 - 15:00</span></div>
+							<div style="display: none; cursor: default;" class="external-event bg-red project-2">Pagi <span class="pull-right">07:00 - 15:30</span></div>
+							<div style="display: none; cursor: default;" class="external-event bg-red project-3">Pagi <span class="pull-right">07:00 - 16:00</span></div>
+							<div style="display: none; cursor: default;" class="external-event bg-maroon-active project-3">Pagi(Helpdesk)<span class="pull-right">08:00 - 17:00</span></div>
+							<div style="display: none; cursor: default;" class="external-event bg-yellow project-1">Sore <span class="pull-right">14:00 - 22:00</span></div>
+							<div style="display: none; cursor: default;" class="external-event bg-yellow project-2">Sore <span class="pull-right">14:00 - 22:30</span></div>
+							<div style="display: none; cursor: default;" class="external-event bg-yellow project-3">Sore <span class="pull-right">14:00 - 22:00</span></div>
+							<div style="display: none; cursor: default;" class="external-event bg-blue project-1">Malam <span class="pull-right">22:00 - 07:00</span></div>
+							<div style="display: none; cursor: default;" class="external-event bg-green project-1 project-3 	project-2">Libur </div>
 							<br>
 							<button class="btn btn-default" id="buttonBack2">
 								Back
@@ -259,20 +259,31 @@
 			var start = str.substr(start1,5);
 			var end = str.substr(end1,5);
 			
-			var eventObject = {
-				title: $.trim($(this).text()), 
-				startShift: start,
-				endShift: end,
-				Shift: shift,
-			};
+			if(shift == "Libur"){
+				var eventObject = {
+					title: $.trim($(this).text()), 
+					startShift: "00:00",
+					endShift: "23:59",
+					Shift: shift,
+				};
+			} else {
+				var eventObject = {
+					title: $.trim($(this).text()), 
+					startShift: start,
+					endShift: end,
+					Shift: shift,
+				};
+			}
 
 			$(this).data('eventObject', eventObject);
 
+			@if(Auth::user()->id == 41)
 			$(this).draggable({
 				zIndex: 1070,
 				revert: true, 
 				revertDuration: 0 
 			});
+			@if(Auth::user()->id == 41)
 
 		});
 	}
@@ -344,7 +355,9 @@
 			$("#buttonBack2").attr("onclick","backListDetail(" + idProject + ")")
 			$("#deletePlace").show();
 			$("#calendar").fullCalendar('option', {
+				@if(Auth::user()->id == 41)
 				editable: true,
+				@endif
 				droppable: true,
 			});
 		});
@@ -401,6 +414,7 @@
 			var waktu = date._d;
 			waktu = new Date(waktu);
 
+			console.log(originalEventObject)
 			var day = moment(waktu).toISOString(true);
 			var startShift2 = moment(waktu).format('YYYY-MM-DD') + "T" + originalEventObject.startShift + ":00.000Z";
 			var endShift2 = moment(waktu).format('YYYY-MM-DD') + "T" + originalEventObject.endShift + ":00.000Z";

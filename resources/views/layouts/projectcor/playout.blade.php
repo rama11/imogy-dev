@@ -180,7 +180,7 @@
 								<span>TISYGY</span>
 							</a>
 						</li>
-						<li class="activeable" id="usermanage">
+						{{-- <li class="activeable" id="usermanage">
 							<a href="{{ url('usermanage')}}">
 								<i class="fa fa-users"></i>
 								<span>Users Management</span>
@@ -197,7 +197,7 @@
 								<i class="fa fa-location-arrow"></i>
 								<span>Set Absent Location</span>
 							</a>
-						</li>
+						</li> --}}
 						<li class="activeable treeview" id="project">
 							<a href="#">
 								<i class="fa fa-calendar"></i>
@@ -219,12 +219,12 @@
 								</li>
 							</ul>
 						</li>
-						<li class="activeable" id="logphone">
+						{{-- <li class="activeable" id="logphone">
 							<a href="{{url ('logphone')}}">
 								<i class="fa fa-book"></i>
 								<span>Log Phone</span>
 							</a>
-						</li>
+						</li> --}}
 					</ul>
 				</section>
 			</aside>

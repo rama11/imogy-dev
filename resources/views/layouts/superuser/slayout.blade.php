@@ -138,24 +138,29 @@
 								<span>TISYGY</span>
 							</a>
 						</li>
+						@if(Auth::user()->jabatan == 5)
 						<li class="activeable" id="usermanage">
 							<a href="{{ url('usermanage')}}">
 								<i class="fa fa-users"></i>
 								<span>Users Management</span>
 							</a>
 						</li>
+						@endif
 						<li class="activeable" id="schedule">
 							<a href="{{ url('schedule')}}">
 								<i class="fa fa-flag-o"></i>
 								<span>Shifting Schedule</span>
 							</a>
 						</li>
+						@if(Auth::user()->jabatan == 5)
 						<li class="activeable" id="location">
 							<a href="{{ url('location')}}">
 								<i class="fa fa-location-arrow"></i>
 								<span>Set Absent Location</span>
 							</a>
 						</li>
+						@endif
+						@if(Auth::user()->jabatan == 4)
 						<li class="activeable treeview" id="project">
 							<a href="#">
 								<i class="fa fa-calendar"></i>
@@ -177,12 +182,16 @@
 								</li>
 							</ul>
 						</li>
+						@endif
+						@if(Auth::user()->jabatan == 2)
 						<li class="activeable" id="logphone">
 							<a href="{{url ('logphone')}}">
 								<i class="fa fa-book"></i>
 								<span>Log Phone</span>
 							</a>
 						</li>
+						@endif
+						@if(Auth::user()->jabatan == 5)
 						<li class="activeable treeview" id="budget">
 							<a href="#">
 								<i class="fa fa-usd"></i>
@@ -201,7 +210,7 @@
 								</li>
 							</ul>
 						</li>
-						
+						@endif
 					</ul>
 				</section>
 			</aside>

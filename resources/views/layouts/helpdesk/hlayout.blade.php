@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -169,12 +170,14 @@
 								<span>AOGY</span>
 							</a>
 						</li>
+						@if(Auth::user()->id == 46)
 						<li class="" id="usermanage">
 							<a href="{{ url('usermanage')}}">
 								<i class="fa fa-users"></i>
 								<span>Users Management</span>
 							</a>
 						</li>
+						@endif
 						<li class="" id="tisygy">
 							<a href="{{ url('tisygy')}}">
 								<i class="fa fa-paper-plane"></i>
@@ -187,17 +190,19 @@
 								<span>Shifting Schedule</span>
 							</a>
 						</li>
+						@if(Auth::user()->id == 46)
 						<li class="" id="location">
 							<a href="{{ url('location')}}">
 								<i class="fa fa-location-arrow"></i>
 								<span>Set Absent Location</span>
 							</a>
 						</li>
+						@endif
 						<li class="activeable" id="logphone">
-								<a href="{{url ('logphone')}}">
-									<i class="fa fa-book"></i>
-									<span>Log Phone</span>
-								</a>
+							<a href="{{url ('logphone')}}">
+								<i class="fa fa-book"></i>
+								<span>Log Phone</span>
+							</a>
 						</li>
 					</ul>
 				</section>

@@ -4581,7 +4581,7 @@
 					});
 					$('#dateClose').datepicker({
 						autoclose: true,
-						startDate: moment(result.first_activity_ticket.date).format("MM/DD/YYYY"),
+						// startDate: moment(result.first_activity_ticket.date).format("MM/DD/YYYY"),
 						endDate: moment().format("MM/DD/YYYY")
 					}).on('hide',function(result){
 						$('#dateClose').val(moment(result.date).format("DD/MM/YYYY"))
@@ -4614,7 +4614,7 @@
 					});
 					$('#dateClose').datepicker({
 						autoclose: true,
-						startDate: moment(result.first_activity_ticket.date).format("MM/DD/YYYY"),
+						// startDate: moment(result.first_activity_ticket.date).format("MM/DD/YYYY"),
 						endDate: moment().format("MM/DD/YYYY")
 					}).on('hide',function(result){
 						$('#dateClose').val(moment(result.date).format("DD/MM/YYYY"))

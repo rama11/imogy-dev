@@ -2131,7 +2131,7 @@
 				var append = '';
 				$("#importanTable").empty(append);
 				$.each(result.occurring_ticket,function(key,value){
-					append = append + '<tr onclick=goTo("'+ value.id_ticket + '") >';
+					append = append + '<tr>';
 						append = append + '<td>' + value.id_ticket + '</td>';
 						append = append + '<td>' + value.id_atm + '</td>';
 						append = append + '<td>' + value.location + '</td>';

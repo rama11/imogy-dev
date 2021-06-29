@@ -4516,7 +4516,7 @@
 					$("#ticketSerialArea").show()
 					$("#ticketSerial").hide()
 					$("#ticketSerialArea").val(result.serial_device.substring(0, result.serial_device.length - 4).replace(regex, "\n"));
-				} else if (result.id_ticket.split("/")[1] == "BTNI") {
+				} else if (result.id_ticket.split("/")[1] == "BTNI" && result.id_detail.id_client == 29) {
 					// $("#ticketSerialArea").show()
 					$("#rowAbsen").show()
 					$("#rowGeneral").hide()

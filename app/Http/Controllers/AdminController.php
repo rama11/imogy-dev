@@ -545,7 +545,7 @@ class AdminController extends Controller
 
 			
 			$hari_malam = date('d') - 1;
-			$hari_malam = date('Y/m/') . $hari_malam;
+			$hari_malam = date('Y-m-') . $hari_malam;
 
 			$pulang_malam = DB::table('waktu_absen')
 				->where('id_user','=',$id)
@@ -585,6 +585,8 @@ class AdminController extends Controller
 				if($pulang_malam == "22:00:00"){
 					if(date('Y/m/d') != $hari_malam){
 						$sudah = "belum";
+						$keterangan = 0;
+						$sudah_pulang = "belum";
 					} else {
 						$kemaren = DB::table('waktu_absen')
 							->where('id_user','=',$id)

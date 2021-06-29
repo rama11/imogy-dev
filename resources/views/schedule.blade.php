@@ -242,313 +242,313 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js"></script>
 	<script type="text/javascript" src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript">
-	var globalIdUser = 0;
-	var globalProject = 0;
-	function ini_events(ele) {
-		ele.each(function () {
-			var str = $(this).text();
-			if(str.indexOf("(") > 0){
-				var shift = "Helpdesk";
-			} else {
-				var shift = str.substr(0,str.indexOf(" "));
-			}
-			var strip = str.indexOf("-");
-			var start1 = strip - 6;
-			var end1 = strip + 2;
-			var start = str.substr(start1,5);
-			var end = str.substr(end1,5);
-			
-			if(shift == "Libur"){
-				var eventObject = {
-					title: $.trim($(this).text()), 
-					startShift: "00:00",
-					endShift: "23:59",
-					Shift: shift,
-				};
-			} else {
-				var eventObject = {
-					title: $.trim($(this).text()), 
-					startShift: start,
-					endShift: end,
-					Shift: shift,
-				};
-			}
-
-			$(this).data('eventObject', eventObject);
-
-			@if(Auth::user()->id == 41)
-			$(this).draggable({
-				zIndex: 1070,
-				revert: true, 
-				revertDuration: 0 
-			});
-			@if(Auth::user()->id == 41)
-
-		});
-	}
-
-	ini_events($('#external-events div.external-event'));
-
-	function showProject(name,idProject){
-		$("#listProject").fadeOut(function (){
-			$("#listName").fadeIn();
-			$("#name").text("for " + name);
-			$("#calendar").removeClass('display-none').addClass('display-block');
-			$("#log-activity").removeClass('display-block').addClass('display-none');
-			$("#table-log").dataTable().fnDestroy();
-			$("#calendar").fullCalendar('removeEventSources');
-			$("#calendar").fullCalendar('addEventSource', "{{url('schedule/getThisProject')}}?project=" + idProject + "&month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
-			$("." + idProject).show();
-			globalProject = idProject;
-			$("#buttonBack").attr("onclick","backListProject(" + idProject + ")");
-		});
-	};
-
-	function showLog(){
-		$('#calendar').removeClass('display-block').addClass('display-none');
-		$('#log-activity').removeClass('display-none').addClass('display-block');
-
-		$('#table-log').DataTable({
-			"ajax": {
-			    "url": "schedule/getLogActivityShifting",
-			    "type": "GET"
-			},
-			"columns": [
-				{
-		            render: function ( data, type, row, meta ) {
-		               return  meta.row+1;
-		            }
-		        },
-		        {
-		            render: function ( data, type, row, meta ) {
-		            	if (row.status == 'create') {
-		            		return "Create Schedule " + row.title + "<br>[" + moment(row.start_before).format('MMMM Do YYYY, h:mm:ss a') + " - " + moment(row.end_before).format('MMMM Do YYYY, h:mm:ss a') + "]";
-		            	}else if (row.status == 'update') {
-		            		return  "Updated Schedule " + row.title + "<br>[" + moment(row.start_before).format('MMMM Do YYYY, h:mm:ss a')  + " - " + moment(row.end_before).format('MMMM Do YYYY, h:mm:ss a')  + "]" + "<br> menjadi <br>"+ row.className_updated + " [" + moment(row.start_updated).format('MMMM Do YYYY, h:mm:ss a')  + " - " + moment(row.end_updated).format('MMMM Do YYYY, h:mm:ss a')  + "]";
-		            	}else{
-		            		return  "Deleted Schedule " + row.title + "<br>[" + moment(row.start_before).format('MMMM Do YYYY, h:mm:ss a')  + " - " + moment(row.end_before).format('MMMM Do YYYY, h:mm:ss a')  + "]";
-		            	}
-		            }
-		        },
-	            { "data": "created_at" },
-	            { "data": "name" },
-        	]
-		});
-		// $("#log-activity").append(table);
-	}
-
-	function showDetail(name,nickname,idUser,idProject){
-		$("#listName").fadeOut(function (){
-			
-			var external2 = ".project-" + idProject;
-			$("#external").fadeIn(function(){
-				$(external2).show();
-			});
-
-			$("#name2").text("for " + name);
-			$("#nickname").val(nickname);
-			$("#calendar").fullCalendar('removeEventSources');
-			$("#calendar").fullCalendar('addEventSource', '{{url("schedule/getThisUser")}}?idUser=' + idUser + '&idProject=' + globalProject + "&month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
-			globalIdUser = idUser;
-			$("." + idProject).show();
-			$("#buttonBack2").attr("onclick","backListDetail(" + idProject + ")")
-			$("#deletePlace").show();
-			$("#calendar").fullCalendar('option', {
-				@if(Auth::user()->id == 41)
-				editable: true,
-				@endif
-				droppable: true,
-			});
-		});
-	}
-
-	function backListDetail(idProject){
-		$("#external").fadeOut(function (){
-			$(".project-" + idProject).fadeOut();
-			$("#calendar").fullCalendar('removeEventSources');
-			$("#calendar").fullCalendar('addEventSource', "{{url('schedule/getThisProject')}}?month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
-			$("#buttonBack").attr("onclick","backListProject(" + idProject + ")");
-			globalIdUser = 0;
-			$("#listName").fadeIn();
-			$("#deletePlace").hide();
-			$("#calendar").fullCalendar('option', {
-				editable: false,
-				droppable: false,
-			});
-		});
-	}
-
-	function backListProject(idProject){
-		$("#listName").fadeOut(function (){
-			$("#calendar").fullCalendar('removeEventSources');
-			$("#calendar").fullCalendar('addEventSource', "{{url('schedule/getThisMonth')}}?month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
-			$("." + idProject).hide();
-			$("#listProject").fadeIn();
-		});
-	}
-
-	$(".fc-next-button").click(function(){
-	});
-
-	var shift_user = [], shift_time = [], shift_date = [];
-	var i = 0;
-	$('#calendar').fullCalendar({
-		header: {
-			left: '',
-			center: 'title',
-		},
-		
-		editable: false,
-		droppable: false,
-		events: "{{url('schedule/getThisMonth')}}?month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'),
-			
-		drop: function (date, allDay) { 
-
-			var originalEventObject = $(this).data('eventObject');
-			var name3 = $("#nickname").val();
-			console.log(name3)
-			var copiedEventObject = $.extend({}, originalEventObject);
-
-			copiedEventObject.start = date;
-			var waktu = date._d;
-			waktu = new Date(waktu);
-
-			console.log(originalEventObject)
-			var day = moment(waktu).toISOString(true);
-			var startShift2 = moment(waktu).format('YYYY-MM-DD') + "T" + originalEventObject.startShift + ":00.000Z";
-			var endShift2 = moment(waktu).format('YYYY-MM-DD') + "T" + originalEventObject.endShift + ":00.000Z";
-			var start_before = moment(waktu).format('YYYY-MM-DD') + " " + originalEventObject.startShift + ":00";
-			var end_before = moment(waktu).format('YYYY-MM-DD') + " " + originalEventObject.endShift + ":00";
-			
-			var ketemu = 0;
-
-			$.ajax({
-				type:"GET",
-				dataType:"json",
-				url:"{{url('schedule/getThisMonth')}}?month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'),
-				success: function(result2){
-					for (var i = 0; i < result2.length; i++) {
-						if (startShift2 == result2[i].start) {
-							var str = result2[i].title;
-							var str2 = result2[i].start;
-							var shift = str.substr(0,str.indexOf(" "));
-							
-							if(shift == originalEventObject.Shift){
-								if(name3.substr(1,name3.length - 1) == str.substr(str.indexOf(" ") + 3, str.length)){
-									ketemu = 1;
-								}
-							} 
-						}
+	<script type="text/javascript">
+		var globalIdUser = 0;
+		var globalProject = 0;
+		function ini_events(ele) {
+			ele.each(function () {
+				var str = $(this).text();
+				if(str.indexOf("(") > 0){
+					var shift = "Helpdesk";
+				} else {
+					var shift = str.substr(0,str.indexOf(" "));
+				}
+				var strip = str.indexOf("-");
+				var start1 = strip - 6;
+				var end1 = strip + 2;
+				var start = str.substr(start1,5);
+				var end = str.substr(end1,5);
+				
+				if(shift == "Libur"){
+					var eventObject = {
+						title: $.trim($(this).text()), 
+						startShift: "00:00",
+						endShift: "23:59",
+						Shift: shift,
 					};
+				} else {
+					var eventObject = {
+						title: $.trim($(this).text()), 
+						startShift: start,
+						endShift: end,
+						Shift: shift,
+					};
+				}
 
-					if(ketemu == 1){
-						alert("tanggal sama");
-					} else {
-						var idEvent = 0;
+				$(this).data('eventObject', eventObject);
 
+				@if(Auth::user()->id == 41)
+				$(this).draggable({
+					zIndex: 1070,
+					revert: true, 
+					revertDuration: 0 
+				});
+				@endif
+
+			});
+		}
+
+		ini_events($('#external-events div.external-event'));
+
+		function showProject(name,idProject){
+			$("#listProject").fadeOut(function (){
+				$("#listName").fadeIn();
+				$("#name").text("for " + name);
+				$("#calendar").removeClass('display-none').addClass('display-block');
+				$("#log-activity").removeClass('display-block').addClass('display-none');
+				$("#table-log").dataTable().fnDestroy();
+				$("#calendar").fullCalendar('removeEventSources');
+				$("#calendar").fullCalendar('addEventSource', "{{url('schedule/getThisProject')}}?project=" + idProject + "&month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
+				$("." + idProject).show();
+				globalProject = idProject;
+				$("#buttonBack").attr("onclick","backListProject(" + idProject + ")");
+			});
+		};
+
+		function showLog(){
+			$('#calendar').removeClass('display-block').addClass('display-none');
+			$('#log-activity').removeClass('display-none').addClass('display-block');
+
+			$('#table-log').DataTable({
+				"ajax": {
+				    "url": "schedule/getLogActivityShifting",
+				    "type": "GET"
+				},
+				"columns": [
+					{
+			            render: function ( data, type, row, meta ) {
+			               return  meta.row+1;
+			            }
+			        },
+			        {
+			            render: function ( data, type, row, meta ) {
+			            	if (row.status == 'create') {
+			            		return "Create Schedule " + row.title + "<br>[" + moment(row.start_before).format('MMMM Do YYYY, h:mm:ss a') + " - " + moment(row.end_before).format('MMMM Do YYYY, h:mm:ss a') + "]";
+			            	}else if (row.status == 'update') {
+			            		return  "Updated Schedule " + row.title + "<br>[" + moment(row.start_before).format('MMMM Do YYYY, h:mm:ss a')  + " - " + moment(row.end_before).format('MMMM Do YYYY, h:mm:ss a')  + "]" + "<br> menjadi <br>"+ row.className_updated + " [" + moment(row.start_updated).format('MMMM Do YYYY, h:mm:ss a')  + " - " + moment(row.end_updated).format('MMMM Do YYYY, h:mm:ss a')  + "]";
+			            	}else{
+			            		return  "Deleted Schedule " + row.title + "<br>[" + moment(row.start_before).format('MMMM Do YYYY, h:mm:ss a')  + " - " + moment(row.end_before).format('MMMM Do YYYY, h:mm:ss a')  + "]";
+			            	}
+			            }
+			        },
+		            { "data": "created_at" },
+		            { "data": "name" },
+	        	]
+			});
+			// $("#log-activity").append(table);
+		}
+
+		function showDetail(name,nickname,idUser,idProject){
+			$("#listName").fadeOut(function (){
+				
+				var external2 = ".project-" + idProject;
+				$("#external").fadeIn(function(){
+					$(external2).show();
+				});
+
+				$("#name2").text("for " + name);
+				$("#nickname").val(nickname);
+				$("#calendar").fullCalendar('removeEventSources');
+				$("#calendar").fullCalendar('addEventSource', '{{url("schedule/getThisUser")}}?idUser=' + idUser + '&idProject=' + globalProject + "&month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
+				globalIdUser = idUser;
+				$("." + idProject).show();
+				$("#buttonBack2").attr("onclick","backListDetail(" + idProject + ")")
+				$("#deletePlace").show();
+				$("#calendar").fullCalendar('option', {
+					@if(Auth::user()->id == 41)
+					editable: true,
+					@endif
+					droppable: true,
+				});
+			});
+		}
+
+		function backListDetail(idProject){
+			$("#external").fadeOut(function (){
+				$(".project-" + idProject).fadeOut();
+				$("#calendar").fullCalendar('removeEventSources');
+				$("#calendar").fullCalendar('addEventSource', "{{url('schedule/getThisProject')}}?month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
+				$("#buttonBack").attr("onclick","backListProject(" + idProject + ")");
+				globalIdUser = 0;
+				$("#listName").fadeIn();
+				$("#deletePlace").hide();
+				$("#calendar").fullCalendar('option', {
+					editable: false,
+					droppable: false,
+				});
+			});
+		}
+
+		function backListProject(idProject){
+			$("#listName").fadeOut(function (){
+				$("#calendar").fullCalendar('removeEventSources');
+				$("#calendar").fullCalendar('addEventSource', "{{url('schedule/getThisMonth')}}?month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
+				$("." + idProject).hide();
+				$("#listProject").fadeIn();
+			});
+		}
+
+		$(".fc-next-button").click(function(){
+		});
+
+		var shift_user = [], shift_time = [], shift_date = [];
+		var i = 0;
+		$('#calendar').fullCalendar({
+			header: {
+				left: '',
+				center: 'title',
+			},
+			
+			editable: false,
+			droppable: false,
+			events: "{{url('schedule/getThisMonth')}}?month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'),
+				
+			drop: function (date, allDay) { 
+
+				var originalEventObject = $(this).data('eventObject');
+				var name3 = $("#nickname").val();
+				console.log(name3)
+				var copiedEventObject = $.extend({}, originalEventObject);
+
+				copiedEventObject.start = date;
+				var waktu = date._d;
+				waktu = new Date(waktu);
+
+				console.log(originalEventObject)
+				var day = moment(waktu).toISOString(true);
+				var startShift2 = moment(waktu).format('YYYY-MM-DD') + "T" + originalEventObject.startShift + ":00.000Z";
+				var endShift2 = moment(waktu).format('YYYY-MM-DD') + "T" + originalEventObject.endShift + ":00.000Z";
+				var start_before = moment(waktu).format('YYYY-MM-DD') + " " + originalEventObject.startShift + ":00";
+				var end_before = moment(waktu).format('YYYY-MM-DD') + " " + originalEventObject.endShift + ":00";
+				
+				var ketemu = 0;
+
+				$.ajax({
+					type:"GET",
+					dataType:"json",
+					url:"{{url('schedule/getThisMonth')}}?month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'),
+					success: function(result2){
+						for (var i = 0; i < result2.length; i++) {
+							if (startShift2 == result2[i].start) {
+								var str = result2[i].title;
+								var str2 = result2[i].start;
+								var shift = str.substr(0,str.indexOf(" "));
+								
+								if(shift == originalEventObject.Shift){
+									if(name3.substr(1,name3.length - 1) == str.substr(str.indexOf(" ") + 3, str.length)){
+										ketemu = 1;
+									}
+								} 
+							}
+						};
+
+						if(ketemu == 1){
+							alert("tanggal sama");
+						} else {
+							var idEvent = 0;
+
+							$.ajax({
+								type: "GET",
+								url: "{{url('schedule/crateSchedule')}}",
+								data:{
+									title: originalEventObject.Shift +" - " +  name3,
+									name:name3,
+									start: startShift2,
+									end: endShift2,
+									start_before:start_before,
+									end_before:end_before,
+									shift: originalEventObject.Shift,
+									id_project: globalProject
+
+								},
+								success: function(result){
+									idEvent = result;
+									copiedEventObject.id = idEvent;
+									refresh_calendar();
+								},
+							});
+						}
+					},
+				});
+			},
+
+			eventDrop: function(event, delta, revertFunc) {
+				alert(event.title + " can't move!");
+				revertFunc();
+			},
+
+			eventDragStop: function(event,jsEvent) {
+				var trashEl = $('#deletePlace');
+				var ofs = trashEl.offset();
+
+				var x1 = ofs.left;
+				var x2 = ofs.left + trashEl.outerWidth(true);
+				var y1 = ofs.top;
+				var y2 = ofs.top + trashEl.outerHeight(true);
+
+				if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 &&
+					jsEvent.pageY >= y1 && jsEvent.pageY <= y2) {
+					if (confirm("Are you sure to delete this events?")) {
 						$.ajax({
 							type: "GET",
-							url: "{{url('schedule/crateSchedule')}}",
+							url: "{{url('schedule/deleteSchedule')}}",
 							data:{
-								title: originalEventObject.Shift +" - " +  name3,
-								name:name3,
-								start: startShift2,
-								end: endShift2,
-								start_before:start_before,
-								end_before:end_before,
-								shift: originalEventObject.Shift,
-								id_project: globalProject
-
+								id:event.id
 							},
 							success: function(result){
-								idEvent = result;
-								copiedEventObject.id = idEvent;
-								refresh_calendar();
+								$('#calendar').fullCalendar('removeEvents', event.id);
 							},
 						});
 					}
-				},
-			});
-		},
+				}
+			},
 
-		eventDrop: function(event, delta, revertFunc) {
-			alert(event.title + " can't move!");
-			revertFunc();
-		},
-
-		eventDragStop: function(event,jsEvent) {
-			var trashEl = $('#deletePlace');
-			var ofs = trashEl.offset();
-
-			var x1 = ofs.left;
-			var x2 = ofs.left + trashEl.outerWidth(true);
-			var y1 = ofs.top;
-			var y2 = ofs.top + trashEl.outerHeight(true);
-
-			if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 &&
-				jsEvent.pageY >= y1 && jsEvent.pageY <= y2) {
-				if (confirm("Are you sure to delete this events?")) {
-					$.ajax({
-						type: "GET",
-						url: "{{url('schedule/deleteSchedule')}}",
-						data:{
-							id:event.id
-						},
-						success: function(result){
-							$('#calendar').fullCalendar('removeEvents', event.id);
-						},
-					});
+			viewRender: function (view, element) {
+				$("#indicatorMonth").text("Shifting Users on " + moment(view.intervalStart).format("MMMM"));
+				
+				$.ajax({
+					type: "GET",
+					url: "{{url('schedule/changeMonth')}}",
+					data: {
+						start:moment(view.intervalStart).format("YYYY-MM")
+					},
+					beforeSend:function(){
+						$("#calendar").fullCalendar('removeEventSources');
+					},
+					success: function(result){
+						$("#ulUser").empty();
+						var append = "";
+						for (var i = 0; i < result.length; i++) {
+							var showDetail = "showDetail('" + result[i].name + "','" + result[i].nickname + "','" +result[i].id + "','" + result[i].on_project + "')";
+							append = append + '	<li class="' + result[i].on_project + '" style="display:none;padding-bottom:10px">';
+							append = append + '		<a onclick="' + showDetail + '">' + result[i].name;
+							append = append + '			<br>';
+							append = append + '			<small class="label label-success pull-right" style="margin-right: 5px;">' + result[i].shift_libur + ' </small>';
+							append = append + '			<small class="label label-primary pull-right" style="margin-right: 5px;">' + result[i].shift_malam + ' </small>';
+							append = append + '			<small class="label label-warning pull-right" style="margin-right: 5px;">' + result[i].shift_sore + ' </small>';
+							append = append + '			<small class="label label-danger pull-right" style="margin-right: 5px;">' + result[i].shift_pagi + ' </small>';
+							append = append + '		</a>';
+							append = append + '	</li>';
+						};
+						$("#ulUser").append(append);
+						$("." + globalProject).show();
+					},
+				});
+				if($("#listProject").is(":visible")){
+					$("#calendar").fullCalendar('addEventSource', '{{url("schedule/getThisMonth")}}?&month=' + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
+				}
+				if($("#listName").is(":visible")){
+					$("#calendar").fullCalendar('addEventSource', '{{url("schedule/getThisProject")}}?project=' + globalProject + '&month=' + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
+				} else {
+					$("#calendar").fullCalendar('addEventSource', '{{url("schedule/getThisUser")}}?idUser=' + globalIdUser +'&idProject=' + globalProject + "&month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
 				}
 			}
-		},
+		});
 
-		viewRender: function (view, element) {
-			$("#indicatorMonth").text("Shifting Users on " + moment(view.intervalStart).format("MMMM"));
-			
-			$.ajax({
-				type: "GET",
-				url: "{{url('schedule/changeMonth')}}",
-				data: {
-					start:moment(view.intervalStart).format("YYYY-MM")
-				},
-				beforeSend:function(){
-					$("#calendar").fullCalendar('removeEventSources');
-				},
-				success: function(result){
-					$("#ulUser").empty();
-					var append = "";
-					for (var i = 0; i < result.length; i++) {
-						var showDetail = "showDetail('" + result[i].name + "','" + result[i].nickname + "','" +result[i].id + "','" + result[i].on_project + "')";
-						append = append + '	<li class="' + result[i].on_project + '" style="display:none;padding-bottom:10px">';
-						append = append + '		<a onclick="' + showDetail + '">' + result[i].name;
-						append = append + '			<br>';
-						append = append + '			<small class="label label-success pull-right" style="margin-right: 5px;">' + result[i].shift_libur + ' </small>';
-						append = append + '			<small class="label label-primary pull-right" style="margin-right: 5px;">' + result[i].shift_malam + ' </small>';
-						append = append + '			<small class="label label-warning pull-right" style="margin-right: 5px;">' + result[i].shift_sore + ' </small>';
-						append = append + '			<small class="label label-danger pull-right" style="margin-right: 5px;">' + result[i].shift_pagi + ' </small>';
-						append = append + '		</a>';
-						append = append + '	</li>';
-					};
-					$("#ulUser").append(append);
-					$("." + globalProject).show();
-				},
-			});
-			if($("#listProject").is(":visible")){
-				$("#calendar").fullCalendar('addEventSource', '{{url("schedule/getThisMonth")}}?&month=' + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
-			}
-			if($("#listName").is(":visible")){
-				$("#calendar").fullCalendar('addEventSource', '{{url("schedule/getThisProject")}}?project=' + globalProject + '&month=' + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
-			} else {
-				$("#calendar").fullCalendar('addEventSource', '{{url("schedule/getThisUser")}}?idUser=' + globalIdUser +'&idProject=' + globalProject + "&month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
-			}
+
+		function refresh_calendar(){
+			$("#calendar").fullCalendar('removeEventSources');
+			$("#calendar").fullCalendar('addEventSource', '{{url("schedule/getThisUser")}}?idUser=' + globalIdUser +'&idProject=' + globalProject + "&month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
 		}
-	});
-
-
-	function refresh_calendar(){
-		$("#calendar").fullCalendar('removeEventSources');
-		$("#calendar").fullCalendar('addEventSource', '{{url("schedule/getThisUser")}}?idUser=' + globalIdUser +'&idProject=' + globalProject + "&month=" + moment($("#indicatorMonth").text().split(" ")[3],"MMMM").format('MM'));
-	}
-</script>
+	</script>
 @endsection

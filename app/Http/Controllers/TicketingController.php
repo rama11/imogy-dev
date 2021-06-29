@@ -958,7 +958,8 @@ class TicketingController extends Controller
 				'lastest_activity_ticket:id_ticket,date,activity,operator',
 				'resolve',
 				'all_activity_ticket',
-				'first_activity_ticket'
+				'first_activity_ticket',
+				'id_detail:id_ticket,id,id_client'
 			])
 			->first();
 
@@ -973,7 +974,7 @@ class TicketingController extends Controller
 
 	private function checkPendingReminder($id_ticket){
 		$checkLatestActivity = TicketingActivity::where('id_ticket',$id_ticket)
-			->orderBy('id','DSEC')
+			->orderBy('id','DESC')
 			->first();
 
 		if ($checkLatestActivity->activity == "PENDING"){

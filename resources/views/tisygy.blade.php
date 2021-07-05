@@ -5335,5 +5335,93 @@
 		);
 	}
 
+	$('#daterange-btn').daterangepicker(
+		{
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+			},
+			startDate: moment().subtract(29, 'days'),
+			endDate: moment()
+		},
+		function (start, end) {
+			$('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+			$("#ReportingButtonGoNew").show()
+		}
+	);
+
+	$("#ReportingButtonGoNew").on('click',function(){
+		swalWithCustomClass.fire({
+			title: 'Are you sure?',
+			text: "Make sure there is nothing wrong to get this report bayu!",
+			icon: "warning",
+			showCancelButton: true,
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			allowEnterKey: false,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value){
+					Swal.fire({
+						title: 'Please Wait..!',
+						text: "Prossesing Data Report",
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false,
+						customClass: {
+							popup: 'border-radius-0',
+						},
+						onOpen: () => {
+							Swal.showLoading()
+						}
+					})
+
+					$.ajax({
+						type:"GET",
+						url:"{{url('tisygy/report/new')}}",
+						data:{
+							start:$('#daterange-btn').data('daterangepicker').startDate.format('YYYY-MM-DD'),
+							end:$('#daterange-btn').data('daterangepicker').endDate.format('YYYY-MM-DD')
+						},
+						success: function(result){
+							Swal.hideLoading()
+							if(result == 0){
+								swalWithCustomClass.fire({
+									//icon: 'error',
+									title: 'Success!',
+									text: "The file is unavailable",
+									type: 'error',
+									//confirmButtonText: '<a style="color:#fff;" href="report/' + result.slice(1) + '">Get Report</a>',
+								})
+							}else{
+								swalWithCustomClass.fire({
+									title: 'Success!',
+									text: "You can get your file now",
+									type: 'success',
+									confirmButtonText: '<a style="color:#fff;" href="report/bayu/' + result.slice(1) + '">Get Report</a>',
+								})
+							}
+						}
+					})
+				}
+			}
+		);
+	})
+
+	$("#selectReportingType").change(function(){
+		if($(this).val() == 1){
+			$(".finish-report").show()
+			$(".bayu-report").hide()
+		} else if($(this).val() == 2) {
+			$(".finish-report").hide()
+			$(".bayu-report").show()
+		}
+	})
+
 </script>
 @endsection

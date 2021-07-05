@@ -754,30 +754,47 @@
 					<div class="row">
 						<div class="col-md-3">
 							<div class="form-group">
+								<label>Select Type</label>
+								<select id="selectReportingType" class="form-control">
+									<option>Chose One</option>
+									<option value="1">Finish Report</option>
+									<option value="2">Bayu Report</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-3 finish-report" style="display:none;">
+							<div class="form-group">
 								<label>Select Client</label>
 								<select id="selectReportingClient" class="form-control">
 								</select>
 							</div>
 						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label>Select Type</label>
-								<select id="selectReportingType" class="form-control">
-									<option>Finish Report</option>
-								</select>
-							</div>
-						</div><div class="col-md-2">
+						<div class="col-md-2 finish-report" style="display:none;">
 							<div class="form-group">
 								<label>Select Year</label>
 								<select id="selectReportingYear" class="form-control">
 								</select>
 							</div>
 						</div>
-						<div class="col-md-2">
+						<div class="col-md-2 finish-report" style="display:none;">
 							<div class="form-group">
 								<label>Select Month</label>
 								<select id="selectReportingMonth" class="form-control">
 								</select>
+							</div>
+						</div>
+						<div class="col-md-4 bayu-report" style="display:none;">
+							<div class="form-group">
+								<label>Date range button:</label>
+
+								<div class="input-group">
+									<button type="button" class="btn btn-default pull-right" id="daterange-btn">
+										<span>
+											<i class="fa fa-calendar"></i> Date range picker
+										</span>
+										<i class="fa fa-caret-down"></i>
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>

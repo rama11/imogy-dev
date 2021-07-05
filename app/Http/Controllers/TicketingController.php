@@ -2171,4 +2171,206 @@ class TicketingController extends Controller
 		}
 	}
 
+	public function getReportNew(Request $request){
+
+		$request->start = Carbon::parse($request->start)->toDateTimeString();
+		$request->end = Carbon::parse($request->end . " 23:59:59")->toDateTimeString();
+
+		$ticketing_activity_max = DB::table('ticketing__activity')
+			->selectRaw("MAX(`id`) AS `id`")
+			->groupBy('id_ticket');
+
+		$ticketing_activity_occurring = DB::table('ticketing__activity')
+			->joinSub($ticketing_activity_max,'ticketing_activity_max',function($join){
+				$join->on('ticketing_activity_max.id','=','ticketing__activity.id');
+			})
+			->select('id_ticket')
+			->where('activity','=',"OPEN")
+			->orWhere('activity','=',"ON PROGRESS")
+			->orWhere('activity','=',"PENDING");
+
+		$ticketing_activity_filtered = DB::table('ticketing__activity')
+			->select('id_ticket')
+			->whereRaw('`ticketing__activity`.`date` BETWEEN "' . $request->start . '" AND "' . $request->end . '"')
+			->groupBy('id_ticket');
+
+		$ticketing_activity_filtered = DB::table(function ($query) use ($request,$ticketing_activity_occurring){
+				$query->from('ticketing__activity')
+					->select('id_ticket')
+					->whereRaw('`ticketing__activity`.`date` BETWEEN "' . $request->start . '" AND "' . $request->end . '"')
+					->groupBy('id_ticket');
+			},'ticketing_activity_filtered')
+			->joinSub($ticketing_activity_occurring,'ticketing_activity_occurring',function($join){
+				$join->on('ticketing_activity_occurring.id_ticket','=','ticketing_activity_filtered.id_ticket');
+			});
+
+		$ticketing_activity_filtered = DB::table(function ($query) use ($request,$ticketing_activity_occurring){
+				$query->from('ticketing__activity')
+					->select('id_ticket')
+					->whereRaw('`ticketing__activity`.`date` BETWEEN "' . $request->start . '" AND "' . $request->end . '"')
+					->groupBy('id_ticket');
+			},'ticketing_activity_filtered')
+			->union($ticketing_activity_occurring);
+
+		// return $ticketing_activity_occurring->pluck('ticketing_activity_filtered.id_ticket')->sortBy('id_ticket');
+		// return $ticketing_activity_filtered->get();
+
+
+		$open_activity_filtered = DB::table('ticketing__activity')
+			->selectRaw('ticketing__activity.id_ticket')
+            ->selectRaw("MAX(`id`) AS `latest_activity`")
+            ->selectRaw("MIN(`id`) AS `open_activity`")
+            ->joinSub($ticketing_activity_filtered,'ticketing_activity_filtered',function($join){
+            	$join->on('ticketing_activity_filtered.id_ticket','=','ticketing__activity.id_ticket');
+            })
+            ->where('ticketing__activity.date','<',$request->end)
+            ->groupBy('id_ticket');
+
+        $latest_activity_filtered = $open_activity_filtered;
+
+        $latest_activity_detail = DB::table('ticketing__activity')
+        	->select('ticketing__activity.id_ticket')
+        	->selectRaw("`ticketing__activity`.`date` AS `latest_date`")
+        	->selectRaw("`ticketing__activity`.`operator` AS `latest_by`")
+        	->selectRaw("`ticketing__activity`.`activity` AS `latest_activity`")
+        	->selectRaw("`ticketing__activity`.`note` AS `latest_note`")
+        	->joinSub($latest_activity_filtered,'latest_activity_filtered',function($join){
+        		$join->on('ticketing__activity.id','=','latest_activity_filtered.latest_activity');
+        	})
+        	->orderBy('ticketing__activity.id_ticket','ASC')
+        	->limit(100);
+
+        $ticket_filtered = $ticketing_activity_filtered;
+
+        $ticket_handle = DB::table('ticketing__activity')
+        	->select('ticketing__activity.id_ticket')
+        	->selectRaw("GROUP_CONCAT(DISTINCT (`ticketing__activity`.`operator`) SEPARATOR ', ') AS `hendle_by`")
+        	// ->whereRaw("`date` BETWEEN '" . $request->start . "' AND '" . $request->end . "'")
+        	->joinSub($ticket_filtered,'ticket_filtered',function($join){
+        		$join->on('ticket_filtered.id_ticket','ticketing__activity.id_ticket');
+        	})
+        	->where('ticketing__activity.operator','<>','System')
+        	->groupBy('ticketing__activity.id_ticket');
+
+        $ticket_escalate = DB::table('ticketing__escalate_engineer')
+        	->select('id_ticket')
+        	->selectRaw("GROUP_CONCAT(DISTINCT (CONCAT(`engineer_name`, ' (', `engineer_contact`, ')'))SEPARATOR ', ') AS `escalate_engineer`")
+        	->whereRaw("`date_add` BETWEEN '" . $request->start . "' AND '" . $request->end . "'")
+        	->groupBy('id_ticket');
+
+		$data = DB::table(function($query) use ($open_activity_filtered){
+				$query->from('ticketing__activity')
+					->select('ticketing__activity.id_ticket')
+					->selectRaw("`ticketing__activity`.`date` AS `open_date`")
+					->selectRaw("`ticketing__activity`.`operator` AS `open_by`")
+					->joinSub($open_activity_filtered,'open_activity_filtered',function($join){
+						$join->on('ticketing__activity.id','=','open_activity_filtered.open_activity');
+					})
+					->orderBy('ticketing__activity.id_ticket','ASC')
+					->limit(100);
+			},'open_activity_detail')
+			->selectRaw("`open_activity_detail`.`id_ticket`")
+		    ->selectRaw("IFNULL(`ticketing__detail`.`ticket_number_3party`,'-') AS `ticket_number_3party`")
+		    ->selectRaw("CONCAT('[',`ticketing__detail`.`location`,'] ',`ticketing__detail`.`problem`) AS `location_problem`")
+		    ->selectRaw("DATE_FORMAT(`ticketing__detail`.`reporting_time`,'%c/%e/%Y %k:%i') AS `open_reporting_date`")
+		    ->selectRaw("DATE_FORMAT(`open_activity_detail`.`open_date`,'%c/%e/%Y %k:%i') AS `open_date`")
+		    ->selectRaw("DATE_FORMAT(`latest_activity_detail`.`latest_date`,'%c/%e/%Y %k:%i') AS `latest_date`")
+		    ->selectRaw("`ticketing__severity`.`name`")
+		    ->selectRaw("IF(`latest_activity_detail`.`latest_activity` = 'CLOSE',`ticketing__resolve`.`root_couse`,'-') AS `root_couse`")
+		    ->selectRaw("IF(`latest_activity_detail`.`latest_activity` = 'CLOSE',`ticketing__resolve`.`counter_measure`,`latest_activity_detail`.`latest_note`) AS `counter_measure/latest_note`")
+		    ->selectRaw("`latest_activity_detail`.`latest_activity`")
+		    ->selectRaw("IF(IFNULL(`ticketing__resolve`.`root_couse`, '-') = '-',IF(`latest_activity_detail`.`latest_activity` = 'CANCEL','Completed','Occurring'),'Completed') AS `actual_status`")
+		    ->selectRaw("`ticket_handle`.`hendle_by`")
+		    ->selectRaw("IFNULL(`ticket_escalate`.`escalate_engineer`,'-') AS `escalate_engineer`")
+		    ->selectRaw("REPLACE(TIMEDIFF(`open_activity_detail`.`open_date`,`ticketing__detail`.`reporting_time`),'00000','') AS `responds_time`")
+		    ->selectRaw("IF(IFNULL(`ticketing__resolve`.`root_couse`, '-') = '-',IF(`latest_activity_detail`.`latest_activity` = 'CANCEL',TIMEDIFF(`latest_activity_detail`.`latest_date`,`open_activity_detail`.`open_date`),'-'),TIMEDIFF(`latest_activity_detail`.`latest_date`,`open_activity_detail`.`open_date`)) AS `resolution_time`")
+			->joinSub($latest_activity_detail,'latest_activity_detail',function($join){
+				$join->on('open_activity_detail.id_ticket','=','latest_activity_detail.id_ticket');
+			})
+			->leftJoinSub($ticket_handle,'ticket_handle',function ($join){
+				$join->on('open_activity_detail.id_ticket','=','ticket_handle.id_ticket');
+			})
+			->leftJoinSub($ticket_escalate,'ticket_escalate',function ($join){
+				$join->on('open_activity_detail.id_ticket','=','ticket_escalate.id_ticket');
+			})
+			->leftJoin('ticketing__resolve','ticketing__resolve.id_ticket','=','open_activity_detail.id_ticket')
+			->leftJoin('ticketing__detail','ticketing__detail.id_ticket','=','open_activity_detail.id_ticket')
+			->leftJoin('ticketing__severity','ticketing__severity.id','=','ticketing__detail.severity')
+			->orderBy('open_activity_detail.id_ticket','ASC')
+			->get();
+
+		
+		$spreadsheet = new Spreadsheet();
+
+	    $spreadsheet->removeSheetByIndex(0);
+	    $spreadsheet->addSheet(new Worksheet($spreadsheet,'Summary'));
+	    $summarySheet = $spreadsheet->setActiveSheetIndex(0);
+
+	    $normalStyle = [
+	      'font' => [
+	        'name' => 'Calibri',
+	        'size' => 8
+	      ],
+	    ];
+
+	    $titleStyle = $normalStyle;
+	    $titleStyle['alignment'] = ['horizontal' => Alignment::HORIZONTAL_CENTER];
+	    $titleStyle['borders'] = ['outline' => ['borderStyle' => Border::BORDER_THIN]];
+	    $titleStyle['font']['bold'] = true;
+
+	    $headerStyle = $normalStyle;
+	    $headerStyle['font']['bold'] = true;
+	    $headerStyle['fill'] = ['fillType' => Fill::FILL_SOLID, 'startColor' => ["argb" => "FFC9C9C9"]];
+	    $headerStyle['borders'] = ['allBorders' => ['borderStyle' => Border::BORDER_THIN]];
+
+	    $summarySheet->getStyle('A1:O1')->applyFromArray($titleStyle);
+	    $summarySheet->getStyle('A2:O2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+	    $summarySheet->getStyle('A2:O2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+	    $summarySheet->getStyle('C2:O2')->getAlignment()->setWrapText(true);
+	    $summarySheet->getStyle('C2:O2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+	    $summarySheet->setCellValue('B1','Report Bayu');
+	    $summarySheet->setCellValue('D1','Grab per ' . Carbon::now()->format("d M Y"));
+
+	    $headerContent = ["id_ticket","ticket_number_3party","location_problem","open_reporting_date","open_date","latest_date","name","root_couse","counter_measure/latest_note","latest_activity","actual_status","hendle_by","escalate_engineer","responds_time","resolution_time"];
+	    $summarySheet->getStyle('A2:O2')->applyFromArray($headerStyle);
+	    
+	    $summarySheet->fromArray($headerContent,NULL,'A2');
+
+	    $itemStyle = $normalStyle;
+	    $itemStyle['fill'] = ['fillType' => Fill::FILL_SOLID, 'startColor' => ["argb" => "FFFFFE9F"]];
+	    $itemStyle['borders'] = ['allBorders' => ['borderStyle' => Border::BORDER_THIN]];
+	    $data->map(function($item,$key) use ($summarySheet){
+			$summarySheet->fromArray(
+				array_values((array)$item),
+				NULL,
+				'A' . ($key + 3)
+			);
+	    });
+
+	    $summarySheet->getColumnDimension('A')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('B')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('C')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('D')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('E')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('F')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('G')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('H')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('I')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('J')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('K')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('L')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('M')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('N')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('O')->setAutoSize(true);
+
+	    $spreadsheet->setActiveSheetIndex(0);
+
+	   
+	    $name = 'Report_Bayu_-_[' . $request->start . '_to_' . $request->end . ']_(' . date("Y-m-d") . ')_' . Auth::user()->nickname . '.xlsx';
+		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+		$location = public_path() . '/report/bayu/' . $name;
+		$writer->save($location);
+		return $name;
+	}
+
 }

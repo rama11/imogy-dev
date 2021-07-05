@@ -1742,6 +1742,7 @@ class TicketingController extends Controller
 		$spreadsheet->getActiveSheet()->getColumnDimension('O')->setWidth(80);
 		$spreadsheet->getActiveSheet()->getColumnDimension('P')->setWidth(100);
 		$spreadsheet->getActiveSheet()->getColumnDimension('Q')->setWidth(20);
+		$spreadsheet->getActiveSheet()->getColumnDimension('R')->setWidth(20);
 
 		if($client == "BTNI"){
 			// Colom Header
@@ -1761,7 +1762,8 @@ class TicketingController extends Controller
 				->setCellValue('M4','NO TLP')
 				->setCellValue('N4','ROOTCOSE')
 				->setCellValue('O4','CONTERMASURE')
-				->setCellValue('P4','ENGINEER');
+				->setCellValue('P4','ENGINEER')
+				->setCellValue('Q4','OPEN BY');
 		} else {
 			$spreadsheet->getActiveSheet(0)
 				->setCellValue('A4','NO')
@@ -1780,11 +1782,9 @@ class TicketingController extends Controller
 				->setCellValue('N4','NO TLP')
 				->setCellValue('O4','ROOTCOSE')
 				->setCellValue('P4','CONTERMASURE')
-				->setCellValue('Q4','ENGINEER');
+				->setCellValue('Q4','ENGINEER')
+				->setCellValue('R4','OPEN BY');
 		}
-		
-
-		
 		
 		$value1 = $this->getPerformanceByFinishTicket($client,$bulan . "/" . $req->year);
 		// return $value1;
@@ -1792,7 +1792,7 @@ class TicketingController extends Controller
 		if($client == "BTNI"){
 			foreach ($value1 as $key => $value) {
 				$spreadsheet->getActiveSheet()->getStyle('A' . (5 + $key))->applyFromArray($Colom_Header);
-				$spreadsheet->getActiveSheet()->getStyle('B' . (5 + $key) .  ':Q' . (5 + $key))->applyFromArray($border);
+				$spreadsheet->getActiveSheet()->getStyle('B' . (5 + $key) .  ':R' . (5 + $key))->applyFromArray($border);
 				$spreadsheet->getActiveSheet()->setCellValue('A' . (5 + $key),$key + 1);
 				$spreadsheet->getActiveSheet()->setCellValue('B' . (5 + $key),$value->id_ticket);
 				$spreadsheet->getActiveSheet()->setCellValue('C' . (5 + $key),$value->location);
@@ -1827,12 +1827,13 @@ class TicketingController extends Controller
 				$spreadsheet->getActiveSheet()->setCellValue('M' . (5 + $key),$value->pic);
 				$spreadsheet->getActiveSheet()->setCellValue('N' . (5 + $key),$value->contact_pic);
 				$spreadsheet->getActiveSheet()->setCellValue('Q' . (5 + $key),$value->engineer);
+				$spreadsheet->getActiveSheet()->setCellValue('R' . (5 + $key),$value->first_activity_ticket->operator);
 				// $spreadsheet->getActiveSheet()->setCellValue('R' . (5 + $key),$value->id_ticket);
 			}
 		} else {
 			foreach ($value1 as $key => $value) {
 				$spreadsheet->getActiveSheet()->getStyle('A' . (5 + $key))->applyFromArray($Colom_Header);
-				$spreadsheet->getActiveSheet()->getStyle('B' . (5 + $key) .  ':Q' . (5 + $key))->applyFromArray($border);
+				$spreadsheet->getActiveSheet()->getStyle('B' . (5 + $key) .  ':R' . (5 + $key))->applyFromArray($border);
 				$spreadsheet->getActiveSheet()->setCellValue('A' . (5 + $key),$key + 1);
 				$spreadsheet->getActiveSheet()->setCellValue('B' . (5 + $key),$value->id_ticket);
 				$spreadsheet->getActiveSheet()->setCellValue('C' . (5 + $key),$value->id_atm);
@@ -1867,6 +1868,7 @@ class TicketingController extends Controller
 				$spreadsheet->getActiveSheet()->setCellValue('M' . (5 + $key),$value->pic);
 				$spreadsheet->getActiveSheet()->setCellValue('N' . (5 + $key),$value->contact_pic);
 				$spreadsheet->getActiveSheet()->setCellValue('Q' . (5 + $key),$value->engineer);
+				$spreadsheet->getActiveSheet()->setCellValue('R' . (5 + $key),$value->first_activity_ticket->operator);
 				// $spreadsheet->getActiveSheet()->setCellValue('R' . (5 + $key),$value->id_ticket);
 			}
 		}

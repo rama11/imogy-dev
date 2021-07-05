@@ -804,6 +804,9 @@
 								<button id="ReportingButtonGo" class="pull-right btn btn-flat btn-primary" style="display: none;" onclick="getReport()">
 									Goo..
 								</button>
+								<button id="ReportingButtonGoNew" class="pull-right btn btn-flat btn-primary" style="display: none;">
+									Goo..
+								</button>
 							<!-- </a> -->
 						</div>
 					</div>

@@ -2,13 +2,17 @@
 
 @section('content')
 
-<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/daterangepicker/daterangepicker.css')}}">
-<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/datepicker/datepicker3.css')}}">
-<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/pace/pace.min.css')}}" >
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@latest/pace-theme-default.min.css">
+
 <link rel="stylesheet" href="{{ asset('css/jquery.transfer.css')}}" >
 <link rel="stylesheet" href="{{ asset('icon_font/css/icon_font.css')}}" >
 
 <style>
+	.swal2-margin {
+		margin: .3125em;
+	}
 	.loader {
 		border: 16px solid #f3f3f3;
 		border-radius: 50%;

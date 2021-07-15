@@ -2373,4 +2373,123 @@ class TicketingController extends Controller
 		return $name;
 	}
 
+	public function getReportNewDeny(Request $request){
+
+        $ticketing_max_min = DB::table('ticketing__activity')
+        	->selectRaw("MAX(`id`) AS `latest_id`")
+        	->selectRaw("MIN(`id`) AS `open_id`")
+        	->whereRaw('`date` BETWEEN "' . $request->start . '" AND "' . $request->end  . '"')
+        	->groupBy('id_ticket');
+
+        $open_activity_table = DB::table('ticketing__activity')
+        	->select("ticketing__activity.id_ticket")
+			->selectRaw("`ticketing__activity`.`activity` AS `open_activity`")
+	        ->selectRaw("`ticketing__activity`.`date` AS `open_activity_date`")
+	        ->selectRaw("`ticketing__activity`.`operator` AS `open_operator`")
+	        ->joinSub($ticketing_max_min,'open_activity',function($join){
+				$join->on('ticketing__activity.id','=','open_activity.open_id');
+			});
+		
+    	$latest_activity_table = DB::table(function ($query) use ($ticketing_max_min){
+			$query->from('ticketing__activity')
+				->select("ticketing__activity.id_ticket")
+				->selectRaw("`ticketing__activity`.`activity` AS `latest_activity`")
+		        ->selectRaw("`ticketing__activity`.`date` AS `latest_activity_date`")
+		        ->selectRaw("`ticketing__activity`.`operator` AS `latest_operator`")
+		        ->joinSub($ticketing_max_min,'latest_activity',function($join){
+					$join->on('ticketing__activity.id','=','latest_activity.latest_id');
+				});
+		},'latest_activity_table')
+		->selectRaw("`open_activity_table`.`id_ticket`")
+		->selectRaw("`open_activity_table`.`open_activity`")
+		->selectRaw("`open_activity_table`.`open_activity_date`")
+		->selectRaw("`ticketing__detail`.`reporting_time` AS `open_reporting_date`")
+		->selectRaw("`open_activity_table`.`open_operator`")
+		->selectRaw("`latest_activity_table`.`latest_activity`")
+		->selectRaw("`latest_activity_table`.`latest_activity_date`")
+		->selectRaw("`latest_activity_table`.`latest_operator`")
+		->selectRaw("TIMEDIFF(`latest_activity_table`.`latest_activity_date`,`open_activity_table`.`open_activity_date`) AS `resolution_time`")
+		->selectRaw("`ticketing__detail`.`engineer`")
+		->selectRaw("`ticketing__resolve`.`root_couse`")
+		->selectRaw("`ticketing__detail`.`engineer`")
+		->selectRaw("`ticketing__resolve`.`counter_measure`")
+		->joinSub($open_activity_table,'open_activity_table',function($join){
+			$join->on('latest_activity_table.id_ticket','=','open_activity_table.id_ticket');
+		})
+		->join('ticketing__resolve','open_activity_table.id_ticket','=','ticketing__resolve.id_ticket')
+		->join('ticketing__detail','open_activity_table.id_ticket','=','ticketing__detail.id_ticket')
+		->get();
+
+		$spreadsheet = new Spreadsheet();
+
+	    $spreadsheet->removeSheetByIndex(0);
+	    $spreadsheet->addSheet(new Worksheet($spreadsheet,'Summary'));
+	    $summarySheet = $spreadsheet->setActiveSheetIndex(0);
+
+	    $normalStyle = [
+	      'font' => [
+	        'name' => 'Calibri',
+	        'size' => 8
+	      ],
+	    ];
+
+	    $titleStyle = $normalStyle;
+	    $titleStyle['alignment'] = ['horizontal' => Alignment::HORIZONTAL_CENTER];
+	    $titleStyle['borders'] = ['outline' => ['borderStyle' => Border::BORDER_THIN]];
+	    $titleStyle['font']['bold'] = true;
+
+	    $headerStyle = $normalStyle;
+	    $headerStyle['font']['bold'] = true;
+	    $headerStyle['fill'] = ['fillType' => Fill::FILL_SOLID, 'startColor' => ["argb" => "FFC9C9C9"]];
+	    $headerStyle['borders'] = ['allBorders' => ['borderStyle' => Border::BORDER_THIN]];
+
+	    $summarySheet->getStyle('A1:O1')->applyFromArray($titleStyle);
+	    $summarySheet->getStyle('A2:O2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+	    $summarySheet->getStyle('A2:O2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+	    $summarySheet->getStyle('C2:O2')->getAlignment()->setWrapText(true);
+	    $summarySheet->getStyle('C2:O2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+	    $summarySheet->setCellValue('B1','Report Bulanan');
+	    $summarySheet->setCellValue('D1','Grab per ' . Carbon::now()->format("d M Y"));
+
+	    $headerContent = ["id_ticket","open_activity","open_activity_date","open_reporting_date","open_operator","latest_activity","latest_activity_date","latest_operator","resolution_time","engineer","root_couse","counter_measure",];
+	    $summarySheet->getStyle('A2:L2')->applyFromArray($headerStyle);
+	    
+	    $summarySheet->fromArray($headerContent,NULL,'A2');
+
+	    $itemStyle = $normalStyle;
+	    $itemStyle['fill'] = ['fillType' => Fill::FILL_SOLID, 'startColor' => ["argb" => "FFFFFE9F"]];
+	    $itemStyle['borders'] = ['allBorders' => ['borderStyle' => Border::BORDER_THIN]];
+	    $latest_activity_table->map(function($item,$key) use ($summarySheet){
+			$summarySheet->fromArray(
+				array_values((array)$item),
+				NULL,
+				'A' . ($key + 3)
+			);
+	    });
+
+	    $summarySheet->getColumnDimension('A')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('B')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('C')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('D')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('E')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('F')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('G')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('H')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('I')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('J')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('K')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('L')->setAutoSize(true);
+
+	    $spreadsheet->setActiveSheetIndex(0);
+
+	   
+	    $name = 'Report_Denny_-_[' . $request->start . '_to_' . $request->end . ']_(' . date("Y-m-d") . ')_' . Auth::user()->nickname . '.xlsx';
+		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+		$location = public_path() . '/report/denny/' . $name;
+		$writer->save($location);
+		return $name;
+
+		return $latest_activity_table->get();
+	}
+
 }

@@ -798,6 +798,20 @@
 								</div>
 							</div>
 						</div>
+						<div class="col-md-4 denny-report" style="display:none;">
+							<div class="form-group">
+								<label>Date range button:</label>
+
+								<div class="input-group">
+									<button type="button" class="btn btn-default pull-right" id="daterange-btn2">
+										<span>
+											<i class="fa fa-calendar"></i> Date range picker
+										</span>
+										<i class="fa fa-caret-down"></i>
+									</button>
+								</div>
+							</div>
+						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-10">

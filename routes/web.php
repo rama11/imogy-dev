@@ -156,6 +156,8 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('/usermanage/getLocation/{id}' , 'AdminController@getLocation');
 		Route::get('/usermanage/setLocation' , 'AdminController@setLocation');
 		Route::get('/location', 'AdminController@location');
+		Route::get('/usermanage/getLocationList', 'AdminController@getLocationList');
+		Route::get('/usermanage/deleteLocation', 'AdminController@deleteLocation');
 		// Route::get('/getScheduleProject/{id}', 'AdminController@getScheduleProject');
 		// Route::get('/deleteSchedule/{id}','AdminController@deleteSchedule');
 		// Route::get('/changeMonth','AdminController@changeMonth');

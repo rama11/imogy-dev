@@ -443,6 +443,22 @@ class AdminController extends Controller
 		// $req->location;
 	}
 
+	public function getLocationList(){
+		return collect([
+			'data' => DB::table('location')
+				->select('id','name','status','radius','create_date')
+				->where('status','=','ACTIVE')
+				->orderBy('id','ASC')
+				->get()
+		]);
+	}
+
+	public function deleteLocation(Request $request){
+		$location = DB::table('location')
+			->where('id','=',$request->id)
+			->update(['status' => "NON-ACTIVE"]);
+	}
+
 	// public function project(Request $req){
 	// 	$project = DB::table('project')
 	// 		->where('id','=',$req->id)

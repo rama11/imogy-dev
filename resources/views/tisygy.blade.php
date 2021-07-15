@@ -759,6 +759,7 @@
 									<option>Chose One</option>
 									<option value="1">Finish Report</option>
 									<option value="2">Bayu Report</option>
+									<option value="3">Denny Report</option>
 								</select>
 							</div>
 						</div>

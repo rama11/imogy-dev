@@ -152,14 +152,66 @@
 				</form>
 			</div>	
 		</div>
+
+		<div class="modal fade in" id="modal-manageLocation">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span></button>
+						<h4 class="modal-title">Manage Location</h4>
+					</div>
+					<div class="modal-body">
+						<table class="table table-bordered table-striped dataTable" id="locationTable" style="width:100%">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Status</th>
+									<th>Radius</th>
+									<th>Created Date</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Name</th>
+									<th>Status</th>
+									<th>Radius</th>
+									<th>Created Date</th>
+									<th>Action</th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>	
+		</div>
 	</section>
 </div>
 @endsection
 
 @section('script')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="{{ url('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
 
 <script type="text/javascript">
+
+	var swalWithCustomClass
+
+	swalWithCustomClass = Swal.mixin({
+			customClass: {
+				confirmButton: 'btn btn-flat btn-primary swal2-margin',
+				cancelButton: 'btn btn-flat btn-danger swal2-margin',
+				denyButton: 'btn btn-flat btn-danger swal2-margin',
+				popup: 'border-radius-0',
+			},
+			buttonsStyling: false,
+		})
 
 	$(document).ready(function(){
 		$(".select2").select2({

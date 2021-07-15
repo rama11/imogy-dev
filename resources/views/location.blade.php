@@ -327,6 +327,107 @@
 		});
 	}
 	$(".alert-success").delay(3000).fadeOut("slow");
+
+	$("#locationTable").DataTable({
+		ajax:{
+			url:'{{url("/usermanage/getLocationList")}}',
+			dataSrc: function (json){
+				json.data.forEach(function(data,idex){
+					// data.action = '<button class="btn btn-warning btn-flat btn-sm" onclick="editLocation(' + data.id + ')">Edit</button> <button class="btn btn-danger btn-flat btn-sm" onclick="deleteLocation(' + data.id + ')">Delete</button>'
+					data.action = '<button class="btn btn-danger btn-flat btn-sm" onclick="deleteLocation(' + data.id + ')">Delete</button>'
+				})
+				return json.data
+			}
+		},
+		columns:[
+			{data:'name'},
+			{data:'status'},
+			{data:'radius'},
+			{data:'create_date'},
+			{
+				data:'action',
+				class:'text-center'
+			},
+		],
+	})
+
+	function deleteLocation(id){
+		swalPopUp(
+			'warning',
+			'Delete',
+			'GET',
+			'{{url("/usermanage/deleteLocation")}}',
+			{
+				id:id
+			},
+			"Make sure the location you want to delete is correct",
+			function(){
+
+			}
+		)
+	}
+
+	function swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,textSwal,callback){
+		swalWithCustomClass.fire({
+			title: 'Are you sure?',
+			text: textSwal,
+			icon: typeAlert,
+			showCancelButton: true,
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			allowEnterKey: false,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value){
+					$.ajax({
+						type: typeAjax,
+						url: urlAjax,
+						data: dataAjax,
+						beforeSend: function(){
+							Swal.fire({
+								title: 'Please Wait..!',
+								text: "It's sending..",
+								allowOutsideClick: false,
+								allowEscapeKey: false,
+								allowEnterKey: false,
+								customClass: {
+									popup: 'border-radius-0',
+								},
+								didOpen: () => {
+									Swal.showLoading()
+								}
+							})
+						},
+						success: function(resultAjax){
+							Swal.hideLoading()
+							swalWithCustomClass.fire({
+								title: 'Success!',
+								text: typeActivity + " Ticket Sended.",
+								icon: 'success',
+								confirmButtonText: 'Reload',
+							}).then((result) => {
+								// console.log(resultAjax)
+								callback()
+								getPerformanceByClient(resultAjax.client_acronym_filter)
+							})
+						},
+						error: function(resultAjax,errorStatus,errorMessage){
+							Swal.hideLoading()
+							swalWithCustomClass.fire({
+								title: 'Error!',
+								text: "Something went wrong, please try again!",
+								icon: 'error',
+								confirmButtonText: 'Try Again',
+							}).then((result) => {
+								$.ajax(this)
+							})
+						}
+					});
+				}
+			}
+		);
+	}
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}&libraries=places&callback=initMap" async defer></script>
 @endsection

@@ -2234,14 +2234,82 @@ class AdminController extends Controller
 			$summary[4] = $summary[0] + $summary[1] + $summary[2];
 	
 			$tittle = 'Attandance Report All Member [' . $req->startDate . ' to ' . $req->endDate . "] by " . Auth::user()->nickname . " at (" . Carbon::now()->format("d-m-y h:i") . ")";
-			$pdf = PDF::loadView('precense.getAllReportPDF',compact('var','summary','data','details','tittle'));
-			// return $pdf->stream($tittle . ".pdf");
-			Storage::put("public/report_attandance/" .$tittle . ".pdf", $pdf->output());
-			return redirect(Storage::url("public/report_attandance/" .$tittle . ".pdf"));
-			// return view('precense.getAllReportPDF',compact('var','summary','data','details','tittle'));
+			// $pdf = PDF::loadView('precense.getAllReportPDF',compact('var','summary','data','details','tittle'));
+			// Storage::put("public/report_attandance/" .$tittle . ".pdf", $pdf->output());
+			// return redirect(Storage::url("public/report_attandance/" .$tittle . ".pdf"));
+			return view('precense.getAllReportPDF',compact('var','summary','data','details','tittle'));
 			// return $summary;
 			// return $details;
 			// return $var;
+
+			$spreadsheet = new Spreadsheet();
+
+		    $spreadsheet->removeSheetByIndex(0);
+		    $spreadsheet->addSheet(new Worksheet($spreadsheet,'Summary'));
+		    $summarySheet = $spreadsheet->setActiveSheetIndex(0);
+
+		    $normalStyle = [
+		      'font' => [
+		        'name' => 'Calibri',
+		        'size' => 8
+		      ],
+		    ];
+
+		    $titleStyle = $normalStyle;
+		    $titleStyle['alignment'] = ['horizontal' => Alignment::HORIZONTAL_CENTER];
+		    $titleStyle['borders'] = ['outline' => ['borderStyle' => Border::BORDER_THIN]];
+		    $titleStyle['font']['bold'] = true;
+
+		    $headerStyle = $normalStyle;
+		    $headerStyle['font']['bold'] = true;
+		    $headerStyle['fill'] = ['fillType' => Fill::FILL_SOLID, 'startColor' => ["argb" => "FFC9C9C9"]];
+		    $headerStyle['borders'] = ['allBorders' => ['borderStyle' => Border::BORDER_THIN]];
+
+		    $summarySheet->getStyle('A1:O1')->applyFromArray($titleStyle);
+		    $summarySheet->getStyle('A2:O2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+		    $summarySheet->getStyle('A2:O2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+		    $summarySheet->getStyle('C2:O2')->getAlignment()->setWrapText(true);
+		    $summarySheet->getStyle('C2:O2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+		    $summarySheet->setCellValue('B1','Report Bulanan');
+		    $summarySheet->setCellValue('D1','Grab per ' . Carbon::now()->format("d M Y"));
+
+		    $headerContent = ["id_ticket","open_activity","open_activity_date","open_reporting_date","open_operator","latest_activity","latest_activity_date","latest_operator","resolution_time","engineer","root_couse","counter_measure",];
+		    $summarySheet->getStyle('A2:L2')->applyFromArray($headerStyle);
+		    
+		    $summarySheet->fromArray($headerContent,NULL,'A2');
+
+		    $itemStyle = $normalStyle;
+		    $itemStyle['fill'] = ['fillType' => Fill::FILL_SOLID, 'startColor' => ["argb" => "FFFFFE9F"]];
+		    $itemStyle['borders'] = ['allBorders' => ['borderStyle' => Border::BORDER_THIN]];
+		    $latest_activity_table->map(function($item,$key) use ($summarySheet){
+				$summarySheet->fromArray(
+					array_values((array)$item),
+					NULL,
+					'A' . ($key + 3)
+				);
+		    });
+
+		    $summarySheet->getColumnDimension('A')->setAutoSize(true);
+		    $summarySheet->getColumnDimension('B')->setAutoSize(true);
+		    $summarySheet->getColumnDimension('C')->setAutoSize(true);
+		    $summarySheet->getColumnDimension('D')->setAutoSize(true);
+		    $summarySheet->getColumnDimension('E')->setAutoSize(true);
+		    $summarySheet->getColumnDimension('F')->setAutoSize(true);
+		    $summarySheet->getColumnDimension('G')->setAutoSize(true);
+		    $summarySheet->getColumnDimension('H')->setAutoSize(true);
+		    $summarySheet->getColumnDimension('I')->setAutoSize(true);
+		    $summarySheet->getColumnDimension('J')->setAutoSize(true);
+		    $summarySheet->getColumnDimension('K')->setAutoSize(true);
+		    $summarySheet->getColumnDimension('L')->setAutoSize(true);
+
+		    $spreadsheet->setActiveSheetIndex(0);
+
+		   
+		    $name = 'Report_Denny_-_[' . $request->start . '_to_' . $request->end . ']_(' . date("Y-m-d") . ')_' . Auth::user()->nickname . '.xlsx';
+			$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+			$location = public_path() . '/report/denny/' . $name;
+			$writer->save($location);
+			return $name;
 
 			// return view('pdf2',compact('var','summary','data','details','tittle'));
 			// return view('pdf4',compact('var','summary','data','details'));

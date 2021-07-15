@@ -3291,4 +3291,387 @@ class AdminController extends Controller
 	// 	DB::table('users')->where('id','=',41)->update(['password' => Hash::make("Sip2017!")]);
 	// }
 
+	public function getReportPrecenseAllNew(Request $request){
+	    // echo "<pre>";
+		// print_r($this->getWorkDays($request->start,$request->end)["holiday"]->pluck('date')->values());
+		// echo "</pre>";
+
+		// return ;
+
+        // return $workDaysShifting;
+
+
+		// print_r($this->getWorkDays($request->start,$request->end)["workdays"]->values());
+
+		$spreadsheet = new Spreadsheet();
+
+	    $spreadsheet->removeSheetByIndex(0);
+	    $spreadsheet->addSheet(new Worksheet($spreadsheet,'Summary'));
+	    $summarySheet = $spreadsheet->setActiveSheetIndex(0);
+
+	    $normalStyle = [
+	      'font' => [
+	        'name' => 'Calibri',
+	        'size' => 8
+	      ],
+	    ];
+
+	    $titleStyle = $normalStyle;
+	    $titleStyle['alignment'] = ['horizontal' => Alignment::HORIZONTAL_CENTER];
+	    // $titleStyle['borders'] = ['outline' => ['borderStyle' => Border::BORDER_THIN]];
+	    $titleStyle['font']['bold'] = true;
+
+	    $headerStyle = $normalStyle;
+	    $headerStyle['font']['bold'] = true;
+	    // $headerStyle['fill'] = ['fillType' => Fill::FILL_SOLID, 'startColor' => ["argb" => "ff2b4e62"]];
+	    // $headerStyle['borders'] = ['allBorders' => ['borderStyle' => Border::BORDER_THIN]];
+
+	    $summarySheet->getStyle('A1:H1')->applyFromArray($titleStyle);
+	    $summarySheet->getStyle('A2:H2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $summarySheet->getStyle('A2:H2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+	    $summarySheet->getStyle('A2:C2')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('ff2b4e62');
+	    $summarySheet->getStyle('D2')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('ff00a65a');
+	    $summarySheet->getStyle('E2')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('fff39c12');
+	    $summarySheet->getStyle('F2')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('ffdd4b39');
+	    $summarySheet->getStyle('G2')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('ff777777');
+	    $summarySheet->getStyle('H2')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('ff0073b7');
+	    $summarySheet->setCellValue('B1','Report Absen');
+
+	    $headerContent = ["#","Name","Location","On-Time","Injury-Time","Late","Absent","Attend",];
+	    $summarySheet->getStyle('A2:H2')->applyFromArray($headerStyle);
+	    $summarySheet->getStyle('A2:H2')->getFont()->getColor()->setARGB("ffffffff");
+	    
+	    $summarySheet->fromArray($headerContent,NULL,'A2');
+
+	    $itemStyle = $normalStyle;
+	    $itemStyle['fill'] = ['fillType' => Fill::FILL_SOLID, 'startColor' => ["argb" => "FFFFFE9F"]];
+	    $itemStyle['borders'] = ['allBorders' => ['borderStyle' => Border::BORDER_THIN]];
+
+	    // return $request->selectedUser;
+
+	    $dataAbsen = DB::table('waktu_absen')
+	    	->selectRaw('COUNT(`id`) AS `attend`')
+	    	->selectRaw('SUM(IF(`waktu_absen`.`late` = "On-Time", 1, 0)) AS `on-time`')
+	    	->selectRaw('SUM(IF(`waktu_absen`.`late` = "Injury-Time", 1, 0)) AS `injury`')
+	    	->selectRaw('SUM(IF(`waktu_absen`.`late` = "Late", 1, 0)) AS `late`')
+	    	->selectRaw('`id_user`')
+			->whereBetween('tanggal',[$request->start,$request->end])
+			->whereIn('id_user',$request->selectedUser)
+			->groupBy('id_user');
+			// ->get();
+
+	    $dataUserAbsen = DB::table('users')
+	    	->selectRaw('`users`.`id`')
+	    	->selectRaw('`users`.`shifting`')
+	    	->selectRaw('`users`.`nickname`')
+	    	->selectRaw('`users`.`name`')
+	    	->selectRaw('`location`.`name` AS `location`')
+	    	->selectRaw('IFNULL(`dataAbsen`.`on-time`,"0") AS `on-time`')
+	    	->selectRaw('IFNULL(`dataAbsen`.`injury`,"0") AS `injury`')
+	    	->selectRaw('IFNULL(`dataAbsen`.`late`,"0") AS `late`')
+	    	->selectRaw('"-" AS `absent`')
+	    	->selectRaw('IFNULL(`dataAbsen`.`attend`,"0") AS `attend`')
+	    	->leftJoinSub($dataAbsen,'dataAbsen',function($join){
+	    		$join->on('dataAbsen.id_user','=','users.id');
+	    	})
+	    	->leftJoin('location','location.id','=','users.location')
+	    	// ->whereIn('users.id',[103])
+	    	// ->whereIn('users.id',[109])
+	    	// ->whereIn('users.id',[108])
+	    	// ->whereIn('users.id',[107])
+	    	// ->whereIn('users.id',[7])
+	    	// ->whereIn('users.id',[28])
+	    	->whereIn('users.id',$request->selectedUser)
+	    	// ->where('users.shifting','<>',1)
+	    	->orderBy('location.id','ASC')
+	    	->orderBy('users.id','ASC')
+	    	->get();
+
+	    // return $dataUserAbsen;
+
+		// return $dataAbsen->get();
+	    $dataUserAbsen->map(function($item,$key) use ($spreadsheet,$titleStyle,$headerStyle,$request,$summarySheet){
+	    	
+	    	$spreadsheet->addSheet(new Worksheet($spreadsheet,$item->nickname));
+			$activeSheet = $spreadsheet->setActiveSheetIndex($key + 1);
+
+			$activeSheet->getStyle('A1:H1')->applyFromArray($titleStyle);
+		    $activeSheet->getStyle('A2:H2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+		    $activeSheet->getStyle('A2:H2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+	        $activeSheet->getStyle('A2:H2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+		    $activeSheet->setCellValue('B1',$item->name);
+
+		    $headerContent = ["#","Schedule In","Presence Time In","Schedule Out","Presence Time Out","Date","Whare","Status"];
+		    $activeSheet->getStyle('A2:H2')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('ff2b4e62');
+		    $activeSheet->getStyle('A2:H2')->applyFromArray($headerStyle);
+		    $activeSheet->getStyle('A2:H2')->getFont()->getColor()->setARGB("ffffffff");
+		    
+		    $activeSheet->fromArray($headerContent,NULL,'A2');
+
+
+
+		    $dataUserAbsenIdividual = DB::table('waktu_absen')
+		    	->selectRaw('`waktu_absen`.`id`')
+		    	->selectRaw('`waktu_absen`.`hadir` AS `schedule_in`')
+		    	->selectRaw('`waktu_absen`.`jam` AS `presence_time_in`')
+		    	->selectRaw('IFNULL(`waktu_absen`.`harus_pulang`,"-") AS `schedule_out`')
+		    	->selectRaw('IFNULL(`waktu_absen`.`pulang`,"-") AS `presence_time_out`')
+		    	->selectRaw('`waktu_absen`.`tanggal` AS `date`')
+		    	->selectRaw('`location`.`name` AS `location`')
+		    	->selectRaw('`waktu_absen`.`late` AS `status`')
+		    	->leftJoin('location','location.id','=','waktu_absen.location')
+		    	->join('users','users.id','=','waktu_absen.id_user')
+		    	->whereBetween('tanggal',[$request->start,$request->end])
+		    	->where('id_user','=',$item->id)
+		    	->get();
+
+		    // print_r($dataUserAbsenIdividual);
+
+		    $holiday = $this->getWorkDays($request->start,$request->end)["holiday"];
+	    	// print_r($holiday);
+		    if($item->shifting == 1){
+		    	$shiftingSchedule = DB::table('shifting')
+		    		->selectRaw('LEFT(`start`, 10) AS `date_shifting`')
+		    		->selectRaw('`className` AS `shift`')
+		    		->selectRaw('SUBSTRING(`start`, 12, 8) AS `start_shifting`')
+		    		->selectRaw('SUBSTRING(`end`, 12, 8) AS `end_shifting`')
+		    		->where('id_user','=',$item->id)
+		    		// ->where('className','<>','Libur')
+		    		->havingRaw("`date_shifting` BETWEEN '" . $request->start . "' AND '" . $request->end . "'")
+		    		->get();
+
+		    	$shiftingScheduleValue = $shiftingSchedule->pluck('date_shifting')->values();
+		    	$diffShiftingAbsenDiff = $shiftingScheduleValue->diff($dataUserAbsenIdividual->pluck('date')->values());
+		    	$diffShiftingHoliday = $shiftingScheduleValue->unique()->merge($holiday->pluck('date')->values())->duplicates();
+		    	$diffShiftingAbsenDiff->map(function($item,$key) use ($shiftingSchedule,$dataUserAbsenIdividual) {
+		    		// print_r($shiftingSchedule[$key]);
+				    // echo "<br>";
+				    if($shiftingSchedule[$key]->shift == "Libur"){
+				    	$status = "Libur";
+				    } else {
+				    	$status = "Absent";
+				    }
+			    	$dataUserAbsenIdividual->push((object) [
+	                    "id" => "-",
+	                    "schedule_in" => $shiftingSchedule[$key]->start_shifting,
+	                    "presence_time_in" => "N/A",
+	                    "schedule_out" => $shiftingSchedule[$key]->end_shifting,
+	                    "presence_time_out" =>  "N/A",
+	                    "date" =>  $shiftingSchedule[$key]->date_shifting,
+	                    "location" => "N/A",
+	                    "status" => $status
+	                ]);
+		    	});
+
+		    	$holiday->map(function($item,$key) use ($dataUserAbsenIdividual) {
+		    		// print_r($shiftingSchedule[$key]);
+				    // echo "<br>";
+				    $find = $dataUserAbsenIdividual->where('date','=',$item['date'])->first();
+				    if($find){
+				    	$find->location = $find->location . " - " . $item["summary"];
+				    } else {
+						$dataUserAbsenIdividual->push((object) [
+							"id" => "-",
+							"schedule_in" => "N/A",
+							"presence_time_in" => "N/A",
+							"schedule_out" => "N/A",
+							"presence_time_out" =>  "N/A",
+							"date" =>  $item["date"],
+							"location" => $item["summary"],
+							"status" => "Libur"
+						]);
+				    }
+		    	});
+
+		    	// print_r($diffShiftingHoliday);
+		    	// print_r($diffShiftingAbsenDiff);
+		    } else {
+		    	$workdays = $this->getWorkDays($request->start,$request->end)["workdays"]->values();
+		    	$trueWorkDays = $this->getWorkDays($request->start,$request->end)["trueWorkdays"]->values();
+		    	$allDays = $this->getWorkDays($request->start,$request->end)["allDays"]->values();
+		    	// $diffTrueWorkDays = $holiday->diff($trueWorkDays);
+		    	$diffTrueWorkDaysHoliday = $trueWorkDays->merge($holiday->pluck('date')->values())->duplicates();
+		    	$diffWorkdayAbsen = $workdays->diff($dataUserAbsenIdividual->pluck('date')->values());
+		    	// echo "Non - shifting";
+		    	// print_r($workdays);
+		    	// print_r($trueWorkDays);
+		    	// print_r($diffTrueWorkDaysHoliday);
+		    	// print_r($holiday->where('date','=','2021-07-20')->first()['summary']);
+
+		    	// print_r($diffWorkdayAbsen);
+		    	$diffWorkdayAbsen->map(function($item,$key) use ($workdays,$dataUserAbsenIdividual) {
+		    		// print_r($workdays[$key]);
+				    // echo "<br>";
+			    	$dataUserAbsenIdividual->push((object) [
+	                    "id" => "-",
+	                    "schedule_in" => "N/A",
+	                    "presence_time_in" => "N/A",
+	                    "schedule_out" => "N/A",
+	                    "presence_time_out" =>  "N/A",
+	                    "date" =>  $workdays[$key],
+	                    "location" => "N/A",
+	                    "status" => "Absent"
+	                ]);
+		    	});
+
+		    	$diffTrueWorkDaysHoliday->map(function($item,$key) use ($holiday,$dataUserAbsenIdividual) {
+		    		$dataUserAbsenIdividual->push((object) [
+	                    "id" => "-",
+	                    "schedule_in" => "N/A",
+	                    "presence_time_in" => "N/A",
+	                    "schedule_out" => "N/A",
+	                    "presence_time_out" =>  "N/A",
+	                    "date" =>  $item,
+	                    "location" => $holiday->where('date','=',$item)->first()["summary"],
+	                    "status" => "Libur"
+	                ]);
+		    	});
+		    	$diffallDaysHoliday = $allDays->diff($dataUserAbsenIdividual->pluck('date')->values());
+		    	$diffallDaysHoliday->map(function($item,$key) use ($dataUserAbsenIdividual) {
+		    		$dataUserAbsenIdividual->push((object) [
+	                    "id" => "-",
+	                    "schedule_in" => "N/A",
+	                    "presence_time_in" => "N/A",
+	                    "schedule_out" => "N/A",
+	                    "presence_time_out" =>  "N/A",
+	                    "date" =>  $item,
+	                    "location" => "Weekend",
+	                    "status" => "Libur"
+	                ]);
+		    	});
+
+		    }
+			    // echo " --------------------------- <br>";
+
+	    	$dataUserAbsenIdividual->sortBy('date')->values()->map(function($item,$key) use ($activeSheet) {
+			    // print_r($key);
+			    // echo " - ";
+			    // print_r($item->date);
+			    // echo " - ";
+			    // print_r($item->status);
+			    // echo "<br>";
+	    		$activeSheet->getStyle('A' . ($key + 3) . ':F' . ($key + 3))->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+	    		$activeSheet->getStyle('H' . ($key + 3))->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+		        $activeSheet->getStyle('A' . ($key + 3) . ':H' . ($key + 3))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			    if($item->status == "On-Time"){
+		    		$activeSheet->getStyle('H' . ($key + 3))->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('ff4dc18c');
+			    } else if($item->status == "Injury-Time"){
+		    		$activeSheet->getStyle('H' . ($key + 3))->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('fff7ba59');
+			    } else if($item->status == "Late"){
+		    		$activeSheet->getStyle('H' . ($key + 3))->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('ffe78174');
+			    } else if($item->status == "Absent"){
+		    		$activeSheet->getStyle('H' . ($key + 3))->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('ffa0a0a0');
+			    } else if($item->status == "Libur"){
+		    		$activeSheet->getStyle('H' . ($key + 3))->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('ffffffff');
+			    }
+			    $activeSheet->fromArray(
+					array_values((array)$item),
+					NULL,
+					'A' . ($key + 3)
+				);
+	    	});
+
+	    	$activeSheet->getColumnDimension('A')->setAutoSize(true);
+		    $activeSheet->getColumnDimension('B')->setAutoSize(true);
+		    $activeSheet->getColumnDimension('C')->setAutoSize(true);
+		    $activeSheet->getColumnDimension('D')->setAutoSize(true);
+		    $activeSheet->getColumnDimension('E')->setAutoSize(true);
+		    $activeSheet->getColumnDimension('F')->setAutoSize(true);
+		    $activeSheet->getColumnDimension('G')->setAutoSize(true);
+		    $activeSheet->getColumnDimension('H')->setAutoSize(true);
+
+			$summarySheet->getStyle('D' . ($key + 3))->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('ff4dc18c');
+			$summarySheet->getStyle('E' . ($key + 3))->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('fff7ba59');
+			$summarySheet->getStyle('F' . ($key + 3))->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('ffe78174');
+			$summarySheet->getStyle('G' . ($key + 3))->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('ffa0a0a0');
+			$summarySheet->getStyle('H' . ($key + 3))->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('ff4d9dcd');
+			$summarySheet->getStyle('D' . ($key + 3) . ':H' . ($key + 3))->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+	        $summarySheet->getStyle('D' . ($key + 3) . ':H' . ($key + 3))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+		    $summarySheet->getStyle('D' . ($key + 3) . ':H' . ($key + 3))->getFont()->getColor()->setARGB("ffffffff");
+
+
+	    	$item_filtered = array_values((array)$item);
+	    	unset($item_filtered[0]);
+	    	unset($item_filtered[1]);
+	    	unset($item_filtered[2]);
+			$summarySheet->fromArray(
+				array_merge([$key + 1],$item_filtered),
+				NULL,
+				'A' . ($key + 3)
+			);
+	    });
+
+	    
+
+	    $summarySheet->getColumnDimension('A')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('B')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('C')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('D')->setWidth(8);
+	    $summarySheet->getColumnDimension('E')->setWidth(8);
+	    $summarySheet->getColumnDimension('F')->setWidth(8);
+	    $summarySheet->getColumnDimension('G')->setWidth(8);
+	    $summarySheet->getColumnDimension('H')->setWidth(8);
+
+	    $spreadsheet->setActiveSheetIndex(0);
+
+		$name = 'Report_Absensi_-_[' . $request->start . '_to_' . $request->end . ']_(' . date("Y-m-d H:i:s") . ')_' . Auth::user()->nickname . '.xlsx';
+		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+		$location = public_path() . '/report/presence/' . $name;
+		$writer->save($location);
+		return url("/report/presence/" . $name);
+		// echo "<a href='/report/presence/" . $name . "'>" . $name . "</a>";
+		// echo "</pre>";
+	}
+
+	public function getWorkDays($startDate,$endDate){
+        $client = new Client();
+        $api_response = $client->get('https://www.googleapis.com/calendar/v3/calendars/en.indonesian%23holiday%40group.v.calendar.google.com/events?key='.env('GOOGLE_API_KEY'));
+        $json = (string)$api_response->getBody();
+        $holiday_indonesia = json_decode($json, true);
+
+        $holiday_indonesia_final_detail = collect();
+        $holiday_indonesia_final_date = collect();
+        
+        foreach ($holiday_indonesia["items"] as $value) {
+            if(( ( $value["start"]["date"] >= $startDate ) && ( $value["start"]["date"] <= $endDate ) )){
+                $holiday_indonesia_final_detail->push(["date" => $value["start"]["date"],"summary" => $value["summary"]]);
+                $holiday_indonesia_final_date->push($value["start"]["date"]);
+            }
+        }
+
+        $period = new DatePeriod(
+             new DateTime($startDate),
+             new DateInterval('P1D'),
+             new DateTime($endDate)
+        );
+
+        // return $period;
+
+        $workDays = collect();
+        $allDays = collect();
+        foreach($period as $date){
+            if(!($date->format("N") == 6 || $date->format("N") == 7)){
+                $workDays->push($date->format("Y-m-d"));
+            }
+            $allDays->push($date->format("Y-m-d"));
+        }
+
+        $trueWorkDays = $workDays;
+
+        $workDaysMinHoliday = $workDays->diff($holiday_indonesia_final_date->unique());
+        $workDaysMinHolidayKeyed = $workDaysMinHoliday->map(function ($item, $key) {
+            // return ["date" => $item];
+            // return (object) array('date' => $item);
+            return $item;
+        });
+
+        return collect([
+        	"holiday" => $holiday_indonesia_final_detail, 
+        	"workdays" => $workDaysMinHolidayKeyed, 
+        	"trueWorkdays" => $trueWorkDays,
+        	"allDays" => $allDays
+        ]);
+    }
+
 }

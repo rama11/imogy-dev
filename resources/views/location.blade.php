@@ -20,6 +20,7 @@
 			<small>For employe who has onsite at the time</small>
 		</h1>
 		<a href="#" class="pull-right btn-box-tool text-green pull-left" data-toggle="modal" data-target="#modal-addNewLocation"><i class="fa fa-plus"></i> Add New Location</a>			
+		<a href="#" class="pull-right btn-box-tool text-light-blue pull-left" data-toggle="modal" data-target="#modal-manageLocation"><i class="fa fa-gear"></i> Manage Location</a>			
 		<ol class="breadcrumb">
 			<li><a href="{{url('admin')}}"><i class="fa fa-dashboard"></i> Home</a></li>
 			<li class="active">Set Location Absent</li>

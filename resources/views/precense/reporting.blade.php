@@ -100,9 +100,9 @@
 					<div class="box-header with-border">
 						<h3 class="box-title" id="titleResult">Table Information</h3>
 						<div class="box-tools pull-right">
-							<a href='' target="_blank" type='button' class='btn btn-info' id="downloadPDF">
+							<button type='button' class='btn btn-info' id="downloadPDF">
 								<i class='fa fa-download'></i> Download All
-							</a>
+							</button>
 						</div>
 					</div>
 					<div class="box-body no-padding">

@@ -136,6 +136,7 @@ Route::group(['middleware' => ['preventbacklogout','auth']], function(){
 		Route::get('/precense/reporting', 'AdminController@precenseReporting');
 		Route::get('/precense/reporting/getUserToReport','AdminController@getUserToReport');
 		Route::get('/precense/reporting/getReportPrecenseAll','AdminController@getReportPrecenseAll');
+		Route::get('/precense/reporting/getReportPrecenseAllNew','AdminController@getReportPrecenseAllNew');
 		Route::get('/precense/reporting/getReportPrecensePerUser','AdminController@getReportPrecensePerUser');
 	});
 	Route::middleware(['shiftingloc.role'])->group(function () {

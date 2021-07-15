@@ -55,6 +55,7 @@ Route::get('tisygy/report/getParameter','TicketingController@getReportParameter'
 Route::get('tisygy/report/make','TicketingController@makeReportTicket');
 Route::get('tisygy/report/download','TicketingController@downloadReportTicket');
 Route::get('tisygy/report/new','TicketingController@getReportNew');
+Route::get('tisygy/report/newDeny','TicketingController@getReportNewDeny');
 		
 
 Route::get('firebase','TestController@firebase');

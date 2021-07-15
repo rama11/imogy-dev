@@ -315,7 +315,8 @@
 							selectedUser.forEach(function(d,i){
 								temp = temp + '&selectedUser[]=' + d
 							})
-							$("#downloadPDF").attr("href",'{{url("/precense/reporting/getReportPrecenseAll")}}?end=' + result['end'] + '&endDate=' + result['endDate'] + '&start=' + result['start'] + '&startDate=' + result['startDate'] + '&pdf=' + result['pdf'] + temp);
+							$("#downloadPDF").attr('onClick','downloadPDF("' + result["start"] + '","' + result["end"] + '")');
+
 							$("#result").fadeIn();
 							$("#titleResult").text("Table Information for " + startDate + " to " + endDate);
 							

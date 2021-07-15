@@ -5,7 +5,12 @@
 		.pac-container {
 			z-index: 1100 !important;
 		}
+
+		.swal2-margin {
+			margin: .3125em;
+		}
 	</style>
+	<link rel="stylesheet" href="{{ url('plugins/datatables/dataTables.bootstrap.css')}}">
 @endsection
 @section('content')
 <div class="content-wrapper">

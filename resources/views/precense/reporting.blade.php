@@ -117,19 +117,115 @@
 @endsection
 @section('script')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-<script src="{{ asset('AdminLTE/plugins/select2/select2.full.min.js')}}"></script>
-<script src="{{ asset('AdminLTE/plugins/daterangepicker/daterangepicker.js')}}"></script>
-<script src="{{ asset('AdminLTE/plugins/datepicker/bootstrap-datepicker.js')}}"></script>
-<script src="{{ asset('AdminLTE/plugins/pace/pace.min.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 <script src="{{ asset('js/jquery.transfer.js')}}"></script>
 <script>
+	var startDonwload;
+	var endDonwload;
+	var startDate
+	var endDate;
+	var selectedUser;
+	var swalWithCustomClass;
+
+	function swalPopUp(typeAlert,typeActivity,typeAjax,urlAjax,dataAjax,textSwal,callback){
+		swalWithCustomClass.fire({
+			title: 'Are you sure?',
+			text: textSwal,
+			icon: typeAlert,
+			showCancelButton: true,
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			allowEnterKey: false,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value){
+					$.ajax({
+						type: typeAjax,
+						url: urlAjax,
+						data: dataAjax,
+						beforeSend: function(){
+							Swal.fire({
+								title: 'Please Wait..!',
+								text: "It's proccessing..",
+								allowOutsideClick: false,
+								allowEscapeKey: false,
+								allowEnterKey: false,
+								customClass: {
+									popup: 'border-radius-0',
+								},
+								didOpen: () => {
+									Swal.showLoading()
+								}
+							})
+						},
+						success: function(resultAjax){
+							Swal.hideLoading()
+							swalWithCustomClass.fire({
+								title: 'Success!',
+								text: " Report ready to download",
+								icon: 'success',
+								confirmButtonText: '<a style="color:#fff;" href="' + resultAjax.slice(1) + '">Download Report</a>',
+							}).then((result) => {
+								callback()
+							})
+						},
+						error: function(resultAjax,errorStatus,errorMessage){
+							Swal.hideLoading()
+							swalWithCustomClass.fire({
+								title: 'Error!',
+								text: "Something went wrong, please try again!",
+								icon: 'error',
+								confirmButtonText: 'Try Again',
+							}).then((result) => {
+								$.ajax(this)
+							})
+						}
+					});
+				}
+			}
+		);
+	}
+
+	function downloadPDF(start,end){
+		var dataAjax = {
+			end:end,
+			endDate:endDate,
+			start:start,
+			startDate:startDate,
+			pdf:"true",
+			selectedUser:selectedUser
+		}
+
+		swalPopUp(
+			"warning",
+			"Download Report",
+			"GET",
+			"{{url("/precense/reporting/getReportPrecenseAllNew")}}",
+			dataAjax,
+			"Make sure nothing wrong with this report!",
+			function(){}
+		)
+	}
+
 	$(function () {
 
-		var startDonwload;
-		var endDonwload;
-		var startDate
-		var endDate;
-		var selectedUser;
+		
+
+		swalWithCustomClass = Swal.mixin({
+			customClass: {
+				confirmButton: 'btn btn-flat btn-primary swal2-margin',
+				cancelButton: 'btn btn-flat btn-danger swal2-margin',
+				denyButton: 'btn btn-flat btn-danger swal2-margin',
+				popup: 'border-radius-0',
+			},
+			buttonsStyling: false,
+		})
 
 		// $(document).ajaxStart(function() { Pace.restart(); });
 

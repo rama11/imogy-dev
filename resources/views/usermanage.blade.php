@@ -366,5 +366,13 @@
 		});
 	};
 
+	$("#shiftingEdit").on('change',function(){
+		if($(this).val() == 1){
+			$("#afterEdit").prop('disabled', 'disabled')
+		} else {
+			$("#afterEdit").prop('disabled', false)
+		}
+	})
+
 </script>
 @endsection

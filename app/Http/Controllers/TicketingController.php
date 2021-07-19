@@ -2326,16 +2326,35 @@ class TicketingController extends Controller
 	    $headerStyle['fill'] = ['fillType' => Fill::FILL_SOLID, 'startColor' => ["argb" => "FFC9C9C9"]];
 	    $headerStyle['borders'] = ['allBorders' => ['borderStyle' => Border::BORDER_THIN]];
 
-	    $summarySheet->getStyle('A1:O1')->applyFromArray($titleStyle);
-	    $summarySheet->getStyle('A2:O2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-	    $summarySheet->getStyle('A2:O2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-	    $summarySheet->getStyle('C2:O2')->getAlignment()->setWrapText(true);
-	    $summarySheet->getStyle('C2:O2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+	    $summarySheet->getStyle('A1:Q1')->applyFromArray($titleStyle);
+	    $summarySheet->getStyle('A2:Q2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+	    $summarySheet->getStyle('A2:Q2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+	    $summarySheet->getStyle('C2:Q2')->getAlignment()->setWrapText(true);
+	    $summarySheet->getStyle('C2:Q2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 	    $summarySheet->setCellValue('B1','Report Bayu');
 	    $summarySheet->setCellValue('D1','Grab per ' . Carbon::now()->format("d M Y"));
 
-	    $headerContent = ["id_ticket","ticket_number_3party","location_problem","open_reporting_date","open_date","latest_date","name","root_couse","counter_measure/latest_note","latest_activity","actual_status","hendle_by","escalate_engineer","responds_time","resolution_time"];
-	    $summarySheet->getStyle('A2:O2')->applyFromArray($headerStyle);
+	    $headerContent = [
+			"id_ticket",
+			"ticket_number_3party",
+			"location_problem",
+			"open_reporting_date",
+			"open_date",
+			"latest_date",
+			"name",
+			"root_couse",
+			"counter_measure/latest_note",
+			"latest_activity",
+			"actual_status",
+			"open_by",
+			"last_update_by",
+			// "close_by",
+			"hendle_by",
+			"escalate_engineer",
+			"responds_time",
+			"resolution_time"
+		];
+	    $summarySheet->getStyle('A2:Q2')->applyFromArray($headerStyle);
 	    
 	    $summarySheet->fromArray($headerContent,NULL,'A2');
 

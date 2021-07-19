@@ -2384,6 +2384,9 @@ class TicketingController extends Controller
 	    $summarySheet->getColumnDimension('M')->setAutoSize(true);
 	    $summarySheet->getColumnDimension('N')->setAutoSize(true);
 	    $summarySheet->getColumnDimension('O')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('P')->setAutoSize(true);
+	    $summarySheet->getColumnDimension('Q')->setAutoSize(true);
+	    // $summarySheet->getColumnDimension('R')->setAutoSize(true);
 
 	    $spreadsheet->setActiveSheetIndex(0);
 
